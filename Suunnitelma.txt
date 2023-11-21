@@ -2,7 +2,57 @@ Suunnitelma:
 
 World 1
 Continent 2-5
-Nation (per continent) 2-10
-Province (per nation) 2-10
-City (per province) 1-10
-quarter (per city) 2-6
+Nation (per continent) 2-10  fortress, citadel
+Province (per nation) 2-10  castle, manor
+City (per province) 1-10  mansion, villa
+quarter (per city) 2-6  cottage, shack
+
+
+1.fortress
+2.citadel
+3.castle
+4.manor
+5.mansion
+6.villa
+7.cottage
+8.shack 
+
+
+Area - LeaderName - Major buiding - Minor building
+Nation - Leader - 
+
+																		
+				1000000000	1320000000													
+										Property								
+	Position	Area	CharacterName	Authority Of	Number	Loyalty	Wealth Prediction	Produces	Source of Income	Placement	Fortress	Citadel	Castle	Manor	Mansion	Villa	Cottage	Shack
+	Authority	Nation	King	Nobody	1	Impossible	Major	Nothing	Governor Tax	Anywhere	Fortress	Citadel						
+	Support	-	Noble	King	4	Strong	Substantial	Nothing	Kings Compensation	Same Province As King				Manor				
+	Support	-	Vanguard	King	Provinces	Impossible	Substantial	Nothing	Kings Compensation	1 in every Province	Fortress	Citadel	Castle					
+	Authority	Province	Governor	King	Provinces	Random	Substantial	Nothing	Mayor Tax	Own Province		Citadel	Castle	Manor				
+	Support	-	Mercenary	Governor	6	Impossible	Substantial	Nothing	Governors Compensation	Anywhere		Citadel	Castle	Manor				
+	Authority	City	Mayor	Governor	Cities	Random	Moderate	Nothing	Captain Tax	Own City			Castle	Manor	Mansion	Villa		
+	Authority	Quarter	Captain	Mayor	Quarters	Random	Limited	Nothing	Peasant Tax	Own Quarter					Mansion	Villa	Cottage	
+	Peasant	-	Farmer	Captain	Random	Strong	Minor	Food	Labour	Quarter								Shack
+	Peasant	-	Miner	Captain	Random	Medium	Minor	Alloy	Labour	Quarter								Shack
+	Peasant	-	Merchant	Captain	Random	Weak	Moderate	Gold	Labour	Quarter					Mansion	Villa	Cottage	
+	Peasant	-	Slave	Captain	Random	Weak	None	Alloy	Slavery	Quarter								
+																		
+																		
+	Authority	Taxman								Consumes								
+	Support	No tax								Property	Food	Alloy	Gold	Strength				
+										Fortress	40.0	30.0	20.0	100.0				
+				Tax						Citadel	30.0	30.0	10.0	90.0				
+	Resources			Captain	Mayor	Governor	King			Castle	20.0	25.0	5.0	70.0				
+	Peasant	Produces	Amount	95%	90%	85%	60%			Manor	15.0	10.0	5.0	60.0				
+	Farmer	Food	100	95	86	73	44			Mansion	10.0	4.0	4.0	40.0				
+	Miner	Alloy	100	95	86	73	44			Villa	5.0	0.0	3.0	20.0				
+	Merchant	Gold	100	95	86	73	44			Cottage	3.0	0.0	2.0	10.0				
+	Slave	All	10.0	9.5	8.6	7.3	4.4			Shack	2.0	0.0	1.0	0.0				
+		Left:	5	10	13	22	22				125.0	99.0	50.0	390.0				
+					Supporters	10%	50%											
+						7	22											
+										Major								
+										Substantial								
+										Moderate								
+										Limited								
+										Minor								
