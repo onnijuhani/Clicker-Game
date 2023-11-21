@@ -1,0 +1,8 @@
+Suunnitelma:
+
+World 1
+Continent 2-5
+Nation (per continent) 2-10
+Province (per nation) 2-10
+City (per province) 1-10
+quarter (per city) 2-6
