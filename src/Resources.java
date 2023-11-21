@@ -40,6 +40,11 @@ class Wallet {
         wallet.put("Gold", gold.getAmount());
         return wallet;
     }
+    public void addResources(double food, double alloys, double gold) {
+        this.food.add(food);
+        this.alloy.add(alloys);
+        this.gold.add(gold);
+    }
 
     public double getFood() {
         return food.getAmount();
@@ -88,7 +93,6 @@ class Wallet {
     public void subtractGold(double gold) {
         this.gold.subtract(gold);
     }
-
 }
 
 class Vault extends Wallet {

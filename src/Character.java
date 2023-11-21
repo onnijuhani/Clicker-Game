@@ -1,7 +1,12 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Character {
+public class Character implements TimeObserver {
+
+    @Override
+    public void TimeUpdate(int currentDay, int currentWeek, int currentMonth, int currentYear) {
+    }
+
     Wallet wallet;
     public Character() {
     }
@@ -17,10 +22,12 @@ public class Character {
 
 class AuthorityCharacter extends Character {
 
-    Authority authorityOver;
+
 }
 
 class Support extends Character {
+
+    Character supportFor;
 
 
 }
@@ -37,7 +44,6 @@ class King extends AuthorityCharacter {
 
 
 class Noble extends Support {
-
 
     public Noble() {
     }
@@ -80,6 +86,9 @@ class Captain extends AuthorityCharacter {
 
 class Peasant extends Character {
 
+    @Override
+    public void TimeUpdate(int currentDay, int currentWeek, int currentMonth, int currentYear) {
+    }
     protected Food food;
     protected Alloy alloy;
     protected Gold gold;
@@ -97,6 +106,13 @@ class Peasant extends Character {
 }
 
 class Farmer extends Peasant {
+    @Override
+    public void TimeUpdate(int currentDay, int currentWeek, int currentMonth, int currentYear) {
+        if (currentDay == 1) {
+            generateFood(50);
+        }
+
+    }
     public Farmer() {
         super.food = new Food(0);
         super.wallet = new Wallet(0, 0, 0);

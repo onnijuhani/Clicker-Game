@@ -1,10 +1,10 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class CreateWorld {
 
     public static void main(String[] args) {
-
 
         Farmer farmer = new Farmer();
         farmer.generateFood(50);
@@ -26,39 +26,45 @@ public class CreateWorld {
         merchant.taxGold(0.69);
         Slave slave = new Slave();
         slave.generate(10,10,5);
-
         slave.tax(1);
-
         System.out.println(Food.getTotalFoodCount());
         System.out.println(Food.getTotalFoodCount());
         System.out.println(Gold.getTotalGoldCount());
 
+        Property propertyy = new Property(PropertyConfig.FORTRESS, PropertyConfig.FORTRESS_Vault, "wjhatever");
+        System.out.println("Testi: "+propertyy.getVault().getWalletValues());
+        propertyy.maintenanceCost();
+        System.out.println(propertyy.getVault().getWalletValues());
+
+        propertyy.vault.addResources(50,50,50);
+        System.out.println(propertyy.getVault().getWalletValues());
+        propertyy.maintenanceCost();
+        System.out.println(propertyy.getVault().getWalletValues());
 
 
 
 
+        World world = new World("Medium World", Size.LARGE);
+
+        Property property = PropertyCreation.createProperty("Iron Legion Conclave", "Province");
+        King king = new King();
+        Authority authority = new NationAuthority(property, king);
+        System.out.println(authority.getCharacter().getClass().getSimpleName());
+
+        System.out.println(property.getName());
+
+        Time time = new Time();        String glock = time.getClock();
+        int days = 5000;
+        for (int i = 0; i < days; i++){
+            time.incrementDay();
+        }
+        glock = time.getClock();
+        System.out.println(glock);
+
+        System.out.println(king.getClass().getSimpleName() +" "+ NameCreation.generateCharacterName());
 
 
-        //insert name of the world, and size either small medium or large
-//        World world = new World("Medium World", Size.LARGE);
-//
-//        Property property = PropertyCreation.createProperty("Iron Legion Conclave", "Province");
-//        King king = new King();
-//        Authority authority = new NationAuthority(property, king);
-//        System.out.println(authority.getAuthorityType());
-//
-//        System.out.println(property.getName());
-//
-//        Time time = new Time();        String glock = time.getClock();
-//        int days = 5000;
-//        for (int i = 0; i < days; i++){
-//            time.incrementDay();
-//        }
-//        glock = time.getClock();
-//        System.out.println(glock);
-//
-//
-//
+
 //        for (int i = 0; i < 50; i++) {
 //            int objectCount = 0;
 //

@@ -39,20 +39,30 @@ class Property {
     int alloy;
     int gold;
     int strength;
-    Vault Vault;
+    Vault vault;
 
     String name;
     public String getName() {
         return name;
     }
 
-    public Property(PropertyConfig.PropertyValues propertyValues, Vault Vault, String name) {
+    public Property(PropertyConfig.PropertyValues propertyValues, Vault vault, String name) {
         this.food = propertyValues.food;
         this.alloy = propertyValues.alloy;
         this.gold = propertyValues.gold;
         this.strength = propertyValues.strength;
-        this.Vault = Vault;
+        this.vault = vault;
         this.name = name;
+    }
+
+    public Vault getVault() {
+        return vault;
+    }
+
+    public void maintenanceCost(){
+        vault.subtractFood(food);
+        vault.subtractAlloy(alloy);
+        vault.subtractGold(gold);
     }
 
 

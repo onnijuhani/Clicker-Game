@@ -162,9 +162,31 @@ public class NameCreation {
             names.add(name + "-" + i);
         }
         return names;
-
-
     }
+
+    public static String generateCharacterName(){
+
+        String[] prefixes = {"Al", "El", "Thor", "Le", "Ea", "Ma", "Ra", "Gla", "Zen",
+                "Xan", "Kyro", "Zephyr", "Astra", "Nyx", "Vortex", "Zara", "Jax"};
+
+        String[] suffixes = {"on", "ius", "us", "us", "on", "ius", "ar", "zir", "reliux",
+                "lyn", "drin", "mira", "sian", "thos", "lex", "onyx", "tyx", "ria", "tara"};
+
+        String[] lastPrefixes = {"Silver", "Black", "Raven", "Iron", "Storm", "Swift", "Fire",
+                "Thorn", "Frost", "Ember", "Shadow", "Moon", "Star", "Steel", "Thunder", "Stone", "Blaze"};
+
+        String[] lastSuffixes = {"heart", "thorn", "shadow", "bane", "crest", "wind", "forge", "blade",
+                "breaker", "warden", "seeker", "striker", "reaver", "bane", "hunter", "shaper", "keeper", "bearer"};
+
+        Random random = new Random();
+
+        String firstName = prefixes[random.nextInt(prefixes.length)] + suffixes[random.nextInt(suffixes.length)];
+        String lastName = lastPrefixes[random.nextInt(lastPrefixes.length)] + lastSuffixes[random.nextInt(lastSuffixes.length)];
+
+        return firstName + " " + lastName;
+    }
+
+
 
 }
 
