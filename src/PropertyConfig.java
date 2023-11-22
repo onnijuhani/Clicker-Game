@@ -65,7 +65,6 @@ class Property {
         vault.subtractGold(gold);
     }
 
-
     public int getFood() {
         return food;
     }

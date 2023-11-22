@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 public class Authority {
     Property property;
     AuthorityCharacter character;
@@ -93,4 +95,33 @@ class QuarterAuthority extends Authority {
     public QuarterAuthority(Property property, AuthorityCharacter character) {
         super(property, character);
     }
+
+    public HashMap<Resource, Double> enforceTax(){
+        HashMap<Resource, Double> taxRates = new HashMap<>();
+        taxRates.put(Resource.Food, foodTaxRate);
+        taxRates.put(Resource.Alloy, alloyTaxRate);
+        taxRates.put(Resource.Gold, goldTaxRate);
+        return taxRates;
+    }
+
+    public void collectTax(HashMap<Resource, Resources> collected) {
+        if (collected.containsKey(Resource.Food)) {
+            double food = collected.get(Resource.Food).getAmount();
+            property.vault.addFood(food);
+        }
+
+        if (collected.containsKey(Resource.Alloy)) {
+            double alloy = collected.get(Resource.Alloy).getAmount();
+            property.vault.addAlloy(alloy);
+        }
+
+        if (collected.containsKey(Resource.Gold)) {
+            double gold = collected.get(Resource.Gold).getAmount();
+            property.vault.addGold(gold);
+        }
+    }
+
+
+
+
 }

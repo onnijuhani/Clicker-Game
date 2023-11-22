@@ -95,6 +95,10 @@ class Peasant extends Character {
 
 
     public Peasant() {
+        this.food = new Food(0);
+        this.alloy = new Alloy(0);
+        this.gold = new Gold(0);
+        this.wallet = new Wallet(0, 0, 0);
     }
 
     public void walletTransfer(double percent){
@@ -103,128 +107,101 @@ class Peasant extends Character {
         wallet.addGold(gold.getAmount()*percent);
     }
 
-}
-
-class Farmer extends Peasant {
-    @Override
-    public void TimeUpdate(int currentDay, int currentWeek, int currentMonth, int currentYear) {
-        if (currentDay == 1) {
-            generateFood(50);
-        }
-
-    }
-    public Farmer() {
-        super.food = new Food(0);
-        super.wallet = new Wallet(0, 0, 0);
-    }
-    public Food getFood() {
-        return food;
-    }
-    public void generateFood(int amount){
-        this.food.add(amount);
-    }
-    public Food taxFood(double taxPercent) {
-        double amount = this.food.getAmount()*taxPercent;
-        this.food.subtract(amount);
-        Food food = new Food(amount);
-        return food;
-    }
-    @Override
-    public void walletTransfer(double percent){
-        double amount = food.getAmount()*percent;
-        wallet.addFood(amount);
-        this.food.subtract(amount);
-    }
-}
-
-class Miner extends Peasant {
-
-    public Miner() {
-        super.alloy = new Alloy(0);
-        super.wallet = new Wallet(0, 0, 0);
-    }
-
-    public Alloy getalloy() {
-        return alloy;
-    }
-    public void generateAlloy(int amount){
-        this.alloy.add(amount);
-    }
-    public Alloy taxAlloy(double taxPercent) {
-        double amount = this.alloy.getAmount()*taxPercent;
-        this.alloy.subtract(amount);
-        Alloy alloy = new Alloy(amount);
-        return alloy;
-    }
-    @Override
-    public void walletTransfer(double percent){
-        double amount = alloy.getAmount()*percent;
-        wallet.addAlloy(amount);
-        this.alloy.subtract(amount);
-    }
-
-}
-
-class Merchant extends Peasant {
-    public Merchant() {
-        super.gold = new Gold(0);
-        super.wallet = new Wallet(0, 0, 0);
-    }
-
-    public Gold getgold() {
-        return gold;
-    }
-    public void generateGold(int amount){
-        this.gold.add(amount);
-    }
-    public Gold taxGold(double taxPercent) {
-        double amount = this.gold.getAmount()*taxPercent;
-        this.gold.subtract(amount);
-        Gold gold = new Gold(amount);
-        return gold;
-    }
-    @Override
-    public void walletTransfer(double percent){
-        double amount = gold.getAmount()*percent;
-        wallet.addAlloy(amount);
-        this.gold.subtract(amount);
-    }
-}
-
-class Slave extends Peasant {
-
-
-    public Slave() {
-        super.food = new Food(0);
-        super.alloy = new Alloy(0);
-        super.gold = new Gold(0);
-        super.wallet = new Wallet(0, 0, 0);
-    }
-
     public void generate(int food, int alloy, int gold){
         this.food.add(food);
         this.alloy.add(alloy);
         this.gold.add(gold);
     }
 
-    public HashMap<String, Resources> tax(double taxPercent){
-        HashMap<String, Resources> taxed = new HashMap<>();
+    public HashMap<Resource, Resources> releaseTax(HashMap<Resource, Double> taxRates) {
 
-        double amountFood = this.food.getAmount()*taxPercent;
-        this.food.subtract(amountFood );
-        Food food = new Food(amountFood );
-        double amountAlloy = this.alloy.getAmount()*taxPercent;
+        double amountFood = this.food.getAmount() * taxRates.get(Resource.Food);
+        double amountAlloy = this.alloy.getAmount() * taxRates.get(Resource.Alloy);
+        double amountGold = this.gold.getAmount() * taxRates.get(Resource.Gold);
+
+        this.food.subtract(amountFood);
         this.alloy.subtract(amountAlloy);
-        Alloy alloy = new Alloy(amountAlloy);
-        double amountGold = this.gold.getAmount()*taxPercent;
         this.gold.subtract(amountGold);
+
+        Food food = new Food(amountFood);
+        Alloy alloy = new Alloy(amountAlloy);
         Gold gold = new Gold(amountGold);
 
-        taxed.put("Food",food);
-        taxed.put("Alloys",alloy);
-        taxed.put("Gold", gold);
+        HashMap<Resource, Resources> collected = new HashMap<>();
+        collected.put(Resource.Food,food);
+        collected.put(Resource.Alloy,alloy);
+        collected.put(Resource.Gold,gold);
 
-        return taxed;
+        return collected;
     }
+
+
+    public Food getFood() {
+        return food;
+    }
+
+    public Alloy getAlloy() {
+        return alloy;
+    }
+
+    public Gold getGold() {
+        return gold;
+    }
+
+}
+
+class Farmer extends Peasant {
+    @Override
+    public void TimeUpdate(int currentDay, int currentWeek, int currentMonth, int currentYear) {
+        if (currentDay == 1) {
+            generate(50,0,0);
+        }
+    }
+    public Farmer() {
+    }
+
+}
+
+class Miner extends Peasant {
+
+    public Miner() {
+    }
+
+
+}
+
+class Merchant extends Peasant {
+    public Merchant() {
+    }
+
+}
+
+class Slave extends Peasant {
+
+    public Slave() {
+    }
+    @Override
+    public HashMap<Resource, Resources> releaseTax(HashMap<Resource, Double> taxRates) {
+
+        double amountFood = this.food.getAmount() * 1;
+        double amountAlloy = this.alloy.getAmount() * 1;
+        double amountGold = this.gold.getAmount() * 1;
+
+        this.food.subtract(amountFood);
+        this.alloy.subtract(amountAlloy);
+        this.gold.subtract(amountGold);
+
+        Food food = new Food(amountFood);
+        Alloy alloy = new Alloy(amountAlloy);
+        Gold gold = new Gold(amountGold);
+
+        HashMap<Resource, Resources> collected = new HashMap<>();
+        collected.put(Resource.Food,food);
+        collected.put(Resource.Alloy,alloy);
+        collected.put(Resource.Gold,gold);
+
+        return collected;
+    }
+
 }
 

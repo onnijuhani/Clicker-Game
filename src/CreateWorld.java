@@ -7,51 +7,34 @@ public class CreateWorld {
     public static void main(String[] args) {
 
         Farmer farmer = new Farmer();
-        farmer.generateFood(50);
-        System.out.println(farmer.taxFood(0.85));
-        farmer.walletTransfer(1.0);
-        System.out.println(farmer.getWallet().getWalletValues());
-        Farmer farmer2 = new Farmer();
-        farmer2.generateFood(150);
-        System.out.println(farmer2.taxFood(0.1));
-        farmer2.walletTransfer(1);
-        System.out.println(farmer2.getWallet().getWalletValues());
-        Miner miner = new Miner();
-        miner.generateAlloy(210);
-        System.out.println(miner.taxAlloy(0.45));
-        miner.walletTransfer(1);
-        System.out.println(miner.wallet.getWalletValues());
-        Merchant merchant = new Merchant();
-        merchant.generateGold(500);
-        merchant.taxGold(0.69);
+        farmer.generate(100,0,0);
+        System.out.println(farmer.getFood().getAmount());
+
         Slave slave = new Slave();
-        slave.generate(10,10,5);
-        slave.tax(1);
-        System.out.println(Food.getTotalFoodCount());
-        System.out.println(Food.getTotalFoodCount());
-        System.out.println(Gold.getTotalGoldCount());
+        slave.generate(10,10,10);
 
-        Property propertyy = new Property(PropertyConfig.FORTRESS, PropertyConfig.FORTRESS_Vault, "wjhatever");
-        System.out.println("Testi: "+propertyy.getVault().getWalletValues());
-        propertyy.maintenanceCost();
-        System.out.println(propertyy.getVault().getWalletValues());
 
-        propertyy.vault.addResources(50,50,50);
-        System.out.println(propertyy.getVault().getWalletValues());
-        propertyy.maintenanceCost();
-        System.out.println(propertyy.getVault().getWalletValues());
+        Property property = PropertyCreation.createProperty("name", "Quarter");
+        Captain captain = new Captain();
+        QuarterAuthority quarterAuthority = new QuarterAuthority(property, captain);
 
+        HashMap tax = quarterAuthority.enforceTax();
+        System.out.println(tax);
+        HashMap taxFood = farmer.releaseTax(tax);
+        System.out.println(taxFood);
+
+        Food taxedfood = (Food) taxFood.get(Resource.Food);
+        Double taxamount = taxedfood.getAmount();
+        System.out.println("amount: " + taxamount);
+
+        quarterAuthority.collectTax(taxFood);
+        quarterAuthority.collectTax(slave.releaseTax(quarterAuthority.enforceTax()));
+        System.out.println("Wealth: "+quarterAuthority.property.vault.getWalletValues());
 
 
 
         World world = new World("Medium World", Size.LARGE);
 
-        Property property = PropertyCreation.createProperty("Iron Legion Conclave", "Province");
-        King king = new King();
-        Authority authority = new NationAuthority(property, king);
-        System.out.println(authority.getCharacter().getClass().getSimpleName());
-
-        System.out.println(property.getName());
 
         Time time = new Time();        String glock = time.getClock();
         int days = 5000;
@@ -61,7 +44,6 @@ public class CreateWorld {
         glock = time.getClock();
         System.out.println(glock);
 
-        System.out.println(king.getClass().getSimpleName() +" "+ NameCreation.generateCharacterName());
 
 
 
