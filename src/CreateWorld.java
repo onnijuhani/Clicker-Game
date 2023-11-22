@@ -6,72 +6,111 @@ public class CreateWorld {
 
     public static void main(String[] args) {
 
-        Property villa = new Villa("nice villa");
-        Captain captain = new Captain();
-        QuarterAuthority quarterAuthority = new QuarterAuthority(villa, captain);
-
-        for (int i = 0; i<20; i++) {
-            Farmer farmer = new Farmer(quarterAuthority);
-            farmer.generate(110,0,0);
-            quarterAuthority.addPeasant(farmer);
-            quarterAuthority.collectTax(farmer.releaseTax(quarterAuthority.enforceTax()));
-
-            Merchant merch = new Merchant(quarterAuthority);
-            merch.generate(0,0,110);
-            quarterAuthority.addPeasant(merch);
-            quarterAuthority.collectTax(merch.releaseTax(quarterAuthority.enforceTax()));
-
-            Miner miner = new Miner(quarterAuthority);
-            miner.generate(0, 110, 0);
-            quarterAuthority.addPeasant(miner);
-            quarterAuthority.collectTax(miner.releaseTax(quarterAuthority.enforceTax()));
-        }
-        System.out.println("Captains wealth: "+quarterAuthority.property.getVault().getWalletValues());
 
 
+            Property fortress = PropertyCreation.createProperty("naton", "Nation");
+            King king = new King();
+            NationAuthority nationAuthority = new NationAuthority(fortress, king);
 
-        Property castle = new Castle("nice castle");
-        AuthorityCharacter mayorr = new Mayor();
-        CityAuthority mayor = new CityAuthority(castle, mayorr);
-
-        mayor.collectTax(quarterAuthority);
-        System.out.println("Mayors wealth: "+mayor.property.getVault().getWalletValues());
-        System.out.println("Captains wealth: "+quarterAuthority.property.vault.getWalletValues());
-
-        Property citadel = new Citadel("nice Citadel");
-        Governor governor = new Governor();
-        ProvinceAuthority govAuth = new ProvinceAuthority(citadel, governor);
-        govAuth.collectTax(mayor);
-
-        for (int i = 0; i<8; i++) {
-            Mercenary mercenary = new Mercenary(govAuth);
-            govAuth.addSupporter(mercenary);
-            govAuth.paySupporters(mercenary);
-            for (int ii = 0; ii < 5; ii++) {
-                Slave slavei = new Slave(mercenary);
+            for (int xx = 0; xx < 500; xx++) {
+                Slave slavei = new Slave(king);
                 slavei.generate(10, 10, 10);
-                mercenary.addSlave(slavei);
-                mercenary.collectResources(slavei, 1);
+                king.addSlave(slavei);
+                king.collectResources(slavei, 1);
             }
-        }
+            nationAuthority.property.getVault().addResources(king.wallet.getFood(), king.wallet.getAlloy(), king.wallet.getGold());
 
 
-        System.out.println("Governor wealth: "+govAuth.property.vault.getWalletValues());
-        ArrayList<Support> supporters = govAuth.getSupporters();
+            for (int province = 0; province < 4; province++) {
 
-        for (int i = 0; i < supporters.size(); i++) {
-            Support supporter = supporters.get(i);
-            govAuth.paySupporters(supporter);
-            System.out.println("Mercenary " + (i + 1) + " wealth: " + supporter.getWallet().getWalletValues());
-        }
-        System.out.println("Governor wealth: "+govAuth.property.vault.getWalletValues());
+                Property citadel = PropertyCreation.createProperty("province", "Province");
+                Governor governor = new Governor();
+                ProvinceAuthority provAuthority = new ProvinceAuthority(citadel, governor);
+
+                for (int city = 0; city < 6; city++) {
+
+                    Property cityProperty = PropertyCreation.createProperty("city", "City");
+                    AuthorityCharacter mayor = new Mayor();
+                    CityAuthority cityAuthority = new CityAuthority(cityProperty, mayor);
+
+                    for (int quarter = 0; quarter < 4; quarter++) {
+
+                        Property quarterProperty = PropertyCreation.createProperty("quarter" + quarter, "Quarter");
+                        Captain captain = new Captain();
+                        QuarterAuthority quarterAuthority = new QuarterAuthority(quarterProperty, captain);
+                        cityAuthority.setAuthOver(quarterAuthority);
+
+                        for (int peasant = 0; peasant < 20; peasant++) {
+                            Farmer farmer = new Farmer(quarterAuthority);
+                            farmer.generate(110, 0, 0);
+                            quarterAuthority.addPeasant(farmer);
+                            quarterAuthority.collectTax(farmer.releaseTax(quarterAuthority.enforceTax()));
+
+                            Merchant merch = new Merchant(quarterAuthority);
+                            merch.generate(0, 0, 110);
+                            quarterAuthority.addPeasant(merch);
+                            quarterAuthority.collectTax(merch.releaseTax(quarterAuthority.enforceTax()));
+
+                            Miner miner = new Miner(quarterAuthority);
+                            miner.generate(0, 110, 0);
+                            quarterAuthority.addPeasant(miner);
+                            quarterAuthority.collectTax(miner.releaseTax(quarterAuthority.enforceTax()));
+                        }
+                        cityAuthority.collectTax(quarterAuthority);
+                        System.out.println(captain.getClass().getSimpleName() + " " + captain.name + " Wealth: " + quarterAuthority.property.getVault().getWalletValues());
+                    }
+
+                    provAuthority.collectTax(cityAuthority);
+                    System.out.println(mayor.getClass().getSimpleName() + " " + mayor.name + " Wealth: " + cityAuthority.property.getVault().getWalletValues());
+                }
+
+                for (int x = 0; x < 8; x++) {
+                    Mercenary mercenary = new Mercenary(provAuthority);
+                    provAuthority.addSupporter(mercenary);
+
+                    for (int xx = 0; xx < 25; xx++) {
+                        Slave slavei = new Slave(mercenary);
+                        slavei.generate(10, 10, 10);
+                        mercenary.addSlave(slavei);
+                        mercenary.collectResources(slavei, 1);
+                    }
+                }
+                System.out.println("Governor wealth: " + provAuthority.property.vault.getWalletValues());
+                ArrayList<Support> supporters = provAuthority.getSupporters();
+
+                for (int iii = 0; iii < supporters.size(); iii++) {
+                    Support supporter = supporters.get(iii);
+                    provAuthority.paySupporters(supporter);
+                    System.out.println(supporter.getClass().getSimpleName() + " " + supporter.name + " Wealth: " + supporter.getWallet().getWalletValues());
+                }
+                System.out.println("Governor wealth: " + provAuthority.property.vault.getWalletValues());
+                nationAuthority.collectTax(provAuthority);
+                System.out.println("Governor wealth: " + provAuthority.property.vault.getWalletValues());
+            }
+
+            System.out.println(king.getClass().getSimpleName() + " " + king.name + " Wealth: " + nationAuthority.property.getVault().getWalletValues());
+            for (int x = 0; x < 4; x++) {
+                Vanguard vanguard = new Vanguard(nationAuthority);
+                nationAuthority.addSupporter(vanguard);
+
+                for (int xx = 0; xx < 50; xx++) {
+                    Slave slavei = new Slave(vanguard);
+                    slavei.generate(10, 10, 10);
+                    vanguard.addSlave(slavei);
+                    vanguard.collectResources(slavei, 1);
+                }
+            }
+            ArrayList<Support> supporters = nationAuthority.getSupporters();
+            for (int iii = 0; iii < supporters.size(); iii++) {
+                Support supporter = supporters.get(iii);
+                nationAuthority.paySupporters(supporter);
+                System.out.println(supporter.getClass().getSimpleName() + " " + supporter.name + " Wealth: " + supporter.getWallet().getWalletValues());
+            }
 
 
+            System.out.println(king.getClass().getSimpleName() + " " + king.name + " Wealth: " + nationAuthority.property.getVault().getWalletValues());
 
-        System.out.println(" "+Food.getTotalFoodCount()+" "+Alloy.getTotalAlloyCount()+" "+Gold.getTotalGoldCount()+" ");
-
-
-
+            System.out.println(" " + Food.getTotalFoodCount() + " " + Alloy.getTotalAlloyCount() + " " + Gold.getTotalGoldCount() + " ");
 
 //        World world = new World("Medium World", Size.LARGE);
 //
@@ -83,8 +122,6 @@ public class CreateWorld {
 //        }
 //        glock = time.getClock();
 //        System.out.println(glock);
-
-
 
 
 //        for (int i = 0; i < 50; i++) {
@@ -127,5 +164,6 @@ public class CreateWorld {
 //
 //            System.out.println("Total objects printed: " + objectCount);
 //        }
-    }
+        }
+
 }

@@ -8,11 +8,13 @@ public class Character implements TimeObserver {
     @Override
     public void TimeUpdate(int currentDay, int currentWeek, int currentMonth, int currentYear) {
     }
+    String name;
 
     Wallet wallet;
     public Character() {
         this.wallet = new Wallet(0,0,0);
         this.slaves = new ArrayList<>();
+        this.name = NameCreation.generateCharacterName();
     }
 
     public Wallet getWallet() {
@@ -55,7 +57,7 @@ class AuthorityCharacter extends Character {
 
 class Support extends Character {
 
-    double salary = 50;
+    double salary = 400;
 
     Authority authority;
 
@@ -85,11 +87,15 @@ class Noble extends Support {
 }
 
 class Vanguard extends Support {
+    // The salary field in Vanguard hides the one in Support
 
     public Vanguard(Authority authority) {
         super(authority);
+        // Updating the salary field in the Support class
+        super.salary = 1000;
     }
 }
+
 
 class Governor extends AuthorityCharacter {
 
