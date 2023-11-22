@@ -46,6 +46,12 @@ class Wallet {
         this.gold.add(gold);
     }
 
+    public void subtractResources(double food, double alloys, double gold) {
+        this.food.subtract(food);
+        this.alloy.subtract(alloys);
+        this.gold.subtract(gold);
+    }
+
     public double getFood() {
         return food.getAmount();
     }

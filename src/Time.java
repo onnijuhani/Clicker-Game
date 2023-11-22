@@ -1,9 +1,9 @@
 
 public class Time {
-    public int year;
-    public int month;
-    public int week;
-    public int day;
+    public static int year;
+    public static int month;
+    public static int week;
+    public static int day;
 
     public void incrementDay() {
         day++;

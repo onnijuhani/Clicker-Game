@@ -6,43 +6,83 @@ public class CreateWorld {
 
     public static void main(String[] args) {
 
-        Farmer farmer = new Farmer();
-        farmer.generate(100,0,0);
-        System.out.println(farmer.getFood().getAmount());
-
-        Slave slave = new Slave();
-        slave.generate(10,10,10);
-
-
-        Property property = PropertyCreation.createProperty("name", "Quarter");
+        Property villa = new Villa("nice villa");
         Captain captain = new Captain();
-        QuarterAuthority quarterAuthority = new QuarterAuthority(property, captain);
+        QuarterAuthority quarterAuthority = new QuarterAuthority(villa, captain);
 
-        HashMap tax = quarterAuthority.enforceTax();
-        System.out.println(tax);
-        HashMap taxFood = farmer.releaseTax(tax);
-        System.out.println(taxFood);
+        for (int i = 0; i<20; i++) {
+            Farmer farmer = new Farmer(quarterAuthority);
+            farmer.generate(110,0,0);
+            quarterAuthority.addPeasant(farmer);
+            quarterAuthority.collectTax(farmer.releaseTax(quarterAuthority.enforceTax()));
 
-        Food taxedfood = (Food) taxFood.get(Resource.Food);
-        Double taxamount = taxedfood.getAmount();
-        System.out.println("amount: " + taxamount);
+            Merchant merch = new Merchant(quarterAuthority);
+            merch.generate(0,0,110);
+            quarterAuthority.addPeasant(merch);
+            quarterAuthority.collectTax(merch.releaseTax(quarterAuthority.enforceTax()));
 
-        quarterAuthority.collectTax(taxFood);
-        quarterAuthority.collectTax(slave.releaseTax(quarterAuthority.enforceTax()));
-        System.out.println("Wealth: "+quarterAuthority.property.vault.getWalletValues());
-
-
-
-        World world = new World("Medium World", Size.LARGE);
-
-
-        Time time = new Time();        String glock = time.getClock();
-        int days = 5000;
-        for (int i = 0; i < days; i++){
-            time.incrementDay();
+            Miner miner = new Miner(quarterAuthority);
+            miner.generate(0, 110, 0);
+            quarterAuthority.addPeasant(miner);
+            quarterAuthority.collectTax(miner.releaseTax(quarterAuthority.enforceTax()));
         }
-        glock = time.getClock();
-        System.out.println(glock);
+        System.out.println("Captains wealth: "+quarterAuthority.property.getVault().getWalletValues());
+
+
+
+        Property castle = new Castle("nice castle");
+        AuthorityCharacter mayorr = new Mayor();
+        CityAuthority mayor = new CityAuthority(castle, mayorr);
+
+        mayor.collectTax(quarterAuthority);
+        System.out.println("Mayors wealth: "+mayor.property.getVault().getWalletValues());
+        System.out.println("Captains wealth: "+quarterAuthority.property.vault.getWalletValues());
+
+        Property citadel = new Citadel("nice Citadel");
+        Governor governor = new Governor();
+        ProvinceAuthority govAuth = new ProvinceAuthority(citadel, governor);
+        govAuth.collectTax(mayor);
+
+        for (int i = 0; i<8; i++) {
+            Mercenary mercenary = new Mercenary(govAuth);
+            govAuth.addSupporter(mercenary);
+            govAuth.paySupporters(mercenary);
+            for (int ii = 0; ii < 5; ii++) {
+                Slave slavei = new Slave(mercenary);
+                slavei.generate(10, 10, 10);
+                mercenary.addSlave(slavei);
+                mercenary.collectResources(slavei, 1);
+            }
+        }
+
+
+        System.out.println("Governor wealth: "+govAuth.property.vault.getWalletValues());
+        ArrayList<Support> supporters = govAuth.getSupporters();
+
+        for (int i = 0; i < supporters.size(); i++) {
+            Support supporter = supporters.get(i);
+            govAuth.paySupporters(supporter);
+            System.out.println("Mercenary " + (i + 1) + " wealth: " + supporter.getWallet().getWalletValues());
+        }
+        System.out.println("Governor wealth: "+govAuth.property.vault.getWalletValues());
+
+
+
+        System.out.println(" "+Food.getTotalFoodCount()+" "+Alloy.getTotalAlloyCount()+" "+Gold.getTotalGoldCount()+" ");
+
+
+
+
+//        World world = new World("Medium World", Size.LARGE);
+//
+//
+//        Time time = new Time();        String glock = time.getClock();
+//        int days = 5000;
+//        for (int i = 0; i < days; i++){
+//            time.incrementDay();
+//        }
+//        glock = time.getClock();
+//        System.out.println(glock);
 
 
 

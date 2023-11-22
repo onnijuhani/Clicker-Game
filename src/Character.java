@@ -3,12 +3,16 @@ import java.util.HashMap;
 
 public class Character implements TimeObserver {
 
+    ArrayList<Slave> slaves;
+
     @Override
     public void TimeUpdate(int currentDay, int currentWeek, int currentMonth, int currentYear) {
     }
 
     Wallet wallet;
     public Character() {
+        this.wallet = new Wallet(0,0,0);
+        this.slaves = new ArrayList<>();
     }
 
     public Wallet getWallet() {
@@ -18,6 +22,30 @@ public class Character implements TimeObserver {
     public void setWallet(Wallet wallet) {
         this.wallet = wallet;
     }
+
+    public void addSlave(Slave slave){
+        slaves.add(slave);
+    }
+
+    public void collectResources(Character character, double percent){
+
+        Wallet wallet = character.getWallet();
+
+        double food =  wallet.getFood();
+        double alloy =  wallet.getAlloy();
+        double gold =  wallet.getGold();
+
+        double foodAmount = food * percent;
+        double alloyAmount = alloy * percent;
+        double goldAmount = gold * percent;
+
+        wallet.subtractFood(foodAmount);
+        wallet.subtractAlloy(alloyAmount);
+        wallet.subtractGold(goldAmount);
+
+        this.wallet.addResources(foodAmount, alloyAmount, goldAmount);
+    }
+
 }
 
 class AuthorityCharacter extends Character {
@@ -27,9 +55,14 @@ class AuthorityCharacter extends Character {
 
 class Support extends Character {
 
-    Character supportFor;
+    double salary = 50;
+
+    Authority authority;
 
 
+    public Support(Authority authority) {
+        this.authority = authority;
+    }
 }
 
 
@@ -45,14 +78,16 @@ class King extends AuthorityCharacter {
 
 class Noble extends Support {
 
-    public Noble() {
+
+    public Noble(Authority authority) {
+        super(authority);
     }
 }
 
 class Vanguard extends Support {
 
-
-    public Vanguard() {
+    public Vanguard(Authority authority) {
+        super(authority);
     }
 }
 
@@ -65,8 +100,8 @@ class Governor extends AuthorityCharacter {
 
 class Mercenary extends Support {
 
-
-    public Mercenary() {
+    public Mercenary(Authority authority) {
+        super(authority);
     }
 }
 
@@ -88,17 +123,20 @@ class Peasant extends Character {
 
     @Override
     public void TimeUpdate(int currentDay, int currentWeek, int currentMonth, int currentYear) {
+
     }
     protected Food food;
     protected Alloy alloy;
     protected Gold gold;
+    public Authority quarterAuthority;
 
 
-    public Peasant() {
+    public Peasant(Authority quarterAuthority) {
         this.food = new Food(0);
         this.alloy = new Alloy(0);
         this.gold = new Gold(0);
         this.wallet = new Wallet(0, 0, 0);
+        this.quarterAuthority = quarterAuthority;
     }
 
     public void walletTransfer(double percent){
@@ -151,36 +189,55 @@ class Peasant extends Character {
 }
 
 class Farmer extends Peasant {
-    @Override
-    public void TimeUpdate(int currentDay, int currentWeek, int currentMonth, int currentYear) {
-        if (currentDay == 1) {
-            generate(50,0,0);
-        }
-    }
-    public Farmer() {
-    }
 
+
+    public Farmer(Authority quarterAuthority) {
+        super(quarterAuthority);
+    }
 }
 
 class Miner extends Peasant {
 
-    public Miner() {
+
+    public Miner(Authority quarterAuthority) {
+        super(quarterAuthority);
     }
-
-
 }
 
 class Merchant extends Peasant {
-    public Merchant() {
-    }
 
+
+    public Merchant(Authority quarterAuthority) {
+        super(quarterAuthority);
+    }
 }
 
-class Slave extends Peasant {
+class Slave extends Character {
 
-    public Slave() {
+    Character owner;
+    protected Food food;
+    protected Alloy alloy;
+    protected Gold gold;
+
+
+    public Slave(Character owner) {
+        this.food = new Food(0);
+        this.alloy = new Alloy(0);
+        this.gold = new Gold(0);
+        this.wallet = new Wallet(0, 0, 0);
+        this.owner = owner;
     }
-    @Override
+
+    public void generate(int food, int alloy, int gold){
+        this.food.add(food);
+        this.alloy.add(alloy);
+        this.gold.add(gold);
+        wallet.addResources(this.food.getAmount(), this.alloy.getAmount(), this.gold.getAmount());
+        this.food.subtract(this.food.getAmount());
+        this.alloy.subtract(this.alloy.getAmount());
+        this.gold.subtract(this.gold.getAmount());
+    }
+
     public HashMap<Resource, Resources> releaseTax(HashMap<Resource, Double> taxRates) {
 
         double amountFood = this.food.getAmount() * 1;

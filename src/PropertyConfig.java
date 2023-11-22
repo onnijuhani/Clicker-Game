@@ -7,14 +7,40 @@ public class PropertyConfig {
     public static final PropertyValues VILLA = new PropertyValues(5, 0, 3, 30);
     public static final PropertyValues COTTAGE = new PropertyValues(3, 0, 2, 20);
     public static final PropertyValues SHACK = new PropertyValues(2, 0, 1, 0);
-    public static final Vault FORTRESS_Vault = new Vault(40, 30, 20);
-    public static final Vault CITADEL_Vault = new Vault(30, 30, 10);
-    public static final Vault CASTLE_Vault = new Vault(20, 25, 5);
-    public static final Vault MANOR_Vault = new Vault(15, 10, 5);
-    public static final Vault MANSION_Vault = new Vault(10, 4, 5);
-    public static final Vault VILLA_Vault = new Vault(5, 0, 3);
-    public static final Vault COTTAGE_Vault = new Vault(3, 0, 2);
-    public static final Vault SHACK_Vault = new Vault(2, 0, 1);
+
+    public static Vault createFortressVault() {
+        return new Vault(FORTRESS.food, FORTRESS.alloy, FORTRESS.gold);
+    }
+
+    public static Vault createCitadelVault() {
+        return new Vault(CITADEL.food, CITADEL.alloy, CITADEL.gold);
+    }
+
+    public static Vault createCastleVault() {
+        return new Vault(CASTLE.food, CASTLE.alloy, CASTLE.gold);
+    }
+
+    public static Vault createManorVault() {
+        return new Vault(MANOR.food, MANOR.alloy, MANOR.gold);
+    }
+
+    public static Vault createMansionVault() {
+        return new Vault(MANSION.food, MANSION.alloy, MANSION.gold);
+    }
+
+    public static Vault createVillaVault() {
+        return new Vault(VILLA.food, VILLA.alloy, VILLA.gold);
+    }
+
+    public static Vault createCottageVault() {
+        return new Vault(COTTAGE.food, COTTAGE.alloy, COTTAGE.gold);
+    }
+
+    public static Vault createShackVault() {
+        return new Vault(SHACK.food, SHACK.alloy, SHACK.gold);
+    }
+
+
 
 
 
@@ -101,56 +127,56 @@ class Property {
 class Fortress extends Property {
     String propertyName = "Fortress";
     public Fortress(String name) {
-        super(PropertyConfig.FORTRESS, PropertyConfig.FORTRESS_Vault, name + " " + "Fortress");
+        super(PropertyConfig.FORTRESS, PropertyConfig.createFortressVault(), name + " " + "Fortress");
     }
 }
 
 class Citadel extends Property {
     String propertyName = "Citadel";
     public Citadel(String name) {
-        super(PropertyConfig.CITADEL, PropertyConfig.CITADEL_Vault, name + " " + "Citadel");
+        super(PropertyConfig.CITADEL, PropertyConfig.createCitadelVault(), name + " " + "Citadel");
     }
 }
 
 class Castle extends Property {
     String propertyName = "Castle";
     public Castle(String name) {
-        super(PropertyConfig.CASTLE, PropertyConfig.CASTLE_Vault, name + " " + "Castle");
+        super(PropertyConfig.CASTLE, PropertyConfig.createCastleVault(), name + " " + "Castle");
     }
 }
 
 class Manor extends Property {
     String propertyName = "Manor";
     public Manor(String name) {
-        super(PropertyConfig.MANOR, PropertyConfig.MANOR_Vault, name + " " + "Manor");
+        super(PropertyConfig.MANOR, PropertyConfig.createManorVault(), name + " " + "Manor");
     }
 }
 
 class Mansion extends Property {
     String propertyName = "Mansion";
     public Mansion(String name) {
-        super(PropertyConfig.MANSION, PropertyConfig.MANSION_Vault, name + " " + "Mansion");
+        super(PropertyConfig.MANSION, PropertyConfig.createMansionVault(), name + " " + "Mansion");
     }
 }
 
 class Villa extends Property {
     String propertyName = "Ville";
     public Villa(String name) {
-        super(PropertyConfig.VILLA, PropertyConfig.VILLA_Vault, name + " " + "Villa");
+        super(PropertyConfig.VILLA, PropertyConfig.createVillaVault(), name + " " + "Villa");
     }
 }
 
 class Cottage extends Property {
     String propertyName = "Cottage";
     public Cottage(String name) {
-        super(PropertyConfig.COTTAGE, PropertyConfig.COTTAGE_Vault, name + " " + "Cottage");
+        super(PropertyConfig.COTTAGE, PropertyConfig.createCottageVault(), name + " " + "Cottage");
     }
 }
 
 class Shack extends Property {
     String propertyName = "Shack";
     public Shack(String name) {
-        super(PropertyConfig.SHACK, PropertyConfig.SHACK_Vault, name + " " + "Shack");
+        super(PropertyConfig.SHACK, PropertyConfig.createShackVault(), name + " " + "Shack");
     }
 }
 

@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Authority {
@@ -9,8 +10,9 @@ public class Authority {
     protected double alloyTaxRate = 0.6;
     protected double goldTaxRate = 0.6;
 
-    protected Authority authOver;
-    protected Authority authUnder;
+    protected ArrayList<Authority> authOver;
+    protected ArrayList<Authority> authUnder;
+    protected ArrayList<Support> supporters;
 
 
     public AuthorityCharacter getCharacter() {
@@ -21,6 +23,9 @@ public class Authority {
         this.property = property;
         this.character = character;
         this.PropertyType = property.getName();
+        this.authOver = new ArrayList<>();
+        this.authUnder = new ArrayList<>();
+        this.supporters = new ArrayList<>();
     }
 
     public String getPropertyType() {
@@ -45,20 +50,62 @@ public class Authority {
         this.goldTaxRate = goldTaxRate;
     }
 
-    public Authority getAuthOver() {
+    public ArrayList<Authority> getAuthOver() {
         return authOver;
     }
 
     public void setAuthOver(Authority authOver) {
-        this.authOver = authOver;
+        this.authOver.add(authOver);
     }
 
-    public Authority getAuthUnder() {
+    public ArrayList<Authority> getAuthUnder() {
         return authUnder;
     }
 
     public void setAuthUnder(Authority authUnder) {
-        this.authUnder = authUnder;
+        this.authUnder.add(authUnder);
+    }
+
+    public void addSupporter(Support support) {
+        this.supporters.add(support);
+    }
+
+    public ArrayList<Support> getSupporters(){
+        return supporters;
+    }
+
+    public void collectTax(Authority authority){
+
+        Vault captainsVault = authority.property.getVault();
+
+        double food = captainsVault.getFood();
+        double alloy = captainsVault.getAlloy();
+        double gold = captainsVault.getGold();
+
+        double foodAmount = food * getFoodTaxRate();
+        double alloyAmount = alloy * getAlloyTaxRate();
+        double goldAmount = gold * getGoldTaxRate();
+
+        captainsVault.subtractFood(foodAmount);
+        captainsVault.subtractAlloy(alloyAmount);
+        captainsVault.subtractGold(goldAmount);
+
+        this.property.vault.addResources(foodAmount, alloyAmount, goldAmount);
+    }
+
+    public void paySupporters(Support support){
+        double food = property.getVault().getFood();
+        double alloy = property.getVault().getAlloy();
+        double gold = property.getVault().getGold();
+
+        double amountFood = support.salary;
+        double amountAlloy = support.salary;
+        double amountGold = support.salary;
+
+        property.vault.subtractResources(amountFood, amountAlloy, amountGold);
+
+        support.getWallet().addResources(amountFood, amountAlloy, amountGold);
+
     }
 
 }
@@ -87,13 +134,22 @@ class CityAuthority extends Authority {
     public CityAuthority(Property property, AuthorityCharacter character) {
         super(property, character);
     }
+
+
+
 }
 
 class QuarterAuthority extends Authority {
     String authorityType = "Captain";
+    ArrayList<Character> peasants;
 
     public QuarterAuthority(Property property, AuthorityCharacter character) {
         super(property, character);
+        this.peasants = new ArrayList<>();
+    }
+
+    public void addPeasant(Peasant peasant){
+        peasants.add(peasant);
     }
 
     public HashMap<Resource, Double> enforceTax(){
@@ -120,8 +176,5 @@ class QuarterAuthority extends Authority {
             property.vault.addGold(gold);
         }
     }
-
-
-
 
 }
