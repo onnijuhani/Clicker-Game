@@ -162,7 +162,7 @@ class Alloy extends Resources {
 }
 
 class Gold extends Resources {
-    private static double totalGoldCount = 0;
+    static double totalGoldCount = 0;
 
     public Gold(double amount) {
         super.add(amount);

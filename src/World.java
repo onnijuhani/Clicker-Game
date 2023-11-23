@@ -1,3 +1,4 @@
+import java.sql.SQLOutput;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,9 +22,10 @@ abstract class Area {
 }
 
 abstract class ControlledArea extends Area {
+    public Authority getAuthority() {
+        return authority;
+    }
     Authority authority;
-
-
 }
 
 public class World extends Area implements Details {
@@ -97,17 +99,38 @@ class Continent extends Area implements Details {
     }
 
     private void createNations() {
+
         Random random = new Random();
         int numberOfNations = random.nextInt(3) + 1;
         nations = new Nation[numberOfNations];
+
         for (int i = 0; i < numberOfNations; i++) {
+
             Orientation styleName = random.nextInt(2) == 0 ? Orientation.Imperial : Orientation.Democratic;
             Style style = new Style(styleName); //uusi style objekti nation luontia varten
-            String name = NameCreation.generateNationName(styleName);
-            Property property = PropertyCreation.createProperty(name, "Nation");
+            String nationName = NameCreation.generateNationName(styleName);
+
             King king = new King();
+            Property property = PropertyCreation.createProperty(name, "Nation");
+            property.setOwner(king);
+
             Authority authority = new NationAuthority(property, king);
-            nations[i] = new Nation(name, this, style, authority);
+
+            for (int nob = 0; nob < 4; nob++) {
+                Noble noble = new Noble(authority);
+                authority.addSupporter(noble);
+            }
+
+            Nation nation = new Nation(nationName, this, style, authority);
+
+            nations[i] = nation;
+
+            int provinceAmount = nation.getContents().size();
+
+            for (int vang = 0; vang < provinceAmount ; vang++) {
+                Vanguard vanguard = new Vanguard(authority);
+                authority.addSupporter(vanguard);
+            }
         }
     }
 
@@ -128,7 +151,6 @@ class Nation extends ControlledArea implements Details {
     private Style style; //Style luokka
     public Orientation orientation;
     private Continent continent;
-
     private String areaName = "Nation";
 
     public Nation(String name, Continent continent, Style style, Authority authority) {
@@ -138,6 +160,12 @@ class Nation extends ControlledArea implements Details {
         this.orientation = style.getName();
         this.createProvinces();
         super.authority = authority;
+        Authority king = this.authority;
+        king.getCharacter().setNation(this);
+        for (Province province : provinces) {
+            king.setAuthOver(province.authority);
+        }
+
     }
 
     public String getDetails() {
@@ -145,15 +173,29 @@ class Nation extends ControlledArea implements Details {
     }
 
     private void createProvinces() {
-        Random random = new Random();
+        long seed = 42;
+        Random random = new Random(seed);
         int numberOfProvinces = random.nextInt(7) + 2;
         provinces = new Province[numberOfProvinces];
+
         for (int i = 0; i < numberOfProvinces; i++) {
+
             String name = NameCreation.generateProvinceName(orientation);
-            Property property = PropertyCreation.createProperty(name, "Province");
+
             Governor governor = new Governor();
+            Property property = PropertyCreation.createProperty(name, "Province");
+            property.setOwner(governor);
+
             Authority authority = new ProvinceAuthority(property, governor);
-            provinces[i] = new Province(name, this, authority);
+
+            for (int merc = 0; merc < 6; merc++) {
+                Mercenary mercenary = new Mercenary(authority);
+                authority.addSupporter(mercenary);
+                mercenary.setNation(this);
+            }
+
+            Province province = new Province(name, this, authority);
+            provinces[i] = province;
         }
     }
     @Override
@@ -179,12 +221,17 @@ class Province extends ControlledArea implements Details {
         return nation;
     }
 
-
     public Province(String name, Nation nation, Authority authority) {
         this.name = name;
         this.nation = nation;
         this.createCities();
         super.authority = authority;
+        Authority governor = this.authority;
+        governor.getCharacter().setNation(nation);
+        governor.setAuthUnder(nation.getAuthority());
+        for (City city : cities) {
+            governor.setAuthOver(city.authority);
+        }
     }
 
     public String getDetails() {
@@ -192,15 +239,25 @@ class Province extends ControlledArea implements Details {
     }
 
     private void createCities() {
-        Random random = new Random();
+        long seed = 42;
+        Random random = new Random(seed);
         int numberOfCities = random.nextInt(4) + 1;
         cities = new City[numberOfCities];
+
         for (int i = 0; i < numberOfCities; i++) {
+
             String name = NameCreation.generateCityName(nation.orientation);
-            Property property = PropertyCreation.createProperty(name, "City");
+
             Mayor mayor = new Mayor();
+            Property property = PropertyCreation.createProperty(name, "City");
+            property.setOwner(mayor);
+
             Authority authority = new CityAuthority(property, mayor);
-            cities[i] = new City(name, this, authority);
+
+            City city = new City(name, this, authority);
+
+            cities[i] = city;
+
         }
     }
     @Override
@@ -230,23 +287,39 @@ class City extends ControlledArea implements Details {
         this.province = province;
         this.createQuarters();
         super.authority = authority;
+        Authority mayor = this.authority;
+        mayor.getCharacter().setNation(getProvince().getNation());
+        mayor.setAuthUnder(province.getAuthority());
+        for (Quarter quarter : quarters) {
+            mayor.setAuthOver(quarter.authority);
+        }
     }
+
 
     public String getDetails() {
         return("City: " + name + " Belongs to: " + province.getName());
     }
 
     private void createQuarters() {
-        Random random = new Random();
+        long seed = 42;
+        Random random = new Random(seed);
         int numberOfQuarters = random.nextInt(3) + 2;
         ArrayList<String> names = NameCreation.generateQuarterNames(numberOfQuarters);
         quarters = new Quarter[numberOfQuarters];
+
+
         for (int i = 0; i < numberOfQuarters; i++) {
             String name = names.get(i);
-            Property property = PropertyCreation.createProperty(name, "Quarter");
+
             Captain captain = new Captain();
+            Property property = PropertyCreation.createProperty(name, "Quarter");
+            property.setOwner(captain);
+
             Authority authority = new QuarterAuthority(property, captain);
-            quarters[i] = new Quarter(name, this, authority);
+
+            Quarter quarter = new Quarter(name, this, authority);
+            quarters[i] = quarter;
+
         }
     }
     @Override
@@ -271,7 +344,12 @@ class Quarter extends ControlledArea implements Details {
         this.name = name;
         this.city = city;
         super.authority = authority;
+        Authority captain = this.authority;
+        captain.getCharacter().setNation(city.getProvince().getNation());
+        captain.setAuthUnder(city.getAuthority());
+        createPeasants();
     }
+
 
     public String getDetails() {
         return("Quarter: " + name + " Belongs to: " + city.getName());
@@ -285,5 +363,31 @@ class Quarter extends ControlledArea implements Details {
         Province prov = city.getProvince();
         Nation nat = prov.getNation();
         return name + " in a: " + city.getName() + " -city. Of the: " + prov.getName() +" -province. Part of: " + nat.getName() + " -Nation.";
+    }
+
+    private void createPeasants() {
+        QuarterAuthority captain = (QuarterAuthority) this.authority;
+        captain.getCharacter().setNation(this.city.getProvince().getNation());
+
+
+        long seed = 42;
+        Random random = new Random(seed);
+        int numberOfFarmers = random.nextInt(150) + 3;
+        int numberOfMiners = random.nextInt(130) + 3;
+        int numberOfMerchants = random.nextInt(100) + 3;
+
+        for (int peasant = 0; peasant < numberOfFarmers; peasant++) {
+            Farmer farmer = new Farmer(captain);
+            captain.addPeasant(farmer);
+        }
+        for (int peasant = 0; peasant < numberOfMiners; peasant++) {
+            Merchant merch = new Merchant(captain);
+            captain.addPeasant(merch);
+        }
+
+        for (int peasant = 0; peasant < numberOfMerchants; peasant++) {
+            Miner miner = new Miner(captain);
+            captain.addPeasant(miner);
+        }
     }
 }

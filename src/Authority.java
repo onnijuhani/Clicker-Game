@@ -44,6 +44,14 @@ public class Authority implements TimeObserver {
         this.supporters = new ArrayList<>();
         subscribeToTimeEvents();
     }
+    public String getDetails(){
+        String authoritySimpleName = this.getClass().getSimpleName();
+        String character = this.character.getName();
+        String characterSimpleName = this.character.getClass().getSimpleName();
+        String property = this.property.getClass().getSimpleName();
+
+        return authoritySimpleName + " " + characterSimpleName + " " + property;
+    }
 
     public String getPropertyType() {
         return PropertyType;
@@ -93,21 +101,23 @@ public class Authority implements TimeObserver {
 
     public void collectTax(Authority authority){
 
-        Vault captainsVault = authority.property.getVault();
+        Vault payerVault = authority.property.getVault();
 
-        double food = captainsVault.getFood();
-        double alloy = captainsVault.getAlloy();
-        double gold = captainsVault.getGold();
+        double food = payerVault.getFood();
+        double alloy = payerVault.getAlloy();
+        double gold = payerVault.getGold();
 
         double foodAmount = food * getFoodTaxRate();
         double alloyAmount = alloy * getAlloyTaxRate();
         double goldAmount = gold * getGoldTaxRate();
 
-        captainsVault.subtractFood(foodAmount);
-        captainsVault.subtractAlloy(alloyAmount);
-        captainsVault.subtractGold(goldAmount);
+        payerVault.subtractFood(foodAmount);
+        payerVault.subtractAlloy(alloyAmount);
+        payerVault.subtractGold(goldAmount);
 
         this.property.vault.addResources(foodAmount, alloyAmount, goldAmount);
+
+        resourceTransfer.walletDeposit(authority.character, authority.property);
     }
 
     public void paySupporters(Support support){
@@ -128,12 +138,9 @@ public class Authority implements TimeObserver {
 }
 
 class NationAuthority extends Authority {
-
     public NationAuthority(Property property, AuthorityCharacter character) {
         super(property, character);
     }
-
-
 
 }
 

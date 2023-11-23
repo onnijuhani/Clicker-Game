@@ -3,7 +3,20 @@ import java.util.HashMap;
 
 public class Character implements TimeObserver {
 
+    public static int getTotalAmount() {
+        return totalAmount;
+    }
+
+    protected static int totalAmount;
     ArrayList<Slave> slaves;
+
+    Nation nation;
+    public Nation getNation() {
+        return nation;
+    }
+    public void setNation(Nation nation) {
+        this.nation = nation;
+    }
 
     @Override
     public void timeUpdate(int day, int week, int month, int year) {
@@ -14,6 +27,12 @@ public class Character implements TimeObserver {
     }
 
     public String name;
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
     protected Wallet wallet;
 
     protected Property property;
@@ -73,9 +92,11 @@ class Support extends Character {
 
     Authority authority;
 
+    public static int totalAmount;
 
     public Support(Authority authority) {
         this.authority = authority;
+        this.totalAmount += 1;
     }
 }
 
@@ -83,57 +104,63 @@ class Support extends Character {
 
 class King extends AuthorityCharacter {
 
-
+    public static int totalAmount;
     public King() {
         super(); // Call the superclass constructor
+        this.totalAmount += 1;
     }
 }
 
 
 class Noble extends Support {
 
-
+    public static int totalAmount;
     public Noble(Authority authority) {
         super(authority);
+        this.totalAmount += 1;
     }
 }
 
 class Vanguard extends Support {
     // The salary field in Vanguard hides the one in Support
-
+    public static int totalAmount;
     public Vanguard(Authority authority) {
         super(authority);
         // Updating the salary field in the Support class
         super.salary = 1000;
+        this.totalAmount += 1;
     }
 }
 
 
 class Governor extends AuthorityCharacter {
 
-
+    public static int totalAmount;
     public Governor() {
+        this.totalAmount += 1;
     }
 }
 
 class Mercenary extends Support {
-
+    public static int totalAmount;
     public Mercenary(Authority authority) {
         super(authority);
+        this.totalAmount += 1;
     }
 }
 
 class Mayor extends AuthorityCharacter {
 
-
+    public static int totalAmount;
     public Mayor() {
+        this.totalAmount += 1;
     }
 }
 
 class Captain extends AuthorityCharacter {
-
-
+    public static int totalAmount;
     public Captain() {
+        this.totalAmount += 1;
     }
 }
 
@@ -146,6 +173,7 @@ class Peasant extends Character implements TimeObserver {
         }
 
     }
+
     protected Food food;
     protected Alloy alloy;
     protected Gold gold;
@@ -189,6 +217,8 @@ class Peasant extends Character implements TimeObserver {
         double amountAlloy = this.alloy.getAmount() * taxRates.get(Resource.Alloy);
         double amountGold = this.gold.getAmount() * taxRates.get(Resource.Gold);
 
+        this.walletTransfer(1);
+
         this.food.subtract(amountFood);
         this.alloy.subtract(amountAlloy);
         this.gold.subtract(amountGold);
@@ -221,8 +251,10 @@ class Peasant extends Character implements TimeObserver {
 }
 
 class Farmer extends Peasant {
+    public static int totalAmount;
     public Farmer(Authority quarterAuthority) {
         super(quarterAuthority);
+        this.totalAmount += 1;
     }
 
     @Override
@@ -230,12 +262,15 @@ class Farmer extends Peasant {
         this.food.add(food * 1);
         this.alloy.add(alloy * 0);
         this.gold.add(gold * 0);
+
     }
 }
 
 class Miner extends Peasant {
+    public static int totalAmount;
     public Miner(Authority quarterAuthority) {
         super(quarterAuthority);
+        this.totalAmount += 1;
     }
     @Override
     public void generate(int food, int alloy, int gold){
@@ -247,19 +282,22 @@ class Miner extends Peasant {
 }
 
 class Merchant extends Peasant {
+    public static int totalAmount;
     public Merchant(Authority quarterAuthority) {
         super(quarterAuthority);
+        this.totalAmount += 1;
     }
     @Override
     public void generate(int food, int alloy, int gold){
         this.food.add(food * 0);
         this.alloy.add(alloy * 0);
         this.gold.add(gold * 1);
+
     }
 }
 
 class Slave extends Character {
-
+    public static int totalAmount;
     Character owner;
     protected Food food;
     protected Alloy alloy;
@@ -272,6 +310,7 @@ class Slave extends Character {
         this.gold = new Gold(0);
         this.wallet = new Wallet(0, 0, 0);
         this.owner = owner;
+        this.totalAmount += 1;
     }
 
     public void generate(int food, int alloy, int gold){

@@ -6,14 +6,12 @@ public class CreateWorld {
 
     public static void main(String[] args) {
 
-
-
             Property fortress = PropertyCreation.createProperty("nation", "Nation");
             King king = new King();
             NationAuthority nationAuthority = new NationAuthority(fortress, king);
             fortress.setOwner(king);
 
-            for (int xx = 0; xx < 500; xx++) {
+            for (int xx = 0; xx < 50; xx++) {
                 Slave slavei = new Slave(king);
                 slavei.generate(10, 10, 10);
                 king.addSlave(slavei);
@@ -45,7 +43,7 @@ public class CreateWorld {
                         cityAuthority.setAuthOver(quarterAuthority);
                         quarterProperty.setOwner(captain);
 
-                        for (int peasant = 0; peasant < 20; peasant++) {
+                        for (int peasant = 0; peasant < 1; peasant++) {
                             Farmer farmer = new Farmer(quarterAuthority);
                             quarterAuthority.addPeasant(farmer);
 
@@ -118,6 +116,7 @@ public class CreateWorld {
                 }
             }
         System.out.println(" " + Food.getTotalFoodCount() + " " + Alloy.getTotalAlloyCount() + " " + Gold.getTotalGoldCount() + " ");
+        System.out.println(nationAuthority.getAuthOver().get(0).getSupporters().get(1).getName());
 
 
 
