@@ -1,7 +1,20 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Authority {
+public class Authority implements TimeObserver {
+
+    @Override
+    public void timeUpdate(int day, int week, int month, int year) {
+        if (day == 1 && week == 1) {
+            authOver.forEach(this::collectTax);
+            supporters.forEach(this::paySupporters);
+        }
+    }
+
+    public Property getProperty() {
+        return property;
+    }
+
     Property property;
     AuthorityCharacter character;
     String PropertyType;
@@ -18,6 +31,9 @@ public class Authority {
     public AuthorityCharacter getCharacter() {
         return character;
     }
+    public void subscribeToTimeEvents() {
+        TimeEventManager.subscribe(this);
+    }
 
     public Authority(Property property, AuthorityCharacter character) {
         this.property = property;
@@ -26,6 +42,7 @@ public class Authority {
         this.authOver = new ArrayList<>();
         this.authUnder = new ArrayList<>();
         this.supporters = new ArrayList<>();
+        subscribeToTimeEvents();
     }
 
     public String getPropertyType() {
@@ -140,12 +157,27 @@ class CityAuthority extends Authority {
 }
 
 class QuarterAuthority extends Authority {
+
+
+
     String authorityType = "Captain";
-    ArrayList<Character> peasants;
+
+    public ArrayList<Peasant> getPeasants() {
+        return peasants;
+    }
+
+    private ArrayList<Peasant> peasants;
 
     public QuarterAuthority(Property property, AuthorityCharacter character) {
         super(property, character);
         this.peasants = new ArrayList<>();
+    }
+
+    @Override
+    public void timeUpdate(int day, int week, int month, int year) {
+        if (day == 1 && week == 1) {
+            peasants.forEach(peasant -> this.collectTax(peasant.releaseTax(this.enforceTax())));
+        }
     }
 
     public void addPeasant(Peasant peasant){

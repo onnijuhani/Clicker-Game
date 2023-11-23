@@ -1,4 +1,4 @@
 public interface TimeObserver {
-    void TimeUpdate(int day, int currentWeek, int currentMonth, int currentYear);
+    void timeUpdate(int day, int week, int month, int year);
 
 }

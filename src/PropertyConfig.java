@@ -1,12 +1,12 @@
 public class PropertyConfig {
-    public static final PropertyValues FORTRESS = new PropertyValues(40, 30, 20, 100);
-    public static final PropertyValues CITADEL = new PropertyValues(30, 30, 10, 90);
-    public static final PropertyValues CASTLE = new PropertyValues(20, 25, 5, 70);
-    public static final PropertyValues MANOR = new PropertyValues(15, 10, 5, 60);
-    public static final PropertyValues MANSION = new PropertyValues(10, 4, 4, 40);
-    public static final PropertyValues VILLA = new PropertyValues(5, 0, 3, 30);
-    public static final PropertyValues COTTAGE = new PropertyValues(3, 0, 2, 20);
-    public static final PropertyValues SHACK = new PropertyValues(2, 0, 1, 0);
+    public static final PropertyValues FORTRESS = new PropertyValues(400, 300, 200, 100);
+    public static final PropertyValues CITADEL = new PropertyValues(300, 300, 100, 90);
+    public static final PropertyValues CASTLE = new PropertyValues(200, 250, 50, 70);
+    public static final PropertyValues MANOR = new PropertyValues(150, 100, 50, 60);
+    public static final PropertyValues MANSION = new PropertyValues(100, 40, 40, 40);
+    public static final PropertyValues VILLA = new PropertyValues(50, 0, 30, 30);
+    public static final PropertyValues COTTAGE = new PropertyValues(30, 0, 20, 20);
+    public static final PropertyValues SHACK = new PropertyValues(20, 0, 10, 0);
 
     public static Vault createFortressVault() {
         return new Vault(FORTRESS.food, FORTRESS.alloy, FORTRESS.gold);
@@ -40,10 +40,6 @@ public class PropertyConfig {
         return new Vault(SHACK.food, SHACK.alloy, SHACK.gold);
     }
 
-
-
-
-
     public static class PropertyValues {
         int food;
         int alloy;
@@ -59,13 +55,26 @@ public class PropertyConfig {
     }
 }
 
-class Property {
+class Property implements TimeObserver {
 
-    int food;
-    int alloy;
-    int gold;
-    int strength;
-    Vault vault;
+    @Override
+    public void timeUpdate(int day, int week, int month, int year) {
+        if (week == 4){
+            maintenanceCost();
+        }
+    }
+
+    public void subscribeToTimeEvents() {
+        TimeEventManager.subscribe(this);
+    }
+
+    protected int food;
+    protected int alloy;
+    protected int gold;
+    protected int strength;
+    protected Vault vault;
+    protected Quarter location;
+    public Character owner;
 
     String name;
     public String getName() {
@@ -79,6 +88,15 @@ class Property {
         this.strength = propertyValues.strength;
         this.vault = vault;
         this.name = name;
+        subscribeToTimeEvents();
+    }
+
+    public Character getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Character owner) {
+        this.owner = owner;
     }
 
     public Vault getVault() {
@@ -86,10 +104,34 @@ class Property {
     }
 
     public void maintenanceCost(){
-        vault.subtractFood(food);
-        vault.subtractAlloy(alloy);
-        vault.subtractGold(gold);
+        if (vault.getFood() < food) {
+            owner.getWallet().subtractFood(food);
+        } else {
+            vault.subtractFood(food);
+        }
+
+        if (vault.getAlloy() < alloy) {
+            owner.getWallet().subtractAlloy(alloy);
+        } else {
+            vault.subtractAlloy(alloy);
+        }
+
+        if (vault.getGold() < gold) {
+            owner.getWallet().subtractGold(gold);
+        } else {
+            vault.subtractGold(gold);
+        }
+
     }
+
+    public Quarter getLocation() {
+        return location;
+    }
+
+    public void setLocation(Quarter location) {
+        this.location = location;
+    }
+
 
     public int getFood() {
         return food;

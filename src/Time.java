@@ -22,6 +22,8 @@ public class Time {
             month = 1;
             year++;
         }
+
+        TimeEventManager.notifyTimeUpdate(day, week, month, year);
     }
 
     public int getYear() {
