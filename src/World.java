@@ -19,9 +19,11 @@ abstract class Area {
 
     abstract ArrayList getContents();
     abstract String getName();
+
+    abstract Area getHigher();
 }
 
-abstract class ControlledArea extends Area {
+abstract class ControlledArea extends Area implements Details {
     public Authority getAuthority() {
         return authority;
     }
@@ -35,6 +37,11 @@ public class World extends Area implements Details {
         return this.name;
     }
     private Continent[] continents;
+
+    @Override
+    public Area getHigher() {
+        return this;
+    }
 
     private Size size;
 
@@ -83,6 +90,10 @@ class Continent extends Area implements Details {
         return this.name;
     }
     private World world;
+    @Override
+    public Area getHigher() {
+        return world;
+    }
     private Nation[] nations;
 
     // Constructor for Continent
@@ -151,7 +162,11 @@ class Nation extends ControlledArea implements Details {
     private Style style; //Style luokka
     public Orientation orientation;
     private Continent continent;
-    private String areaName = "Nation";
+    @Override
+    public Area getHigher() {
+        return continent;
+    }
+
 
     public Nation(String name, Continent continent, Style style, Authority authority) {
         this.name = name;
@@ -173,8 +188,7 @@ class Nation extends ControlledArea implements Details {
     }
 
     private void createProvinces() {
-        long seed = 42;
-        Random random = new Random(seed);
+        Random random = new Random();
         int numberOfProvinces = random.nextInt(7) + 2;
         provinces = new Province[numberOfProvinces];
 
@@ -220,6 +234,10 @@ class Province extends ControlledArea implements Details {
     public Nation getNation() {
         return nation;
     }
+    @Override
+    public Area getHigher() {
+        return nation;
+    }
 
     public Province(String name, Nation nation, Authority authority) {
         this.name = name;
@@ -239,8 +257,7 @@ class Province extends ControlledArea implements Details {
     }
 
     private void createCities() {
-        long seed = 42;
-        Random random = new Random(seed);
+        Random random = new Random();
         int numberOfCities = random.nextInt(4) + 1;
         cities = new City[numberOfCities];
 
@@ -281,6 +298,10 @@ class City extends ControlledArea implements Details {
     public Province getProvince() {
         return province;
     }
+    @Override
+    public Area getHigher() {
+        return province;
+    }
 
     public City(String name, Province province, Authority authority) {
         this.name = name;
@@ -301,8 +322,7 @@ class City extends ControlledArea implements Details {
     }
 
     private void createQuarters() {
-        long seed = 42;
-        Random random = new Random(seed);
+        Random random = new Random();
         int numberOfQuarters = random.nextInt(3) + 2;
         ArrayList<String> names = NameCreation.generateQuarterNames(numberOfQuarters);
         quarters = new Quarter[numberOfQuarters];
@@ -338,7 +358,13 @@ class Quarter extends ControlledArea implements Details {
         return this.name;
     }
 
+
     private City city;
+
+    @Override
+    public Area getHigher() {
+        return city;
+    }
 
     public Quarter(String name, City city, Authority authority) {
         this.name = name;
@@ -352,7 +378,7 @@ class Quarter extends ControlledArea implements Details {
 
 
     public String getDetails() {
-        return("Quarter: " + name + " Belongs to: " + city.getName());
+        return("Quarter: " + name + " Belongs to city: " + city.getName());
     }
     @Override
     public ArrayList<Quarter> getContents() {
@@ -370,8 +396,7 @@ class Quarter extends ControlledArea implements Details {
         captain.getCharacter().setNation(this.city.getProvince().getNation());
 
 
-        long seed = 42;
-        Random random = new Random(seed);
+        Random random = new Random();
         int numberOfFarmers = random.nextInt(150) + 3;
         int numberOfMiners = random.nextInt(130) + 3;
         int numberOfMerchants = random.nextInt(100) + 3;

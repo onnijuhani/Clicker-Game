@@ -194,6 +194,7 @@ class Peasant extends Character implements TimeObserver {
         wallet.addFood(food.getAmount()*percent);
         wallet.addAlloy(alloy.getAmount()*percent);
         wallet.addGold(gold.getAmount()*percent);
+        System.out.println(wallet.getWalletValues());
     }
 
     public void generate(int food, int alloy, int gold){

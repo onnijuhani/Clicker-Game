@@ -4,6 +4,8 @@ public class SimulationTest {
 
         long seed = 42;
 
+
+
         World world = new World("Medium World", Size.LARGE);
 
 
@@ -22,15 +24,15 @@ public class SimulationTest {
                     getContents().get(0).getAuthority().getProperty().getVault().getWalletValues());
 
             System.out.println("Governors vault Wealth: "+world.getContents().get(0).getContents().get(0).
-                    getContents().get(0).getAuthority().getProperty().getVault().getWalletValues());
+                    getContents().get(0).getAuthority().getCharacter().getWallet().getWalletValues());
 
             System.out.println("Governors wallet Wealth: "+world.getContents().get(0).getContents().get(0).
                     getContents().get(0).getAuthority().getCharacter().getWallet().getWalletValues());
 
 
-            System.out.println("Kings Wealth: "+world.getContents().get(0).getContents().get(0).
-                    getContents().get(0).getAuthority().getProperty().getVault().getWalletValues());
-            System.out.println("Kings wallet Wealth: "+world.getContents().get(0).getContents().get(0).
+            System.out.println("Kings Wealth: "+world.getContents().get(0).
+                    getContents().get(0).getAuthority().getCharacter().getWallet().getWalletValues());
+            System.out.println("Kings wallet Wealth: "+world.getContents().get(0).
                     getContents().get(0).getAuthority().getCharacter().getWallet().getWalletValues());
 
             try {
@@ -46,6 +48,7 @@ public class SimulationTest {
         System.out.println("Miners " + Miner.totalAmount);
         System.out.println("Mercenearies " + Mercenary.totalAmount);
         System.out.println("Vanguards " + Vanguard.totalAmount);
+        System.out.println(Captain.totalAmount);
         System.out.println("Food "+Food.getTotalFoodCount());
 
 

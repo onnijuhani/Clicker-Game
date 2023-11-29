@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Authority implements TimeObserver {
+public class Authority implements TimeObserver, Details {
 
     @Override
     public void timeUpdate(int day, int week, int month, int year) {
@@ -45,13 +45,16 @@ public class Authority implements TimeObserver {
         subscribeToTimeEvents();
     }
     public String getDetails(){
-        String authoritySimpleName = this.getClass().getSimpleName();
-        String character = this.character.getName();
-        String characterSimpleName = this.character.getClass().getSimpleName();
-        String property = this.property.getClass().getSimpleName();
+        String propertyName = this.property.getName();
+        String propertyClass = this.property.getClass().getSimpleName();
 
-        return authoritySimpleName + " " + characterSimpleName + " " + property;
+        String characterName = this.character.getName();
+        String characterClass = this.character.getClass().getSimpleName();
+
+        return characterClass+" "+characterName+" living in a "+propertyClass+" "+propertyName;
     }
+
+
 
     public String getPropertyType() {
         return PropertyType;
@@ -165,8 +168,6 @@ class CityAuthority extends Authority {
 
 class QuarterAuthority extends Authority {
 
-
-
     String authorityType = "Captain";
 
     public ArrayList<Peasant> getPeasants() {
@@ -182,7 +183,7 @@ class QuarterAuthority extends Authority {
 
     @Override
     public void timeUpdate(int day, int week, int month, int year) {
-        if (day == 1 && week == 1) {
+        if (day == 2 && week == 1) {
             peasants.forEach(peasant -> this.collectTax(peasant.releaseTax(this.enforceTax())));
         }
     }
