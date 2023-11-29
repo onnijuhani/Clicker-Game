@@ -51,7 +51,7 @@ public class Authority implements TimeObserver, Details {
         String characterName = this.character.getName();
         String characterClass = this.character.getClass().getSimpleName();
 
-        return characterClass+" "+characterName+" living in a "+propertyClass+" "+propertyName;
+        return characterClass+" "+characterName+" living in a "+propertyName;
     }
 
 

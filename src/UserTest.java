@@ -24,30 +24,37 @@ public class UserTest {
 
         World world = new World("Medium World", Size.LARGE);
 
+
+
         Quarter spawn = world.getContents().get(0).getContents().get(0).getContents().get(0).getContents().get(0).getContents().get(0);
 
         ControlledArea currentPos = spawn;
-        String currentPosName = currentPos.getName();
-        String currentPosDetails = currentPos.getDetails();
 
-        Authority authorityHere = currentPos.getAuthority();
-        String authDetails = authorityHere.getDetails();
+        while (true) {
+            String currentPosName = currentPos.getName();
+            String currentPosDetails = currentPos.getDetails();
 
-
-        ArrayList<Area> currentPosContents = currentPos.getContents();
-        Area currentPosUnder = currentPos.getHigher();
-        String currentPosUnderName = currentPosUnder.getName();
+            Authority authorityHere = currentPos.getAuthority();
+            String authDetails = authorityHere.getDetails();
 
 
-        System.out.println("You are in "+currentPosDetails);
-        System.out.println("This area contains: "+currentPosContents);
-        System.out.println(currentPosName+" is under "+currentPosUnderName);
-        System.out.println("Authority here is: "+authDetails);
+            ArrayList<Area> currentPosContents = currentPos.getContents();
+            Area currentPosUnder = currentPos.getHigher();
+            String currentPosUnderName = currentPosUnder.getName();
 
 
+            System.out.println("You are in " + currentPosDetails);
+            System.out.println("This area contains: " + currentPosContents);
+            System.out.println(currentPosName + " is under " + currentPosUnderName);
+            System.out.println("Authority here is: " + authDetails);
 
+            System.out.println("Selection: ");
+            String input = read.nextLine();
 
-
+            if (input.equals("move up")) {
+                currentPos = (ControlledArea) currentPos.getHigher();
+            }
+        }
 
 
     }

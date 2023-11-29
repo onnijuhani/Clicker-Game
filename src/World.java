@@ -13,7 +13,7 @@ enum Size {
     LARGE
 }
 
-abstract class Area {
+abstract class Area implements Details {
     String name;
     String areaName = "Area";
 
