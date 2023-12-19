@@ -55,4 +55,31 @@ public class PropertyCreation {
             return new Cottage(name);
         }
     }
+
+    public static Property createSupportProperty(Support support){
+
+        Random random = new Random();
+        double randomValue = random.nextDouble();
+
+        if (support instanceof Noble){
+            return new Manor("Noble's");
+        } else if (support instanceof Vanguard) {
+            if (randomValue < 0.15) {
+                return new Fortress("Vanguard's");
+            } else if (randomValue < 0.5){
+                return new Citadel("Vanguard's");
+            } else {
+                return new Castle("Vanguard's");
+            }
+        } else
+            if (randomValue < 0.15) {
+                return new Citadel("Mercenary's");
+            } else if (randomValue < 0.5){
+                return new Castle("Mercenary's");
+            } else {
+                return new Manor("Mercenary's");
+            }
+        }
+
+
 }

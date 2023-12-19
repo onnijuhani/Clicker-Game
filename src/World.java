@@ -1,4 +1,5 @@
 import java.sql.SQLOutput;
+import java.util.List;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,13 +15,15 @@ enum Size {
 }
 
 abstract class Area implements Details {
-    String name;
-    String areaName = "Area";
+    protected String name;
+    protected String areaName = "Area";
+    protected PropertyTracker propertyTracker;
 
     abstract ArrayList getContents();
     abstract String getName();
 
     abstract Area getHigher();
+
 }
 
 abstract class ControlledArea extends Area implements Details {
@@ -96,11 +99,12 @@ class Continent extends Area implements Details {
     }
     private Nation[] nations;
 
-    // Constructor for Continent
+
     public Continent(String name, World world) {
         this.name = name;
         this.world = world;
         this.createNations();
+        this.propertyTracker = new PropertyTracker();
     }
 
     // Getters and setters...
@@ -124,6 +128,7 @@ class Continent extends Area implements Details {
             King king = new King();
             Property property = PropertyCreation.createProperty(name, "Nation");
             property.setOwner(king);
+            propertyTracker.addProperty(property);
 
             Authority authority = new NationAuthority(property, king);
 
@@ -168,11 +173,13 @@ class Nation extends ControlledArea implements Details {
     }
 
 
+
     public Nation(String name, Continent continent, Style style, Authority authority) {
         this.name = name;
         this.continent = continent;
         this.style = style;
         this.orientation = style.getName();
+        this.propertyTracker = new PropertyTracker();
         this.createProvinces();
         super.authority = authority;
         Authority king = this.authority;
@@ -180,7 +187,6 @@ class Nation extends ControlledArea implements Details {
         for (Province province : provinces) {
             king.setAuthOver(province.authority);
         }
-
     }
 
     public String getDetails() {
@@ -199,6 +205,7 @@ class Nation extends ControlledArea implements Details {
             Governor governor = new Governor();
             Property property = PropertyCreation.createProperty(name, "Province");
             property.setOwner(governor);
+            propertyTracker.addProperty(property);
 
             Authority authority = new ProvinceAuthority(property, governor);
 
@@ -242,6 +249,7 @@ class Province extends ControlledArea implements Details {
     public Province(String name, Nation nation, Authority authority) {
         this.name = name;
         this.nation = nation;
+        this.propertyTracker = new PropertyTracker();
         this.createCities();
         super.authority = authority;
         Authority governor = this.authority;
@@ -268,6 +276,7 @@ class Province extends ControlledArea implements Details {
             Mayor mayor = new Mayor();
             Property property = PropertyCreation.createProperty(name, "City");
             property.setOwner(mayor);
+            propertyTracker.addProperty(property);
 
             Authority authority = new CityAuthority(property, mayor);
 
@@ -306,6 +315,7 @@ class City extends ControlledArea implements Details {
     public City(String name, Province province, Authority authority) {
         this.name = name;
         this.province = province;
+        this.propertyTracker = new PropertyTracker();
         this.createQuarters();
         super.authority = authority;
         Authority mayor = this.authority;
@@ -334,6 +344,7 @@ class City extends ControlledArea implements Details {
             Captain captain = new Captain();
             Property property = PropertyCreation.createProperty(name, "Quarter");
             property.setOwner(captain);
+            propertyTracker.addProperty(property);
 
             Authority authority = new QuarterAuthority(property, captain);
 
@@ -357,18 +368,12 @@ class Quarter extends ControlledArea implements Details {
     public String getName() {
         return this.name;
     }
-
-
     private City city;
-
-    @Override
-    public Area getHigher() {
-        return city;
-    }
 
     public Quarter(String name, City city, Authority authority) {
         this.name = name;
         this.city = city;
+        this.propertyTracker = new PropertyTracker();
         super.authority = authority;
         Authority captain = this.authority;
         captain.getCharacter().setNation(city.getProvince().getNation());
@@ -376,6 +381,12 @@ class Quarter extends ControlledArea implements Details {
         createPeasants();
     }
 
+
+
+    @Override
+    public Area getHigher() {
+        return city;
+    }
 
     public String getDetails() {
         return("Quarter: " + name + " Belongs to city: " + city.getName());

@@ -89,14 +89,18 @@ class AuthorityCharacter extends Character {
 class Support extends Character {
 
     double salary = 400;
-
     Authority authority;
-
     public static int totalAmount;
+
 
     public Support(Authority authority) {
         this.authority = authority;
         this.totalAmount += 1;
+        createProperty();
+    }
+
+    public void createProperty(){
+        this.property = PropertyCreation.createSupportProperty(this);
     }
 }
 

@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class PropertyConfig {
     public static final PropertyValues FORTRESS = new PropertyValues(400, 300, 200, 100);
     public static final PropertyValues CITADEL = new PropertyValues(300, 300, 100, 90);
@@ -55,6 +58,23 @@ public class PropertyConfig {
     }
 }
 
+class PropertyTracker {
+    private List<Property> properties;
+
+    public PropertyTracker() {
+        this.properties = new ArrayList<>();
+    }
+
+    public void addProperty(Property property) {
+        properties.add(property);
+    }
+
+    public List<Property> getProperties() {
+        return properties;
+    }
+}
+
+
 class Property implements TimeObserver {
 
     @Override
@@ -75,6 +95,7 @@ class Property implements TimeObserver {
     protected Vault vault;
     protected Quarter location;
     public Character owner;
+
 
     String name;
     public String getName() {
@@ -132,6 +153,9 @@ class Property implements TimeObserver {
         this.location = location;
     }
 
+    public boolean hasLocation() {
+        return location != null;
+    }
 
     public int getFood() {
         return food;
