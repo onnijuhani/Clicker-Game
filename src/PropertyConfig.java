@@ -116,6 +116,10 @@ class Property implements TimeObserver {
         subscribeToTimeEvents();
     }
 
+    public String getMaintenanceCost(){
+        return "Maintenance cost: " + food+" - "+alloy+" - "+gold;
+    }
+
     public Character getOwner() {
         return owner;
     }
