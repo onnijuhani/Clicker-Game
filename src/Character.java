@@ -26,6 +26,8 @@ public class Character implements TimeObserver {
         TimeEventManager.subscribe(this);
     }
 
+
+
     public String name;
     public String getName() {
         return name;
@@ -44,8 +46,16 @@ public class Character implements TimeObserver {
         subscribeToTimeEvents();
     }
 
+    @Override
+    public String toString() {
+        return name + "  Main House: " + property;
+    }
+
     public void setProperty(Property property){
         this.property = property;
+    }
+    public Property getProperty(){
+        return property;
     }
 
     public Wallet getWallet() {
@@ -91,7 +101,6 @@ class Support extends Character {
     double salary = 400;
     Authority authority;
     public static int totalAmount;
-
 
     public Support(Authority authority) {
         this.authority = authority;
@@ -190,8 +199,7 @@ class Peasant extends Character implements TimeObserver {
         this.gold = new Gold(0);
         this.wallet = new Wallet(0, 0, 0);
         this.quarterAuthority = quarterAuthority;
-        super.property = new Shack("default");
-        property.setOwner(this);
+        super.property = PropertyCreation.createPeasantProperty(this);
     }
 
     public void walletTransfer(double percent){
@@ -297,7 +305,6 @@ class Merchant extends Peasant {
         this.food.add(food * 0);
         this.alloy.add(alloy * 0);
         this.gold.add(gold * 1);
-
     }
 }
 

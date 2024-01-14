@@ -83,6 +83,10 @@ class Property implements TimeObserver {
             maintenanceCost();
         }
     }
+    @Override
+    public String toString() {
+        return name;
+    }
 
     public void subscribeToTimeEvents() {
         TimeEventManager.subscribe(this);

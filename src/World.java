@@ -1,8 +1,4 @@
-import java.sql.SQLOutput;
-import java.util.List;
-import java.util.Random;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 interface Details {
     String getDetails(); //tuo nimen ja mihin yläluokkaan se kuuluu
@@ -17,12 +13,17 @@ enum Size {
 abstract class Area implements Details {
     protected String name;
     protected String areaName = "Area";
-    protected PropertyTracker propertyTracker;
+    public PropertyTracker propertyTracker;
 
     abstract ArrayList getContents();
     abstract String getName();
 
     abstract Area getHigher();
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 
 }
 
@@ -46,7 +47,7 @@ public class World extends Area implements Details {
         return this;
     }
 
-    private Size size;
+    public Size size;
 
     @Override
     public ArrayList<Continent> getContents() {
@@ -100,14 +101,16 @@ class Continent extends Area implements Details {
     private Nation[] nations;
 
 
+
+
     public Continent(String name, World world) {
+        this.propertyTracker = new PropertyTracker();
         this.name = name;
         this.world = world;
         this.createNations();
-        this.propertyTracker = new PropertyTracker();
     }
 
-    // Getters and setters...
+
 
     public String getDetails() {
         return("Continent: " + name + " Belongs to: " + world.getName());
@@ -122,7 +125,7 @@ class Continent extends Area implements Details {
         for (int i = 0; i < numberOfNations; i++) {
 
             Orientation styleName = random.nextInt(2) == 0 ? Orientation.Imperial : Orientation.Democratic;
-            Style style = new Style(styleName); //uusi style objekti nation luontia varten
+            OrientationStyle orientationStyle = new OrientationStyle(styleName); //uusi style objekti nation luontia varten
             String nationName = NameCreation.generateNationName(styleName);
 
             King king = new King();
@@ -132,20 +135,22 @@ class Continent extends Area implements Details {
 
             Authority authority = new NationAuthority(property, king);
 
-            for (int nob = 0; nob < 4; nob++) {
-                Noble noble = new Noble(authority);
-                authority.addSupporter(noble);
-            }
-
-            Nation nation = new Nation(nationName, this, style, authority);
+            Nation nation = new Nation(nationName, this, orientationStyle, authority);
 
             nations[i] = nation;
 
             int provinceAmount = nation.getContents().size();
 
+            for (int nob = 0; nob < 4; nob++) {
+                Noble noble = new Noble(authority);
+                authority.addSupporter(noble);
+            }
+
             for (int vang = 0; vang < provinceAmount ; vang++) {
                 Vanguard vanguard = new Vanguard(authority);
                 authority.addSupporter(vanguard);
+                vanguard.getProperty().setLocation(nation.getContents().get(vang).getContents().get(0).getContents().get(0));
+                nation.getContents().get(vang).getContents().get(0).getContents().get(0).propertyTracker.addProperty(vanguard.getProperty());
             }
         }
     }
@@ -164,22 +169,27 @@ class Nation extends ControlledArea implements Details {
         return this.name;
     }
     private Province[] provinces;
-    private Style style; //Style luokka
+    private OrientationStyle orientationStyle; //Style luokka
     public Orientation orientation;
     private Continent continent;
+
+    protected LinkedList<Quarter> allQuarters;
+    public LinkedList<Quarter> getAllQuarters() {
+        return allQuarters;
+    }
+
     @Override
     public Area getHigher() {
         return continent;
     }
 
-
-
-    public Nation(String name, Continent continent, Style style, Authority authority) {
+    public Nation(String name, Continent continent, OrientationStyle orientationStyle, Authority authority) {
         this.name = name;
         this.continent = continent;
-        this.style = style;
-        this.orientation = style.getName();
+        this.orientationStyle = orientationStyle;
+        this.orientation = orientationStyle.getName();
         this.propertyTracker = new PropertyTracker();
+        this.allQuarters = new LinkedList<>();
         this.createProvinces();
         super.authority = authority;
         Authority king = this.authority;
@@ -266,7 +276,7 @@ class Province extends ControlledArea implements Details {
 
     private void createCities() {
         Random random = new Random();
-        int numberOfCities = random.nextInt(4) + 1;
+        int numberOfCities = random.nextInt(8) + 2;
         cities = new City[numberOfCities];
 
         for (int i = 0; i < numberOfCities; i++) {
@@ -350,6 +360,7 @@ class City extends ControlledArea implements Details {
 
             Quarter quarter = new Quarter(name, this, authority);
             quarters[i] = quarter;
+            this.getProvince().getNation().allQuarters.add(quarter);
 
         }
     }
@@ -368,7 +379,17 @@ class Quarter extends ControlledArea implements Details {
     public String getName() {
         return this.name;
     }
+
+
+
+    private HashMap<String, ArrayList<Character>> populationList;
+    public HashMap<String, ArrayList<Character>> getPopulationList() {
+        return populationList;
+    }
+
+    private PropertyTracker allProperties;
     private City city;
+    private int numOfPeasants;
 
     public Quarter(String name, City city, Authority authority) {
         this.name = name;
@@ -376,11 +397,26 @@ class Quarter extends ControlledArea implements Details {
         this.propertyTracker = new PropertyTracker();
         super.authority = authority;
         Authority captain = this.authority;
+        this.populationList = new HashMap<>();
         captain.getCharacter().setNation(city.getProvince().getNation());
         captain.setAuthUnder(city.getAuthority());
         createPeasants();
     }
 
+    public String returnAllInformation(){
+        Quarter theQuarter = this;
+        City theCity = city;
+        Province theProvince = city.getProvince();
+        Nation theNation = theProvince.getNation();
+
+        return(
+                "Quarter: " + theQuarter +
+                ". City: " + theCity +
+                ". Province: " + theProvince +
+                ". Nation: " + theNation +
+                ". Population: " + numOfPeasants
+        );
+    }
 
 
     @Override
@@ -406,24 +442,35 @@ class Quarter extends ControlledArea implements Details {
         QuarterAuthority captain = (QuarterAuthority) this.authority;
         captain.getCharacter().setNation(this.city.getProvince().getNation());
 
-
         Random random = new Random();
         int numberOfFarmers = random.nextInt(150) + 3;
+        numOfPeasants += numberOfFarmers;
         int numberOfMiners = random.nextInt(130) + 3;
-        int numberOfMerchants = random.nextInt(100) + 3;
+        numOfPeasants += numberOfMiners;
+        int numberOfMerchants = random.nextInt(50) + 3;
+        numOfPeasants += numberOfMerchants;
+
+        ArrayList<Character> farmers = new ArrayList<>();
+        ArrayList<Character> miners = new ArrayList<>();
+        ArrayList<Character> merchants = new ArrayList<>();
 
         for (int peasant = 0; peasant < numberOfFarmers; peasant++) {
             Farmer farmer = new Farmer(captain);
             captain.addPeasant(farmer);
+            farmers.add(farmer);
         }
         for (int peasant = 0; peasant < numberOfMiners; peasant++) {
-            Merchant merch = new Merchant(captain);
-            captain.addPeasant(merch);
-        }
-
-        for (int peasant = 0; peasant < numberOfMerchants; peasant++) {
             Miner miner = new Miner(captain);
             captain.addPeasant(miner);
+            miners.add(miner);
         }
+        for (int peasant = 0; peasant < numberOfMerchants; peasant++) {
+            Merchant merch = new Merchant(captain);
+            captain.addPeasant(merch);
+            merchants.add(merch);
+        }
+        populationList.put("farmers", farmers);
+        populationList.put("miners", miners);
+        populationList.put("merchants", merchants);
     }
 }

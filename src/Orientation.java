@@ -1,11 +1,11 @@
-class Style {
+class OrientationStyle {
 
     Orientation name;
     public Orientation getName() {
         return name;
     }
 
-    public Style(Orientation name) {
+    public OrientationStyle(Orientation name) {
         this.name = name;
     }
 }

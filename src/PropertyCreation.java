@@ -81,5 +81,40 @@ public class PropertyCreation {
             }
         }
 
+    public static Property createPeasantProperty(Character character){
+
+        if (character instanceof Farmer || character instanceof Miner) {
+            Shack shack = new Shack(character.getName());
+            shack.setOwner(character);
+            return shack;
+        } else if (character instanceof Merchant)  {
+                Random random = new Random();
+                double randomValue = random.nextDouble();
+
+                if (randomValue < 0.05) {
+                    Mansion mansion = new Mansion(character.getName());
+                    mansion.setOwner(character);
+                    return mansion;
+                } else if (randomValue < 0.25){
+                    Villa villa = new Villa(character.getName());
+                    villa.setOwner(character);
+                    return villa;
+                } else if (randomValue < 0.6){
+                    Cottage cottage = new Cottage(character.getName());
+                    cottage.setOwner(character);
+                    return cottage;
+                } else {
+                    Shack shack = new Shack(character.getName());
+                    shack.setOwner(character);
+                    return shack;
+                }
+            }
+
+        return null;
+    }
+
+
+
+
 
 }

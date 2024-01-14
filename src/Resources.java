@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class Resources {
@@ -19,6 +17,11 @@ public class Resources {
 
     public void subtract(double amount) {
         this.amount -= amount;
+    }
+
+    @Override
+    public String toString() {
+        return "" + amount;
     }
 
 }
@@ -44,6 +47,11 @@ class Wallet {
         this.food.add(food);
         this.alloy.add(alloys);
         this.gold.add(gold);
+    }
+
+    @Override
+    public String toString() {
+        return "Food: "+food + " Alloys: "+alloy + " Gold: "+gold;
     }
 
     public void subtractResources(double food, double alloys, double gold) {
