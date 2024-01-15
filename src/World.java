@@ -343,7 +343,7 @@ class City extends ControlledArea implements Details {
 
     private void createQuarters() {
         Random random = new Random();
-        int numberOfQuarters = random.nextInt(3) + 2;
+        int numberOfQuarters = random.nextInt(30) + 10;
         ArrayList<String> names = NameCreation.generateQuarterNames(numberOfQuarters);
         quarters = new Quarter[numberOfQuarters];
 
@@ -435,7 +435,12 @@ class Quarter extends ControlledArea implements Details {
     public String fullHierarchyInfo(){
         Province prov = city.getProvince();
         Nation nat = prov.getNation();
-        return name + " in a: " + city.getName() + " -city. Of the: " + prov.getName() +" -province. Part of: " + nat.getName() + " -Nation.";
+        return name + "\n" +
+                "Inside: " + city.getName() + " - City\n" +
+                "Of the: " + prov.getName() + " - Province\n" +
+                "Part of: " + nat.getName() + " - Nation\n" +
+                "In the: " + nat.getHigher().getName() + " - Continent\n" +
+                "Of the Mighty: " + nat.getHigher().getHigher().getName();
     }
 
     private void createPeasants() {
