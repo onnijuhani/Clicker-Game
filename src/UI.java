@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class UI extends Application {
 
-    Wallet playerWallet = new Wallet(0, 0, 0);
+    Wallet playerWallet = new Wallet();
     Shack playerHome = new Shack("Your own");
     Label home;
     Label walletLabel;
@@ -219,7 +219,7 @@ public class UI extends Application {
         VBox playerInfoBox = new VBox();
         totalClicks = new Label("Click count: "+ clickCount);
         updateTotalClicks();
-        home = new Label(playerHome.toString()+"  "+playerHome.getMaintenanceCost());
+        home = new Label(playerHome.toString()+"  "+playerHome.getMaintenance().toString());
         playerInfoBox.getChildren().add(totalClicks);
         playerInfoBox.getChildren().add(home);
         playerInfoBox.setPrefHeight(150);
@@ -361,11 +361,13 @@ public class UI extends Application {
     private void handleButtonClick() {
         clickCount++;
         if (clickCount % 100 == 0) {
-            playerWallet.addResources(10, 0, 0);
+            TransferPackage transfer = new TransferPackage(10,0,0);
+            playerWallet.addResources(transfer);
             addMessage("10 Resources Added!");
 
         } else {
-            playerWallet.addResources(1, 0, 0);
+            TransferPackage basicTransfer = new TransferPackage(1,0,0);
+            playerWallet.addResources(basicTransfer);
             addMessage("1 Resource Added!");
         }
     }

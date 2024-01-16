@@ -1,220 +1,138 @@
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedList;
 
 public class Authority implements TimeObserver, Details {
 
     @Override
     public void timeUpdate(int day, int week, int month, int year) {
         if (day == 1 && week == 1) {
-            authOver.forEach(this::collectTax);
-            supporters.forEach(this::paySupporters);
+            collectTax();
+            paySupporters();
         }
     }
-
-    public Property getProperty() {
-        return property;
-    }
-
-    Property property;
-    AuthorityCharacter character;
-    String PropertyType;
-
-    protected double foodTaxRate = 0.6;
-    protected double alloyTaxRate = 0.6;
-    protected double goldTaxRate = 0.6;
-
+    protected Property property;
+    protected AuthorityCharacter character;
     protected ArrayList<Authority> authOver;
-    protected ArrayList<Authority> authUnder;
+    protected Authority authUnder;
     protected ArrayList<Support> supporters;
+    protected Tax taxForm;
 
-
-    public AuthorityCharacter getCharacter() {
-        return character;
-    }
     public void subscribeToTimeEvents() {
         TimeEventManager.subscribe(this);
     }
 
-    public Authority(Property property, AuthorityCharacter character) {
-        this.property = property;
-        this.character = character;
-        this.PropertyType = property.getName();
+    public Authority(Character character) {
+        this.character = (AuthorityCharacter) character;
+        this.taxForm = new Tax();
         this.authOver = new ArrayList<>();
-        this.authUnder = new ArrayList<>();
         this.supporters = new ArrayList<>();
+        this.property = character.getProperty();
         subscribeToTimeEvents();
+    }
+    public void collectTax(){
+        for (Authority authority : authOver){
+            Wallet wallet = authority.getCharacter().getWallet();
+            taxForm.collectTax(wallet,this.getCharacter().getWallet());
+        }
+    }
+    public void paySupporters(){
+        for (Support support : getSupporters()) {
+            Salary salary = support.getSalary();
+            TransferPackage transfer = TransferPackage.fromArray(salary.getAll());
+            support.getWallet().withdrawal(character.getWallet(), transfer);
+        }
     }
     public String getDetails(){
         String propertyName = this.property.getName();
-        String propertyClass = this.property.getClass().getSimpleName();
-
         String characterName = this.character.getName();
         String characterClass = this.character.getClass().getSimpleName();
-
         return characterClass+" "+characterName+" living in a "+propertyName;
     }
-
-
-
-    public String getPropertyType() {
-        return PropertyType;
+    public Property getProperty() {
+        return property;
     }
-    public double getFoodTaxRate() {
-        return foodTaxRate;
+    public void setProperty(Property property) {
+        this.property = property;
     }
-    public void setFoodTaxRate(double foodTaxRate) {
-        this.foodTaxRate = foodTaxRate;
+    public Character getCharacter() {
+        return character;
     }
-    public double getAlloyTaxRate() {
-        return alloyTaxRate;
+    public void setCharacter(AuthorityCharacter character) {
+        this.character = character;
     }
-    public void setAlloyTaxRate(double alloyTaxRate) {
-        this.alloyTaxRate = alloyTaxRate;
-    }
-    public double getGoldTaxRate() {
-        return goldTaxRate;
-    }
-    public void setGoldTaxRate(double goldTaxRate) {
-        this.goldTaxRate = goldTaxRate;
-    }
-
     public ArrayList<Authority> getAuthOver() {
         return authOver;
     }
-
-    public void setAuthOver(Authority authOver) {
-        this.authOver.add(authOver);
+    public void setAuthOver(Authority authority) {
+        authOver.add(authority);
     }
-
-    public ArrayList<Authority> getAuthUnder() {
+    public Authority getAuthUnder() {
         return authUnder;
     }
-
     public void setAuthUnder(Authority authUnder) {
-        this.authUnder.add(authUnder);
+        this.authUnder = authUnder;
     }
-
+    public ArrayList<Support> getSupporters() {
+        return supporters;
+    }
     public void addSupporter(Support support) {
         this.supporters.add(support);
     }
-
-    public ArrayList<Support> getSupporters(){
-        return supporters;
+    public Tax getTaxForm() {
+        return taxForm;
     }
-
-    public void collectTax(Authority authority){
-
-        Vault payerVault = authority.property.getVault();
-
-        double food = payerVault.getFood();
-        double alloy = payerVault.getAlloy();
-        double gold = payerVault.getGold();
-
-        double foodAmount = food * getFoodTaxRate();
-        double alloyAmount = alloy * getAlloyTaxRate();
-        double goldAmount = gold * getGoldTaxRate();
-
-        payerVault.subtractFood(foodAmount);
-        payerVault.subtractAlloy(alloyAmount);
-        payerVault.subtractGold(goldAmount);
-
-        this.property.vault.addResources(foodAmount, alloyAmount, goldAmount);
-
-        resourceTransfer.walletDeposit(authority.character, authority.property);
+    public void setTaxForm(Tax taxForm) {
+        this.taxForm = taxForm;
     }
-
-    public void paySupporters(Support support){
-        double food = property.getVault().getFood();
-        double alloy = property.getVault().getAlloy();
-        double gold = property.getVault().getGold();
-
-        double amountFood = support.salary;
-        double amountAlloy = support.salary;
-        double amountGold = support.salary;
-
-        property.vault.subtractResources(amountFood, amountAlloy, amountGold);
-
-        support.getWallet().addResources(amountFood, amountAlloy, amountGold);
-
-    }
-
 }
 
 class NationAuthority extends Authority {
-    public NationAuthority(Property property, AuthorityCharacter character) {
-        super(property, character);
+    public NationAuthority(Character character) {
+        super(character);
     }
-
 }
 
 class ProvinceAuthority extends Authority {
-    String authorityType = "Governor";
-
-    public ProvinceAuthority(Property property, AuthorityCharacter character) {
-        super(property, character);
+    public ProvinceAuthority(Character character) {
+        super(character);
     }
 }
 
 class CityAuthority extends Authority {
-
-    String authorityType = "Mayor";
-    public CityAuthority(Property property, AuthorityCharacter character) {
-        super(property, character);
+    public CityAuthority(Character character) {
+        super(character);
     }
-
-
-
 }
 
 class QuarterAuthority extends Authority {
 
-    String authorityType = "Captain";
+    private LinkedList<Peasant> peasants;
+    private Tax taxFormFarmers;
+    private Tax taxFormMiners;
+    private Tax taxFormMerchants;
 
-    public ArrayList<Peasant> getPeasants() {
-        return peasants;
-    }
-
-    private ArrayList<Peasant> peasants;
-
-    public QuarterAuthority(Property property, AuthorityCharacter character) {
-        super(property, character);
-        this.peasants = new ArrayList<>();
+    public QuarterAuthority(Character character) {
+        super(character);
+        this.peasants = new LinkedList<>();
+        this.taxFormFarmers = new Tax();
+        this.taxFormMiners = new Tax();
+        this.taxFormMerchants = new Tax();
     }
 
     @Override
-    public void timeUpdate(int day, int week, int month, int year) {
-        if (day == 2 && week == 1) {
-            peasants.forEach(peasant -> this.collectTax(peasant.releaseTax(this.enforceTax())));
+    public void collectTax(){
+        for (Peasant peasant : peasants){
+            Tax correctForm = peasant instanceof Farmer ? taxFormFarmers
+                    : peasant instanceof Miner ? taxFormMiners
+                    : taxFormMerchants;
+            Wallet wallet = peasant.getWallet();
+            correctForm.collectTax(wallet,this.getCharacter().getWallet());
         }
     }
-
     public void addPeasant(Peasant peasant){
         peasants.add(peasant);
     }
-
-    public HashMap<Resource, Double> enforceTax(){
-        HashMap<Resource, Double> taxRates = new HashMap<>();
-        taxRates.put(Resource.Food, foodTaxRate);
-        taxRates.put(Resource.Alloy, alloyTaxRate);
-        taxRates.put(Resource.Gold, goldTaxRate);
-        return taxRates;
+    public LinkedList<Peasant> getPeasants() {
+        return peasants;
     }
-
-    public void collectTax(HashMap<Resource, Resources> collected) {
-        if (collected.containsKey(Resource.Food)) {
-            double food = collected.get(Resource.Food).getAmount();
-            property.vault.addFood(food);
-        }
-
-        if (collected.containsKey(Resource.Alloy)) {
-            double alloy = collected.get(Resource.Alloy).getAmount();
-            property.vault.addAlloy(alloy);
-        }
-
-        if (collected.containsKey(Resource.Gold)) {
-            double gold = collected.get(Resource.Gold).getAmount();
-            property.vault.addGold(gold);
-        }
-    }
-
 }

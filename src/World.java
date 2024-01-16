@@ -133,7 +133,7 @@ class Continent extends Area implements Details {
             property.setOwner(king);
             propertyTracker.addProperty(property);
 
-            Authority authority = new NationAuthority(property, king);
+            Authority authority = new NationAuthority(king);
 
             Nation nation = new Nation(nationName, this, orientationStyle, authority);
 
@@ -217,7 +217,7 @@ class Nation extends ControlledArea implements Details {
             property.setOwner(governor);
             propertyTracker.addProperty(property);
 
-            Authority authority = new ProvinceAuthority(property, governor);
+            Authority authority = new ProvinceAuthority(governor);
 
             for (int merc = 0; merc < 6; merc++) {
                 Mercenary mercenary = new Mercenary(authority);
@@ -237,15 +237,11 @@ class Nation extends ControlledArea implements Details {
 
 class Province extends ControlledArea implements Details {
     private String name;
-
-    private String areaName = "Province";
     @Override
     public String getName() {
         return this.name;
     }
-
     private City[] cities;
-
     private Nation nation;
 
     public Nation getNation() {
@@ -287,8 +283,7 @@ class Province extends ControlledArea implements Details {
             Property property = PropertyCreation.createProperty(name, "City");
             property.setOwner(mayor);
             propertyTracker.addProperty(property);
-
-            Authority authority = new CityAuthority(property, mayor);
+            Authority authority = new CityAuthority(mayor);
 
             City city = new City(name, this, authority);
 
@@ -356,7 +351,7 @@ class City extends ControlledArea implements Details {
             property.setOwner(captain);
             propertyTracker.addProperty(property);
 
-            Authority authority = new QuarterAuthority(property, captain);
+            Authority authority = new QuarterAuthority(captain);
 
             Quarter quarter = new Quarter(name, this, authority);
             quarters[i] = quarter;
@@ -395,7 +390,7 @@ class Quarter extends ControlledArea implements Details {
         this.name = name;
         this.city = city;
         this.propertyTracker = new PropertyTracker();
-        super.authority = authority;
+        this.authority = authority;
         Authority captain = this.authority;
         this.populationList = new HashMap<>();
         captain.getCharacter().setNation(city.getProvince().getNation());

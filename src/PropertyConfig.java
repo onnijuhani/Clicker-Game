@@ -10,46 +10,13 @@ public class PropertyConfig {
     public static final PropertyValues VILLA = new PropertyValues(50, 0, 30, 30);
     public static final PropertyValues COTTAGE = new PropertyValues(30, 0, 20, 20);
     public static final PropertyValues SHACK = new PropertyValues(20, 0, 10, 0);
-
-    public static Vault createFortressVault() {
-        return new Vault(FORTRESS.food, FORTRESS.alloy, FORTRESS.gold);
-    }
-
-    public static Vault createCitadelVault() {
-        return new Vault(CITADEL.food, CITADEL.alloy, CITADEL.gold);
-    }
-
-    public static Vault createCastleVault() {
-        return new Vault(CASTLE.food, CASTLE.alloy, CASTLE.gold);
-    }
-
-    public static Vault createManorVault() {
-        return new Vault(MANOR.food, MANOR.alloy, MANOR.gold);
-    }
-
-    public static Vault createMansionVault() {
-        return new Vault(MANSION.food, MANSION.alloy, MANSION.gold);
-    }
-
-    public static Vault createVillaVault() {
-        return new Vault(VILLA.food, VILLA.alloy, VILLA.gold);
-    }
-
-    public static Vault createCottageVault() {
-        return new Vault(COTTAGE.food, COTTAGE.alloy, COTTAGE.gold);
-    }
-
-    public static Vault createShackVault() {
-        return new Vault(SHACK.food, SHACK.alloy, SHACK.gold);
-    }
-
     public static class PropertyValues {
-        int food;
-        int alloy;
-        int gold;
-        int strength;
+        double food;
+        double alloy;
+        double gold;
+        double strength;
 
-        public PropertyValues(int food, int alloy, int gold, int strength) {
+        public PropertyValues(double food, double alloy, double gold, double strength) {
             this.food = food;
             this.alloy = alloy;
             this.gold = gold;
@@ -60,15 +27,12 @@ public class PropertyConfig {
 
 class PropertyTracker {
     private List<Property> properties;
-
     public PropertyTracker() {
         this.properties = new ArrayList<>();
     }
-
     public void addProperty(Property property) {
         properties.add(property);
     }
-
     public List<Property> getProperties() {
         return properties;
     }
@@ -80,181 +44,193 @@ class Property implements TimeObserver {
     @Override
     public void timeUpdate(int day, int week, int month, int year) {
         if (week == 4){
-            maintenanceCost();
+            maintenance.payMaintenance(this);
         }
+    }
+    protected double strength;
+    protected Vault vault;
+    protected Quarter location;
+    protected Character owner;
+    protected Maintenance maintenance;
+    protected String name;
+    protected Buildings buildings;
+
+    public Property(PropertyConfig.PropertyValues propertyValues, String name) {
+        this.strength = propertyValues.strength;
+        this.vault = new Vault();
+        this.name = name;
+        this.maintenance = new Maintenance(propertyValues);
+        subscribeToTimeEvents();
     }
     @Override
     public String toString() {
         return name;
     }
-
     public void subscribeToTimeEvents() {
         TimeEventManager.subscribe(this);
     }
-
-    protected int food;
-    protected int alloy;
-    protected int gold;
-    protected int strength;
-    protected Vault vault;
-    protected Quarter location;
-    public Character owner;
-
-
-    String name;
-    public String getName() {
-        return name;
-    }
-
-    public Property(PropertyConfig.PropertyValues propertyValues, Vault vault, String name) {
-        this.food = propertyValues.food;
-        this.alloy = propertyValues.alloy;
-        this.gold = propertyValues.gold;
-        this.strength = propertyValues.strength;
-        this.vault = vault;
-        this.name = name;
-        subscribeToTimeEvents();
-    }
-
-    public String getMaintenanceCost(){
-        return "Maintenance cost: " + food+" - "+alloy+" - "+gold;
-    }
-
     public Character getOwner() {
         return owner;
     }
-
     public void setOwner(Character owner) {
         this.owner = owner;
     }
-
     public Vault getVault() {
         return vault;
     }
-
-    public void maintenanceCost(){
-        if (vault.getFood() < food) {
-            owner.getWallet().subtractFood(food);
-        } else {
-            vault.subtractFood(food);
-        }
-
-        if (vault.getAlloy() < alloy) {
-            owner.getWallet().subtractAlloy(alloy);
-        } else {
-            vault.subtractAlloy(alloy);
-        }
-
-        if (vault.getGold() < gold) {
-            owner.getWallet().subtractGold(gold);
-        } else {
-            vault.subtractGold(gold);
-        }
-
-    }
-
     public Quarter getLocation() {
         return location;
     }
-
     public void setLocation(Quarter location) {
         this.location = location;
     }
-
     public boolean hasLocation() {
         return location != null;
     }
-
-    public int getFood() {
-        return food;
-    }
-
-    public void setFood(int food) {
-        this.food = food;
-    }
-
-    public int getAlloy() {
-        return alloy;
-    }
-
-    public void setAlloy(int alloy) {
-        this.alloy = alloy;
-    }
-
-    public int getGold() {
-        return gold;
-    }
-
-    public void setGold(int gold) {
-        this.gold = gold;
-    }
-
-    public int getStrength() {
-        return strength;
-    }
-
     public void setStrength(int strength) {
         this.strength = strength;
+    }
+    public String getName() {
+        return name;
+    }
+    public Buildings getBuildings() {
+        return buildings;
+    }
+    public void setBuildings(Buildings buildings) {
+        this.buildings = buildings;
+    }
+    public Maintenance getMaintenance() {
+        return maintenance;
+    }
+    public void setMaintenance(Maintenance maintenance) {
+        this.maintenance = maintenance;
     }
 }
 
 class Fortress extends Property {
-    String propertyName = "Fortress";
     public Fortress(String name) {
-        super(PropertyConfig.FORTRESS, PropertyConfig.createFortressVault(), name + " " + "Fortress");
+        super(PropertyConfig.FORTRESS, name + " " + "Fortress");
     }
 }
 
 class Citadel extends Property {
-    String propertyName = "Citadel";
     public Citadel(String name) {
-        super(PropertyConfig.CITADEL, PropertyConfig.createCitadelVault(), name + " " + "Citadel");
+        super(PropertyConfig.CITADEL, name + " " + "Citadel");
     }
 }
 
 class Castle extends Property {
-    String propertyName = "Castle";
     public Castle(String name) {
-        super(PropertyConfig.CASTLE, PropertyConfig.createCastleVault(), name + " " + "Castle");
+        super(PropertyConfig.CASTLE, name + " " + "Castle");
     }
 }
 
 class Manor extends Property {
-    String propertyName = "Manor";
     public Manor(String name) {
-        super(PropertyConfig.MANOR, PropertyConfig.createManorVault(), name + " " + "Manor");
+        super(PropertyConfig.MANOR, name + " " + "Manor");
     }
 }
 
 class Mansion extends Property {
-    String propertyName = "Mansion";
     public Mansion(String name) {
-        super(PropertyConfig.MANSION, PropertyConfig.createMansionVault(), name + " " + "Mansion");
+        super(PropertyConfig.MANSION, name + " " + "Mansion");
     }
 }
 
 class Villa extends Property {
-    String propertyName = "Ville";
     public Villa(String name) {
-        super(PropertyConfig.VILLA, PropertyConfig.createVillaVault(), name + " " + "Villa");
+        super(PropertyConfig.VILLA, name + " " + "Villa");
     }
 }
 
 class Cottage extends Property {
-    String propertyName = "Cottage";
     public Cottage(String name) {
-        super(PropertyConfig.COTTAGE, PropertyConfig.createCottageVault(), name + " " + "Cottage");
+        super(PropertyConfig.COTTAGE, name + " " + "Cottage");
     }
 }
 
 class Shack extends Property {
-    String propertyName = "Shack";
     public Shack(String name) {
-        super(PropertyConfig.SHACK, PropertyConfig.createShackVault(), name + " " + "Shack");
+        super(PropertyConfig.SHACK, name + " " + "Shack");
+    }
+}
+
+class Maintenance {
+    private double food;
+    private double alloy;
+    private double gold;
+
+    public Maintenance(PropertyConfig.PropertyValues propertyValues){
+        this.food = propertyValues.food;
+        this.alloy = propertyValues.alloy;
+        this.gold = propertyValues.gold;
+    }
+
+    public void payMaintenance(Property property) {
+        TransferPackage maintenanceCost = maintenanceCost();
+        Vault propertyVault = property.getVault();
+        Wallet ownerWallet = property.getOwner().getWallet();
+
+        if (canPay(maintenanceCost, propertyVault)) {
+            propertyVault.subtractResources(maintenanceCost);
+        } else if (canPay(maintenanceCost, ownerWallet)) {
+            ownerWallet.subtractResources(maintenanceCost);
+        } else {
+            System.out.println("Insufficient resources for maintenance.");
+        }
+    }
+
+    private boolean canPay(TransferPackage cost, Wallet wallet) {
+        double[] walletResources = wallet.getWalletValues();
+        double[] costResources = cost.getAll();
+        return walletResources[0] >= costResources[0] &&
+                walletResources[1] >= costResources[1] &&
+                walletResources[2] >= costResources[2];
+    }
+    public TransferPackage maintenanceCost(){
+        return new TransferPackage(food, alloy, gold);
+    }
+    @Override
+    public String toString(){
+        return "Maintenance cost: " + food+" - "+alloy+" - "+gold;
     }
 }
 
 
+class Buildings {
+
+
+    public Buildings() {
+    }
+
+
+    class FarmField{
+        public FarmField(){
+        }
+    }
+    class AlloyMine{
+        public AlloyMine(){
+        }
+    }
+    class GoldMine {
+        public GoldMine() {
+     }
+    }
+    class SlaveFacility{
+        public SlaveFacility() {
+        }
+    }
+}
+enum Properties{
+    Fortress,
+    Citadel,
+    Castle,
+    Manor,
+    Mansion,
+    Villa,
+    Cottage,
+    Shack,
+}
 
 
 
