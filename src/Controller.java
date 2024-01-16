@@ -13,10 +13,8 @@ public class Controller {
     }
 
     public ArrayList<Quarter> getQuarterList() {
-        return model.getCurrentPosition().getAvailableQuarters();
+        return model.accessCurrentPosition().getAvailableQuarters();
     }
-
-
 
 }
 

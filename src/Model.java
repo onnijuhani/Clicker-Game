@@ -17,11 +17,11 @@ public class Model {
         return world;
     }
 
-    public CurrentPosition getCurrentPosition() {
+    public CurrentPosition accessCurrentPosition() {
         return currentPosition;
     }
 
-    public CurrentView getCurrentView() {
+    public CurrentView accessCurrentView() {
         return currentView;
     }
 }

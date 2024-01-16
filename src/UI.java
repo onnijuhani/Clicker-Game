@@ -34,13 +34,28 @@ public class UI extends Application {
     private Button higherAreaButton;
     private ListView<Button> buttonAreaList;
 
+    private Label higherAreaButtonInfo;
+
+    private Label currentViewAreaName;
+
+
+
     @Override
     public void start(Stage primaryStage) {
 
         this.control = new Controller(this);
 
-        higherAreaButton = new Button();
-        buttonAreaList = new ListView<>();
+        this.higherAreaButton = new Button();
+        this.buttonAreaList = new ListView<>();
+        this.higherAreaButtonInfo = new Label();
+        higherAreaButtonInfo.setText(control.getModel().accessCurrentView().getCurrentView().getClass().getSimpleName());
+        this.currentViewAreaName = new Label();
+        if (!control.getModel().accessCurrentView().getCurrentView().getContents().isEmpty()) {
+            currentViewAreaName.setText(control.getModel().accessCurrentView().getCurrentView().getContents().get(0).getClass().getSimpleName());
+        } else {
+            currentViewAreaName.setText("No contents available");
+        }
+        currentViewAreaName.setStyle("-fx-font-weight: bold; -fx-padding: 5px;");
 
 
         this.primaryStage = primaryStage;
@@ -79,55 +94,98 @@ public class UI extends Application {
     private VBox getAreaViewContainer() {
         Label listViewTitle = new Label("Explore The Map");
         listViewTitle.setStyle("-fx-font-weight: bold; -fx-padding: 5px;");
+        updateHigherAreaButton();
 
-        Area areaHigher = control.getModel().getCurrentView().getHigher();
-        Button higherAreaButton = new Button(areaHigher != null ? areaHigher.getName() : "...");
+        Area areaHigher = control.getModel().accessCurrentView().getHigher();
+
+        HBox higherAreaButtonAndLabel = new HBox(5); // 5 is spacing between elements
+        higherAreaButtonAndLabel.getChildren().addAll(higherAreaButton, higherAreaButtonInfo);
+
         higherAreaButton.setOnAction(event -> {
             if (areaHigher != null) {
-                control.getModel().getCurrentView().updateCurrentView(areaHigher);
+                control.getModel().accessCurrentView().updateCurrentView(areaHigher);
                 updateAreaViewContainer();
+                updateHigherAreaButton();
+                currentViewAreaName.setText(control.getModel().accessCurrentView().getCurrentView().getContents().get(0).getClass().getSimpleName());
             }
         });
 
-        ListView<Button> buttonListBox = new ListView<>();
+        VBox areaViewListAndLabel = new VBox(5);
+        areaViewListAndLabel.getChildren().addAll(currentViewAreaName,buttonAreaList);
+
         ObservableList<Button> areasList = FXCollections.observableArrayList();
-        ArrayList<Area> availableAreas = control.getModel().getCurrentView().getContents();
+        ArrayList<Area> availableAreas = control.getModel().accessCurrentView().getContents();
         for (Area area : availableAreas) {
             Button button = new Button(area.getName());
             areasList.add(button);
             button.setOnAction(event -> {
-                control.getModel().getCurrentView().updateCurrentView(area);
+                control.getModel().accessCurrentView().updateCurrentView(area);
                 updateAreaViewContainer();
+                if (!control.getModel().accessCurrentView().getCurrentView().getContents().isEmpty()) {
+                    currentViewAreaName.setText(control.getModel().accessCurrentView().getCurrentView().getContents().get(0).getClass().getSimpleName());
+                } else {
+                    currentViewAreaName.setText("No contents available");
+                }
+                currentViewAreaName.setText(control.getModel().accessCurrentView().getCurrentView().getContents().get(0).getClass().getSimpleName());
             });
         }
-        buttonListBox.setItems(areasList);
+        buttonAreaList.setItems(areasList);
 
-        VBox areaViewContainer = new VBox(listViewTitle, higherAreaButton, buttonListBox );
+        VBox areaViewContainer = new VBox(listViewTitle, higherAreaButtonAndLabel, areaViewListAndLabel );
         return areaViewContainer;
     }
     private void updateAreaViewContainer() {
         // Update the higher area button
-        Area areaHigher = control.getModel().getCurrentView().getHigher();
+        Area areaHigher = control.getModel().accessCurrentView().getHigher();
         higherAreaButton.setText(areaHigher != null ? areaHigher.getName() : "Higher Area");
         higherAreaButton.setOnAction(event -> {
             if (areaHigher != null) {
-                control.getModel().getCurrentView().updateCurrentView(areaHigher);
+                control.getModel().accessCurrentView().updateCurrentView(areaHigher);
                 updateAreaViewContainer();  // refresh the container
+                higherAreaButtonInfo.setText(control.getModel().accessCurrentView().getCurrentView().getClass().getSimpleName());
+                if (!control.getModel().accessCurrentView().getCurrentView().getContents().isEmpty()) {
+                    currentViewAreaName.setText(control.getModel().accessCurrentView().getCurrentView().getContents().get(0).getClass().getSimpleName());
+                } else {
+                    currentViewAreaName.setText("No contents available");
+                }
+                currentViewAreaName.setText(control.getModel().accessCurrentView().getCurrentView().getContents().get(0).getClass().getSimpleName());
             }
         });
-
         // Update the list of area buttons
         ObservableList<Button> areasList = FXCollections.observableArrayList();
-        ArrayList<Area> availableAreas = control.getModel().getCurrentView().getContents();
+        ArrayList<Area> availableAreas = control.getModel().accessCurrentView().getContents();
         for (Area area : availableAreas) {
             Button button = new Button(area.getName());
             button.setOnAction(event -> {
-                control.getModel().getCurrentView().updateCurrentView(area);
+                control.getModel().accessCurrentView().updateCurrentView(area);
                 updateAreaViewContainer();  // refresh the container
+                if (!control.getModel().accessCurrentView().getCurrentView().getContents().isEmpty()) {
+                    currentViewAreaName.setText(control.getModel().accessCurrentView().getCurrentView().getContents().get(0).getClass().getSimpleName());
+                } else {
+                    currentViewAreaName.setText("No contents available");
+                }
+                currentViewAreaName.setText(control.getModel().accessCurrentView().getCurrentView().getContents().get(0).getClass().getSimpleName());
             });
             areasList.add(button);
         }
         buttonAreaList.setItems(areasList);
+    }
+    private void updateHigherAreaButton() {
+        Area areaHigher = control.getModel().accessCurrentView().getHigher();
+        higherAreaButton.setText(areaHigher != null ? areaHigher.getName() : "Higher Area");
+        higherAreaButton.setOnAction(event -> {
+            if (areaHigher != null) {
+                control.getModel().accessCurrentView().updateCurrentView(areaHigher);
+                updateAreaViewContainer(); // refresh the container
+                higherAreaButtonInfo.setText(control.getModel().accessCurrentView().getCurrentView().getClass().getSimpleName());
+                if (!control.getModel().accessCurrentView().getCurrentView().getContents().isEmpty()) {
+                    currentViewAreaName.setText(control.getModel().accessCurrentView().getCurrentView().getContents().get(0).getClass().getSimpleName());
+                } else {
+                    currentViewAreaName.setText("No contents available");
+                }
+                currentViewAreaName.setText(control.getModel().accessCurrentView().getCurrentView().getContents().get(0).getClass().getSimpleName());
+            }
+        });
     }
 
 
@@ -265,7 +323,7 @@ public class UI extends Application {
             Button button = new Button(quarter.getName());
             quarterList.add(button);
             button.setOnAction(event -> {
-                control.getModel().getCurrentPosition().updateCurrentQuarter(quarter);
+                control.getModel().accessCurrentPosition().updateCurrentQuarter(quarter);
                 updateSquare1Text();
             });
         }
@@ -324,7 +382,7 @@ public class UI extends Application {
     }
 
     private String currentQuarterInfo() {
-        return control.getModel().getCurrentPosition().getCurrentQuarter().fullHierarchyInfo();
+        return control.getModel().accessCurrentPosition().getCurrentQuarter().fullHierarchyInfo();
     }
 
     public static void main(String[] args) {
