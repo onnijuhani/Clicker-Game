@@ -8,20 +8,32 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class UI extends Application {
+interface ShopViewCallback {
+    void onBackToMainView();
+    void openExchange();
+}
+
+public class UI extends Application implements ShopViewCallback {
+
+    @Override
+    public void onBackToMainView() {
+        backToMainView();
+    }
 
     Label playerHome;
     Label totalClicks;
     private Label walletLabel;
-    private Label shopWalletLabel;
+
     private ObservableList<String> resourceMessage = FXCollections.observableArrayList();
 
     private Stage primaryStage;
@@ -60,6 +72,8 @@ public class UI extends Application {
         main = openMainScene();
         primaryStage.setScene(main);
         primaryStage.setTitle("Outside");
+        Image icon = new Image(getClass().getResourceAsStream("/icon.png"));
+        primaryStage.getIcons().add(icon);
 
 
         // Show the stage
@@ -80,7 +94,7 @@ public class UI extends Application {
 
 
         SplitPane finalSection = getFinalSection(getWalletSection(), getUpperButtonSection(), informationSection, clickMeSection, botSection);
-        Scene mainScene = new Scene(finalSection, 1000, 800);
+        Scene mainScene = new Scene(finalSection, 1800, 1000);
         return mainScene;
 
     }
@@ -174,7 +188,7 @@ public class UI extends Application {
     private static HBox getBotSection(VBox listViewContainer, GridPane areaDetailContainers, VBox areaViewContainer) {
         HBox botSection = new HBox(10);
         botSection.getChildren().addAll(listViewContainer, areaDetailContainers, areaViewContainer);
-        botSection.setStyle("-fx-background-color: lightblue;");
+        botSection.setStyle("-fx-background-color: lightgray;");
         return botSection;
     }
     @NotNull
@@ -225,7 +239,7 @@ public class UI extends Application {
         GridPane upperButtonSection = new GridPane();
         Button shopButton = new Button("Shop");
         upperButtonSection.add(shopButton, 8, 0, 2, 1);
-        shopButton.setOnAction(e -> openShop());
+        shopButton.setOnAction(e -> openExchange());
         upperButtonSection.setStyle("-fx-background-color: black;");
         return upperButtonSection;
     }
@@ -293,24 +307,11 @@ public class UI extends Application {
         VBox listViewContainer = new VBox(listViewTitle, buttonListBox);
         return listViewContainer;
     }
-    private void openShop() {
-        VBox shopViewRoot = new VBox();
-        Button backButton = new Button("Back to Main View");
-        backButton.setOnAction(e -> backToMainView());
-
-        //exchange
-        VBox foodToGoldBox = new VBox(10);
-        Label foodToGoldLabel = new Label("100 Food to 10 Gold");
-        Button foodToGoldBtn = new Button("BuyGold");
-        foodToGoldBox.getChildren().addAll(foodToGoldLabel,foodToGoldBtn);
-        foodToGoldBtn.setOnAction(e -> {
-            control.getModel().accessShop().getExchange().exchangeResources(10, Resource.Gold, Resource.Food, player.getWallet());
-            updateShopWalletLabel();
-        });
-        shopViewRoot.getChildren().addAll(getShopWalletSection(),backButton,foodToGoldBox);
-        Scene shopViewScene = new Scene(shopViewRoot, 1000, 800);
-
-        primaryStage.setScene(shopViewScene);
+    public void openExchange() {
+        ExchangeView exchangeView = new ExchangeView(player, control, this);
+        VBox shopRoot = exchangeView.initializeShop();
+        Scene exchangeViewScene = new Scene(shopRoot, 1800, 1000);
+        primaryStage.setScene(exchangeViewScene);
         primaryStage.setTitle("Shop");
     }
     @NotNull
@@ -320,31 +321,18 @@ public class UI extends Application {
         HBox walletSection = new HBox();
         walletSection.getChildren().add(walletLabel);
         walletSection.setAlignment(Pos.CENTER);
-        walletSection.setStyle("-fx-background-color: lightblue;");
+        walletSection.setStyle("-fx-background-color: lightgray;");
         return walletSection;
     }
     private void updateWalletLabel() {
         walletLabel.setText("Wallet: " + player.getWallet().toString());
     }
-    private void updateShopWalletLabel() {
-        shopWalletLabel.setText("Wallet: " + player.getWallet().toString());
-    }
-    private HBox getShopWalletSection() {
-        shopWalletLabel = new Label("Wallet: " + player.getWallet().toString());
-        shopWalletLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 12pt");
-        HBox walletSection = new HBox();
-        walletSection.getChildren().add(shopWalletLabel);
-        walletSection.setAlignment(Pos.CENTER);
-        walletSection.setStyle("-fx-background-color: lightblue;");
-        return walletSection;
-    }
 
-    private void backToMainView() {
+    public void backToMainView() {
         updateWalletLabel();
         primaryStage.setScene(main);
         primaryStage.setTitle("Outside");
     }
-
     private void updateTotalClicks() {
         totalClicks.setText("Click count: " + player.getTotalClicks());
     }
@@ -377,7 +365,116 @@ public class UI extends Application {
         launch(args);
     }
 }
+class ExchangeView extends VBox {
+    private Player player;
+    private Controller control;
+    private Label shopWalletLabel;
+    private ShopViewCallback callback;
 
+    public ExchangeView(Player player, Controller controller, ShopViewCallback callback) {
+        this.player = player;
+        this.control = controller;
+        this.callback = callback;
+        initializeShop();
+    }
+
+
+
+    private void setupBackButton() {
+        Button backButton = new Button("Back to Main View");
+        backButton.setOnAction(e -> {
+            if (callback != null) {
+                callback.onBackToMainView();
+            }
+        });
+    }
+
+    public VBox initializeShop() {
+        VBox exchangeViewRoot = new VBox();
+        exchangeViewRoot.setStyle("-fx-background-image: url('file:C:/Users/onnil/IdeaProjects/Outside/Pictures/BackGround/exchange.png'); " +
+                "-fx-background-size: stretch; " +
+                "-fx-background-repeat: no-repeat; " +
+                "-fx-background-position: center center;");
+        Button backButton = new Button("Back to Main View");
+        backButton.setOnAction(e -> {
+            if (callback != null) {
+                callback.onBackToMainView();
+            }
+        });
+        DropShadow shadow = new DropShadow();
+        shadow.setRadius(5.0);
+        shadow.setOffsetX(3.0);
+        shadow.setOffsetY(3.0);
+        shadow.setColor(Color.GRAY);
+        //exchange
+        HBox foodToGoldBox = new HBox(10);
+        foodToGoldBox.setStyle("-fx-padding: 10; -fx-border-width: 2; -fx-border-color: black; -fx-background-color: lightGray");
+        foodToGoldBox.setEffect(shadow);
+        Label foodToGoldLabel = new Label("100 Food to 10 Gold");
+        Button foodToGoldBtn = new Button("BuyGold");
+        foodToGoldBox.getChildren().addAll(foodToGoldLabel,foodToGoldBtn);
+        foodToGoldBtn.setOnAction(e -> {
+            control.getModel().accessShop().getExchange().exchangeResources(10, Resource.Gold, Resource.Food, player.getWallet());
+            updateShopWalletLabel();
+        });
+        HBox alloyToGoldBox = new HBox(10);
+        alloyToGoldBox.setStyle("-fx-padding: 10; -fx-border-width: 2; -fx-border-color: black; -fx-background-color: lightGray");
+        alloyToGoldBox.setEffect(shadow);
+        Label alloyToGoldLabel = new Label("50 Alloy to 10 Gold");
+        Button alloyToGoldBtn = new Button("BuyGold");
+        alloyToGoldBox.getChildren().addAll(alloyToGoldLabel,alloyToGoldBtn);
+        alloyToGoldBtn.setOnAction(e -> {
+            control.getModel().accessShop().getExchange().exchangeResources(10, Resource.Gold, Resource.Alloy, player.getWallet());
+            updateShopWalletLabel();
+        });
+        HBox goldToAlloyBox = new HBox(10);
+        goldToAlloyBox.setStyle("-fx-padding: 10; -fx-border-width: 2; -fx-border-color: black; -fx-background-color: lightGray");
+        goldToAlloyBox.setEffect(shadow);
+        Label goldToAlloyLabel = new Label("10 gold to 50 Alloys");
+        Button GoldToAlloysBtn = new Button("BuyAlloys");
+        goldToAlloyBox.getChildren().addAll(goldToAlloyLabel,GoldToAlloysBtn);
+        GoldToAlloysBtn.setOnAction(e -> {
+            control.getModel().accessShop().getExchange().exchangeResources(50, Resource.Alloy, Resource.Gold, player.getWallet());
+            updateShopWalletLabel();
+        });
+        HBox goldToFoodBox = new HBox(10);
+        goldToFoodBox.setStyle("-fx-padding: 10; -fx-border-width: 2; -fx-border-color: black; -fx-background-color: lightGray");
+        goldToFoodBox.setEffect(shadow);
+        Label goldToFoodLabel = new Label("10 gold to 100 food");
+        Button goldToFoodBtn = new Button("BuyFood");
+        goldToFoodBox.getChildren().addAll(goldToFoodLabel,goldToFoodBtn);
+        goldToFoodBtn.setOnAction(e -> {
+            control.getModel().accessShop().getExchange().exchangeResources(100, Resource.Food, Resource.Gold, player.getWallet());
+            updateShopWalletLabel();
+        });
+        HBox exchangeBox = new HBox(10);
+        exchangeBox.setAlignment(Pos.CENTER);
+        exchangeBox.getChildren().addAll(foodToGoldBox,alloyToGoldBox,goldToAlloyBox,goldToFoodBox);
+
+        HBox exchangeLabelBox = new HBox();
+        exchangeLabelBox.setAlignment(Pos.CENTER);
+        Label exchangeLabel = new Label("Resources Exchange:");
+        exchangeLabelBox.getChildren().add(exchangeLabel);
+
+        exchangeLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 12pt;-fx-text-fill: white");
+
+
+        exchangeViewRoot.getChildren().addAll(getShopWalletSection(),backButton,exchangeLabelBox,exchangeBox );
+        return exchangeViewRoot;
+    }
+    private void updateShopWalletLabel() {
+        shopWalletLabel.setText("Wallet: " + player.getWallet().toString());
+    }
+    private HBox getShopWalletSection() {
+        shopWalletLabel = new Label("Wallet: " + player.getWallet().toString());
+        shopWalletLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 12pt");
+        HBox walletSection = new HBox();
+        walletSection.getChildren().add(shopWalletLabel);
+        walletSection.setAlignment(Pos.CENTER);
+        walletSection.setStyle("-fx-background-color: lightgray;");
+        return walletSection;
+    }
+}
 
 
 

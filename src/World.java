@@ -205,7 +205,7 @@ class Nation extends ControlledArea implements Details {
 
     private void createProvinces() {
         Random random = new Random();
-        int numberOfProvinces = random.nextInt(7) + 2;
+        int numberOfProvinces = random.nextInt(8) + 2;
         provinces = new Province[numberOfProvinces];
 
         for (int i = 0; i < numberOfProvinces; i++) {
@@ -338,7 +338,7 @@ class City extends ControlledArea implements Details {
 
     private void createQuarters() {
         Random random = new Random();
-        int numberOfQuarters = random.nextInt(30) + 10;
+        int numberOfQuarters = random.nextInt(15) + 6;
         ArrayList<String> names = NameCreation.generateQuarterNames(numberOfQuarters);
         quarters = new Quarter[numberOfQuarters];
 
