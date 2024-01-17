@@ -1,3 +1,5 @@
+import javafx.scene.image.Image;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +56,7 @@ class Property implements TimeObserver {
     protected Maintenance maintenance;
     protected String name;
     protected Buildings buildings;
+    protected Properties propertyEnum;
 
     public Property(PropertyConfig.PropertyValues propertyValues, String name) {
         this.strength = propertyValues.strength;
@@ -61,6 +64,9 @@ class Property implements TimeObserver {
         this.name = name;
         this.maintenance = new Maintenance(propertyValues);
         subscribeToTimeEvents();
+    }
+    public Image getImage(){
+        return Images.PropertyImg.getImage(propertyEnum);
     }
     @Override
     public String toString() {
@@ -108,50 +114,59 @@ class Property implements TimeObserver {
 }
 
 class Fortress extends Property {
+
     public Fortress(String name) {
         super(PropertyConfig.FORTRESS, name + " " + "Fortress");
+        this.propertyEnum = Properties.Fortress;
     }
 }
 
 class Citadel extends Property {
     public Citadel(String name) {
         super(PropertyConfig.CITADEL, name + " " + "Citadel");
+        this.propertyEnum = Properties.Citadel;
     }
 }
 
 class Castle extends Property {
     public Castle(String name) {
         super(PropertyConfig.CASTLE, name + " " + "Castle");
+        this.propertyEnum = Properties.Castle;
     }
 }
 
 class Manor extends Property {
     public Manor(String name) {
         super(PropertyConfig.MANOR, name + " " + "Manor");
+        this.propertyEnum = Properties.Manor;
     }
 }
 
 class Mansion extends Property {
     public Mansion(String name) {
         super(PropertyConfig.MANSION, name + " " + "Mansion");
+        this.propertyEnum = Properties.Mansion;
     }
 }
 
 class Villa extends Property {
     public Villa(String name) {
         super(PropertyConfig.VILLA, name + " " + "Villa");
+        this.propertyEnum = Properties.Villa;
     }
 }
 
 class Cottage extends Property {
     public Cottage(String name) {
         super(PropertyConfig.COTTAGE, name + " " + "Cottage");
+        this.propertyEnum = Properties.Cottage;
     }
 }
 
 class Shack extends Property {
     public Shack(String name) {
         super(PropertyConfig.SHACK, name + " " + "Shack");
+        this.propertyEnum = Properties.Shack;
     }
 }
 
@@ -202,7 +217,6 @@ class Buildings {
 
     public Buildings() {
     }
-
 
     class FarmField{
         public FarmField(){

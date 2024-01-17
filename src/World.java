@@ -12,7 +12,7 @@ enum Size {
 
 abstract class Area implements Details {
     protected String name;
-    protected String areaName = "Area";
+
     public PropertyTracker propertyTracker;
 
     abstract ArrayList getContents();

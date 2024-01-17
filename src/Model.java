@@ -4,13 +4,15 @@ public class Model {
     private final CreateWorld world;
     private CurrentPosition currentPosition;
     private CurrentView currentView;
+    private Player player;
 
     public Model(){
         this.world = new CreateWorld();
         this.currentPosition = new CurrentPosition();
         currentPosition.updateCurrentQuarter(world.getSpawnQuarter());
         this.currentView = new CurrentView();
-        currentView.setCurrentView(world.getSpawnQuarter());
+        currentView.setCurrentView(world.getSpawnQuarter().getHigher());
+        this.player = new Player(world.getSpawnQuarter());
     }
 
     public CreateWorld getWorld() {
@@ -23,6 +25,9 @@ public class Model {
 
     public CurrentView accessCurrentView() {
         return currentView;
+    }
+    public Player accessPlayer() {
+        return player;
     }
 }
 
@@ -47,13 +52,14 @@ class CreateWorld {
 
 class CurrentView {
     private Area currentView;
+
+    public CurrentView(){
+    }
     public Area getCurrentView() {
         return currentView;
     }
     public void setCurrentView(Area currentView) {
         this.currentView = currentView;
-    }
-    public CurrentView(){
     }
     public void updateCurrentView(Area area) {
         this.currentView = area;
