@@ -16,16 +16,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-
 public class UI extends Application {
 
-    Label home;
-    Label walletLabel;
+    Label playerHome;
     Label totalClicks;
+    private Label walletLabel;
+    private Label shopWalletLabel;
     private ObservableList<String> resourceMessage = FXCollections.observableArrayList();
 
     private Stage primaryStage;
-    private Scene mainScene;
 
     private Controller control;
     private Label square1Label;
@@ -35,13 +34,10 @@ public class UI extends Application {
     private Label higherAreaButtonInfo;
     private Label currentViewAreaInfo;
     private Player player;
-
-
+    private Scene main;
 
     @Override
     public void start(Stage primaryStage) {
-
-
 
         this.control = new Controller(this);
         this.player = control.getModel().accessPlayer();
@@ -49,7 +45,6 @@ public class UI extends Application {
         this.higherAreaButton = new Button();
         this.higherAreaButtonInfo = new Label();
         higherAreaButtonInfo.setText(control.getModel().accessCurrentView().getCurrentView().getHigher().getClass().getSimpleName());
-
 
         this.buttonAreaList = new ListView<>();
         this.currentViewAreaInfo = new Label();
@@ -61,38 +56,33 @@ public class UI extends Application {
         currentViewAreaInfo.setStyle("-fx-font-weight: bold; -fx-padding: 5px;");
         updateViewInfo();
 
-
         this.primaryStage = primaryStage;
+        main = openMainScene();
+        primaryStage.setScene(main);
         primaryStage.setTitle("Outside");
 
-        // First box in the upper center, contains information log
-        ListView<String> resourceListViewBox = getStringListView();
-        // Second box in the upper center, contains basic information
-        VBox playerInfoBox = getPlayerInfoBox();
-        // Third box in the upper center
-        VBox otherInfoBox = getOtherInfoBox();
 
-        
-        HBox walletSection = getWalletSection();
-        GridPane upperButtonSection = getUpperButtonSection();
+        // Show the stage
+        primaryStage.show();
+    }
+
+    private Scene openMainScene(){
+
+        ListView<String> resourceListViewBox = getStringListView();
+        VBox playerInfoBox = getPlayerInfoBox();
+        VBox otherInfoBox = getOtherInfoBox();
         HBox informationSection = getInformationSection(resourceListViewBox, playerInfoBox, otherInfoBox);
         StackPane clickMeSection = getClickMeSection(resourceListViewBox);
-
         VBox quarterViewContainer = getQuarterViewContainer();
         GridPane areaDetailContainers = getAreaDetailContainers();
         VBox areaViewContainer = getAreaViewContainer();
         HBox botSection = getBotSection(quarterViewContainer, areaDetailContainers,areaViewContainer);
 
 
-        SplitPane finalSection = getFinalSection(walletSection, upperButtonSection, informationSection, clickMeSection, botSection);
+        SplitPane finalSection = getFinalSection(getWalletSection(), getUpperButtonSection(), informationSection, clickMeSection, botSection);
+        Scene mainScene = new Scene(finalSection, 1000, 800);
+        return mainScene;
 
-        updateAreaViewContainer();
-
-        // Create a scene and set it to the stage
-        mainScene = new Scene(finalSection, 1000, 800);
-        primaryStage.setScene(mainScene);
-        // Show the stage
-        primaryStage.show();
     }
 
     private VBox getAreaViewContainer() {
@@ -172,10 +162,6 @@ public class UI extends Application {
         }
         buttonAreaList.setItems(areasList);
     }
-
-
-
-
     @NotNull
     private static SplitPane getFinalSection(HBox walletSection, GridPane upperButtonSection, HBox informationSection, StackPane clickMeSection, HBox botSection) {
         SplitPane finalSection = new SplitPane();
@@ -184,7 +170,6 @@ public class UI extends Application {
         finalSection.setDividerPositions(0.05, 0.1, 0.4, 0.45, 0.7);
         return finalSection;
     }
-
     @NotNull
     private static HBox getBotSection(VBox listViewContainer, GridPane areaDetailContainers, VBox areaViewContainer) {
         HBox botSection = new HBox(10);
@@ -192,7 +177,6 @@ public class UI extends Application {
         botSection.setStyle("-fx-background-color: lightblue;");
         return botSection;
     }
-
     @NotNull
     private static VBox getOtherInfoBox() {
         VBox otherInfoBox = new VBox();
@@ -200,19 +184,17 @@ public class UI extends Application {
         otherInfoBox.getChildren().add(temp);
         return otherInfoBox;
     }
-
     @NotNull
     private VBox getPlayerInfoBox() {
         VBox playerInfoBox = new VBox();
         totalClicks = new Label("Click count: "+ control.getModel().accessPlayer().getTotalClicks());
         updateTotalClicks();
         Property playerHome = control.getModel().accessPlayer().getProperty();
-        home = new Label(playerHome.toString()+"  "+playerHome.getMaintenance().toString());
+        this.playerHome = new Label(playerHome.toString()+"  "+playerHome.getMaintenance().toString());
         playerInfoBox.getChildren().add(totalClicks);
-        playerInfoBox.getChildren().add(home);
+        playerInfoBox.getChildren().add(this.playerHome);
         playerInfoBox.setPrefHeight(150);
         playerInfoBox.setStyle("-fx-background-color: white;");
-
 
         Image playerHomeImage = playerHome.getImage();
         ImageView playerProperty = new ImageView(playerHomeImage);
@@ -224,7 +206,6 @@ public class UI extends Application {
 
         return playerInfoBox;
     }
-
     @NotNull
     private ListView<String> getStringListView() {
         ListView<String> resourceListViewBox = new ListView<>(resourceMessage);
@@ -232,7 +213,6 @@ public class UI extends Application {
         resourceListViewBox.getItems().addAll("Moi");
         return resourceListViewBox;
     }
-
     @NotNull
     private static HBox getInformationSection(ListView<String> resourceListViewBox, VBox playerInfoBox, VBox otherInfoBox) {
         HBox informationSection = new HBox(10);
@@ -240,7 +220,6 @@ public class UI extends Application {
         informationSection.getChildren().addAll(resourceListViewBox, playerInfoBox, otherInfoBox);
         return informationSection;
     }
-
     @NotNull
     private GridPane getUpperButtonSection() {
         GridPane upperButtonSection = new GridPane();
@@ -250,21 +229,6 @@ public class UI extends Application {
         upperButtonSection.setStyle("-fx-background-color: black;");
         return upperButtonSection;
     }
-
-    @NotNull
-    private HBox getWalletSection() {
-        walletLabel = new Label("Wallet: " + player.getWallet().toString());
-        walletLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 12pt"); //-fx-font-style: italic
-        updateWalletLabel();
-
-        // Top section with wallet information
-        HBox walletSection = new HBox();
-        walletSection.getChildren().add(walletLabel);
-        walletSection.setAlignment(Pos.CENTER);
-        walletSection.setStyle("-fx-background-color: lightblue;");
-        return walletSection;
-    }
-
     @NotNull
     private StackPane getClickMeSection(ListView<String> resourceListViewBox) {
         StackPane clickMeSection = new StackPane();
@@ -279,7 +243,6 @@ public class UI extends Application {
         });
         return clickMeSection;
     }
-
     @NotNull
     private GridPane getAreaDetailContainers() {
         Label square1TitleLabel = new Label("Your current location");
@@ -310,8 +273,6 @@ public class UI extends Application {
         GridPane.setVgrow(square1, Priority.ALWAYS); // Grow vertically
         return grid;
     }
-
-
     private VBox getQuarterViewContainer() {
         Label listViewTitle = new Label("Available regions");
         listViewTitle.setStyle("-fx-font-weight: bold; -fx-padding: 5px;");
@@ -332,32 +293,61 @@ public class UI extends Application {
         VBox listViewContainer = new VBox(listViewTitle, buttonListBox);
         return listViewContainer;
     }
-
     private void openShop() {
-        StackPane shopViewRoot = new StackPane();
+        VBox shopViewRoot = new VBox();
         Button backButton = new Button("Back to Main View");
         backButton.setOnAction(e -> backToMainView());
-        shopViewRoot.getChildren().add(backButton);
 
+        //exchange
+        VBox foodToGoldBox = new VBox(10);
+        Label foodToGoldLabel = new Label("100 Food to 10 Gold");
+        Button foodToGoldBtn = new Button("BuyGold");
+        foodToGoldBox.getChildren().addAll(foodToGoldLabel,foodToGoldBtn);
+        foodToGoldBtn.setOnAction(e -> {
+            control.getModel().accessShop().getExchange().exchangeResources(10, Resource.Gold, Resource.Food, player.getWallet());
+            updateShopWalletLabel();
+        });
+        shopViewRoot.getChildren().addAll(getShopWalletSection(),backButton,foodToGoldBox);
         Scene shopViewScene = new Scene(shopViewRoot, 1000, 800);
 
         primaryStage.setScene(shopViewScene);
         primaryStage.setTitle("Shop");
     }
-
-    private void backToMainView() {
-        primaryStage.setScene(mainScene);
-        primaryStage.setTitle("Outside");
+    @NotNull
+    private HBox getWalletSection() {
+        walletLabel = new Label("Wallet: " + player.getWallet().toString());
+        walletLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 12pt");
+        HBox walletSection = new HBox();
+        walletSection.getChildren().add(walletLabel);
+        walletSection.setAlignment(Pos.CENTER);
+        walletSection.setStyle("-fx-background-color: lightblue;");
+        return walletSection;
     }
-
     private void updateWalletLabel() {
         walletLabel.setText("Wallet: " + player.getWallet().toString());
     }
+    private void updateShopWalletLabel() {
+        shopWalletLabel.setText("Wallet: " + player.getWallet().toString());
+    }
+    private HBox getShopWalletSection() {
+        shopWalletLabel = new Label("Wallet: " + player.getWallet().toString());
+        shopWalletLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 12pt");
+        HBox walletSection = new HBox();
+        walletSection.getChildren().add(shopWalletLabel);
+        walletSection.setAlignment(Pos.CENTER);
+        walletSection.setStyle("-fx-background-color: lightblue;");
+        return walletSection;
+    }
+
+    private void backToMainView() {
+        updateWalletLabel();
+        primaryStage.setScene(main);
+        primaryStage.setTitle("Outside");
+    }
+
     private void updateTotalClicks() {
         totalClicks.setText("Click count: " + player.getTotalClicks());
     }
-
-
     private void handleButtonClick() {
         player.addClick();
         if (player.getTotalClicks()% 100 == 0) {
@@ -366,32 +356,28 @@ public class UI extends Application {
             addMessage("10 Resources Added!");
 
         } else {
-            TransferPackage basicTransfer = new TransferPackage(1,0,0);
+            TransferPackage basicTransfer = new TransferPackage(100,0,0);
             player.getWallet().addResources(basicTransfer);
             addMessage("1 Resource Added!");
         }
     }
-
     private void addMessage(String resourceMessage) {
         this.resourceMessage.add(resourceMessage);
         // if (this.resourceMessage.size() > limit) {
         //    this.resourceMessage.remove(0, this.resourceMessage.size() - limit);
         // }
     }
-
     private void updateSquare1Text() {
         square1Label.setText(currentQuarterInfo());
     }
-
     private String currentQuarterInfo() {
         return control.getModel().accessCurrentPosition().getCurrentQuarter().fullHierarchyInfo();
     }
-
     public static void main(String[] args) {
         launch(args);
     }
-
 }
+
 
 
 

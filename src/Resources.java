@@ -200,6 +200,7 @@ record TransferPackage(double food, double alloy, double gold) {
                 throw new IllegalArgumentException("Unsupported resource type: " + type);
         }
     }
+
 }
 
 

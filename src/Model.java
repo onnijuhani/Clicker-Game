@@ -5,6 +5,7 @@ public class Model {
     private CurrentPosition currentPosition;
     private CurrentView currentView;
     private Player player;
+    private Shop shop;
 
     public Model(){
         this.world = new CreateWorld();
@@ -13,12 +14,16 @@ public class Model {
         this.currentView = new CurrentView();
         currentView.setCurrentView(world.getSpawnQuarter().getHigher());
         this.player = new Player(world.getSpawnQuarter());
+        this.shop = new Shop();
+    }
+
+    public Shop accessShop(){
+        return shop;
     }
 
     public CreateWorld getWorld() {
         return world;
     }
-
     public CurrentPosition accessCurrentPosition() {
         return currentPosition;
     }

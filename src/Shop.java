@@ -1,9 +1,18 @@
 public class Shop {
+
     private Exchange exchange;
     public Shop(){
         this.exchange = new Exchange();
 
     }
+    public Exchange getExchange() {
+        return exchange;
+    }
+
+
+
+
+
 }
 
 
