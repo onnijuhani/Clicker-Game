@@ -8,9 +8,7 @@ import javafx.scene.input.MouseEvent;
 import java.util.List;
 
 public class Control {
-
     public Model model = new Model();
-
     @FXML
     private ListView<String> eventList;
     @FXML

@@ -5,6 +5,9 @@ public class Time {
     public static int week;
     public static int day;
 
+    public Time() {
+    }
+
     public void incrementDay() {
         day++;
 
