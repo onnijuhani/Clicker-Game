@@ -15,7 +15,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 
 interface ShopViewCallback {
@@ -24,30 +23,23 @@ interface ShopViewCallback {
 }
 
 public class UI extends Application implements ShopViewCallback {
-
     @Override
     public void onBackToMainView() {
         backToMainView();
     }
-
     Label playerHome;
     Label totalClicks;
     private Label walletLabel;
-
     private ObservableList<String> resourceMessage = FXCollections.observableArrayList();
-
     private Stage primaryStage;
-
     private Controller control;
     private Label square1Label;
-
     private Button higherAreaButton;
     private ListView<Button> buttonAreaList;
     private Label higherAreaButtonInfo;
     private Label currentViewAreaInfo;
     private Player player;
     private Scene main;
-
     @Override
     public void start(Stage primaryStage) {
 
@@ -74,8 +66,6 @@ public class UI extends Application implements ShopViewCallback {
         primaryStage.setTitle("Outside");
         Image icon = new Image(getClass().getResourceAsStream("/icon.png"));
         primaryStage.getIcons().add(icon);
-
-
         // Show the stage
         primaryStage.show();
     }
@@ -92,13 +82,11 @@ public class UI extends Application implements ShopViewCallback {
         VBox areaViewContainer = getAreaViewContainer();
         HBox botSection = getBotSection(quarterViewContainer, areaDetailContainers,areaViewContainer);
 
-
         SplitPane finalSection = getFinalSection(getWalletSection(), getUpperButtonSection(), informationSection, clickMeSection, botSection);
         Scene mainScene = new Scene(finalSection, 1800, 1000);
         return mainScene;
 
     }
-
     private VBox getAreaViewContainer() {
         Label listViewTitle = new Label("Explore The Map");
         listViewTitle.setStyle("-fx-font-weight: bold; -fx-padding: 5px;");
@@ -113,7 +101,6 @@ public class UI extends Application implements ShopViewCallback {
                 updateViewInfo();
             }
         });
-
         VBox areaViewListAndLabel = new VBox(5);
         areaViewListAndLabel.getChildren().addAll(currentViewAreaInfo, buttonAreaList);
 
@@ -131,7 +118,6 @@ public class UI extends Application implements ShopViewCallback {
 
         return new VBox(listViewTitle, higherAreaButtonAndLabel, areaViewListAndLabel);
     }
-
     private void updateAreaViewContainer() {
         updateViewInfo();
         ObservableList<Button> areasList = FXCollections.observableArrayList();
@@ -201,7 +187,7 @@ public class UI extends Application implements ShopViewCallback {
     @NotNull
     private VBox getPlayerInfoBox() {
         VBox playerInfoBox = new VBox();
-        totalClicks = new Label("Click count: "+ control.getModel().accessPlayer().getTotalClicks());
+        totalClicks = new Label("Click count: "+ control.getModel().accessPlayer().getClicker().getTotalClicks());
         updateTotalClicks();
         Property playerHome = control.getModel().accessPlayer().getProperty();
         this.playerHome = new Label(playerHome.toString()+"  "+playerHome.getMaintenance().toString());
@@ -266,8 +252,6 @@ public class UI extends Application implements ShopViewCallback {
 
         VBox square2 = new VBox(new Label("Square 2 Content"));
         VBox square3 = new VBox(new Label("Square 3 Content"));
-
-
         VBox square4 = new VBox(new Label("Square 4 "));
 
         square1.setStyle("-fx-border-color: black; -fx-padding: 10;");
@@ -334,11 +318,11 @@ public class UI extends Application implements ShopViewCallback {
         primaryStage.setTitle("Outside");
     }
     private void updateTotalClicks() {
-        totalClicks.setText("Click count: " + player.getTotalClicks());
+        totalClicks.setText("Click count: " + player.getClicker().getTotalClicks());
     }
     private void handleButtonClick() {
-        player.addClick();
-        if (player.getTotalClicks()% 100 == 0) {
+        player.getClicker().generateResources();
+        if (player.getClicker().getTotalClicks()% 100 == 0) {
             TransferPackage transfer = new TransferPackage(10,0,0);
             player.getWallet().addResources(transfer);
             addMessage("10 Resources Added!");
@@ -377,9 +361,6 @@ class ExchangeView extends VBox {
         this.callback = callback;
         initializeShop();
     }
-
-
-
     private void setupBackButton() {
         Button backButton = new Button("Back to Main View");
         backButton.setOnAction(e -> {
@@ -388,7 +369,6 @@ class ExchangeView extends VBox {
             }
         });
     }
-
     public VBox initializeShop() {
         VBox exchangeViewRoot = new VBox();
         exchangeViewRoot.setStyle("-fx-background-image: url('file:C:/Users/onnil/IdeaProjects/Outside/Pictures/BackGround/exchange.png'); " +

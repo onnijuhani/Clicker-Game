@@ -27,7 +27,6 @@ public class Model {
     public CurrentPosition accessCurrentPosition() {
         return currentPosition;
     }
-
     public CurrentView accessCurrentView() {
         return currentView;
     }
@@ -35,6 +34,8 @@ public class Model {
         return player;
     }
 }
+
+
 
 class CreateWorld {
     private final Size size;
