@@ -7,6 +7,10 @@ public class Model {
     private Player player;
     private Shop shop;
 
+    private Time time;
+
+
+
     public Model(){
         this.world = new CreateWorld();
         this.currentPosition = new CurrentPosition();
@@ -15,10 +19,15 @@ public class Model {
         currentView.setCurrentView(world.getSpawnQuarter().getHigher());
         this.player = new Player(world.getSpawnQuarter());
         this.shop = new Shop();
+        this.time = new Time();
     }
 
     public Shop accessShop(){
         return shop;
+    }
+
+    public Time accessTime() {
+        return time;
     }
 
     public CreateWorld getWorld() {
@@ -33,7 +42,12 @@ public class Model {
     public Player accessPlayer() {
         return player;
     }
+
+
+
 }
+
+
 
 
 

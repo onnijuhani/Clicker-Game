@@ -125,7 +125,7 @@ class Continent extends Area implements Details {
         for (int i = 0; i < numberOfNations; i++) {
 
             Orientation styleName = random.nextInt(2) == 0 ? Orientation.Imperial : Orientation.Democratic;
-            OrientationStyle orientationStyle = new OrientationStyle(styleName); //uusi style objekti nation luontia varten
+            OrientationStyle orientationStyle = new OrientationStyle(styleName);
             String nationName = NameCreation.generateNationName(styleName);
 
             King king = new King();

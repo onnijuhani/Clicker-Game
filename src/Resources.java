@@ -58,6 +58,12 @@ class Wallet {
         this.addResources(transfer);
         depositFromWallet.subtractResources(transfer);
     }
+    public void depositAll(Wallet depositFromWallet){
+        double[] all = depositFromWallet.getWalletValues();
+        TransferPackage transfer = TransferPackage.fromArray(all);
+        this.addResources(transfer);
+        depositFromWallet.subtractResources(transfer);
+    }
 
     public void withdrawal(Wallet withdrawalToWallet, TransferPackage transfer){
         this.subtractResources(transfer);
@@ -110,11 +116,11 @@ class WorkWallet extends Wallet {
     public WorkWallet() {
         this.taxedOrNot = false;
     }
-    public void isTaxed(){
-        taxedOrNot = true;
+    public boolean isTaxed(){
+        return taxedOrNot;
     }
-    public void notTaxed(){
-        taxedOrNot = false;
+    public void setTaxedOrNot(Boolean state){
+        taxedOrNot = state;
     }
 }
 

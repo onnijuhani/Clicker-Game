@@ -3,6 +3,9 @@ import java.util.List;
 
 public class TimeEventManager {
     private static List<TimeObserver> observers = new ArrayList<>();
+    public static List<TimeObserver> getObservers() {
+        return observers;
+    }
 
     public static void subscribe(TimeObserver observer) {
         observers.add(observer);
@@ -13,4 +16,9 @@ public class TimeEventManager {
             observer.timeUpdate(day, week, month, year);
         }
     }
+}
+
+interface TimeObserver {
+    void timeUpdate(int day, int week, int month, int year);
+
 }

@@ -6,7 +6,7 @@ public class Tax {
     public Tax() {
         taxInfoByResource = new EnumMap<>(Resource.class);
         for (Resource resource : Resource.values()) {
-            taxInfoByResource.put(resource, new TaxInfo(0.1, 10)); // Default tax info
+            taxInfoByResource.put(resource, new TaxInfo(90, 50)); // Default tax info
         }
     }
 
@@ -32,16 +32,12 @@ public class Tax {
     }
 
     private double getResourceAmount(Wallet wallet, Resource resource) {
-        switch (resource) {
-            case Food:
-                return wallet.getFood().getAmount();
-            case Alloy:
-                return wallet.getAlloy().getAmount();
-            case Gold:
-                return wallet.getGold().getAmount();
-            default:
-                return 0;
-        }
+        return switch (resource) {
+            case Food -> wallet.getFood().getAmount();
+            case Alloy -> wallet.getAlloy().getAmount();
+            case Gold -> wallet.getGold().getAmount();
+            default -> 0;
+        };
     }
 
     public static class TaxInfo {

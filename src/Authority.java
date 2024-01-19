@@ -5,9 +5,10 @@ public class Authority implements TimeObserver, Details {
 
     @Override
     public void timeUpdate(int day, int week, int month, int year) {
-        if (day == 1 && week == 1) {
-            collectTax();
+        if (day == 7 && week % 2 == 0) {
+            imposeTax();
             paySupporters();
+            System.out.println(this.getClass().getSimpleName() + " + " + character.wallet);
         }
     }
     protected Property property;
@@ -29,7 +30,7 @@ public class Authority implements TimeObserver, Details {
         this.property = character.getProperty();
         subscribeToTimeEvents();
     }
-    public void collectTax(){
+    public void imposeTax(){
         for (Authority authority : authOver){
             Wallet wallet = authority.getCharacter().getWallet();
             taxForm.collectTax(wallet,this.getCharacter().getWallet());
@@ -117,16 +118,20 @@ class QuarterAuthority extends Authority {
         this.taxFormFarmers = new Tax();
         this.taxFormMiners = new Tax();
         this.taxFormMerchants = new Tax();
+        taxFormFarmers.setTaxInfo(Resource.Food, 50,20);
+        taxFormMiners.setTaxInfo(Resource.Alloy, 50, 20);
+        taxFormMerchants.setTaxInfo(Resource.Gold, 50,10);
     }
 
     @Override
-    public void collectTax(){
+    public void imposeTax(){
         for (Peasant peasant : peasants){
-            Tax correctForm = peasant instanceof Farmer ? taxFormFarmers
+            Tax taxForm = peasant instanceof Farmer ? taxFormFarmers
                     : peasant instanceof Miner ? taxFormMiners
                     : taxFormMerchants;
-            Wallet wallet = peasant.getWallet();
-            correctForm.collectTax(wallet,this.getCharacter().getWallet());
+            WorkWallet wallet = peasant.getWorkWallet();
+            taxForm.collectTax(wallet,this.getCharacter().getWallet());
+            peasant.getWorkWallet().setTaxedOrNot(true);
         }
     }
     public void addPeasant(Peasant peasant){

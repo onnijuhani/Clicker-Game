@@ -45,7 +45,7 @@ class Property implements TimeObserver {
 
     @Override
     public void timeUpdate(int day, int week, int month, int year) {
-        if (week == 4){
+        if (week == 4 && month >= 2){
             maintenance.payMaintenance(this);
         }
     }
@@ -63,7 +63,7 @@ class Property implements TimeObserver {
         this.vault = new Vault();
         this.name = name;
         this.maintenance = new Maintenance(propertyValues);
-        subscribeToTimeEvents();
+        TimeEventManager.subscribe(this);
     }
     public Image getImage(){
         return Images.PropertyImg.getImage(propertyEnum);
@@ -71,9 +71,6 @@ class Property implements TimeObserver {
     @Override
     public String toString() {
         return name;
-    }
-    public void subscribeToTimeEvents() {
-        TimeEventManager.subscribe(this);
     }
     public Character getOwner() {
         return owner;
@@ -191,7 +188,7 @@ class Maintenance {
         } else if (canPay(maintenanceCost, ownerWallet)) {
             ownerWallet.subtractResources(maintenanceCost);
         } else {
-            System.out.println("Insufficient resources for maintenance.");
+            System.out.println("Insufficient resources for maintenance. " + ownerWallet + " "+ property.getOwner());
         }
     }
 

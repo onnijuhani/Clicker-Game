@@ -15,7 +15,7 @@ public class Character implements TimeObserver {
         this.allies = new LinkedList<>();
         this.enemies = new LinkedList<>();
         this.name = NameCreation.generateCharacterName();
-        subscribeToTimeEvents();
+        TimeEventManager.subscribe(this);
     }
     public String getName() {
         return name;
@@ -29,9 +29,7 @@ public class Character implements TimeObserver {
     @Override
     public void timeUpdate(int day, int week, int month, int year) {
     }
-    public void subscribeToTimeEvents() {
-        TimeEventManager.subscribe(this);
-    }
+
     @Override
     public String toString() {
         return name + "  Main House: " + property;
@@ -72,23 +70,12 @@ public class Character implements TimeObserver {
 }
 
 class AuthorityCharacter extends Character {
-    private Authority taxLiabilityTo;
-    private Tax taxForm;
+
+
     public AuthorityCharacter() {
-        this.taxForm = new Tax();
+
     }
-    public Authority getTaxLiabilityTo() {
-        return taxLiabilityTo;
-    }
-    public void setTaxLiabilityTo(Authority taxLiabilityTo) {
-        this.taxLiabilityTo = taxLiabilityTo;
-    }
-    public Tax getTaxForm() {
-        return taxForm;
-    }
-    public void setTaxForm(Tax taxForm) {
-        this.taxForm = taxForm;
-    }
+
 }
 class King extends AuthorityCharacter {
     public static int totalAmount;
@@ -174,15 +161,17 @@ class Peasant extends Character implements TimeObserver {
         private double bonusFood = 1;
         private double bonusAlloy = 1;
         private double bonusGold = 1;
+        private WorkWallet workWallet;
 
-        public Employment(double foodBaseRate, double alloyBaseRate, double goldBaseRate){
+        public Employment(double foodBaseRate, double alloyBaseRate, double goldBaseRate, WorkWallet workWallet){
             this.food = foodBaseRate;
             this.alloy = alloyBaseRate;
             this.gold = goldBaseRate;
+            this.workWallet = workWallet;
         }
-        public TransferPackage payment(){
+        public void generatePayment(){
             TransferPackage transfer = new TransferPackage(food*bonusFood,alloy*bonusAlloy,gold*bonusGold);
-            return transfer;
+            workWallet.addResources(transfer);
         }
         public void setBonusFood(double bonusFood) {
             this.bonusFood = bonusFood;
@@ -206,8 +195,13 @@ class Peasant extends Character implements TimeObserver {
 
     @Override
     public void timeUpdate(int currentDay, int currentWeek, int currentMonth, int currentYear) {
-        if (currentDay == 1 && currentWeek == 1){
-            generate();
+        if (currentDay == 1){
+            getEmployment().generatePayment();
+            if (getWorkWallet().isTaxed()) {
+                cashOutSalary();
+                getWorkWallet().setTaxedOrNot(false);
+            }
+            System.out.println(getWorkWallet()+"   "+getWallet());
         }
     }
     protected WorkWallet workWallet;
@@ -219,14 +213,15 @@ class Peasant extends Character implements TimeObserver {
         this.workWallet = new WorkWallet();
         super.property = PropertyCreation.createPeasantProperty(this);
     }
-    public void generate(){
-        this.workWallet.addResources(getEmployment().payment());
+
+    public void cashOutSalary(){
+        wallet.depositAll(workWallet);
     }
     public Employment getEmployment() {
         return employment;
     }
 
-    public Wallet getWorkWallet() {
+    public WorkWallet getWorkWallet() {
         return workWallet;
     }
     public void setWorkWallet(WorkWallet workWallet) {
@@ -250,7 +245,7 @@ class Farmer extends Peasant {
     public static int totalAmount;
     public Farmer(Authority quarterAuthority) {
         this.quarterAuthority = quarterAuthority;
-        super.employment = new Employment(100,0,0);
+        super.employment = new Employment(20,0,0, workWallet);
         this.totalAmount += 1;
     }
 }
@@ -259,7 +254,7 @@ class Miner extends Peasant {
     public static int totalAmount;
     public Miner(Authority quarterAuthority) {
         this.quarterAuthority = quarterAuthority;
-        super.employment = new Employment(0,100,0);
+        super.employment = new Employment(0,20,0, workWallet);
         this.totalAmount += 1;
     }
 }
@@ -268,7 +263,7 @@ class Merchant extends Peasant {
     public static int totalAmount;
     public Merchant(Authority quarterAuthority) {
         this.quarterAuthority = quarterAuthority;
-        super.employment = new Employment(0,0,100);
+        super.employment = new Employment(0,0,10, workWallet);
         this.totalAmount += 1;
     }
 }
@@ -278,7 +273,7 @@ class Slave extends Peasant {
     Character owner;
     public Slave(Character owner) {
         this.owner = owner;
-        super.employment = new Employment(10,10,1);
+        super.employment = new Employment(10,10,1, workWallet);
         this.totalAmount += 1;
     }
 }
