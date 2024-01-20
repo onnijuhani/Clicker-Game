@@ -20,7 +20,6 @@ class Wallet {
     private Food food;
     private Alloy alloy;
     private Gold gold;
-
     public Wallet() {
         this.food = new Food();
         this.alloy = new Alloy();
@@ -69,39 +68,47 @@ class Wallet {
         this.subtractResources(transfer);
         withdrawalToWallet.addResources(transfer);
     }
-
     @Override
     public String toString() {
         return "Food: "+food.getAmount() + " Alloys: "+alloy.getAmount() + " Gold: "+gold.getAmount();
     }
-
+    public void addFood(double amount) {
+        food.add(amount);
+    }
+    public void addAlloy(double amount) {
+        alloy.add(amount);
+    }
+    public void addGold(double amount) {
+        gold.add(amount);
+    }
+    public void subtractFood(double amount) {
+        food.subtract(amount);
+    }
+    public void subtractAlloy(double amount) {
+        alloy.subtract(amount);
+    }
+    public void subtractGold(double amount) {
+        gold.subtract(amount);
+    }
 
     public Food getFood() {
         return food;
     }
-
     public void setFood(Food food) {
         this.food = food;
     }
-
-
     public Alloy getAlloy() {
         return alloy;
     }
-
     public void setAlloy(Alloy alloy) {
         this.alloy = alloy;
     }
-
-
     public Gold getGold() {
         return gold;
     }
-
     public void setGold(Gold gold) {
         this.gold = gold;
     }
-
 }
 
 class Vault extends Wallet {
@@ -182,6 +189,7 @@ class Gold extends Resources {
 }
 
 record TransferPackage(double food, double alloy, double gold) {
+
     public double[] getAll() {
         return new double[]{food, alloy, gold};
     }
@@ -207,6 +215,15 @@ record TransferPackage(double food, double alloy, double gold) {
         }
     }
 
+    public double food() {
+        return food;
+    }
+    public double alloy() {
+        return alloy;
+    }
+    public double gold() {
+        return gold;
+    }
 }
 
 
