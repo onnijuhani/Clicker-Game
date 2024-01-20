@@ -4,11 +4,43 @@ import java.util.Random;
 import java.util.ArrayList;
 public class NameCreation {
 
+    public static String generateWorldName() {
+        // Prefixes for the world names
+        String[] prefixes = {
+                "Astra", "Nova", "Terra", "Zephyr", "Eclipse", "Luna", "Solaris", "Gaia",
+                "Helios", "Celestia", "Orion", "Nebula", "Pandora", "Chronos", "Elysium",
+                "Olympus", "Galatea", "Thalassa", "Aether", "Artemis", "Hyperion", "Vulcan"
+        };
+
+        // Suffixes for the world names
+        String[] suffixes = {
+                "Prime", "Secundus", "Major", "Minor", "Alpha", "Beta", "Delta", "Proxima",
+                "Centauri", "Tertius", "Quartus", "Pentus", "Hexa", "Septa", "Octa", "Nona",
+                "Deca", "Aeon", "Nexus", "Haven", "Refuge", "Sanctuary", "Oasis"
+        };
+
+        // Optional: Add extra flair with a random chance
+        String[] extraFlair = {
+                "Forgotten", "Hidden", "Lost", "Ancient", "Shrouded", "Mystical", "Ethereal",
+                "Sacred", "Forbidden", "Enchanted", "Infinite", "Timeless"
+        };
+
+        Random random = new Random();
+        String prefix = prefixes[random.nextInt(prefixes.length)];
+        String suffix = suffixes[random.nextInt(suffixes.length)];
+        String flair = random.nextDouble() < 0.6 ? extraFlair[random.nextInt(extraFlair.length)] + " " : ""; // 60% chance for extra flair
+
+        return flair +""+ prefix +"-"+ suffix;
+    }
+
     public static String generateNationName() {
 
         // Combine imperial and democratic types into a single array
         String[] types = {"Dominion", "Empire", "Ascedancy", "Realm", "Conclave",
-                "Federation", "Republic", "Alliance", "Union", "Syndicate", "Coalition"};
+                "Federation", "Republic", "Alliance", "Union", "Syndicate", "Coalition",
+                "Great", "United", "Free", "New", "Ancient", "Grand", "Royal", "Sovereign",
+                "Eternal", "Majestic", "Glorious", "Radiant", "Serene", "Valiant", "Emerald",
+                "Crimson", "Golden", "Silver", "Celestial", "Mystic", "Verdant"};
 
         String[] extraPrefix = {"Noble", "Grand", "Illustrious", "Majestic", "Regal", "Colossal"};
 
@@ -17,7 +49,10 @@ public class NameCreation {
                 "Stellar", "Radiant", "Ethereal", "Serene Bloom", "Blossom Harmony", "Crystal",
                 "Astonishing", "Ascension", "Velvet Trail", "Whispering", "Old Harmony",
                 "Infinite", "Pinnacle", "Iron", "Iron Legion", "Warfront", "Steel Enforcer",
-                "Ironguard", "Terrific", "Stormfront", "Devastating", "Thunder", "Thunderstrike", "Warbound"
+                "Ironguard", "Terrific", "Stormfront", "Devastating", "Thunder", "Thunderstrike", "Warbound",
+                "Kingdom", "Empire", "Republic", "Federation", "Commonwealth", "Dynasty",
+                "Confederation", "Realm", "Alliance", "Principality", "State", "Union",
+                "Territory", "Lands", "Dominion", "Protectorate", "Sultanate", "Caliphate"
         };
 
         Random random = new Random();
@@ -90,7 +125,7 @@ public class NameCreation {
 
 
 
-    public static String generateContinentNames() {
+    public static String generateContinentName() {
 
         String[] continentNames = {
                 "Terra Magna", "Celestialis", "Pangea Ultima", "Arcadia", "Astralis", "Primordia", "Eldoria", "Terra Nova",

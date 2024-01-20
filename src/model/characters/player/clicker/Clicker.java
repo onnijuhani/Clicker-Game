@@ -27,7 +27,7 @@ public void generateResources() {
         wallet.addResources(resourcesGenerated);
         totalClicks++;
         String message = eventMessage(resourcesGenerated);
-        eventTracker.addEvent(message);
+        eventTracker.addResourceEvent(message);
     }
     private TransferPackage generate() {
         double totalFood = 0;

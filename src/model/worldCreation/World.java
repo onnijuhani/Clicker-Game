@@ -40,7 +40,7 @@ public class World extends Area implements Details {
         int numberOfContinents = size == size.SMALL ? 2 : size == size.MEDIUM ? 4 : size == size.LARGE ? 6 : -1;
         continents = new Continent[numberOfContinents];
         for (int i = 0; i < numberOfContinents; i++) {
-            continents[i] = new Continent(NameCreation.generateContinentNames(), this);
+            continents[i] = new Continent(NameCreation.generateContinentName(), this);
         }
     }
 

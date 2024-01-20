@@ -2,6 +2,7 @@ package controller;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,7 +14,11 @@ import javafx.util.Duration;
 import model.Model;
 import model.resourceManagement.resources.Resource;
 import model.resourceManagement.wallets.Wallet;
+import model.worldCreation.Area;
+
 import java.util.List;
+
+import static model.NameCreation.generateWorldName;
 
 public class Control {
     private Model model = new Model();
@@ -44,6 +49,14 @@ public class Control {
     private Label foodToGoldPrice;
     @FXML
     private Label alloysToGoldPrice;
+    @FXML
+    private ListView<Button> areasList;
+    @FXML
+    private Label currentViewLabel;
+    @FXML
+    private Button higherViewButton;
+    @FXML
+    private Button clickMeButton;
 
     private int lastEventCount = 0;
 
@@ -51,13 +64,14 @@ public class Control {
     }
     @FXML
     public void initialize() {
-        // Initialize the timeline for updating the UI
+        Platform.runLater(() -> clickMeButton.requestFocus());
+
         updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> updateUI()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
 
+
         updateClickerShopPrices();
         updateUI();
-
     }
 
     private void updateClickerShopPrices() {
@@ -82,28 +96,29 @@ public class Control {
         updateWallet();
         updateEventList();
         updateExchangePrices();
+
     }
     @FXML
     void generateResources(MouseEvent event) {
         if (!model.accessTime().isSimulationRunning()) {
-            model.accessPlayer().getEventTracker().addEvent("Simulation is paused. Cannot generate resources.");
+            model.accessPlayer().getEventTracker().addErrorEvent("Simulation is paused. Cannot generate resources.");
             updateEventList();
             return;
         }
 
         model.accessPlayer().getClicker().generateResources();
         updateWallet();
+        for (int i = 0; i < 100; i++) {
+            System.out.println(generateWorldName());
+        }
     }
     private void updateEventList() {
-        List<String> events = model.accessPlayer().getEventTracker().getEvents();
-        if (events.size() > lastEventCount) {
-            for (int i = lastEventCount; i < events.size(); i++) {
-                String event = events.get(i);
-                eventList.getItems().add(event);
-            }
-            eventList.scrollTo(eventList.getItems().size() - 1);
-            lastEventCount = events.size();
+        List<String> events = model.accessPlayer().getEventTracker().getCombinedEvents();
+        eventList.getItems().clear();
+        for (String event : events) {
+            eventList.getItems().add(event);
         }
+        eventList.scrollTo(eventList.getItems().size() - 1);
     }
 
     void updateWallet(){
@@ -136,7 +151,7 @@ public class Control {
             buyAlloyClickerButton.setDisable(true);
             buyAlloyClickerButton.setText("Owned!");
         } catch (IllegalArgumentException e) {
-            model.accessPlayer().getEventTracker().addEvent("Not Enough Gold To Buy Alloy Clicker");
+            model.accessPlayer().getEventTracker().addErrorEvent("Not Enough Gold To Buy Alloy Clicker");
         }
     }
 
@@ -147,7 +162,7 @@ public class Control {
             buyGoldClickerButton.setDisable(true);
             buyGoldClickerButton.setText("Owned!");
         } catch (IllegalArgumentException e) {
-            model.accessPlayer().getEventTracker().addEvent("Not Enough Gold To Buy Gold Clicker");
+            model.accessPlayer().getEventTracker().addErrorEvent("Not Enough Gold To Buy Gold Clicker");
         }
     }
     @FXML
@@ -201,6 +216,48 @@ public class Control {
         double amountToBuy = model.accessShop().getExchange().getDefaultGold();
         Wallet wallet = model.accessPlayer().getWallet();
         model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Gold,Resource.Alloy,wallet);
+    }
+
+    @FXML
+    void updateExploreTab(){
+        updateAreasList();
+        updateCurrentViewLabel();
+        updateHigherButtonText();
+    }
+    void updateCurrentViewLabel(){
+        this.currentViewLabel.setText(model.accessCurrentView().getCurrentView().toString() +" "+model.accessCurrentView().getCurrentView().getClass().getSimpleName());
+    }
+    @FXML
+    void getHigherView() {
+        model.accessCurrentView().setCurrentView(model.accessCurrentView().getCurrentView().getHigher());
+        updateHigherButtonText();
+        updateCurrentViewLabel();
+        updateAreasList();
+        checkAndDisableHigherViewButton(); // Check if the higher view button should be disabled
+    }
+    void updateHigherButtonText(){
+        higherViewButton.setText(model.accessCurrentView().getCurrentView().toString());
+        clickMeButton.requestFocus();
+    }
+    void updateAreasList() {
+        areasList.getItems().clear(); // Clear the list before adding new buttons
+        for (Area area : model.accessCurrentView().getContents()) {
+            Button button = new Button(area.toString());
+            button.setOnAction(event -> {
+                model.accessCurrentView().setCurrentView(area);
+                updateHigherButtonText();
+                updateCurrentViewLabel();
+                updateAreasList();
+                checkAndDisableHigherViewButton(); // Check if the higher view button should be disabled
+                clickMeButton.requestFocus();
+            });
+            areasList.getItems().add(button);
+        }
+    }
+    void checkAndDisableHigherViewButton() {
+        Area currentView = model.accessCurrentView().getCurrentView();
+        Area higherView = currentView.getHigher();
+        higherViewButton.setDisable(currentView.equals(higherView));
     }
 
 }
