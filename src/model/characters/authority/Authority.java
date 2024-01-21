@@ -1,9 +1,11 @@
-package model.characters;
+package model.characters.authority;
 
 import model.TimeEventManager;
 import model.TimeObserver;
 import model.buildings.Property;
-import model.characters.authority.AuthorityCharacter;
+import model.characters.Character;
+import model.characters.Support;
+import model.characters.AuthorityCharacter;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.payments.Salary;
 import model.resourceManagement.payments.Tax;

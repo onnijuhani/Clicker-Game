@@ -1,6 +1,8 @@
 package model.characters;
 
 import model.NameCreation;
+import model.characters.player.EventTracker;
+import model.resourceManagement.wallets.WorkWallet;
 import model.worldCreation.Nation;
 import model.TimeEventManager;
 import model.TimeObserver;
@@ -12,19 +14,22 @@ import java.util.LinkedList;
 
 public class Character implements TimeObserver {
     protected static int totalAmount;
-    LinkedList<Slave> slaves;
-    Nation nation;
+    protected LinkedList<Slave> slaves;
+    protected  Nation nation;
     public String name;
     protected Wallet wallet;
+    protected WorkWallet workWallet;
     protected Property property;
     protected LinkedList<Character> allies;
     protected LinkedList<Character> enemies;
+    protected EventTracker eventTracker;
     public Character() {
         this.wallet = new Wallet();
         this.slaves = new LinkedList<>();
         this.allies = new LinkedList<>();
         this.enemies = new LinkedList<>();
         this.name = NameCreation.generateCharacterName();
+        this.eventTracker = new EventTracker();
         TimeEventManager.subscribe(this);
     }
     public String getName() {
@@ -76,6 +81,18 @@ public class Character implements TimeObserver {
     }
     public void deleteEnemy(Character enemy){
         enemies.remove(enemy);
+    }
+    public EventTracker getEventTracker() {
+        return eventTracker;
+    }
+    public void setEventTracker(EventTracker eventTracker) {
+        this.eventTracker = eventTracker;
+    }
+    public WorkWallet getWorkWallet() {
+        return workWallet;
+    }
+    public void setWorkWallet(WorkWallet workWallet) {
+        this.workWallet = workWallet;
     }
 }
 

@@ -1,7 +1,7 @@
 package model.worldCreation;
 
 import model.buildings.PropertyTracker;
-import model.characters.Authority;
+import model.characters.authority.Authority;
 import model.characters.Character;
 import model.characters.authority.QuarterAuthority;
 import model.characters.npc.Farmer;
@@ -15,13 +15,11 @@ import java.util.Random;
 public class Quarter extends ControlledArea implements Details {
 
     private String name;
-    private String areaName = "Quarter";
 
     @Override
     public String getName() {
         return this.name;
     }
-
 
     private HashMap<String, ArrayList<Character>> populationList;
 

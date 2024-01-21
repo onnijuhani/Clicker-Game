@@ -58,6 +58,7 @@ public class MainController extends BaseController {
     }
     public void updateUI() {
         updateEventList();
+        getTopSectionController().updateTopSection();
     }
 
     private TopSectionController getTopSectionController() {
@@ -74,7 +75,6 @@ public class MainController extends BaseController {
         model.accessPlayer().getClicker().generateResources();
         topSectionController.updateWallet();
         updateEventList();
-        System.out.println(model.accessPlayer().getEventTracker().getResourceEvents());
     }
 
     public void updateEventList() {

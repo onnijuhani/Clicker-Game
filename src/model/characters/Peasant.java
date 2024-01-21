@@ -2,10 +2,59 @@ package model.characters;
 
 import model.TimeObserver;
 import model.buildings.PropertyCreation;
+import model.characters.authority.Authority;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.WorkWallet;
 
 public class Peasant extends Character implements TimeObserver {
+
+
+    @Override
+    public void timeUpdate(int currentDay, int currentWeek, int currentMonth, int currentYear) {
+        if (currentDay == 1) {
+            getEmployment().generatePayment();
+            if (getWorkWallet().isTaxed()) {
+                cashOutSalary();
+                getWorkWallet().setTaxedOrNot(false);
+            }
+        }
+    }
+
+
+    protected Authority quarterAuthority;
+    protected double generateRate = 0;
+    protected Employment employment;
+
+    public Peasant() {
+        this.workWallet = new WorkWallet();
+        super.property = PropertyCreation.createPeasantProperty(this);
+    }
+
+    public void cashOutSalary() {
+        wallet.depositAll(workWallet);
+    }
+
+    public Employment getEmployment() {
+        return employment;
+    }
+
+
+    public Authority getQuarterAuthority() {
+        return quarterAuthority;
+    }
+
+    public void setQuarterAuthority(Authority quarterAuthority) {
+        this.quarterAuthority = quarterAuthority;
+    }
+
+    public double getGenerateRate() {
+        return generateRate;
+    }
+
+    public void setGenerateRate(double generateRate) {
+        this.generateRate = generateRate;
+    }
+
     public class Employment {
         private double food;
         private double alloy;
@@ -50,58 +99,5 @@ public class Peasant extends Character implements TimeObserver {
         public void setGold(double gold) {
             this.gold = gold;
         }
-    }
-
-    @Override
-    public void timeUpdate(int currentDay, int currentWeek, int currentMonth, int currentYear) {
-        if (currentDay == 1) {
-            getEmployment().generatePayment();
-            if (getWorkWallet().isTaxed()) {
-                cashOutSalary();
-                getWorkWallet().setTaxedOrNot(false);
-            }
-        }
-    }
-
-    protected WorkWallet workWallet;
-    protected Authority quarterAuthority;
-    protected double generateRate = 0;
-    protected Employment employment;
-
-    public Peasant() {
-        this.workWallet = new WorkWallet();
-        super.property = PropertyCreation.createPeasantProperty(this);
-    }
-
-    public void cashOutSalary() {
-        wallet.depositAll(workWallet);
-    }
-
-    public Employment getEmployment() {
-        return employment;
-    }
-
-    public WorkWallet getWorkWallet() {
-        return workWallet;
-    }
-
-    public void setWorkWallet(WorkWallet workWallet) {
-        this.workWallet = workWallet;
-    }
-
-    public Authority getQuarterAuthority() {
-        return quarterAuthority;
-    }
-
-    public void setQuarterAuthority(Authority quarterAuthority) {
-        this.quarterAuthority = quarterAuthority;
-    }
-
-    public double getGenerateRate() {
-        return generateRate;
-    }
-
-    public void setGenerateRate(double generateRate) {
-        this.generateRate = generateRate;
     }
 }

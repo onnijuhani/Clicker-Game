@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import model.resourceManagement.resources.Resource;
-import model.resourceManagement.wallets.Wallet;
 
 public class ExchangeController extends BaseController {
 
@@ -53,31 +52,29 @@ public class ExchangeController extends BaseController {
     @FXML
     void buyGoldFoodBtn(MouseEvent event) {
         double amountToBuy = model.accessShop().getExchange().getDefaultGold();
-        Wallet wallet = model.accessPlayer().getWallet();
-        String message = model.accessShop().getExchange().exchangeResources(amountToBuy, Resource.Gold,Resource.Food,wallet);
-        model.accessPlayer().getEventTracker().addEvent(message);
-        main.updateEventList();
+        model.accessShop().getExchange().exchangeResources(amountToBuy, Resource.Gold,Resource.Food,model.accessPlayer());
+        main.updateUI();
     }
 
     @FXML
     void buyAlloysGoldBtn(MouseEvent event) {
         double amountToBuy = model.accessShop().getExchange().getDefaultFoodAlloys();
-        Wallet wallet = model.accessPlayer().getWallet();
-        model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Alloy,Resource.Gold,wallet);
+        model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Alloy,Resource.Gold,model.accessPlayer());
+        main.updateUI();
     }
 
     @FXML
     void buyFoodGoldBtn(MouseEvent event) {
         double amountToBuy = model.accessShop().getExchange().getDefaultGold();
-        Wallet wallet = model.accessPlayer().getWallet();
-        model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Food,Resource.Gold,wallet);
+        model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Food,Resource.Gold,model.accessPlayer());
+        main.updateUI();
     }
 
     @FXML
     void buyGoldAlloysBtn(MouseEvent event) {
         double amountToBuy = model.accessShop().getExchange().getDefaultGold();
-        Wallet wallet = model.accessPlayer().getWallet();
-        model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Gold,Resource.Alloy,wallet);
+        model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Gold,Resource.Alloy,model.accessPlayer());
+        main.updateUI();
     }
 
 }

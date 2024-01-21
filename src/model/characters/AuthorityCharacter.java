@@ -1,4 +1,4 @@
-package model.characters.authority;
+package model.characters;
 
 import model.characters.Character;
 

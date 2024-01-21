@@ -1,7 +1,7 @@
 package model.characters.npc;
 
 import model.characters.Peasant;
-import model.characters.Authority;
+import model.characters.authority.Authority;
 
 public class Miner extends Peasant {
     public static int totalAmount;

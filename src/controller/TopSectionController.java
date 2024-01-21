@@ -31,9 +31,9 @@ public class TopSectionController extends BaseController  {
     }
     void updateWallet(){
         double[] values = model.accessPlayer().getWallet().getWalletValues();
-        foodLabel.setText(String.valueOf(values[0]));
-        alloysLabel.setText(String.valueOf(values[1]));
-        goldLabel.setText(String.valueOf(values[2]));
+        foodLabel.setText(String.format("%.2f", values[0]));
+        alloysLabel.setText(String.format("%.2f", values[1]));
+        goldLabel.setText(String.format("%.2f", values[2]));
     }
     @FXML
     void startTime(MouseEvent event) {

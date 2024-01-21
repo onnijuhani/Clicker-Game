@@ -51,12 +51,12 @@
       </Pane>
       <AnchorPane prefHeight="845.0" prefWidth="1600.0" style="-fx-background-color: #373745; -fx-border-color: white;">
          <children>
-            <ListView fx:id="eventList" accessibleText="event listing" layoutX="25.0" layoutY="442.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="319.0" prefWidth="525.0" style="-fx-background-color: gray; -fx-background-radius: 10;">
+            <ListView fx:id="eventList" accessibleText="event listing" layoutX="149.0" layoutY="441.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="319.0" prefWidth="525.0" style="-fx-background-color: gray; -fx-background-radius: 10;">
                <effect>
                   <DropShadow height="79.62" radius="37.1125" spread="0.13" width="70.83" />
                </effect>
             </ListView>
-            <Button fx:id="clickMeButton" alignment="CENTER" contentDisplay="CENTER" layoutX="210.0" layoutY="769.0" mnemonicParsing="false" onMouseClicked="#generateResources" prefHeight="38.0" prefWidth="155.0" style="-fx-background-radius: 15;" text="Click Me!">
+            <Button fx:id="clickMeButton" alignment="CENTER" contentDisplay="CENTER" layoutX="328.0" layoutY="769.0" mnemonicParsing="false" onMouseClicked="#generateResources" prefHeight="38.0" prefWidth="155.0" style="-fx-background-radius: 15;" text="Click Me!">
                <font>
                   <Font size="22.0" />
                </font>

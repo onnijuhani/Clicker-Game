@@ -12,7 +12,7 @@ public class Property implements TimeObserver {
 
     @Override
     public void timeUpdate(int day, int week, int month, int year) {
-        if (week == 4 && month >= 2) {
+        if (week == 4 && month >= 1 && day == 7) {
             maintenance.payMaintenance(this);
         }
     }

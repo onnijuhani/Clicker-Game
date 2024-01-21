@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import model.Model;
 
@@ -18,6 +19,9 @@ public class UserInterface extends Application {
             Parent mainRoot = mainLoader.load();
             MainController mainController = mainLoader.getController();
             mainController.setModel(model);
+
+            Image icon = new Image(getClass().getResourceAsStream("/pics/icon.png"));
+            primaryStage.getIcons().add(icon);
 
             // Set up the stage with mainRoot
             Scene scene = new Scene(mainRoot);

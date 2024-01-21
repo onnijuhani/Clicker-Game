@@ -14,7 +14,6 @@ import javafx.util.Duration;
 import model.Model;
 import model.characters.player.EventTracker;
 import model.resourceManagement.resources.Resource;
-import model.resourceManagement.wallets.Wallet;
 import model.worldCreation.Area;
 
 import java.util.List;
@@ -190,33 +189,33 @@ public class Control {
         model.accessShop().getExchange().decreaseDefaultPrices();
         updateExchangePrices();
     }
-    @FXML
-    void buyGoldFoodBtn(MouseEvent event) {
-        double amountToBuy = model.accessShop().getExchange().getDefaultGold();
-        Wallet wallet = model.accessPlayer().getWallet();
-        model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Gold,Resource.Food,wallet);
-    }
-
-    @FXML
-    void buyAlloysGoldBtn(MouseEvent event) {
-        double amountToBuy = model.accessShop().getExchange().getDefaultFoodAlloys();
-        Wallet wallet = model.accessPlayer().getWallet();
-        model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Alloy,Resource.Gold,wallet);
-    }
-
-    @FXML
-    void buyFoodGoldBtn(MouseEvent event) {
-        double amountToBuy = model.accessShop().getExchange().getDefaultGold();
-        Wallet wallet = model.accessPlayer().getWallet();
-        model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Food,Resource.Gold,wallet);
-    }
-
-    @FXML
-    void buyGoldAlloysBtn(MouseEvent event) {
-        double amountToBuy = model.accessShop().getExchange().getDefaultGold();
-        Wallet wallet = model.accessPlayer().getWallet();
-        model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Gold,Resource.Alloy,wallet);
-    }
+//    @FXML
+//    void buyGoldFoodBtn(MouseEvent event) {
+//        double amountToBuy = model.accessShop().getExchange().getDefaultGold();
+//        Wallet wallet = model.accessPlayer().getWallet();
+//        model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Gold,Resource.Food,wallet);
+//    }
+//
+//    @FXML
+//    void buyAlloysGoldBtn(MouseEvent event) {
+//        double amountToBuy = model.accessShop().getExchange().getDefaultFoodAlloys();
+//        Wallet wallet = model.accessPlayer().getWallet();
+//        model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Alloy,Resource.Gold,wallet);
+//    }
+//
+//    @FXML
+//    void buyFoodGoldBtn(MouseEvent event) {
+//        double amountToBuy = model.accessShop().getExchange().getDefaultGold();
+//        Wallet wallet = model.accessPlayer().getWallet();
+//        model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Food,Resource.Gold,wallet);
+//    }
+//
+//    @FXML
+//    void buyGoldAlloysBtn(MouseEvent event) {
+//        double amountToBuy = model.accessShop().getExchange().getDefaultGold();
+//        Wallet wallet = model.accessPlayer().getWallet();
+//        model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Gold,Resource.Alloy,wallet);
+//    }
 
     @FXML
     void updateExploreTab(){

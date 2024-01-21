@@ -25,7 +25,7 @@ public class Tax {
         return taxInfoByResource.get(resource);
     }
 
-    // Define how tax is calculated and collected based on the rules set for each resource
+
     public TransferPackage collectTax(Wallet fromWallet, Wallet toWallet) {
         double foodTax = taxInfoByResource.get(Resource.Food).calculateTax(fromWallet.getFood().getAmount());
         double alloyTax = taxInfoByResource.get(Resource.Alloy).calculateTax(fromWallet.getAlloy().getAmount());

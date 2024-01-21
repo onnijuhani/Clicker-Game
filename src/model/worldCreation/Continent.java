@@ -4,7 +4,7 @@ import model.NameCreation;
 import model.buildings.Property;
 import model.buildings.PropertyCreation;
 import model.buildings.PropertyTracker;
-import model.characters.Authority;
+import model.characters.authority.Authority;
 import model.characters.authority.NationAuthority;
 import model.characters.npc.King;
 import model.characters.npc.Noble;

@@ -1,6 +1,7 @@
 package model.characters;
 
 import model.buildings.PropertyCreation;
+import model.characters.authority.Authority;
 import model.resourceManagement.payments.Salary;
 
 public class Support extends Character {

@@ -1,7 +1,7 @@
 package model.characters.npc;
 
 import model.characters.Support;
-import model.characters.Authority;
+import model.characters.authority.Authority;
 import model.resourceManagement.payments.Salary;
 
 public class Mercenary extends Support {

@@ -1,6 +1,6 @@
 package model.characters.npc;
 
-import model.characters.Authority;
+import model.characters.authority.Authority;
 import model.characters.Peasant;
 
 public class Farmer extends Peasant {

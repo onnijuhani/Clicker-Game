@@ -28,6 +28,10 @@ public record TransferPackage(double food, double alloy, double gold) {
                 throw new IllegalArgumentException("Unsupported resource type: " + type);
         }
     }
+    @Override
+    public String toString() {
+        return String.format("[food=%.2f, alloy=%.2f, gold=%.2f]", food, alloy, gold);
+    }
 
     public double food() {
         return food;

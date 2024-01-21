@@ -1,14 +1,13 @@
 package model.shop;
 
+import model.characters.Character;
 import model.characters.player.EventTracker;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.resources.Resource;
-import model.resourceManagement.wallets.Wallet;
 
 public class Exchange {
 
     private ExchangeRates rates;
-
     private double defaultFoodAlloys = 100;
     private double defaultGold = 10;
 
@@ -20,24 +19,25 @@ public class Exchange {
         this.rates = new ExchangeRates();
     }
 
-    public String exchangeResources(double amountToBuy, Resource buyType, Resource sellType, Wallet wallet) {
+    public void exchangeResources(double amountToBuy, Resource buyType, Resource sellType, Character character) {
         double rate = rates.getRate(sellType, buyType);
         double costWithoutFee = amountToBuy / rate;
         double totalCost = costWithoutFee * (1 + marketFee);
 
-        if (!wallet.hasEnoughResource(sellType, totalCost)) {
+        if (!character.getWallet().hasEnoughResource(sellType, totalCost)) {
             String errorMessage = EventTracker.Message( "Error","Insufficient resources for the exchange.");
-            return errorMessage ;
+            character.getEventTracker().addEvent(errorMessage);
+            return;
         }
 
         TransferPackage costPackage = TransferPackage.fromEnum(sellType, totalCost);
         TransferPackage purchasePackage = TransferPackage.fromEnum(buyType, amountToBuy);
 
-        wallet.subtractResources(costPackage);
-        wallet.addResources(purchasePackage);
+        character.getWallet().subtractResources(costPackage);
+        character.getWallet().addResources(purchasePackage);
 
-        String message = EventTracker.Message("Resource","Exchanged " + sellType + " for " + buyType);
-        return message;
+        String message = EventTracker.Message("Shop","Exchanged " + sellType + " for " + buyType);
+        character.getEventTracker().addEvent(message);
     }
     public double getDefaultFoodAlloys() {
         return defaultFoodAlloys;

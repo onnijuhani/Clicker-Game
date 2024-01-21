@@ -9,7 +9,7 @@ public class Slave extends Peasant {
 
     public Slave(Character owner) {
         this.owner = owner;
-        super.employment = new Employment(10, 10, 1, workWallet);
+        super.employment = new Employment(10, 5, 1, workWallet);
         this.totalAmount += 1;
     }
 }
