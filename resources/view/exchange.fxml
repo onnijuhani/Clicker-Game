@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="405.0" prefWidth="773.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ExchangeController">
+   <children>
+      <ImageView fitHeight="405.0" fitWidth="773.0" pickOnBounds="true">
+         <image>
+            <Image url="@../BackGround/exchange.png" />
+         </image>
+      </ImageView>
+      <AnchorPane layoutX="46.0" layoutY="266.0">
+         <children>
+            <HBox alignment="CENTER" prefHeight="101.0" prefWidth="264.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="92.0" prefWidth="107.0" style="-fx-background-color: rgba(190,196,203,0.7483368347338936);">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="103.0" text="Food To Gold" textAlignment="CENTER">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="foodToGoldPrice" alignment="CENTER" prefHeight="36.0" prefWidth="107.0" text="Label" textAlignment="CENTER" />
+                        <Button alignment="CENTER" mnemonicParsing="false" onMouseClicked="#buyGoldFoodBtn" prefHeight="25.0" prefWidth="88.0" text="Buy Gold" />
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="92.0" prefWidth="107.0" style="-fx-background-color: rgba(190,196,203,0.7483368347338936);">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="103.0" text="Alloys To Gold" textAlignment="CENTER">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="alloysToGoldPrice" alignment="CENTER" prefHeight="36.0" prefWidth="107.0" text="Label" textAlignment="CENTER" />
+                        <Button alignment="CENTER" mnemonicParsing="false" onMouseClicked="#buyGoldAlloysBtn" prefHeight="25.0" prefWidth="88.0" text="Buy Gold" />
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="398.0" prefHeight="101.0" prefWidth="264.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="92.0" prefWidth="107.0" style="-fx-background-color: rgba(190,196,203,0.7483368347338936);">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="103.0" text="Gold To Food" textAlignment="CENTER">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="goldToFoodPrice" alignment="CENTER" prefHeight="36.0" prefWidth="107.0" text="Label" textAlignment="CENTER" />
+                        <Button alignment="CENTER" mnemonicParsing="false" onMouseClicked="#buyFoodGoldBtn" prefHeight="17.0" prefWidth="88.0" text="Buy Food" />
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="92.0" prefWidth="107.0" style="-fx-background-color: rgba(190,196,203,0.7483368347338936);">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="103.0" text="Gold To Alloys" textAlignment="CENTER">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="goldToAlloysPrice" alignment="CENTER" prefHeight="36.0" prefWidth="107.0" text="Label" textAlignment="CENTER" />
+                        <Button alignment="CENTER" mnemonicParsing="false" onMouseClicked="#buyAlloysGoldBtn" prefHeight="17.0" prefWidth="88.0" text="Buy Alloys" />
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="279.0" layoutY="46.0" prefHeight="46.0" prefWidth="104.0" style="-fx-background-color: rgba(190,196,203,0.7483368347338936);">
+               <children>
+                  <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#increasePrices" prefHeight="30.0" prefWidth="30.0" text="+">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Button>
+                  <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#decreasePrices" prefHeight="30.0" prefWidth="30.0" text="-">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

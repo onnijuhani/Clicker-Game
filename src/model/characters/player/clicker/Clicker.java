@@ -26,8 +26,8 @@ public void generateResources() {
         TransferPackage resourcesGenerated = generate();
         wallet.addResources(resourcesGenerated);
         totalClicks++;
-        String message = eventMessage(resourcesGenerated);
-        eventTracker.addResourceEvent(message);
+        String message = transferMessage(resourcesGenerated);
+        eventTracker.addEvent(EventTracker.Message("Resource",message));
     }
     private TransferPackage generate() {
         double totalFood = 0;
@@ -52,7 +52,7 @@ public void generateResources() {
         }
         return new TransferPackage(totalFood, totalAlloy, totalGold);
     }
-    private String eventMessage(TransferPackage resourcesGenerated) {
+    private String transferMessage(TransferPackage resourcesGenerated) {
         return "Generated " + resourcesGenerated.food() + " food, " +
                 resourcesGenerated.alloy() + " alloys, " +
                 resourcesGenerated.gold() + " gold!";

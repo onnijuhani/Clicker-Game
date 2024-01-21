@@ -60,7 +60,6 @@ public class Peasant extends Character implements TimeObserver {
                 cashOutSalary();
                 getWorkWallet().setTaxedOrNot(false);
             }
-            System.out.println(getWorkWallet() + "   " + getWallet());
         }
     }
 

@@ -19,7 +19,6 @@ public class Authority implements TimeObserver, Details {
         if (day == 7 && week % 2 == 0) {
             imposeTax();
             paySupporters();
-            System.out.println(this.getClass().getSimpleName() + " + " + character.wallet);
         }
     }
     protected Property property;

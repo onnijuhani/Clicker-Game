@@ -1,5 +1,6 @@
 package model.shop;
 
+import model.characters.player.EventTracker;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.resources.Resource;
 import model.resourceManagement.wallets.Wallet;
@@ -13,17 +14,20 @@ public class Exchange {
 
     private double marketFee = 0.25;
 
+
+
     public Exchange(){
         this.rates = new ExchangeRates();
     }
 
-    public void exchangeResources(double amountToBuy, Resource buyType, Resource sellType, Wallet wallet) {
+    public String exchangeResources(double amountToBuy, Resource buyType, Resource sellType, Wallet wallet) {
         double rate = rates.getRate(sellType, buyType);
         double costWithoutFee = amountToBuy / rate;
         double totalCost = costWithoutFee * (1 + marketFee);
 
         if (!wallet.hasEnoughResource(sellType, totalCost)) {
-            throw new IllegalArgumentException("Insufficient resources for the exchange.");
+            String errorMessage = EventTracker.Message( "Error","Insufficient resources for the exchange.");
+            return errorMessage ;
         }
 
         TransferPackage costPackage = TransferPackage.fromEnum(sellType, totalCost);
@@ -31,6 +35,9 @@ public class Exchange {
 
         wallet.subtractResources(costPackage);
         wallet.addResources(purchasePackage);
+
+        String message = EventTracker.Message("Resource","Exchanged " + sellType + " for " + buyType);
+        return message;
     }
     public double getDefaultFoodAlloys() {
         return defaultFoodAlloys;
@@ -63,6 +70,7 @@ public class Exchange {
         defaultFoodAlloys /= 2;
         defaultGold /= 2;
     }
+
 
 
 

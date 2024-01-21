@@ -1,11 +1,11 @@
 package model.shop;
 
+import model.characters.player.EventTracker;
+import model.characters.player.Player;
 import model.characters.player.clicker.AlloyClicker;
-import model.characters.player.clicker.Clicker;
 import model.characters.player.clicker.ClickerTools;
 import model.characters.player.clicker.GoldClicker;
 import model.resourceManagement.resources.Resource;
-import model.resourceManagement.wallets.Wallet;
 
 public class ClickerShop {
     private int alloyClickerPrice = 100;
@@ -13,14 +13,17 @@ public class ClickerShop {
 
     public ClickerShop() {
     }
-    public void buyClicker(Resource type, Clicker clicker, Wallet wallet) {
+    public boolean buyClicker(Resource type, Player player) {
         int price = getPrice(type);
-        if (wallet.hasEnoughResource(Resource.Gold, price)) {
-            wallet.subtractGold(price);
+        if (player.getWallet().hasEnoughResource(Resource.Gold, price)) {
+            player.getWallet().subtractGold(price);
             ClickerTools newTool = createClickerTool(type);
-            clicker.addClickerTool(type, newTool);
+            player.getClicker().addClickerTool(type, newTool);
+            player.getEventTracker().addEvent(EventTracker.Message("Minor", "Successfully purchased " + type + " Clicker!"));
+            return true; // Purchase was successful
         } else {
-            throw new IllegalArgumentException("Insufficient gold to buy clicker.");
+            player.getEventTracker().addEvent(EventTracker.Message("Error", "Insufficient gold to buy " + type + " clicker."));
+            return false; // Purchase failed
         }
     }
 

@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 import model.Model;
+import model.characters.player.EventTracker;
 import model.resourceManagement.resources.Resource;
 import model.resourceManagement.wallets.Wallet;
 import model.worldCreation.Area;
@@ -25,11 +26,11 @@ public class Control {
     @FXML
     private ListView<String> eventList;
     @FXML
-    private Label foodLabel; // Changed to Label
+    private Label foodLabel;
     @FXML
-    private Label alloysLabel; // Changed to Label
+    private Label alloysLabel;
     @FXML
-    private Label goldLabel; // Changed to Label
+    private Label goldLabel;
     @FXML
     private Label timeView;
     @FXML
@@ -96,12 +97,11 @@ public class Control {
         updateWallet();
         updateEventList();
         updateExchangePrices();
-
     }
     @FXML
     void generateResources(MouseEvent event) {
         if (!model.accessTime().isSimulationRunning()) {
-            model.accessPlayer().getEventTracker().addErrorEvent("Simulation is paused. Cannot generate resources.");
+            model.accessPlayer().getEventTracker().addEvent(EventTracker.Message("Error","Simulation is paused. Cannot generate resources."));
             updateEventList();
             return;
         }
@@ -147,22 +147,22 @@ public class Control {
     @FXML
     void buyAlloyClicker(MouseEvent event) {
         try {
-            model.accessShop().getClickerShop().buyClicker(Resource.Alloy, model.accessPlayer().getClicker(), model.accessPlayer().getWallet());
+            model.accessShop().getClickerShop().buyClicker(Resource.Alloy, model.accessPlayer());
             buyAlloyClickerButton.setDisable(true);
             buyAlloyClickerButton.setText("Owned!");
         } catch (IllegalArgumentException e) {
-            model.accessPlayer().getEventTracker().addErrorEvent("Not Enough Gold To Buy Alloy Clicker");
+            model.accessPlayer().getEventTracker().addEvent(EventTracker.Message("Error","Not Enough Gold To Buy Alloy Clicker"));
         }
     }
 
     @FXML
     void buyGoldClicker(MouseEvent event) {
         try {
-            model.accessShop().getClickerShop().buyClicker(Resource.Gold, model.accessPlayer().getClicker(), model.accessPlayer().getWallet());
+            model.accessShop().getClickerShop().buyClicker(Resource.Gold, model.accessPlayer());
             buyGoldClickerButton.setDisable(true);
             buyGoldClickerButton.setText("Owned!");
         } catch (IllegalArgumentException e) {
-            model.accessPlayer().getEventTracker().addErrorEvent("Not Enough Gold To Buy Gold Clicker");
+            model.accessPlayer().getEventTracker().addEvent(EventTracker.Message("Error","Not Enough Gold To Buy Gold Clicker"));
         }
     }
     @FXML
