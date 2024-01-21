@@ -1,1 +1,3 @@
-Simple world simulation exercise
+Clicker game based on a simple world simulation. University project.
+
+
