@@ -2,7 +2,6 @@ package model.characters.player;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,7 +34,7 @@ public class EventTracker {
                         getPreferences().isShowErrorEvents() ? errorEvents.stream() : Stream.<String>empty(),
                         getPreferences().isShowResourceEvents() ? resourceEvents.stream() : Stream.<String>empty(),
                         getPreferences().isShowMinorEvents() ? minorEvents.stream() : Stream.<String>empty(),
-                        getPreferences().isShowMinorEvents() ? shopEvents.stream() : Stream.<String>empty()
+                        getPreferences().isShowShopEvents() ? shopEvents.stream() : Stream.<String>empty()
                 )
                 .flatMap(s -> s)
                 .sorted(Comparator.comparing((String message) -> LocalDateTime.parse(message.split(" ")[0] + " " + message.split(" ")[1], formatter)))
@@ -68,7 +67,6 @@ public class EventTracker {
     }
     public void addEvent(String message) {
         String type = extractTypeFromMessage(message);
-        System.out.println("Extracted Type: " + type);  // Debugging: Check the extracted type
 
         switch (type) {
             case "Error":
@@ -95,7 +93,6 @@ public class EventTracker {
     private String extractTypeFromMessage(String message) {
         String[] parts = message.split(" ", 4);  // Splitting into four parts
         String extractedType = parts.length > 2 ? parts[2] : "Unknown";
-        System.out.println("Message Parts: " + Arrays.toString(parts));  // Debugging: Show message parts
         return extractedType;
     }
 
@@ -107,35 +104,3 @@ public class EventTracker {
     }
 }
 
-class PlayerPreferences{
-    private boolean showMajorEvents = true;
-    private boolean showResourceEvents = true;
-    private boolean showErrorEvents = true;
-    private boolean showMinorEvents = true;
-    private boolean showShopEvents = true;
-
-    public void setShowResourceEvents(boolean show) {
-        this.showResourceEvents = show;
-    }
-    public void setShowMinorEvents(boolean show) {
-        this.showMinorEvents = show;
-    }
-    public boolean isShowMajorEvents() {
-        return showMajorEvents;
-    }
-    public boolean isShowResourceEvents() {
-        return showResourceEvents;
-    }
-    public boolean isShowErrorEvents() {
-        return showErrorEvents;
-    }
-    public boolean isShowMinorEvents() {
-        return showMinorEvents;
-    }
-    public boolean isShowShopEvents() {
-        return showShopEvents;
-    }
-    public void setShowShopEvents(boolean showShopEvents) {
-        this.showShopEvents = showShopEvents;
-    }
-}

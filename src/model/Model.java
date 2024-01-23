@@ -5,6 +5,7 @@ import model.map.CurrentPosition;
 import model.map.CurrentView;
 import model.shop.Shop;
 import model.worldCreation.*;
+import time.Time;
 
 public class Model {
     private final CreateWorld world;

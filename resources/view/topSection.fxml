@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -33,7 +34,7 @@
          <children>
             <Label fx:id="foodLabel" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="25.0" prefHeight="30.0" prefWidth="185.0" style="-fx-background-color: white; -fx-background-radius: 10;" styleClass="walletBoxes" text="-" textAlignment="CENTER" GridPane.columnIndex="1">
                <font>
-                  <Font size="20.0" />
+                  <Font name="System Bold" size="20.0" />
                </font>
                <GridPane.margin>
                   <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
@@ -46,6 +47,13 @@
                <GridPane.margin>
                   <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                </GridPane.margin>
+               <tooltip>
+                  <Tooltip text="Food is the most basic resource in the game, crucial for property maintenance. Tradable for more valuable resources in the exchange.">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Tooltip>
+               </tooltip>
             </TextField>
          </children>
       </GridPane>
@@ -60,7 +68,7 @@
          <children>
             <Label fx:id="alloysLabel" alignment="CENTER" prefHeight="30.0" prefWidth="233.0" style="-fx-background-color: white; -fx-background-radius: 10;" text="-" textAlignment="CENTER" GridPane.columnIndex="1">
                <font>
-                  <Font size="20.0" />
+                  <Font name="System Bold" size="20.0" />
                </font>
                <GridPane.margin>
                   <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
@@ -73,6 +81,13 @@
                <GridPane.margin>
                   <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                </GridPane.margin>
+               <tooltip>
+                  <Tooltip text="Alloys are vital for constructing buildings and setting up defenses on your property. Tradable for in the exchange.">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Tooltip>
+               </tooltip>
             </TextField>
          </children>
       </GridPane>
@@ -87,7 +102,7 @@
          <children>
             <Label id="10" fx:id="goldLabel" alignment="CENTER" prefHeight="30.0" prefWidth="233.0" style="-fx-background-color: white; -fx-background-radius: 10;" text="-" textAlignment="CENTER" GridPane.columnIndex="1">
                <font>
-                  <Font size="20.0" />
+                  <Font name="System Bold" size="20.0" />
                </font>
                <GridPane.margin>
                   <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
@@ -100,6 +115,9 @@
                <GridPane.margin>
                   <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                </GridPane.margin>
+               <tooltip>
+                  <Tooltip text="Gold is the most valuable resource and primary currency in the game. Essential for shop transactions and most upgrades. Tradable in the exchange and crucial for game progression." />
+               </tooltip>
             </TextField>
          </children>
       </GridPane>
@@ -113,6 +131,9 @@
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>
+                           <tooltip>
+                              <Tooltip consumeAutoHidingEvents="false" text="Timer: Represents game time where 1 second equals one day. You have the ability to start or stop time as needed." textAlignment="RIGHT" textOverrun="CLIP" />
+                           </tooltip>
                         </Label>
                         <HBox alignment="CENTER" prefHeight="10.0" prefWidth="425.0">
                            <children>

@@ -5,13 +5,24 @@ import model.characters.Peasant;
 import model.characters.npc.Farmer;
 import model.characters.npc.Merchant;
 import model.characters.npc.Miner;
+import model.characters.player.EventTracker;
 import model.resourceManagement.payments.Tax;
 import model.resourceManagement.resources.Resource;
 import model.resourceManagement.wallets.WorkWallet;
+import time.Time;
 
 import java.util.LinkedList;
 
 public class QuarterAuthority extends Authority {
+
+    @Override
+    public void timeUpdate(int day, int month, int year) {
+        if (day == Time.quarterTax) {
+            System.out.println("quarter toimii");
+            imposeTax();
+            paySupporters();
+        }
+    }
 
     private LinkedList<Peasant> peasants;
     private Tax taxFormFarmers;
@@ -24,12 +35,12 @@ public class QuarterAuthority extends Authority {
         this.taxFormFarmers = new Tax();
         this.taxFormMiners = new Tax();
         this.taxFormMerchants = new Tax();
-        taxFormFarmers.setTaxInfo(Resource.Food, 50,20);
-        taxFormMiners.setTaxInfo(Resource.Alloy, 60, 20);
-        taxFormMerchants.setTaxInfo(Resource.Gold, 70,10);
-        taxForm.setTaxInfo(Resource.Food, 50,10);
-        taxForm.setTaxInfo(Resource.Alloy, 60,10);
-        taxForm.setTaxInfo(Resource.Gold, 70,10);
+        taxFormFarmers.setTaxInfo(Resource.Food, 50,0);
+        taxFormMiners.setTaxInfo(Resource.Alloy, 60, 0);
+        taxFormMerchants.setTaxInfo(Resource.Gold, 70,0);
+        taxForm.setTaxInfo(Resource.Food, 50,0);
+        taxForm.setTaxInfo(Resource.Alloy, 60,0);
+        taxForm.setTaxInfo(Resource.Gold, 70,0);
     }
 
     @Override
@@ -40,7 +51,8 @@ public class QuarterAuthority extends Authority {
                     : peasant instanceof Merchant ? taxFormMerchants
                     : getTaxForm();
             WorkWallet wallet = peasant.getWorkWallet();
-            taxForm.collectTax(wallet,this.getCharacter().getWallet());
+            EventTracker tracker = peasant.getEventTracker();
+            taxForm.collectTax(wallet,tracker,this.getCharacter().getWallet(),this.getCharacter().getEventTracker());
             peasant.getWorkWallet().setTaxedOrNot(true);
         }
     }

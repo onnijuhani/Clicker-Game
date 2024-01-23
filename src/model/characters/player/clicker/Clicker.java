@@ -1,9 +1,12 @@
 package model.characters.player.clicker;
 
+import model.characters.Status;
 import model.characters.player.EventTracker;
+import model.characters.player.Player;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.resources.Resource;
 import model.resourceManagement.wallets.Wallet;
+import model.resourceManagement.wallets.WorkWallet;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,21 +16,34 @@ public class Clicker {
     private EventTracker eventTracker;
     private int totalClicks = 0;
     private Wallet wallet;
-    public Clicker(EventTracker eventTracker, Wallet wallet) {
-        this.eventTracker = eventTracker;
-        this.wallet = wallet;
+    private WorkWallet workWallet;
+
+    private Status status;
+    public Clicker(Player player) {
+        this.eventTracker = player.getEventTracker();
+        this.wallet = player.getWallet();
+        this.workWallet = player.getWorkWallet();
+        this.status = player.getStatus();
         this.clickerTools = new HashMap<>();
         this.clickerTools.put(Resource.Food, new FoodClicker());
     }
     public void addClickerTool(Resource type, ClickerTools tool) {
         clickerTools.put(type, tool);
     }
-public void generateResources() {
-        TransferPackage resourcesGenerated = generate();
-        wallet.addResources(resourcesGenerated);
-        totalClicks++;
-        String message = transferMessage(resourcesGenerated);
-        eventTracker.addEvent(EventTracker.Message("Resource",message));
+    public void generateResources() {
+        if (status == Status.Peasant) {
+            TransferPackage resourcesGenerated = generate();
+            workWallet.addResources(resourcesGenerated);
+            totalClicks++;
+            String message = "Into Worker Wallet "+transferMessage(resourcesGenerated);
+            eventTracker.addEvent(EventTracker.Message("Resource", message));
+        } else {
+            TransferPackage resourcesGenerated = generate();
+            wallet.addResources(resourcesGenerated);
+            totalClicks++;
+            String message = transferMessage(resourcesGenerated);
+            eventTracker.addEvent(EventTracker.Message("Resource", message));
+        }
     }
     private TransferPackage generate() {
         double totalFood = 0;

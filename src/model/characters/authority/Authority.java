@@ -1,32 +1,34 @@
 package model.characters.authority;
 
-import model.TimeEventManager;
-import model.TimeObserver;
 import model.buildings.Property;
+import model.characters.AuthorityCharacter;
 import model.characters.Character;
 import model.characters.Support;
-import model.characters.AuthorityCharacter;
+import model.characters.player.EventTracker;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.payments.Salary;
 import model.resourceManagement.payments.Tax;
 import model.resourceManagement.wallets.Wallet;
 import model.worldCreation.Details;
+import time.TimeEventManager;
+import time.TimeObserver;
 
 import java.util.ArrayList;
 
 public class Authority implements TimeObserver, Details {
 
     @Override
-    public void timeUpdate(int day, int week, int month, int year) {
-        if (day == 7 && week % 2 == 0) {
+    public void timeUpdate(int day, int month, int year) {
+        System.out.println("Kuka tätä kutsui??"+this);
+        if (day == 0) {
             imposeTax();
             paySupporters();
         }
     }
     protected Property property;
     protected AuthorityCharacter character;
-    protected ArrayList<Authority> authOver;
-    protected Authority authUnder;
+    protected ArrayList<Authority> subordinate;
+    protected Authority supervisor;
     protected ArrayList<Support> supporters;
     protected Tax taxForm;
 
@@ -37,24 +39,26 @@ public class Authority implements TimeObserver, Details {
     public Authority(Character character) {
         this.character = (AuthorityCharacter) character;
         this.taxForm = new Tax();
-        this.authOver = new ArrayList<>();
+        this.subordinate = new ArrayList<>();
         this.supporters = new ArrayList<>();
         this.property = character.getProperty();
         subscribeToTimeEvents();
     }
     public void imposeTax(){
-        for (Authority authority : authOver){
+        for (Authority authority : subordinate){
             Wallet wallet = authority.getCharacter().getWallet();
-            taxForm.collectTax(wallet,this.getCharacter().getWallet());
+            EventTracker tracker = authority.getCharacter().getEventTracker();
+            taxForm.collectTax(wallet,tracker,this.getCharacter().getWallet(),this.getCharacter().getEventTracker());
         }
     }
     public void paySupporters(){
         for (Support support : getSupporters()) {
             Salary salary = support.getSalary();
             TransferPackage transfer = TransferPackage.fromArray(salary.getAll());
-            support.getWallet().withdrawal(character.getWallet(), transfer);
+            support.getWallet().deposit(character.getWallet(), transfer);
         }
     }
+    @Override
     public String getDetails(){
         String propertyName = this.property.getName();
         String characterName = this.character.getName();
@@ -73,17 +77,17 @@ public class Authority implements TimeObserver, Details {
     public void setCharacter(AuthorityCharacter character) {
         this.character = character;
     }
-    public ArrayList<Authority> getAuthOver() {
-        return authOver;
+    public ArrayList<Authority> getSubordinate() {
+        return subordinate;
     }
-    public void setAuthOver(Authority authority) {
-        authOver.add(authority);
+    public void setSubordinate(Authority authority) {
+        subordinate.add(authority);
     }
-    public Authority getAuthUnder() {
-        return authUnder;
+    public Authority getSupervisor() {
+        return supervisor;
     }
-    public void setAuthUnder(Authority authUnder) {
-        this.authUnder = authUnder;
+    public void setSupervisor(Authority supervisor) {
+        this.supervisor = supervisor;
     }
     public ArrayList<Support> getSupporters() {
         return supporters;

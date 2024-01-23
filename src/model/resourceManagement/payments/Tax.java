@@ -1,5 +1,6 @@
 package model.resourceManagement.payments;
 
+import model.characters.player.EventTracker;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.resources.Resource;
 import model.resourceManagement.wallets.Wallet;
@@ -12,7 +13,7 @@ public class Tax {
     public Tax() {
         taxInfoByResource = new EnumMap<>(Resource.class);
         for (Resource resource : Resource.values()) {
-            taxInfoByResource.put(resource, new TaxInfo(90, 50)); // Default tax info
+            taxInfoByResource.put(resource, new TaxInfo(60, 0)); // Default tax info
         }
     }
 
@@ -26,7 +27,7 @@ public class Tax {
     }
 
 
-    public TransferPackage collectTax(Wallet fromWallet, Wallet toWallet) {
+    public void collectTax(Wallet fromWallet, EventTracker taxPayer, Wallet toWallet, EventTracker taxMan) {
         double foodTax = taxInfoByResource.get(Resource.Food).calculateTax(fromWallet.getFood().getAmount());
         double alloyTax = taxInfoByResource.get(Resource.Alloy).calculateTax(fromWallet.getAlloy().getAmount());
         double goldTax = taxInfoByResource.get(Resource.Gold).calculateTax(fromWallet.getGold().getAmount());
@@ -34,7 +35,8 @@ public class Tax {
         TransferPackage transfer = new TransferPackage(foodTax,alloyTax,goldTax);
         toWallet.deposit(fromWallet, transfer);
 
-        return transfer;
+        taxPayer.addEvent(EventTracker.Message("Major","Tax paid "+transfer.toString()));
+        taxMan.addEvent(EventTracker.Message("Major","Tax Collected"+transfer.toString()));
     }
 
     private double getResourceAmount(Wallet wallet, Resource resource) {
@@ -44,6 +46,17 @@ public class Tax {
             case Gold -> wallet.getGold().getAmount();
             default -> 0;
         };
+    }
+    public String toStringTaxRates() {
+        StringBuilder taxRatesBuilder = new StringBuilder();
+        for (Resource resource : Resource.values()) {
+            TaxInfo info = taxInfoByResource.get(resource);
+            taxRatesBuilder.append(resource.name()) // First letter of resource name
+                    .append(": Tax ")
+                    .append(Math.round(info.getTaxPercentage())) // Rounded percentage
+                    .append("%\n");
+        }
+        return taxRatesBuilder.toString().trim(); // Trim to remove the last newline
     }
 
     public static class TaxInfo {
@@ -68,6 +81,14 @@ public class Tax {
                 return amount * (taxPercentage / 100.0);
             }
             return 0;
+        }
+
+        public double getTaxPercentage() {
+            return taxPercentage;
+        }
+
+        public double getMinimumTaxableAmount() {
+            return minimumTaxableAmount;
         }
     }
 }

@@ -1,22 +1,37 @@
 package model.buildings;
 
+
+import time.PropertyManager;
 import javafx.scene.image.Image;
 import model.Images;
-import model.worldCreation.Quarter;
-import model.TimeEventManager;
-import model.TimeObserver;
+import time.PropertyObserver;
 import model.characters.Character;
 import model.resourceManagement.wallets.Vault;
-
-public class Property implements TimeObserver {
+import model.worldCreation.Details;
+import model.worldCreation.Quarter;
+public class Property implements PropertyObserver, Details {
 
     @Override
-    public void timeUpdate(int day, int week, int month, int year) {
-        if (week == 4 && month >= 1 && day == 7) {
-            maintenance.payMaintenance(this);
+    public void propertyUpdate() {
+        if (firstTimeReached) {
+                // Skip the first time this condition is met
+                firstTimeReached = false;
+                 System.out.println("property toimii");
+        } else {
+                maintenance.payMaintenance(this);
+                System.out.println("property EI toimi");
         }
     }
+    @Override
+    public String getDetails(){
+        return (this.getClass().getSimpleName() + " " + getName());
+    }
+    @Override
+    public String toString() {
+        return name+this.getClass().getSimpleName();
+    }
 
+    private boolean firstTimeReached = true;
     protected double strength;
     protected Vault vault;
     protected Quarter location;
@@ -26,22 +41,20 @@ public class Property implements TimeObserver {
     protected Buildings buildings;
     protected Properties propertyEnum;
 
+
     public Property(PropertyConfig.PropertyValues propertyValues, String name) {
-        this.strength = propertyValues.strength;
+        this.strength = propertyValues.power;
         this.vault = new Vault();
         this.name = name;
         this.maintenance = new Maintenance(propertyValues);
-        TimeEventManager.subscribe(this);
+        PropertyManager.subscribe(this);
     }
 
     public Image getImage() {
         return Images.PropertyImg.getImage(propertyEnum);
     }
 
-    @Override
-    public String toString() {
-        return name;
-    }
+
 
     public Character getOwner() {
         return owner;
@@ -61,6 +74,7 @@ public class Property implements TimeObserver {
 
     public void setLocation(Quarter location) {
         this.location = location;
+        location.addProperty(this);
     }
 
     public boolean hasLocation() {

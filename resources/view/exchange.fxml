@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="405.0" prefWidth="773.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ExchangeController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="375.0" prefWidth="770.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ExchangeController">
    <children>
       <ImageView fitHeight="405.0" fitWidth="773.0" pickOnBounds="true">
          <image>

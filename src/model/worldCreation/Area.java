@@ -2,16 +2,17 @@ package model.worldCreation;
 
 import model.buildings.PropertyTracker;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public abstract class Area implements Details {
+public abstract class Area implements Details, HasContents {
     protected String name;
 
     public PropertyTracker propertyTracker;
 
-    public abstract ArrayList getContents();
+    public abstract List getContents();
 
     public abstract String getName();
+
 
     public abstract Area getHigher();
 
@@ -19,5 +20,7 @@ public abstract class Area implements Details {
     public String toString() {
         return getName();
     }
+
+
 
 }

@@ -53,28 +53,28 @@ public class ExchangeController extends BaseController {
     void buyGoldFoodBtn(MouseEvent event) {
         double amountToBuy = model.accessShop().getExchange().getDefaultGold();
         model.accessShop().getExchange().exchangeResources(amountToBuy, Resource.Gold,Resource.Food,model.accessPlayer());
-        main.updateUI();
+        main.updateEventList();
     }
 
     @FXML
     void buyAlloysGoldBtn(MouseEvent event) {
         double amountToBuy = model.accessShop().getExchange().getDefaultFoodAlloys();
         model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Alloy,Resource.Gold,model.accessPlayer());
-        main.updateUI();
+        main.updateEventList();
     }
 
     @FXML
     void buyFoodGoldBtn(MouseEvent event) {
         double amountToBuy = model.accessShop().getExchange().getDefaultGold();
         model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Food,Resource.Gold,model.accessPlayer());
-        main.updateUI();
+        main.updateEventList();
     }
 
     @FXML
     void buyGoldAlloysBtn(MouseEvent event) {
         double amountToBuy = model.accessShop().getExchange().getDefaultGold();
         model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Gold,Resource.Alloy,model.accessPlayer());
-        main.updateUI();
+        main.updateEventList();
     }
 
 }

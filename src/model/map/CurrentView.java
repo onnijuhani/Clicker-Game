@@ -2,7 +2,7 @@ package model.map;
 
 import model.worldCreation.Area;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class CurrentView {
     private Area currentView;
@@ -26,7 +26,7 @@ public class CurrentView {
         return this.currentView.getHigher();
     }
 
-    public ArrayList<Area> getContents() {
+    public List<Area> getContents() {
         return this.currentView.getContents();
     }
 }

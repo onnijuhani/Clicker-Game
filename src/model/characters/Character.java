@@ -1,18 +1,44 @@
 package model.characters;
 
 import model.NameCreation;
-import model.characters.player.EventTracker;
-import model.resourceManagement.wallets.WorkWallet;
-import model.worldCreation.Nation;
-import model.TimeEventManager;
-import model.TimeObserver;
 import model.buildings.Property;
 import model.characters.npc.Slave;
+import model.characters.player.EventTracker;
+import model.resourceManagement.resources.Resource;
 import model.resourceManagement.wallets.Wallet;
+import model.resourceManagement.wallets.WorkWallet;
+import model.shop.Exchange;
+import model.worldCreation.Details;
+import model.worldCreation.Nation;
+import time.FoodManager;
+import time.FoodObserver;
+import time.TimeEventManager;
+import time.TimeObserver;
 
 import java.util.LinkedList;
 
-public class Character implements TimeObserver {
+public class Character implements TimeObserver, FoodObserver, Details {
+
+    @Override
+    public void timeUpdate(int day, int month, int year) {
+    }
+
+    @Override
+    public void foodUpdate() {
+        System.out.println("food toimii");
+        foodConsumption(this);
+    }
+
+    @Override
+    public String getDetails() {
+        return (this.getClass().getSimpleName()+" "+ getName());
+    }
+    @Override
+    public String toString() {
+        return name +" "+ this.getClass().getSimpleName();
+    }
+
+
     protected static int totalAmount;
     protected LinkedList<Slave> slaves;
     protected  Nation nation;
@@ -23,6 +49,7 @@ public class Character implements TimeObserver {
     protected LinkedList<Character> allies;
     protected LinkedList<Character> enemies;
     protected EventTracker eventTracker;
+    protected final double foodConsumption = 10;
     public Character() {
         this.wallet = new Wallet();
         this.slaves = new LinkedList<>();
@@ -30,8 +57,58 @@ public class Character implements TimeObserver {
         this.enemies = new LinkedList<>();
         this.name = NameCreation.generateCharacterName();
         this.eventTracker = new EventTracker();
-        TimeEventManager.subscribe(this);
+        if (shouldSubscribeToTimeEvent()) {
+            TimeEventManager.subscribe(this);
+        }
+        FoodManager.subscribe(this);
     }
+
+    protected boolean shouldSubscribeToTimeEvent() {
+        return true;
+    }
+
+    public void foodConsumption(Character character) {
+
+        Wallet wallet = character.getWallet();
+        double foodNeeded = foodConsumption;
+        Exchange exchange = nation.getExchange();
+
+        try {
+            if (wallet.hasEnoughResource(Resource.Food, foodNeeded)) {
+                wallet.subtractFood(foodNeeded);
+            } else {
+                // Calculate how much more food is needed
+                double additionalFoodNeeded = foodNeeded - wallet.getFood().getAmount();
+
+                // Check if enough gold is available to buy the required food
+                double costInGold = exchange.calculateExchangeCost(additionalFoodNeeded, Resource.Food, Resource.Gold);
+                if (wallet.hasEnoughResource(Resource.Gold, costInGold)) {
+
+                    exchange.exchangeResources(additionalFoodNeeded, Resource.Food, Resource.Gold, character);
+                } else {
+                    // Check if enough alloys are available and can be converted to gold for food
+                    double costInAlloys = exchange.calculateExchangeCost(costInGold, Resource.Gold, Resource.Alloy);
+                    if (wallet.hasEnoughResource(Resource.Alloy, costInAlloys)) {
+                        exchange.exchangeResources(costInGold, Resource.Gold, Resource.Alloy, character);
+                        exchange.exchangeResources(additionalFoodNeeded, Resource.Food, Resource.Gold, character);
+                    } else {
+                        // Handle the case where neither gold nor alloys are sufficient
+                        String errorMessage = EventTracker.Message("Error", "Not enough resources to cover food consumption.");
+                        character.getEventTracker().addEvent(errorMessage);
+                        return;
+                    }
+                }
+
+                // Now subtract the food after successful exchange
+                wallet.subtractFood(foodNeeded);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public String getName() {
         return name;
     }
@@ -41,14 +118,9 @@ public class Character implements TimeObserver {
     public void setNation(Nation nation) {
         this.nation = nation;
     }
-    @Override
-    public void timeUpdate(int day, int week, int month, int year) {
-    }
 
-    @Override
-    public String toString() {
-        return name + "  Main House: " + property;
-    }
+
+
     public void setProperty(Property property){
         this.property = property;
     }
@@ -88,12 +160,7 @@ public class Character implements TimeObserver {
     public void setEventTracker(EventTracker eventTracker) {
         this.eventTracker = eventTracker;
     }
-    public WorkWallet getWorkWallet() {
-        return workWallet;
-    }
-    public void setWorkWallet(WorkWallet workWallet) {
-        this.workWallet = workWallet;
-    }
+
 }
 
 

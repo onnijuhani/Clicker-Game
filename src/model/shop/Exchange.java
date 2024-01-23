@@ -78,9 +78,9 @@ public class Exchange {
     class ExchangeRates {
 
         private double foodToGold = 0.1; //1 food buys 0.1 gold
-        private double alloyToGold = 0.2;
+        private double alloyToGold = 0.2; // 1 alloy buys 0.2 gold
         private double goldToFood = 10; //1 gold buys 10 food
-        private double goldToAlloy = 5;
+        private double goldToAlloy = 5; //1 gold buys 5 alloys
 
         public ExchangeRates() {
         }

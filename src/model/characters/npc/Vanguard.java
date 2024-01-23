@@ -9,7 +9,7 @@ public class Vanguard extends Support {
 
     public Vanguard(Authority authority) {
         super(authority);
-        this.salary = new Salary(40, 30, 20);
+        this.salary = new Salary(200, 100, 30);
         this.totalAmount += 1;
     }
 }

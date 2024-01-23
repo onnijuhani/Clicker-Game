@@ -4,6 +4,7 @@ import model.NameCreation;
 import model.buildings.Property;
 import model.buildings.PropertyCreation;
 import model.buildings.PropertyTracker;
+import model.characters.Status;
 import model.characters.authority.Authority;
 import model.characters.authority.NationAuthority;
 import model.characters.npc.King;
@@ -15,23 +16,8 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class Continent extends Area implements Details {
-
-    private String name;
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
     private World world;
-
-    @Override
-    public Area getHigher() {
-        return world;
-    }
-
     private Nation[] nations;
-
 
     public Continent(String name, World world) {
         this.propertyTracker = new PropertyTracker();
@@ -40,19 +26,13 @@ public class Continent extends Area implements Details {
         this.createNations();
     }
 
-
-    public String getDetails() {
-        return ("Continent: " + name + " Belongs to: " + world.getName());
-    }
-
     private void createNations() {
 
         Random random = new Random();
-        int numberOfNations = random.nextInt(3) + 1;
+        int numberOfNations = random.nextInt(3) + 3;
         nations = new Nation[numberOfNations];
 
         for (int i = 0; i < numberOfNations; i++) {
-
 
             String nationName = NameCreation.generateNationName();
 
@@ -64,23 +44,65 @@ public class Continent extends Area implements Details {
             Authority authority = new NationAuthority(king);
 
             Nation nation = new Nation(nationName, this, authority);
-
             nations[i] = nation;
 
-            int provinceAmount = nation.getContents().size();
+            // set home for king
+            int homeIndex = random.nextInt(nation.getAllQuarters().size());
+            Quarter home = nation.getAllQuarters().get(homeIndex);
+            home.addPop(Status.King,king);
 
-            for (int nob = 0; nob < 4; nob++) {
-                Noble noble = new Noble(authority);
-                authority.addSupporter(noble);
-            }
-
-            for (int vang = 0; vang < provinceAmount; vang++) {
-                Vanguard vanguard = new Vanguard(authority);
-                authority.addSupporter(vanguard);
-                vanguard.getProperty().setLocation(nation.getContents().get(vang).getContents().get(0).getContents().get(0));
-                nation.getContents().get(vang).getContents().get(0).getContents().get(0).propertyTracker.addProperty(vanguard.getProperty());
-            }
+            supportFactory(nation, authority, random);
         }
+    }
+
+    private void supportFactory(Nation nation, Authority authority, Random random) {
+        int nationAmount = nations.length;
+        int provinceAmount = nation.getContents().size();
+
+        for (int nob = 0; nob < nationAmount; nob++) {
+            Noble noble = new Noble(authority);
+            noble.setNation(nation);
+            authority.addSupporter(noble);
+
+            Province province = nation.getContents().get(random.nextInt(nation.getContents().size()));
+            City city = province.getContents().get(random.nextInt(province.getContents().size()));
+            Quarter quarter = city.getContents().get(random.nextInt(city.getContents().size()));
+
+            noble.getProperty().setLocation(quarter);
+            quarter.propertyTracker.addProperty(noble.getProperty());
+            quarter.addPop(Status.Noble,noble);
+
+        }
+
+        for (int vang = 0; vang < provinceAmount; vang++) {
+            Vanguard vanguard = new Vanguard(authority);
+            vanguard.setNation(nation);
+            authority.addSupporter(vanguard);
+
+            //  random province from the nation
+            Province province = nation.getContents().get(random.nextInt(nation.getContents().size()));
+            // random city from the province
+            City city = province.getContents().get(random.nextInt(province.getContents().size()));
+            // random quarter from the city
+            Quarter quarter = city.getContents().get(random.nextInt(city.getContents().size()));
+
+            vanguard.getProperty().setLocation(quarter);
+            quarter.propertyTracker.addProperty(vanguard.getProperty());
+            quarter.addPop(Status.Vanguard, vanguard);
+        }
+    }
+
+    @Override
+    public String getDetails() {
+        return ("Continent: " + name + " Belongs to: " + world.getName());
+    }
+    @Override
+    public String getName() {
+        return this.name;
+    }
+    @Override
+    public Area getHigher() {
+        return world;
     }
 
     @Override

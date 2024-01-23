@@ -1,23 +1,27 @@
 package model.characters;
 
-import model.TimeObserver;
+import model.NameCreation;
 import model.buildings.PropertyCreation;
 import model.characters.authority.Authority;
+import model.characters.player.EventTracker;
 import model.resourceManagement.TransferPackage;
+import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
+import time.GenerateManager;
+import time.GenerateObserver;
 
-public class Peasant extends Character implements TimeObserver {
+import java.util.LinkedList;
 
+public class Peasant extends Character implements GenerateObserver {
 
     @Override
-    public void timeUpdate(int currentDay, int currentWeek, int currentMonth, int currentYear) {
-        if (currentDay == 1) {
-            getEmployment().generatePayment();
-            if (getWorkWallet().isTaxed()) {
-                cashOutSalary();
-                getWorkWallet().setTaxedOrNot(false);
-            }
+    public void generateUpdate() {
+        getEmployment().generatePayment();
+        if (getWorkWallet().isTaxed()) {
+            cashOutSalary();
+            getWorkWallet().setTaxedOrNot(false);
         }
+        System.out.println("Generater toimii");
     }
 
 
@@ -25,9 +29,22 @@ public class Peasant extends Character implements TimeObserver {
     protected double generateRate = 0;
     protected Employment employment;
 
+    protected WorkWallet workWallet;
+
     public Peasant() {
+        this.wallet = new Wallet();
+        this.slaves = new LinkedList<>();
+        this.allies = new LinkedList<>();
+        this.enemies = new LinkedList<>();
+        this.name = NameCreation.generateCharacterName();
+        this.eventTracker = new EventTracker();
         this.workWallet = new WorkWallet();
-        super.property = PropertyCreation.createPeasantProperty(this);
+        this.property = PropertyCreation.createPeasantProperty(this);
+        GenerateManager.subscribe(this);
+    }
+    @Override
+    protected boolean shouldSubscribeToTimeEvent() {
+        return false;
     }
 
     public void cashOutSalary() {
@@ -54,6 +71,17 @@ public class Peasant extends Character implements TimeObserver {
     public void setGenerateRate(double generateRate) {
         this.generateRate = generateRate;
     }
+    public void setEmployment(Employment employment) {
+        this.employment = employment;
+    }
+
+    public WorkWallet getWorkWallet() {
+        return workWallet;
+    }
+
+    public void setWorkWallet(WorkWallet workWallet) {
+        this.workWallet = workWallet;
+    }
 
     public class Employment {
         private double food;
@@ -70,34 +98,28 @@ public class Peasant extends Character implements TimeObserver {
             this.gold = goldBaseRate;
             this.workWallet = workWallet;
         }
-
         public void generatePayment() {
             TransferPackage transfer = new TransferPackage(food * bonusFood, alloy * bonusAlloy, gold * bonusGold);
             workWallet.addResources(transfer);
         }
-
         public void setBonusFood(double bonusFood) {
             this.bonusFood = bonusFood;
         }
-
         public void setBonusAlloy(double bonusAlloy) {
             this.bonusAlloy = bonusAlloy;
         }
-
         public void setBonusGold(double bonusGold) {
             this.bonusGold = bonusGold;
         }
-
         public void setFood(double food) {
             this.food = food;
         }
-
         public void setAlloy(double alloy) {
             this.alloy = alloy;
         }
-
         public void setGold(double gold) {
             this.gold = gold;
         }
     }
 }
+

@@ -9,7 +9,7 @@ public class Mercenary extends Support {
 
     public Mercenary(Authority authority) {
         super(authority);
-        this.salary = new Salary(30, 30, 10);
+        this.salary = new Salary(150, 75, 25);
         this.totalAmount += 1;
     }
 }

@@ -4,6 +4,7 @@ import model.NameCreation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class World extends Area implements Details {
@@ -13,7 +14,6 @@ public class World extends Area implements Details {
         return this.name;
     }
     private Continent[] continents;
-
     @Override
     public Area getHigher() {
         return this;
@@ -22,7 +22,7 @@ public class World extends Area implements Details {
     public Size size;
 
     @Override
-    public ArrayList<Continent> getContents() {
+    public List<Continent> getContents() {
         return new ArrayList<>(Arrays.asList(continents));
     }
 

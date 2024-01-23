@@ -31,16 +31,21 @@ public class Wallet {
         return new double[]{food.getAmount(), alloy.getAmount(), gold.getAmount()};
     }
     public void addResources(TransferPackage transfer) {
-        double[] amounts = transfer.getAll();
-        this.food.add(amounts[0]);
-        this.alloy.add(amounts[1]);
-        this.gold.add(amounts[2]);
+        if (transfer == null) {
+            throw new IllegalArgumentException("TransferPackage cannot be null.");
+        }
+        this.food.add(transfer.food());
+        this.alloy.add(transfer.alloy());
+        this.gold.add(transfer.gold());
     }
+
     public void subtractResources(TransferPackage transfer) {
-        double[] amounts = transfer.getAll();
-        this.food.subtract(amounts[0]);
-        this.alloy.subtract(amounts[1]);
-        this.gold.subtract(amounts[2]);
+        if (transfer == null) {
+            throw new IllegalArgumentException("TransferPackage cannot be null.");
+        }
+        this.food.subtract(transfer.food());
+        this.alloy.subtract(transfer.alloy());
+        this.gold.subtract(transfer.gold());
     }
 
     public void deposit(Wallet depositFromWallet, TransferPackage transfer){
@@ -62,6 +67,15 @@ public class Wallet {
     public String toString() {
         return "Food: "+food.getAmount() + " Alloys: "+alloy.getAmount() + " Gold: "+gold.getAmount();
     }
+
+    public String toStringValuesRows() {
+        return "Food: " + Math.round(food.getAmount()) +
+                "\nAlloys: " + Math.round(alloy.getAmount()) +
+                "\nGold: " + Math.round(gold.getAmount());
+    }
+
+
+
     public void addFood(double amount) {
         food.add(amount);
     }

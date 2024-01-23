@@ -4,10 +4,10 @@ package model.characters.player;
 import model.buildings.Property;
 import model.buildings.Shack;
 import model.characters.Character;
-import model.characters.Peasant;
+import model.characters.Status;
 import model.characters.authority.Authority;
-import model.characters.authority.QuarterAuthority;
 import model.characters.player.clicker.Clicker;
+import model.resourceManagement.payments.Tax;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.worldCreation.Quarter;
@@ -15,15 +15,22 @@ import model.worldCreation.Quarter;
 import java.util.ArrayList;
 
 public class Player extends Character {
+    @Override
+    public void timeUpdate(int day, int month, int year) {
+        if (day == 27) {
+            payTaxes();
+        }
+    }
     private Property property;
     private Wallet wallet;
+
     private WorkWallet workWallet;
     private String name;
     private EventTracker eventTracker;
     private Clicker clicker;
-    private Authority authUnder;
-    private ArrayList<Authority> authOver;
-    private Peasant role;
+    private Authority supervisor;
+    private ArrayList<Authority> subordinate;
+    private Status status = Status.Peasant;
 
     public Player(Quarter spawn){
         this.property = new Shack("Your Own");
@@ -33,21 +40,27 @@ public class Player extends Character {
         this.workWallet = new WorkWallet();
         this.eventTracker = new EventTracker();
         this.setNation(spawn.getAuthority().getCharacter().getNation());
-        this.clicker = new Clicker(eventTracker, wallet);
-        this.role = new Peasant();
-        becomePeasant();
-
-    }
-
-    void becomePeasant(){
-        role.setWorkWallet(workWallet);
-        role.setEventTracker(eventTracker);
-        role.setWallet(wallet);
-        QuarterAuthority quarterAuthority = (QuarterAuthority) property.getLocation().getAuthority();
-        quarterAuthority.addPeasant((Peasant) role);
+        this.clicker = new Clicker(this);
+        setSupervisor(spawn.getAuthority());
     }
 
 
+    public void payTaxes(){
+        if (status == Status.Peasant) {
+            Tax taxForm = getSupervisor().getTaxForm();
+            Wallet supervisorWallet = getSupervisor().getCharacter().getWallet();
+            EventTracker supervisorTracker = getSupervisor().getCharacter().getEventTracker();
+            taxForm.collectTax(workWallet, eventTracker, supervisorWallet, supervisorTracker);
+            workWallet.setTaxedOrNot(true);
+            cashOutSalary();
+        }
+    }
+
+    public void cashOutSalary() {
+        wallet.depositAll(workWallet);
+        String message = EventTracker.Message("Major","Salary added to main wallet");
+        eventTracker.addEvent(message);
+    }
 
     public Property getProperty() {
         return property;
@@ -73,17 +86,30 @@ public class Player extends Character {
     public Clicker getClicker() {
         return clicker;
     }
-    public ArrayList<Authority> getAuthOver() {
-        return authOver;
+    public ArrayList<Authority> getSubordinate() {
+        return subordinate;
     }
-    public void setAuthOver(Authority authority) {
-        authOver.add(authority);
+    public void setSubordinate(Authority authority) {
+        subordinate.add(authority);
     }
-    public Authority getAuthUnder() {
-        return authUnder;
+    public Authority getSupervisor() {
+        return supervisor;
     }
-    public void setAuthUnder(Authority authUnder) {
-        this.authUnder = authUnder;
+    public void setSupervisor(Authority supervisor) {
+        this.supervisor = supervisor;
+    }
+    public WorkWallet getWorkWallet() {
+        return workWallet;
+    }
+    public void setWorkWallet(WorkWallet workWallet) {
+        this.workWallet = workWallet;
+    }
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }
 

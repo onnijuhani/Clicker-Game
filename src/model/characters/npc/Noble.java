@@ -9,7 +9,7 @@ public class Noble extends Support {
 
     public Noble(Authority authority) {
         super(authority);
-        this.salary = new Salary(15, 10, 5);
+        this.salary = new Salary(200, 75, 50);
         this.totalAmount += 1;
     }
 }

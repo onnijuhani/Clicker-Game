@@ -2,8 +2,22 @@ package model.resourceManagement;
 
 import model.resourceManagement.resources.Resource;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public record TransferPackage(double food, double alloy, double gold) {
 
+    public TransferPackage(double food, double alloy, double gold) {
+        this.food = round(food);
+        this.alloy = round(alloy);
+        this.gold = round(gold);
+    }
+
+    private static double round(double value) {
+        return BigDecimal.valueOf(value)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
+    }
     public double[] getAll() {
         return new double[]{food, alloy, gold};
     }
