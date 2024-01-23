@@ -1,6 +1,7 @@
 package model.worldCreation;
 
 import model.NameCreation;
+import model.Settings;
 import model.buildings.Property;
 import model.buildings.PropertyCreation;
 import model.buildings.PropertyTracker;
@@ -30,13 +31,27 @@ public class City extends ControlledArea implements Details {
             mayor.setSubordinate(quarter.authority);
         }
     }
+    @Override
     public String getDetails() {
-        return ("City: " + name + " Belongs to: " + province.getName());
+        int population = 0;
+        int contents = getContents().size();
+
+        for (Quarter quarter: getContents()){
+            population += quarter.getNumOfPeasants();
+        }
+
+        return ("Authority here is: " + this.getAuthority() + "\n"+
+                "Living in a: " + this.getAuthority().getProperty() + "\n"+
+                "Population: " + population + "\n"+
+                "Comprised of "+contents+" districts"
+
+
+        );
     }
 
     private void createQuarters() {
         Random random = new Random();
-        int numberOfQuarters = random.nextInt(10) + 4;
+        int numberOfQuarters = random.nextInt(Settings.get("quarterAmountMax")) + Settings.get("quarterAmountMin");
         ArrayList<String> names = NameCreation.generateQuarterNames(numberOfQuarters);
         quarters = new Quarter[numberOfQuarters];
 

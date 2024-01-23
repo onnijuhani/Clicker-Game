@@ -1,9 +1,9 @@
 package model.resourceManagement.resources;
 
 public class BasicResources {
-    private double amount = 0;
+    protected int amount = 0;
 
-    public double getAmount() {
+    public int getAmount() {
         return amount;
     }
     public void add(double amount) {

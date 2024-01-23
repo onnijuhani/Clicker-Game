@@ -8,14 +8,13 @@ import model.characters.player.EventTracker;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.payments.Salary;
 import model.resourceManagement.payments.Tax;
-import model.resourceManagement.wallets.Wallet;
-import model.worldCreation.Details;
+import model.resourceManagement.wallets.WorkWallet;
 import time.TimeEventManager;
 import time.TimeObserver;
 
 import java.util.ArrayList;
 
-public class Authority implements TimeObserver, Details {
+public class Authority implements TimeObserver {
 
     @Override
     public void timeUpdate(int day, int month, int year) {
@@ -23,6 +22,7 @@ public class Authority implements TimeObserver, Details {
         if (day == 0) {
             imposeTax();
             paySupporters();
+            cashOutSalary();
         }
     }
     protected Property property;
@@ -32,6 +32,8 @@ public class Authority implements TimeObserver, Details {
     protected ArrayList<Support> supporters;
     protected Tax taxForm;
 
+    protected WorkWallet workWallet;
+
     public void subscribeToTimeEvents() {
         TimeEventManager.subscribe(this);
     }
@@ -39,6 +41,7 @@ public class Authority implements TimeObserver, Details {
     public Authority(Character character) {
         this.character = (AuthorityCharacter) character;
         this.taxForm = new Tax();
+        this.workWallet = new WorkWallet();
         this.subordinate = new ArrayList<>();
         this.supporters = new ArrayList<>();
         this.property = character.getProperty();
@@ -46,24 +49,30 @@ public class Authority implements TimeObserver, Details {
     }
     public void imposeTax(){
         for (Authority authority : subordinate){
-            Wallet wallet = authority.getCharacter().getWallet();
+            WorkWallet taxedWallet = authority.getWorkWallet();
             EventTracker tracker = authority.getCharacter().getEventTracker();
-            taxForm.collectTax(wallet,tracker,this.getCharacter().getWallet(),this.getCharacter().getEventTracker());
+            taxForm.collectTax(taxedWallet,tracker,workWallet,this.getCharacter().getEventTracker());
+            taxedWallet.setTaxedOrNot(true);
         }
     }
+
+    public void cashOutSalary() {
+        getCharacter().getWallet().depositAll(workWallet);
+        workWallet.setTaxedOrNot(false);
+    }
+
     public void paySupporters(){
         for (Support support : getSupporters()) {
             Salary salary = support.getSalary();
             TransferPackage transfer = TransferPackage.fromArray(salary.getAll());
-            support.getWallet().deposit(character.getWallet(), transfer);
+            support.getWallet().deposit(workWallet, transfer);
         }
     }
     @Override
-    public String getDetails(){
-        String propertyName = this.property.getName();
+    public String toString(){
         String characterName = this.character.getName();
         String characterClass = this.character.getClass().getSimpleName();
-        return characterClass+" "+characterName+" living in a "+propertyName;
+        return characterClass+" "+characterName;
     }
     public Property getProperty() {
         return property;
@@ -100,6 +109,13 @@ public class Authority implements TimeObserver, Details {
     }
     public void setTaxForm(Tax taxForm) {
         this.taxForm = taxForm;
+    }
+    public WorkWallet getWorkWallet() {
+        return workWallet;
+    }
+
+    public void setWorkWallet(WorkWallet workWallet) {
+        this.workWallet = workWallet;
     }
 }
 

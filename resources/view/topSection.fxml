@@ -137,12 +137,12 @@
                         </Label>
                         <HBox alignment="CENTER" prefHeight="10.0" prefWidth="425.0">
                            <children>
-                              <Button fx:id="stopTime" mnemonicParsing="false" onMouseClicked="#stopTime" prefHeight="16.0" prefWidth="95.0" style="-fx-background-radius: 10;" text="Stop">
+                              <Button fx:id="stopTimeBtn" mnemonicParsing="false" onMouseClicked="#stopTime" prefHeight="16.0" prefWidth="95.0" style="-fx-background-radius: 10;" text="Stop">
                                  <HBox.margin>
                                     <Insets right="2.0" top="-2.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button mnemonicParsing="false" onMouseClicked="#startTime" prefHeight="16.0" prefWidth="95.0" style="-fx-background-radius: 10;" text="Start">
+                              <Button fx:id="startTimeBtn" mnemonicParsing="false" onMouseClicked="#startTime" prefHeight="16.0" prefWidth="95.0" style="-fx-background-radius: 10;" text="Start">
                                  <HBox.margin>
                                     <Insets left="2.0" top="-2.0" />
                                  </HBox.margin>

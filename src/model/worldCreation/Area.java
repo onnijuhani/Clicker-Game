@@ -5,6 +5,8 @@ import model.buildings.PropertyTracker;
 import java.util.List;
 
 public abstract class Area implements Details, HasContents {
+
+
     protected String name;
 
     public PropertyTracker propertyTracker;
@@ -12,6 +14,9 @@ public abstract class Area implements Details, HasContents {
     public abstract List getContents();
 
     public abstract String getName();
+    public void setName(String name) {
+        this.name = name;
+    }
 
 
     public abstract Area getHigher();

@@ -12,11 +12,6 @@ public class Settings {
         try (FileInputStream input = new FileInputStream("resources/propertySetting.properties")) {
             settings.load(input);
 
-            // Optionally print all properties
-            for (String key : settings.stringPropertyNames()) {
-                String value = settings.getProperty(key);
-                System.out.println(key + "=" + value);
-            }
 
         } catch (IOException e) {
             e.printStackTrace();

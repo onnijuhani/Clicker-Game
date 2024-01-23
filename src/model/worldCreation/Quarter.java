@@ -1,5 +1,6 @@
 package model.worldCreation;
 
+import model.Settings;
 import model.buildings.Property;
 import model.buildings.PropertyTracker;
 import model.characters.Character;
@@ -10,10 +11,7 @@ import model.characters.npc.Farmer;
 import model.characters.npc.Merchant;
 import model.characters.npc.Miner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Random;
+import java.util.*;
 
 public class Quarter extends ControlledArea implements Details {
 
@@ -36,20 +34,7 @@ public class Quarter extends ControlledArea implements Details {
         createPeasants();
     }
 
-    public String returnAllInformation() {
-        Quarter theQuarter = this;
-        City theCity = city;
-        Province theProvince = city.getProvince();
-        Nation theNation = theProvince.getNation();
 
-        return (
-                "Quarter: " + theQuarter +
-                        ". City: " + theCity +
-                        ". Province: " + theProvince +
-                        ". Nation: " + theNation +
-                        ". Population: " + numOfPeasants
-        );
-    }
 
 
     @Override
@@ -57,8 +42,45 @@ public class Quarter extends ControlledArea implements Details {
         return city;
     }
 
+    @Override
     public String getDetails() {
-        return ("Quarter: " + name + " Belongs to city: " + city.getName());
+        int population = numOfPeasants;
+        int contents = allProperties.getProperties().size();
+
+        StringBuilder sb = new StringBuilder();
+
+        for (Map.Entry<Status, LinkedList<Character>> entry : populationList.entrySet()) {
+            Status status = entry.getKey();
+
+            // Skip some statuses
+            if (status == Status.Farmer || status == Status.Miner || status == Status.Merchant
+                    || status == Status.Captain || status == Status.Slave) {
+                continue;
+            }
+
+            LinkedList<Character> characters = entry.getValue();
+
+            // Skip this status if empty
+            if (characters.isEmpty()) {
+                continue;
+            }
+
+            for (Character character : characters) {
+                sb.append("    ").append(character).append("\n");
+            }
+        }
+
+        String popList = sb.toString();
+
+
+        return ("Authority here is: " + this.getAuthority() + "\n"+
+                "Living in a: " + this.getAuthority().getProperty() + "\n"+
+                "Population: " + population + "\n"+
+                "Comprised of "+contents+" properties"+ "\n"+
+                (popList.isBlank() ? "" : "Here Lives: "+ "\n")+
+                popList
+
+        );
     }
 
     @Override
@@ -66,7 +88,7 @@ public class Quarter extends ControlledArea implements Details {
         return new ArrayList<>();
     }
 
-    public String fullHierarchyInfo() {
+    public String getFullHierarchyInfo() {
         Province prov = city.getProvince();
         Nation nat = prov.getNation();
         return name + "\n" +
@@ -82,11 +104,11 @@ public class Quarter extends ControlledArea implements Details {
         quarterCaptain.getCharacter().setNation(this.city.getProvince().getNation());
 
         Random random = new Random();
-        int numberOfFarmers = random.nextInt(4) + 3;
+        int numberOfFarmers = random.nextInt(Settings.get("farmerAmountMax")) + Settings.get("farmerAmountMin");
         numOfPeasants += numberOfFarmers;
-        int numberOfMiners = random.nextInt(3) + 2;
+        int numberOfMiners = random.nextInt(Settings.get("minerAmountMax")) + Settings.get("minerAmountMin");
         numOfPeasants += numberOfMiners;
-        int numberOfMerchants = random.nextInt(2) + 1;
+        int numberOfMerchants = random.nextInt(Settings.get("merchantAmountMax")) + Settings.get("merchantAmountMin");
         numOfPeasants += numberOfMerchants;
 
         LinkedList<Character> farmers = new LinkedList<>();

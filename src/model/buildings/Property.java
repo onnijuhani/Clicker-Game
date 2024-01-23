@@ -16,10 +16,8 @@ public class Property implements PropertyObserver, Details {
         if (firstTimeReached) {
                 // Skip the first time this condition is met
                 firstTimeReached = false;
-                 System.out.println("property toimii");
         } else {
                 maintenance.payMaintenance(this);
-                System.out.println("property EI toimi");
         }
     }
     @Override
@@ -28,7 +26,7 @@ public class Property implements PropertyObserver, Details {
     }
     @Override
     public String toString() {
-        return name+this.getClass().getSimpleName();
+        return name;
     }
 
     private boolean firstTimeReached = true;
@@ -62,6 +60,7 @@ public class Property implements PropertyObserver, Details {
 
     public void setOwner(Character owner) {
         this.owner = owner;
+        owner.setProperty(this);
     }
 
     public Vault getVault() {

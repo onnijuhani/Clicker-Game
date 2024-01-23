@@ -12,12 +12,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 import model.Model;
 import model.characters.Status;
-import model.characters.npc.Farmer;
-import model.characters.npc.Merchant;
-import model.characters.npc.Miner;
-import model.characters.npc.Noble;
 import model.characters.player.EventTracker;
+import model.worldCreation.Quarter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainController extends BaseController {
@@ -41,6 +39,8 @@ public class MainController extends BaseController {
 
     @FXML
     private CheckBox generateMessages;
+
+    private List<String> lastEvents = new ArrayList<>();
 
     public MainController() {
         super();
@@ -74,18 +74,20 @@ public class MainController extends BaseController {
         if (exploreMapController != null) {
             exploreMapController.setModel(model);
             exploreMapController.setMain(this);
-            exploreMapController.updateExploreTab();
         } else {
             System.out.println("ExchangeController is null");
         }
     }
+
+
 
     @Override
     public void initialize() {
         Platform.runLater(() -> clickMeButton.requestFocus());
         Platform.runLater(() -> generateStartingMessage());
         Platform.runLater(() -> updateEventList());
-        updateTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateEventList()));
+        Platform.runLater(() -> exploreMapController.updateExploreTab());
+        updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateEventList()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
     }
@@ -120,19 +122,34 @@ public class MainController extends BaseController {
         }
     }
    void generateStartingMessage(){
-        model.accessPlayer().getEventTracker().addEvent(EventTracker.Message("Major","New Game Started"));
-       System.out.println(Farmer.totalAmount);
-       System.out.println(Noble.totalAmount);
-       System.out.println(Merchant.totalAmount);
-       System.out.println(Miner.totalAmount);
+        EventTracker tracker = model.accessPlayer().getEventTracker();
+        tracker.addEvent(EventTracker.Message("Major","New Game Started"));
+
+        Quarter spawn = model.accessWorld().getSpawnQuarter();
+        tracker.addEvent(EventTracker.Message("Major","Starting District is: "+spawn));
+        tracker.addEvent(EventTracker.Message("Major","Starting City is: "+spawn.getHigher()));
+        tracker.addEvent(EventTracker.Message("Major","Starting Province is: "+spawn.getHigher().getHigher()));
+        tracker.addEvent(EventTracker.Message("Major","Starting Nation is: "+spawn.getHigher().getHigher().getHigher()));
+        tracker.addEvent(EventTracker.Message("Major","Starting Continent is: "+spawn.getHigher().getHigher().getHigher().getHigher()));
+
+
+
+
     }
 
     public void updateEventList() {
         List<String> events = model.accessPlayer().getEventTracker().getCombinedEvents();
         eventList.getItems().clear();
-        for (String event : events) {
-            eventList.getItems().add(event);
+
+        // Determine the start index for the last 20 messages
+        int start = Math.max(0, events.size() - 14);
+
+        // Add only the last 20 messages (or fewer if less than 20 messages are available)
+        for (int i = start; i < events.size(); i++) {
+            eventList.getItems().add(events.get(i));
         }
+
+        // Scroll to the last message
         eventList.scrollTo(eventList.getItems().size() - 1);
     }
 

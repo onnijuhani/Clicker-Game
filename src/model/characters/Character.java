@@ -4,6 +4,7 @@ import model.NameCreation;
 import model.buildings.Property;
 import model.characters.npc.Slave;
 import model.characters.player.EventTracker;
+import model.characters.player.Player;
 import model.resourceManagement.resources.Resource;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
@@ -25,8 +26,10 @@ public class Character implements TimeObserver, FoodObserver, Details {
 
     @Override
     public void foodUpdate() {
-        System.out.println("food toimii");
         foodConsumption(this);
+        if (this instanceof Player){
+            this.getEventTracker().addEvent(EventTracker.Message("Minor",foodConsumption+" Food Consumed."));
+        }
     }
 
     @Override
@@ -35,7 +38,7 @@ public class Character implements TimeObserver, FoodObserver, Details {
     }
     @Override
     public String toString() {
-        return name +" "+ this.getClass().getSimpleName();
+        return this.getClass().getSimpleName() +" "+ name;
     }
 
 
@@ -49,7 +52,7 @@ public class Character implements TimeObserver, FoodObserver, Details {
     protected LinkedList<Character> allies;
     protected LinkedList<Character> enemies;
     protected EventTracker eventTracker;
-    protected final double foodConsumption = 10;
+    protected int foodConsumption = 10;
     public Character() {
         this.wallet = new Wallet();
         this.slaves = new LinkedList<>();
@@ -70,8 +73,10 @@ public class Character implements TimeObserver, FoodObserver, Details {
     public void foodConsumption(Character character) {
 
         Wallet wallet = character.getWallet();
-        double foodNeeded = foodConsumption;
+        int foodNeeded = foodConsumption;
+        foodConsumption+=5;
         Exchange exchange = nation.getExchange();
+
 
         try {
             if (wallet.hasEnoughResource(Resource.Food, foodNeeded)) {

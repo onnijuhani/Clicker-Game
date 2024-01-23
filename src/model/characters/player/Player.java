@@ -11,13 +11,14 @@ import model.resourceManagement.payments.Tax;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.worldCreation.Quarter;
+import time.Time;
 
 import java.util.ArrayList;
 
 public class Player extends Character {
     @Override
     public void timeUpdate(int day, int month, int year) {
-        if (day == 27) {
+        if (day == Time.provinceTax) {
             payTaxes();
         }
     }

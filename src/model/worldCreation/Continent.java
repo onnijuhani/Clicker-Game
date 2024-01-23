@@ -1,6 +1,7 @@
 package model.worldCreation;
 
 import model.NameCreation;
+import model.Settings;
 import model.buildings.Property;
 import model.buildings.PropertyCreation;
 import model.buildings.PropertyTracker;
@@ -29,7 +30,7 @@ public class Continent extends Area implements Details {
     private void createNations() {
 
         Random random = new Random();
-        int numberOfNations = random.nextInt(3) + 3;
+        int numberOfNations = random.nextInt(Settings.get("nationAmountMax")) + Settings.get("nationAmountMin");
         nations = new Nation[numberOfNations];
 
         for (int i = 0; i < numberOfNations; i++) {
@@ -51,11 +52,12 @@ public class Continent extends Area implements Details {
             Quarter home = nation.getAllQuarters().get(homeIndex);
             home.addPop(Status.King,king);
 
-            supportFactory(nation, authority, random);
+            supportFactory(nation, authority, random, home);
+            NameCreation.generateMajorQuarterName(home);
         }
     }
 
-    private void supportFactory(Nation nation, Authority authority, Random random) {
+    private void supportFactory(Nation nation, Authority authority, Random random, Quarter home) {
         int nationAmount = nations.length;
         int provinceAmount = nation.getContents().size();
 
@@ -64,13 +66,9 @@ public class Continent extends Area implements Details {
             noble.setNation(nation);
             authority.addSupporter(noble);
 
-            Province province = nation.getContents().get(random.nextInt(nation.getContents().size()));
-            City city = province.getContents().get(random.nextInt(province.getContents().size()));
-            Quarter quarter = city.getContents().get(random.nextInt(city.getContents().size()));
-
-            noble.getProperty().setLocation(quarter);
-            quarter.propertyTracker.addProperty(noble.getProperty());
-            quarter.addPop(Status.Noble,noble);
+            noble.getProperty().setLocation(home);
+            home.propertyTracker.addProperty(noble.getProperty());
+            home.addPop(Status.Noble,noble);
 
         }
 
@@ -80,7 +78,7 @@ public class Continent extends Area implements Details {
             authority.addSupporter(vanguard);
 
             //  random province from the nation
-            Province province = nation.getContents().get(random.nextInt(nation.getContents().size()));
+            Province province = nation.getContents().get(vang);
             // random city from the province
             City city = province.getContents().get(random.nextInt(province.getContents().size()));
             // random quarter from the city
@@ -89,7 +87,21 @@ public class Continent extends Area implements Details {
             vanguard.getProperty().setLocation(quarter);
             quarter.propertyTracker.addProperty(vanguard.getProperty());
             quarter.addPop(Status.Vanguard, vanguard);
+            NameCreation.generateMajorQuarterName(quarter);
         }
+
+
+        //King gets 1 extra vanguard to live with him in his home quarter
+        Vanguard vanguard = new Vanguard(authority);
+        vanguard.setNation(nation);
+        authority.addSupporter(vanguard);
+
+        vanguard.getProperty().setLocation(home);
+        home.propertyTracker.addProperty(vanguard.getProperty());
+        home.addPop(Status.Vanguard, vanguard);
+
+
+
     }
 
     @Override

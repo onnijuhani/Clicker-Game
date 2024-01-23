@@ -1,6 +1,7 @@
 package model.worldCreation;
 
 import model.NameCreation;
+import model.Settings;
 import model.buildings.Property;
 import model.buildings.PropertyCreation;
 import model.buildings.PropertyTracker;
@@ -44,7 +45,7 @@ public class Nation extends ControlledArea implements Details {
 
     private void createProvinces() {
         Random random = new Random();
-        int numberOfProvinces = random.nextInt(4) + 3;
+        int numberOfProvinces = random.nextInt(Settings.get("provinceAmountMax")) + Settings.get("provinceAmountMin");
         provinces = new Province[numberOfProvinces];
 
         for (int i = 0; i < numberOfProvinces; i++) {

@@ -7,9 +7,9 @@ public class CityAuthority extends Authority {
     @Override
     public void timeUpdate(int day, int month, int year) {
         if (day == Time.cityTax) {
-            System.out.println("city toimii  "+Time.cityTax+"   "+day);
             imposeTax();
             paySupporters();
+            cashOutSalary();
         }
     }
     public CityAuthority(Character character) {

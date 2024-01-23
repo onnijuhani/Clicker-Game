@@ -7,9 +7,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Time {
-    public static int year = 1;
-    public static int month = 1;
-    public static int day = 1;
+    public static int year = 0;
+    public static int month = 0;
+    public static int day = 0;
     private ScheduledExecutorService executorService;
     private boolean isSimulationRunning = false;
     private boolean isFirstDay = true;
@@ -64,12 +64,12 @@ public class Time {
     }
 
 
-    public int getDay() {
+    public static int getDay() {
         return day;
     }
 
-    public String getClock() {
-        return String.format("year %04d,  month %01d,  day %01d",
+    public static String getClock() {
+        return String.format("Year %01d,  Month %01d,  Day %01d",
                 year, month, day);
     }
 

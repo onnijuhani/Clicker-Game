@@ -1,5 +1,6 @@
 package model.characters.authority;
 
+import model.Settings;
 import model.characters.Character;
 import model.characters.Peasant;
 import model.characters.npc.Farmer;
@@ -18,9 +19,9 @@ public class QuarterAuthority extends Authority {
     @Override
     public void timeUpdate(int day, int month, int year) {
         if (day == Time.quarterTax) {
-            System.out.println("quarter toimii");
             imposeTax();
             paySupporters();
+            cashOutSalary();
         }
     }
 
@@ -35,12 +36,12 @@ public class QuarterAuthority extends Authority {
         this.taxFormFarmers = new Tax();
         this.taxFormMiners = new Tax();
         this.taxFormMerchants = new Tax();
-        taxFormFarmers.setTaxInfo(Resource.Food, 50,0);
-        taxFormMiners.setTaxInfo(Resource.Alloy, 60, 0);
-        taxFormMerchants.setTaxInfo(Resource.Gold, 70,0);
-        taxForm.setTaxInfo(Resource.Food, 50,0);
-        taxForm.setTaxInfo(Resource.Alloy, 60,0);
-        taxForm.setTaxInfo(Resource.Gold, 70,0);
+        taxFormFarmers.setTaxInfo(Resource.Food, Settings.get("peasantFoodTax"),0);
+        taxFormMiners.setTaxInfo(Resource.Alloy, Settings.get("peasantAlloyTax"), 0);
+        taxFormMerchants.setTaxInfo(Resource.Gold, Settings.get("peasantGoldTax"),0);
+        taxForm.setTaxInfo(Resource.Food, Settings.get("peasantFoodTax"),0);
+        taxForm.setTaxInfo(Resource.Alloy, Settings.get("peasantAlloyTax"),0);
+        taxForm.setTaxInfo(Resource.Gold, Settings.get("peasantGoldTax"),0);
     }
 
     @Override
@@ -50,9 +51,9 @@ public class QuarterAuthority extends Authority {
                     : peasant instanceof Miner ? taxFormMiners
                     : peasant instanceof Merchant ? taxFormMerchants
                     : getTaxForm();
-            WorkWallet wallet = peasant.getWorkWallet();
+            WorkWallet taxedWallet = peasant.getWorkWallet();
             EventTracker tracker = peasant.getEventTracker();
-            taxForm.collectTax(wallet,tracker,this.getCharacter().getWallet(),this.getCharacter().getEventTracker());
+            taxForm.collectTax(taxedWallet,tracker,workWallet,this.getCharacter().getEventTracker());
             peasant.getWorkWallet().setTaxedOrNot(true);
         }
     }

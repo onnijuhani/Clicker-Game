@@ -1,6 +1,7 @@
 package model.worldCreation;
 
 import model.NameCreation;
+import model.Settings;
 import model.buildings.Property;
 import model.buildings.PropertyCreation;
 import model.buildings.PropertyTracker;
@@ -40,7 +41,7 @@ public class Province extends ControlledArea implements Details {
 
     private void createCities() {
         Random random = new Random();
-        int numberOfCities = random.nextInt(7) + 2;
+        int numberOfCities = random.nextInt(Settings.get("cityAmountMax")) + Settings.get("cityAmountMin");
         cities = new City[numberOfCities];
 
         for (int i = 0; i < numberOfCities; i++) {
@@ -59,9 +60,10 @@ public class Province extends ControlledArea implements Details {
             cities[i] = city;
 
             // set home for mayor
-            int homeIndex = random.nextInt(nation.getAllQuarters().size());
-            Quarter home = nation.getAllQuarters().get(homeIndex);
+            int homeIndex = random.nextInt(city.getContents().size());
+            Quarter home = city.getContents().get(homeIndex);
             home.addPop(Status.Mayor,mayor);
+            NameCreation.generateMajorQuarterName(home);
 
         }
     }

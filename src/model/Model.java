@@ -8,6 +8,7 @@ import model.worldCreation.*;
 import time.Time;
 
 public class Model {
+
     private final CreateWorld world;
     private CurrentPosition currentPosition;
     private CurrentView currentView;
@@ -36,7 +37,7 @@ public class Model {
         return time;
     }
 
-    public CreateWorld getWorld() {
+    public CreateWorld accessWorld() {
         return world;
     }
     public CurrentPosition accessCurrentPosition() {

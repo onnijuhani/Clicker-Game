@@ -16,13 +16,17 @@ public class TopSectionController extends BaseController  {
     @FXML
     private Label goldLabel;
     @FXML
-    private Button stopTime;
+    private Button startTimeBtn;
+    @FXML
+    private Button stopTimeBtn;
+
     @FXML
     private Label timeView;
     private Timeline updateTimeline;
     public void initialize() {
         updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateTopSection()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
+        stopTimeBtn.setDisable(true);
     }
 
     public void updateTopSection(){
@@ -39,10 +43,17 @@ public class TopSectionController extends BaseController  {
     void startTime(MouseEvent event) {
         model.accessTime().startSimulation();
         updateTimeline.play();
+
+        startTimeBtn.setDisable(true); // Disable the start button
+        stopTimeBtn.setDisable(false); // Enable the stop button
     }
+
     @FXML
     void stopTime(MouseEvent event) {
         model.accessTime().stopSimulation();
         updateTimeline.stop();
+
+        stopTimeBtn.setDisable(true); // Disable the stop button
+        startTimeBtn.setDisable(false); // Enable the start button
     }
 }

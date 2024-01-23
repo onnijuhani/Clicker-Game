@@ -19,9 +19,7 @@ public class Peasant extends Character implements GenerateObserver {
         getEmployment().generatePayment();
         if (getWorkWallet().isTaxed()) {
             cashOutSalary();
-            getWorkWallet().setTaxedOrNot(false);
         }
-        System.out.println("Generater toimii");
     }
 
 
@@ -49,6 +47,7 @@ public class Peasant extends Character implements GenerateObserver {
 
     public void cashOutSalary() {
         wallet.depositAll(workWallet);
+        workWallet.setTaxedOrNot(false);
     }
 
     public Employment getEmployment() {

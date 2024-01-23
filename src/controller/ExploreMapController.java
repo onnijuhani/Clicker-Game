@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import model.worldCreation.Area;
 
 public class ExploreMapController extends BaseController {
@@ -21,6 +22,8 @@ public class ExploreMapController extends BaseController {
     private Label higherType;
     @FXML
     private Button higherViewButton;
+    @FXML
+    private TextArea testi;
     private MainController main;
     @FXML
     private void updateHigherType() {
@@ -53,7 +56,7 @@ public class ExploreMapController extends BaseController {
             case "Province" -> "Provinces";
             case "Nation" -> "Nations";
             case "Continent" -> "Continents";
-            case "Quarter" -> "Quarters";
+            case "Quarter" -> "Districts";
             default -> className + "s";
         };
     }
@@ -78,7 +81,7 @@ public class ExploreMapController extends BaseController {
         this.main = main;
     }
 
-    @FXML
+
     void updateExploreTab(){
         updateAreasList();
         updateCurrentViewLabel();
@@ -86,11 +89,16 @@ public class ExploreMapController extends BaseController {
         updateAreaType();
         updateContainType();
         updateHigherType();
+        updateTextArea();
     }
+
 
     @FXML
     public void initialize() {
 
+    }
+    void updateTextArea(){
+        testi.setText(model.accessCurrentView().getCurrentView().getDetails());
     }
 
     void updateAreasList() {

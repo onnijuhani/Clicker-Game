@@ -17,7 +17,7 @@ public class Tax {
         }
     }
 
-    public void setTaxInfo(Resource resource, double taxPercentage, double minimumTaxableAmount) {
+    public void setTaxInfo(Resource resource, int taxPercentage, int minimumTaxableAmount) {
         taxInfoByResource.get(resource).setTaxPercentage(taxPercentage);
         taxInfoByResource.get(resource).setMinimumTaxableAmount(minimumTaxableAmount);
     }
@@ -61,26 +61,23 @@ public class Tax {
 
     public static class TaxInfo {
         private double taxPercentage;
-        private double minimumTaxableAmount;
+        private int minimumTaxableAmount;
 
-        public TaxInfo(double taxPercentage, double minimumTaxableAmount) {
+        public TaxInfo(double taxPercentage, int minimumTaxableAmount) {
             this.taxPercentage = taxPercentage;
             this.minimumTaxableAmount = minimumTaxableAmount;
         }
 
-        public void setTaxPercentage(double taxPercentage) {
+        public void setTaxPercentage(int taxPercentage) {
             this.taxPercentage = taxPercentage;
         }
 
-        public void setMinimumTaxableAmount(double minimumTaxableAmount) {
+        public void setMinimumTaxableAmount(int minimumTaxableAmount) {
             this.minimumTaxableAmount = minimumTaxableAmount;
         }
 
         public double calculateTax(double amount) {
-            if (amount >= minimumTaxableAmount) {
-                return amount * (taxPercentage / 100.0);
-            }
-            return 0;
+            return amount * (taxPercentage / 100.0);
         }
 
         public double getTaxPercentage() {

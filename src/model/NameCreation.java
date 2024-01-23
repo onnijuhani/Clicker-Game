@@ -1,7 +1,12 @@
 package model;
 
-import java.util.Random;
+import model.characters.Status;
+import model.worldCreation.Quarter;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
+
 public class NameCreation {
 
     public static String generateWorldName() {
@@ -190,6 +195,40 @@ public class NameCreation {
         String lastName = lastPrefixes[random.nextInt(lastPrefixes.length)] + lastSuffixes[random.nextInt(lastSuffixes.length)];
 
         return firstName + " " + lastName;
+    }
+
+
+    public static void generateMajorQuarterName(Quarter quarter) {
+        HashMap<Status, java.util.LinkedList<model.characters.Character>> populationList = quarter.getPopulationList();
+
+        String[] kingPrefixes = {"Royal", "Monarch's", "Sovereign"};
+        String[] vanguardPrefixes = {"Vanguard's", "Guardian's", "Sentinel"};
+        String[] mercenaryPrefixes = {"Mercenary's", "Warrior's", "Soldier's"};
+
+        String[] suffixes = {"Haven", "Domain", "Lair", "Territory", "Estate", "Sanctum", "Gardens", "Hold", "Quarters", "Landing", "Imperative"};
+
+        Random random = new Random();
+
+        boolean hasKing = populationList.containsKey(Status.King) && !populationList.get(Status.King).isEmpty();
+        boolean hasVanguard = populationList.containsKey(Status.Vanguard) && !populationList.get(Status.Vanguard).isEmpty();
+        boolean hasMercenary = populationList.containsKey(Status.Mercenary) && !populationList.get(Status.Mercenary).isEmpty();
+
+        String selectedSuffix = suffixes[random.nextInt(suffixes.length)];
+        String selectedPrefix;
+        if (hasKing) {
+            selectedPrefix = kingPrefixes[random.nextInt(kingPrefixes.length)];
+            quarter.setName(selectedPrefix + " " + selectedSuffix);
+        } else if (hasVanguard) {
+            selectedPrefix = vanguardPrefixes[random.nextInt(vanguardPrefixes.length)];
+            quarter.setName(selectedPrefix + " " + selectedSuffix);
+        } else if (hasMercenary) {
+            selectedPrefix = mercenaryPrefixes[random.nextInt(mercenaryPrefixes.length)];
+            quarter.setName(selectedPrefix + " " + selectedSuffix);
+        }
+
+
+
+
     }
 
 

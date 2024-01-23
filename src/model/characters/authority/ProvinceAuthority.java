@@ -7,9 +7,9 @@ public class ProvinceAuthority extends Authority {
     @Override
     public void timeUpdate(int day, int month, int year) {
         if (day == Time.provinceTax) {
-            System.out.println("provinssi toimii toimii");
             imposeTax();
             paySupporters();
+            cashOutSalary();
         }
     }
     public ProvinceAuthority(Character character) {
