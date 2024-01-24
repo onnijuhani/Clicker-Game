@@ -3,11 +3,14 @@ package model;
 import model.characters.Status;
 import model.worldCreation.Quarter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 public class NameCreation {
+
+
+    // these sets exist to make sure same name doesn't exist 2 times.
+    private static final Set<String> generatedNationNames = new HashSet<>();
+    private static final Set<String> generatedContinentNames = new HashSet<>();
 
     public static String generateWorldName() {
         // Prefixes for the world names
@@ -39,17 +42,26 @@ public class NameCreation {
     }
 
     public static String generateNationName() {
+        Random random = new Random();
+        String newName;
 
-        // Combine imperial and democratic types into a single array
+        do {
+            newName = createNationName(random);
+        } while (generatedNationNames.contains(newName));
+
+        generatedNationNames.add(newName);
+        return newName;
+    }
+
+    private static String createNationName(Random random) {
+
         String[] types = {"Dominion", "Empire", "Ascedancy", "Realm", "Conclave",
                 "Federation", "Republic", "Alliance", "Union", "Syndicate", "Coalition",
-                "Great", "United", "Free", "New", "Ancient", "Grand", "Royal", "Sovereign",
-                "Eternal", "Majestic", "Glorious", "Radiant", "Serene", "Valiant", "Emerald",
+                "United", "Eternal", "Majestic", "Glorious", "Radiant", "Serene", "Valiant", "Emerald",
                 "Crimson", "Golden", "Silver", "Celestial", "Mystic", "Verdant"};
 
         String[] extraPrefix = {"Noble", "Grand", "Illustrious", "Majestic", "Regal", "Colossal"};
 
-        // Combine names into a single array
         String[] names = {
                 "Stellar", "Radiant", "Ethereal", "Serene Bloom", "Blossom Harmony", "Crystal",
                 "Astonishing", "Ascension", "Velvet Trail", "Whispering", "Old Harmony",
@@ -60,7 +72,6 @@ public class NameCreation {
                 "Territory", "Lands", "Dominion", "Protectorate", "Sultanate", "Caliphate"
         };
 
-        Random random = new Random();
         double randomValue = random.nextDouble();
         String addExtraPrefix = (randomValue < 0.25) ? "Extra" : "";
 
@@ -128,9 +139,19 @@ public class NameCreation {
         }
     }
 
-
-
     public static String generateContinentName() {
+        Random random = new Random();
+        String newName;
+
+        do {
+            newName = createContinentName(random);
+        } while (generatedContinentNames.contains(newName));
+
+        generatedContinentNames.add(newName);
+        return newName;
+    }
+
+    public static String createContinentName(Random random) {
 
         String[] continentNames = {
                 "Terra Magna", "Celestialis", "Pangea Ultima", "Arcadia", "Astralis", "Primordia", "Eldoria", "Terra Nova",
@@ -151,7 +172,6 @@ public class NameCreation {
                 "Royal", "Sovereign", "Epic", "Aurelia", "Lustrous"
         };
 
-        Random random = new Random();
         String name = continentNames[random.nextInt(continentNames.length)];
 
         double randomValue = random.nextDouble();
@@ -199,9 +219,9 @@ public class NameCreation {
 
 
     public static void generateMajorQuarterName(Quarter quarter) {
-        HashMap<Status, java.util.LinkedList<model.characters.Character>> populationList = quarter.getPopulationList();
+        HashMap<Status, java.util.LinkedList<model.characters.Character>> populationList = quarter.getPopulationMap();
 
-        String[] kingPrefixes = {"Royal", "Monarch's", "Sovereign"};
+        String[] kingPrefixes = {"Royal"};
         String[] vanguardPrefixes = {"Vanguard's", "Guardian's", "Sentinel"};
         String[] mercenaryPrefixes = {"Mercenary's", "Warrior's", "Soldier's"};
 

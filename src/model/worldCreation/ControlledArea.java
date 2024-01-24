@@ -16,4 +16,9 @@ public abstract class ControlledArea extends Area implements Details {
     public String getName() {
         return this.name;
     }
+
+    public void addKingToName() {
+        this.name += " (King)";
+    }
+
 }

@@ -33,20 +33,37 @@ public class City extends ControlledArea implements Details {
     }
     @Override
     public String getDetails() {
-        int population = 0;
-        int contents = getContents().size();
+        int quarterAmount = getContents().size();
+        int population = getCityPopulation();
 
-        for (Quarter quarter: getContents()){
-            population += quarter.getNumOfPeasants();
-        }
+
+        String popList = getCityImportantCharacters();
 
         return ("Authority here is: " + this.getAuthority() + "\n"+
                 "Living in a: " + this.getAuthority().getProperty() + "\n"+
                 "Population: " + population + "\n"+
-                "Comprised of "+contents+" districts"
-
-
+                "Comprised of "+quarterAmount+" districts" + "\n"+
+                (popList.isBlank() ? "" : "Here Lives: "+ "\n")+
+                popList
         );
+    }
+
+    public String getCityImportantCharacters() {
+        StringBuilder cityCharactersSb = new StringBuilder();
+
+        for (Quarter quarter : quarters) { // Assuming 'quarters' is a collection of Quarter objects
+            cityCharactersSb.append(quarter.getImportantCharacters());
+        }
+
+        return cityCharactersSb.toString();
+    }
+
+    private int getCityPopulation() {
+        int population = 0;
+        for (Quarter quarter: getContents()) {
+            population += quarter.getNumOfPeasants();
+        }
+        return population;
     }
 
     private void createQuarters() {

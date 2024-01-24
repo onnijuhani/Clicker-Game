@@ -26,6 +26,12 @@ public abstract class Area implements Details, HasContents {
         return getName();
     }
 
+    public void addHomeToName() {
+        this.name += " (Home)";
+    }
+
+
+
 
 
 }

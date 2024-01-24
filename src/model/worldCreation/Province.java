@@ -62,7 +62,7 @@ public class Province extends ControlledArea implements Details {
             // set home for mayor
             int homeIndex = random.nextInt(city.getContents().size());
             Quarter home = city.getContents().get(homeIndex);
-            home.addPop(Status.Mayor,mayor);
+            home.addCharacter(Status.Mayor,mayor);
             NameCreation.generateMajorQuarterName(home);
 
         }

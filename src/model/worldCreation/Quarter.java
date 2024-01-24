@@ -10,15 +10,18 @@ import model.characters.authority.QuarterAuthority;
 import model.characters.npc.Farmer;
 import model.characters.npc.Merchant;
 import model.characters.npc.Miner;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class Quarter extends ControlledArea implements Details {
 
-    private HashMap<Status, LinkedList<Character>> populationList;
+    private HashMap<Status, LinkedList<Character>> populationMap;
     private PropertyTracker allProperties;
     private City city;
     private int numOfPeasants;
+    private boolean isPopulationChanged = true;
+    private String importantCharactersCache;
 
     public Quarter(String name, City city, Authority authority) {
         this.name = name;
@@ -28,10 +31,15 @@ public class Quarter extends ControlledArea implements Details {
         this.authority = authority;
         this.allProperties = new PropertyTracker();
         Authority captain = this.authority;
-        this.populationList = new HashMap<>();
+        this.populationMap = new HashMap<>();
         captain.getCharacter().setNation(city.getProvince().getNation());
         captain.setSupervisor(city.getAuthority());
-        createPeasants();
+        initializePopulationMap();
+        populateQuarter();
+    }
+
+    public LinkedList<Character> getCharacterList(Status status) {
+        return populationMap.getOrDefault(status, new LinkedList<>());
     }
 
 
@@ -47,31 +55,7 @@ public class Quarter extends ControlledArea implements Details {
         int population = numOfPeasants;
         int contents = allProperties.getProperties().size();
 
-        StringBuilder sb = new StringBuilder();
-
-        for (Map.Entry<Status, LinkedList<Character>> entry : populationList.entrySet()) {
-            Status status = entry.getKey();
-
-            // Skip some statuses
-            if (status == Status.Farmer || status == Status.Miner || status == Status.Merchant
-                    || status == Status.Captain || status == Status.Slave) {
-                continue;
-            }
-
-            LinkedList<Character> characters = entry.getValue();
-
-            // Skip this status if empty
-            if (characters.isEmpty()) {
-                continue;
-            }
-
-            for (Character character : characters) {
-                sb.append("    ").append(character).append("\n");
-            }
-        }
-
-        String popList = sb.toString();
-
+        String popList = getImportantCharacters();
 
         return ("Authority here is: " + this.getAuthority() + "\n"+
                 "Living in a: " + this.getAuthority().getProperty() + "\n"+
@@ -81,6 +65,50 @@ public class Quarter extends ControlledArea implements Details {
                 popList
 
         );
+    }
+
+
+
+    @NotNull
+    public String getImportantCharacters() {
+
+        //important characters are only calculated the first time they are needed
+        //and whenever the character list changes. List is stored at importantCharactersCache.
+
+        if (isPopulationChanged || importantCharactersCache == null) {
+            importantCharactersCache = calculateImportantCharacters();
+            isPopulationChanged = false;
+        }
+        return importantCharactersCache;
+    }
+
+    @NotNull
+    private String calculateImportantCharacters() {
+
+        StringBuilder sb = new StringBuilder();
+        List<Status> statusOrder = getStatusRank();
+
+        // Sort by Status
+        populationMap.entrySet().stream()
+                .filter(entry -> statusOrder.contains(entry.getKey())) // Include only important statuses
+                .sorted(Comparator.comparingInt(entry -> statusOrder.indexOf(entry.getKey())))
+                .forEachOrdered(entry -> {
+                    for (Character character : entry.getValue()) {
+                        sb.append("    ").append(character).append("\n");
+                    }
+                });
+
+        return sb.toString();
+    }
+
+    @NotNull
+    private static List<Status> getStatusRank() {
+        List<Status> statusOrder = List.of(
+                Status.King, Status.Noble, Status.Vanguard,
+                Status.Governor, Status.Mercenary, Status.Mayor
+                //doesn't include unimportant ranks
+        );
+        return statusOrder;
     }
 
     @Override
@@ -99,10 +127,52 @@ public class Quarter extends ControlledArea implements Details {
                 "Of the Mighty: " + nat.getHigher().getHigher().getName();
     }
 
-    private void createPeasants() {
-        QuarterAuthority quarterCaptain = (QuarterAuthority) this.authority;
-        quarterCaptain.getCharacter().setNation(this.city.getProvince().getNation());
+    private void initializePopulationMap() {
+        LinkedList<Character> farmerList = new LinkedList<>();
+        LinkedList<Character> minerList = new LinkedList<>();
+        LinkedList<Character> merchantList = new LinkedList<>();
+        LinkedList<Character> mayorList = new LinkedList<>();
+        LinkedList<Character> kingList = new LinkedList<>();
+        LinkedList<Character> mercenaryList = new LinkedList<>();
+        LinkedList<Character> nobleList = new LinkedList<>();
+        LinkedList<Character> vanguardList = new LinkedList<>();
+        LinkedList<Character> governorList = new LinkedList<>();
+        LinkedList<Character> captainList = new LinkedList<>();
+        LinkedList<Character> slaveList = new LinkedList<>();
 
+        populationMap.put(Status.Farmer, farmerList);
+        populationMap.put(Status.Miner, minerList);
+        populationMap.put(Status.Merchant, merchantList);
+        populationMap.put(Status.Mayor, mayorList);
+        populationMap.put(Status.King, kingList);
+        populationMap.put(Status.Mercenary, mercenaryList);
+        populationMap.put(Status.Noble, nobleList);
+        populationMap.put(Status.Vanguard, vanguardList);
+        populationMap.put(Status.Governor, governorList);
+        populationMap.put(Status.Captain, captainList);
+        populationMap.put(Status.Slave, slaveList);
+
+
+    }
+
+    private void populateQuarter() {
+        LinkedList<Character> farmerList = getCharacterList(Status.Farmer);
+        LinkedList<Character> minerList = getCharacterList(Status.Miner);
+        LinkedList<Character> merchantList = getCharacterList(Status.Merchant);
+
+        QuarterAuthority quarterCaptain = (QuarterAuthority) this.authority;
+        setCaptainHome(quarterCaptain);
+        addCharacter(Status.Captain, quarterCaptain.getCharacter());
+
+        peasantFactory(quarterCaptain, farmerList, minerList, merchantList);
+    }
+
+
+    private void setCaptainHome(QuarterAuthority quarterCaptain) {
+        quarterCaptain.getCharacter().setNation(this.city.getProvince().getNation());
+    }
+
+    private void peasantFactory(QuarterAuthority quarterCaptain, LinkedList<Character> farmers, LinkedList<Character> miners, LinkedList<Character> merchants) {
         Random random = new Random();
         int numberOfFarmers = random.nextInt(Settings.get("farmerAmountMax")) + Settings.get("farmerAmountMin");
         numOfPeasants += numberOfFarmers;
@@ -110,18 +180,6 @@ public class Quarter extends ControlledArea implements Details {
         numOfPeasants += numberOfMiners;
         int numberOfMerchants = random.nextInt(Settings.get("merchantAmountMax")) + Settings.get("merchantAmountMin");
         numOfPeasants += numberOfMerchants;
-
-        LinkedList<Character> farmers = new LinkedList<>();
-        LinkedList<Character> miners = new LinkedList<>();
-        LinkedList<Character> merchants = new LinkedList<>();
-        LinkedList<Character> mayors = new LinkedList<>();
-        LinkedList<Character> kings = new LinkedList<>();
-        LinkedList<Character> mercenaries = new LinkedList<>();
-        LinkedList<Character> nobles = new LinkedList<>();
-        LinkedList<Character> vanguards = new LinkedList<>();
-        LinkedList<Character> governors = new LinkedList<>();
-        LinkedList<Character> captains = new LinkedList<>();
-        LinkedList<Character> slaves = new LinkedList<>();
 
         for (int peasant = 0; peasant < numberOfFarmers; peasant++) {
             Farmer farmer = new Farmer(quarterCaptain);
@@ -144,26 +202,19 @@ public class Quarter extends ControlledArea implements Details {
             quarterCaptain.addPeasant(merch);
             merchants.add(merch);
         }
-        populationList.put(Status.Farmer, farmers);
-        populationList.put(Status.Miner, miners);
-        populationList.put(Status.Merchant, merchants);
-        populationList.put(Status.Mayor, mayors);
-        populationList.put(Status.King, kings);
-        populationList.put(Status.Mercenary, mercenaries);
-        populationList.put(Status.Noble, nobles);
-        populationList.put(Status.Vanguard, vanguards);
-        populationList.put(Status.Governor, governors);
-        populationList.put(Status.Captain, captains);
-        populationList.put(Status.Slave, slaves);
-
-        addPop(Status.Captain, quarterCaptain.getCharacter());
     }
 
-    public void addPop(Status type, Character character){
-        getPopulationList().get(type).add(character);
+    public void addCharacter(Status status, Character character){
+        getPopulationMap().get(status).add(character);
+        isPopulationChanged = true;
     }
-    public HashMap<Status,LinkedList<Character>> getPopulationList() {
-        return populationList;
+
+    public void removeCharacter(Status status, Character character) {
+        getPopulationMap().get(status).remove(character);
+        isPopulationChanged = true;
+    }
+    public HashMap<Status,LinkedList<Character>> getPopulationMap() {
+        return populationMap;
     }
     public PropertyTracker getAllProperties() {
         return allProperties;
@@ -175,6 +226,5 @@ public class Quarter extends ControlledArea implements Details {
     public int getNumOfPeasants() {
         return numOfPeasants;
     }
-
 
 }

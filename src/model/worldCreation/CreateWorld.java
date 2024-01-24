@@ -13,8 +13,17 @@ public class CreateWorld {
     public CreateWorld() {
         this.size = Size.MEDIUM;
         this.world = new World(generateWorldName(), this.size);
-        this.spawnQuarter = createSpawn();
+        this.spawnQuarter = createSpawn(); //setting is in the method crashes the game
+        changeSpawnName();
     }
+
+    private void changeSpawnName(){
+        spawnQuarter.addHomeToName(); //quarter
+        spawnQuarter.getHigher().addHomeToName(); //city
+        spawnQuarter.getHigher().getHigher().addHomeToName(); //province
+        spawnQuarter.getNation().addHomeToName(); //nation
+        spawnQuarter.getNation().getHigher().addHomeToName(); //continent
+     }
 
     private Quarter createSpawn() {
         Random random = new Random();
@@ -26,15 +35,14 @@ public class CreateWorld {
                 throw new IllegalStateException("No contents found at the current level.");
             }
 
-            // Select a random item from the current level's contents
+            // Select a random quarter
             currentLevel = (Area) contents.get(random.nextInt(contents.size()));
 
-            // Check if the current level is a Quarter
+            // Check if the current level is a Quarter and return the spawn
             if (currentLevel instanceof Quarter) {
                 return (Quarter) currentLevel;
             }
 
-            // If currentLevel does not have a getContents() method, throw an exception
             if (!(currentLevel instanceof HasContents)) {
                 throw new IllegalStateException("Reached a level that does not contain further contents.");
             }

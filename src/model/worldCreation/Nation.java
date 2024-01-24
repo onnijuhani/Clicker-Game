@@ -65,7 +65,7 @@ public class Nation extends ControlledArea implements Details {
             // set home for governor
             int homeIndex = random.nextInt(nation.getAllQuarters().size());
             Quarter home = nation.getAllQuarters().get(homeIndex);
-            home.addPop(Status.Governor,governor);
+            home.addCharacter(Status.Governor,governor);
 
             mercenaryFactory(province, authority, random);
 
@@ -85,7 +85,8 @@ public class Nation extends ControlledArea implements Details {
 
             mercenary.getProperty().setLocation(quarter);
             quarter.propertyTracker.addProperty(mercenary.getProperty());
-            quarter.addPop(Status.Mercenary,mercenary);
+            quarter.addCharacter(Status.Mercenary,mercenary);
+            NameCreation.generateMajorQuarterName(quarter);
         }
     }
 

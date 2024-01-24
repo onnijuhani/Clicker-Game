@@ -50,11 +50,19 @@ public class Continent extends Area implements Details {
             // set home for king
             int homeIndex = random.nextInt(nation.getAllQuarters().size());
             Quarter home = nation.getAllQuarters().get(homeIndex);
-            home.addPop(Status.King,king);
+            home.addCharacter(Status.King,king);
+            changeKingAreaNames(home);
 
             supportFactory(nation, authority, random, home);
             NameCreation.generateMajorQuarterName(home);
+
         }
+    }
+
+    private void changeKingAreaNames(Quarter spawnQuarter){
+        spawnQuarter.addKingToName(); //quarter
+        ((City) spawnQuarter.getHigher()).addKingToName();//city
+        ((Province) spawnQuarter.getHigher().getHigher()).addKingToName(); //province
     }
 
     private void supportFactory(Nation nation, Authority authority, Random random, Quarter home) {
@@ -68,7 +76,7 @@ public class Continent extends Area implements Details {
 
             noble.getProperty().setLocation(home);
             home.propertyTracker.addProperty(noble.getProperty());
-            home.addPop(Status.Noble,noble);
+            home.addCharacter(Status.Noble,noble);
 
         }
 
@@ -86,7 +94,7 @@ public class Continent extends Area implements Details {
 
             vanguard.getProperty().setLocation(quarter);
             quarter.propertyTracker.addProperty(vanguard.getProperty());
-            quarter.addPop(Status.Vanguard, vanguard);
+            quarter.addCharacter(Status.Vanguard, vanguard);
             NameCreation.generateMajorQuarterName(quarter);
         }
 
@@ -98,11 +106,10 @@ public class Continent extends Area implements Details {
 
         vanguard.getProperty().setLocation(home);
         home.propertyTracker.addProperty(vanguard.getProperty());
-        home.addPop(Status.Vanguard, vanguard);
-
-
+        home.addCharacter(Status.Vanguard, vanguard);
 
     }
+
 
     @Override
     public String getDetails() {
