@@ -30,6 +30,10 @@ public class MainController extends BaseController {
     private WorkWalletController workWalletController;
     @FXML
     private ExploreMapController exploreMapController;
+    @FXML
+    private CharacterController characterController;
+    @FXML
+    private PropertyController propertyController;
 
     @FXML
     private Button clickMeButton;
@@ -74,8 +78,26 @@ public class MainController extends BaseController {
         if (exploreMapController != null) {
             exploreMapController.setModel(model);
             exploreMapController.setMain(this);
+            exploreMapController.setCharacterController(characterController);
         } else {
-            System.out.println("ExchangeController is null");
+            System.out.println("ExploreController is null");
+        }
+        if (characterController != null) {
+            characterController.setModel(model);
+            characterController.setMain(this);
+            characterController.setPropertyController(propertyController);
+        } else {
+            System.out.println("CharacterController is null");
+        }
+        if (propertyController != null) {
+            propertyController.setModel(model);
+            propertyController.setMain(this);
+            propertyController.setCharacterController(characterController);
+            characterController.setCurrentCharacter(model.accessPlayer());
+            characterController.updateCharacterTab();
+            propertyController.updatePropertyTab();
+        } else {
+            System.out.println("CharacterController is null");
         }
     }
 
@@ -90,6 +112,14 @@ public class MainController extends BaseController {
         updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateEventList()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
+    }
+
+    @FXML
+    void getPlayer(ActionEvent event) {
+        characterController.setCurrentCharacter(model.accessPlayer());
+        characterController.updateCharacterTab();
+        model.accessCurrentView().setCurrentView(model.accessWorld().getSpawnQuarter());
+        exploreMapController.updateExploreTab();
     }
 
 

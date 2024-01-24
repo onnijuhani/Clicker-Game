@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="topSection" alignment="TOP_RIGHT" prefHeight="72.0" prefWidth="1600.0" style="-fx-background-color: #330033; -fx-background-radius: 15; -fx-border-color: white; -fx-border-radius: 10;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TopSectionController">
+<GridPane fx:id="topSection" alignment="TOP_RIGHT" prefHeight="72.0" prefWidth="1600.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #59033f, #4c023f, #3e023e, #30033c, #210339); -fx-border-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TopSectionController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

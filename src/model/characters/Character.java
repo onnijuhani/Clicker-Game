@@ -56,7 +56,7 @@ public class Character implements TimeObserver, FoodObserver, Details {
     protected LinkedList<Character> allies;
     protected LinkedList<Character> enemies;
     protected EventTracker eventTracker;
-    protected int foodConsumption = 10;
+    protected int foodConsumption = 1;
     protected Status status;
     public Character() {
         this.wallet = new Wallet();
@@ -79,7 +79,7 @@ public class Character implements TimeObserver, FoodObserver, Details {
 
         Wallet wallet = character.getWallet();
         int foodNeeded = foodConsumption;
-        foodConsumption+=5;
+        foodConsumption+=1;
         Exchange exchange = nation.getExchange();
 
 

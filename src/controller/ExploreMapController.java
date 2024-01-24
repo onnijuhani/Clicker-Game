@@ -3,11 +3,12 @@ package controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import model.characters.Character;
 import model.worldCreation.Area;
 import model.worldCreation.City;
-import model.characters.Character;
 import model.worldCreation.ControlledArea;
 
 import java.util.List;
@@ -37,9 +38,19 @@ public class ExploreMapController extends BaseController {
     @FXML
     private Hyperlink authorityLink;
 
+    private CharacterController characterController;
+
     void updateAuthorityLink(){
         ControlledArea currentView = (ControlledArea) model.accessCurrentView().getCurrentView();
         authorityLink.setText(currentView.getAuthority().toString());
+    }
+
+
+    @FXML
+    void authorityLinkClick(ActionEvent event) {
+        ControlledArea currentView = (ControlledArea) model.accessCurrentView().getCurrentView();
+        openCharacterProfile(currentView.getAuthority().getCharacter());
+
     }
 
 
@@ -68,8 +79,8 @@ public class ExploreMapController extends BaseController {
     }
 
     private void openCharacterProfile(Character character) {
-        // Logic to open character profile
-        // For example, open a new window or change the view to display the character's details
+        characterController.setCurrentCharacter(character);
+
     }
 
 
@@ -192,5 +203,14 @@ public class ExploreMapController extends BaseController {
         higherViewButton.setText(currentView.equals(higherView) ? "Universe" : model.accessCurrentView().getCurrentView().getHigher().toString() );
 
     }
+    public controller.CharacterController getCharacterController() {
+        return characterController;
+    }
+
+    public void setCharacterController(controller.CharacterController characterController) {
+        this.characterController = characterController;
+    }
+
+
 
 }

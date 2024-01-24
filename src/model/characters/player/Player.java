@@ -1,6 +1,7 @@
 package model.characters.player;
 
 
+import model.NameCreation;
 import model.buildings.Property;
 import model.buildings.Shack;
 import model.characters.Character;
@@ -34,15 +35,16 @@ public class Player extends Character {
     private Status status = Status.Peasant;
 
     public Player(Quarter spawn){
+        this.wallet = new Wallet();
         this.property = new Shack("Your Own");
         this.property.setLocation(spawn);
         this.property.setOwner(this);
-        this.wallet = new Wallet();
         this.workWallet = new WorkWallet();
         this.eventTracker = new EventTracker();
         this.setNation(spawn.getAuthority().getCharacter().getNation());
         this.clicker = new Clicker(this);
         setSupervisor(spawn.getAuthority());
+        this.name = NameCreation.generateCharacterName();
     }
 
 
