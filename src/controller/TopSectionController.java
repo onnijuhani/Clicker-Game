@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
+import time.Time;
 
 public class TopSectionController extends BaseController  {
     @FXML
@@ -32,13 +33,13 @@ public class TopSectionController extends BaseController  {
 
     public void updateTopSection(){
         updateWallet();
-        timeView.setText(model.accessTime().getClock());
+        timeView.setText(Time.getClock());
     }
     void updateWallet(){
-        double[] values = model.accessPlayer().getWallet().getWalletValues();
-        foodLabel.setText(String.format("%.2f", values[0]));
-        alloysLabel.setText(String.format("%.2f", values[1]));
-        goldLabel.setText(String.format("%.2f", values[2]));
+        int[] values = model.accessPlayer().getWallet().getWalletValues();
+        foodLabel.setText(String.valueOf(values[0]));
+        alloysLabel.setText(String.format(String.valueOf(values[1])));
+        goldLabel.setText(String.format(String.valueOf(values[2])));
     }
     @FXML
     void startTime(MouseEvent event) {

@@ -1,6 +1,7 @@
 package model.characters.npc;
 
 import model.Settings;
+import model.characters.Employment;
 import model.characters.Peasant;
 import model.characters.Status;
 import model.characters.authority.Authority;

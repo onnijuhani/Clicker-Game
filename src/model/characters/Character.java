@@ -88,16 +88,16 @@ public class Character implements TimeObserver, FoodObserver, Details {
                 wallet.subtractFood(foodNeeded);
             } else {
                 // Calculate how much more food is needed
-                double additionalFoodNeeded = foodNeeded - wallet.getFood().getAmount();
+                int additionalFoodNeeded = foodNeeded - wallet.getFood().getAmount();
 
                 // Check if enough gold is available to buy the required food
-                double costInGold = exchange.calculateExchangeCost(additionalFoodNeeded, Resource.Food, Resource.Gold);
+                int costInGold = exchange.calculateExchangeCost(additionalFoodNeeded, Resource.Food, Resource.Gold);
                 if (wallet.hasEnoughResource(Resource.Gold, costInGold)) {
 
                     exchange.exchangeResources(additionalFoodNeeded, Resource.Food, Resource.Gold, character);
                 } else {
                     // Check if enough alloys are available and can be converted to gold for food
-                    double costInAlloys = exchange.calculateExchangeCost(costInGold, Resource.Gold, Resource.Alloy);
+                    int costInAlloys = exchange.calculateExchangeCost(costInGold, Resource.Gold, Resource.Alloy);
                     if (wallet.hasEnoughResource(Resource.Alloy, costInAlloys)) {
                         exchange.exchangeResources(costInGold, Resource.Gold, Resource.Alloy, character);
                         exchange.exchangeResources(additionalFoodNeeded, Resource.Food, Resource.Gold, character);

@@ -6,9 +6,9 @@ import model.resourceManagement.wallets.Vault;
 import model.resourceManagement.wallets.Wallet;
 
 public class Maintenance {
-    private double food;
-    private double alloy;
-    private double gold;
+    private int food;
+    private int alloy;
+    private int gold;
 
     public Maintenance(PropertyConfig.PropertyValues propertyValues) {
         this.food = propertyValues.food;
@@ -35,8 +35,8 @@ public class Maintenance {
     }
 
     private boolean canPay(TransferPackage cost, Wallet wallet) {
-        double[] walletResources = wallet.getWalletValues();
-        double[] costResources = cost.getAll();
+        int[] walletResources = wallet.getWalletValues();
+        int[] costResources = cost.getAll();
         return walletResources[0] >= costResources[0] &&
                 walletResources[1] >= costResources[1] &&
                 walletResources[2] >= costResources[2];

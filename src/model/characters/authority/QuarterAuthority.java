@@ -36,12 +36,12 @@ public class QuarterAuthority extends Authority {
         this.taxFormFarmers = new Tax();
         this.taxFormMiners = new Tax();
         this.taxFormMerchants = new Tax();
-        taxFormFarmers.setTaxInfo(Resource.Food, Settings.get("peasantFoodTax"),0);
-        taxFormMiners.setTaxInfo(Resource.Alloy, Settings.get("peasantAlloyTax"), 0);
-        taxFormMerchants.setTaxInfo(Resource.Gold, Settings.get("peasantGoldTax"),0);
-        taxForm.setTaxInfo(Resource.Food, Settings.get("peasantFoodTax"),0);
-        taxForm.setTaxInfo(Resource.Alloy, Settings.get("peasantAlloyTax"),0);
-        taxForm.setTaxInfo(Resource.Gold, Settings.get("peasantGoldTax"),0);
+        taxFormFarmers.setTaxInfo(Resource.Food, Settings.get("peasantFoodTax"));
+        taxFormMiners.setTaxInfo(Resource.Alloy, Settings.get("peasantAlloyTax"));
+        taxFormMerchants.setTaxInfo(Resource.Gold, Settings.get("peasantGoldTax"));
+        taxForm.setTaxInfo(Resource.Food, Settings.get("peasantFoodTax"));
+        taxForm.setTaxInfo(Resource.Alloy, Settings.get("peasantAlloyTax"));
+        taxForm.setTaxInfo(Resource.Gold, Settings.get("peasantGoldTax"));
     }
 
     @Override

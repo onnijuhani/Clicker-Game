@@ -8,8 +8,8 @@ import model.resourceManagement.resources.Resource;
 public class Exchange {
 
     private ExchangeRates rates;
-    private double defaultFoodAlloys = 100;
-    private double defaultGold = 10;
+    private int defaultFoodAlloys = 100;
+    private int defaultGold = 10;
 
     private double marketFee = 0.25;
 
@@ -19,10 +19,10 @@ public class Exchange {
         this.rates = new ExchangeRates();
     }
 
-    public void exchangeResources(double amountToBuy, Resource buyType, Resource sellType, Character character) {
+    public void exchangeResources(int amountToBuy, Resource buyType, Resource sellType, Character character) {
         double rate = rates.getRate(sellType, buyType);
         double costWithoutFee = amountToBuy / rate;
-        double totalCost = costWithoutFee * (1 + marketFee);
+        int totalCost = (int) (costWithoutFee * (1 + marketFee));
 
         if (!character.getWallet().hasEnoughResource(sellType, totalCost)) {
             String errorMessage = EventTracker.Message( "Error","Insufficient resources for the exchange.");
@@ -39,11 +39,11 @@ public class Exchange {
         String message = EventTracker.Message("Shop","Exchanged " + sellType + " for " + buyType);
         character.getEventTracker().addEvent(message);
     }
-    public double getDefaultFoodAlloys() {
+    public int getDefaultFoodAlloys() {
         return defaultFoodAlloys;
     }
 
-    public double getDefaultGold() {
+    public int getDefaultGold() {
         return defaultGold;
     }
 
@@ -51,12 +51,12 @@ public class Exchange {
         return marketFee;
     }
 
-    public double calculateExchangeCost(double amountToBuy, Resource buyType, Resource sellType) {
+    public int calculateExchangeCost(int amountToBuy, Resource buyType, Resource sellType) {
         double rate = rates.getRate(sellType, buyType);
         double costWithoutFee = amountToBuy / rate;
-        return costWithoutFee * (1 + marketFee);
+        return (int) (costWithoutFee * (1 + marketFee));
     }
-    public String getExchangeCostString(double amountToBuy, Resource buyType, Resource sellType) {
+    public String getExchangeCostString(int amountToBuy, Resource buyType, Resource sellType) {
         double cost = calculateExchangeCost(amountToBuy, buyType, sellType);
         long roundedCost = Math.round(cost);
         long roundedAmountToBuy = Math.round(amountToBuy);

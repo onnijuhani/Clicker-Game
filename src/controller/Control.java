@@ -82,11 +82,11 @@ public class Control {
     }
 
     void updateExchangePrices(){
-        double defaultGold = model.accessShop().getExchange().getDefaultGold();
+        int defaultGold = model.accessShop().getExchange().getDefaultGold();
         foodToGoldPrice.setText(model.accessShop().getExchange().getExchangeCostString(defaultGold,Resource.Gold,Resource.Food));
         alloysToGoldPrice.setText(model.accessShop().getExchange().getExchangeCostString(defaultGold,Resource.Gold,Resource.Alloy));
 
-        double defaultFoodAlloys = model.accessShop().getExchange().getDefaultFoodAlloys();
+        int defaultFoodAlloys = model.accessShop().getExchange().getDefaultFoodAlloys();
         goldToFoodPrice.setText(model.accessShop().getExchange().getExchangeCostString(defaultFoodAlloys,Resource.Food,Resource.Gold));
         goldToAlloysPrice.setText(model.accessShop().getExchange().getExchangeCostString(defaultFoodAlloys,Resource.Alloy,Resource.Gold));
     }
@@ -121,7 +121,7 @@ public class Control {
     }
 
     void updateWallet(){
-        double[] values = model.accessPlayer().getWallet().getWalletValues();
+        int[] values = model.accessPlayer().getWallet().getWalletValues();
         foodLabel.setText(String.valueOf(values[0]));
         alloysLabel.setText(String.valueOf(values[1]));
         goldLabel.setText(String.valueOf(values[2]));

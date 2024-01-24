@@ -46,9 +46,9 @@ public class Clicker {
         }
     }
     private TransferPackage generate() {
-        double totalFood = 0;
-        double totalAlloy = 0;
-        double totalGold = 0;
+        int totalFood = 0;
+        int totalAlloy = 0;
+        int totalGold = 0;
 
         for (Map.Entry<Resource, ClickerTools> entry : clickerTools.entrySet()) {
             double amount = entry.getValue().getResourceAmount();

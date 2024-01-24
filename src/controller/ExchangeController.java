@@ -41,38 +41,38 @@ public class ExchangeController extends BaseController {
         updateExchangePrices();
     }
     void updateExchangePrices(){
-        double defaultGold = model.accessShop().getExchange().getDefaultGold();
+        int defaultGold = model.accessShop().getExchange().getDefaultGold();
         foodToGoldPrice.setText(model.accessShop().getExchange().getExchangeCostString(defaultGold,Resource.Gold,Resource.Food));
         alloysToGoldPrice.setText(model.accessShop().getExchange().getExchangeCostString(defaultGold,Resource.Gold,Resource.Alloy));
 
-        double defaultFoodAlloys = model.accessShop().getExchange().getDefaultFoodAlloys();
+        int defaultFoodAlloys = model.accessShop().getExchange().getDefaultFoodAlloys();
         goldToFoodPrice.setText(model.accessShop().getExchange().getExchangeCostString(defaultFoodAlloys,Resource.Food,Resource.Gold));
         goldToAlloysPrice.setText(model.accessShop().getExchange().getExchangeCostString(defaultFoodAlloys,Resource.Alloy,Resource.Gold));
     }
     @FXML
     void buyGoldFoodBtn(MouseEvent event) {
-        double amountToBuy = model.accessShop().getExchange().getDefaultGold();
+        int amountToBuy = model.accessShop().getExchange().getDefaultGold();
         model.accessShop().getExchange().exchangeResources(amountToBuy, Resource.Gold,Resource.Food,model.accessPlayer());
         main.updateEventList();
     }
 
     @FXML
     void buyAlloysGoldBtn(MouseEvent event) {
-        double amountToBuy = model.accessShop().getExchange().getDefaultFoodAlloys();
+       int amountToBuy = model.accessShop().getExchange().getDefaultFoodAlloys();
         model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Alloy,Resource.Gold,model.accessPlayer());
         main.updateEventList();
     }
 
     @FXML
     void buyFoodGoldBtn(MouseEvent event) {
-        double amountToBuy = model.accessShop().getExchange().getDefaultGold();
+        int amountToBuy = model.accessShop().getExchange().getDefaultGold();
         model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Food,Resource.Gold,model.accessPlayer());
         main.updateEventList();
     }
 
     @FXML
     void buyGoldAlloysBtn(MouseEvent event) {
-        double amountToBuy = model.accessShop().getExchange().getDefaultGold();
+        int amountToBuy = model.accessShop().getExchange().getDefaultGold();
         model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Gold,Resource.Alloy,model.accessPlayer());
         main.updateEventList();
     }

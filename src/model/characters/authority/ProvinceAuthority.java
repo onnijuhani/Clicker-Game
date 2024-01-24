@@ -11,6 +11,7 @@ public class ProvinceAuthority extends Authority {
             paySupporters();
             cashOutSalary();
         }
+
     }
     public ProvinceAuthority(Character character) {
         super(character);

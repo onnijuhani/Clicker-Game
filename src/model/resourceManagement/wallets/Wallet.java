@@ -15,7 +15,7 @@ public class Wallet {
         this.alloy = new Alloy();
         this.gold = new Gold();
     }
-    public boolean hasEnoughResource(Resource type, double amount) {
+    public boolean hasEnoughResource(Resource type, int amount) {
         switch (type) {
             case Food:
                 return food.getAmount() >= amount;
@@ -27,8 +27,8 @@ public class Wallet {
                 throw new IllegalArgumentException("Unsupported resource type: " + type);
         }
     }
-    public double[] getWalletValues() {
-        return new double[]{food.getAmount(), alloy.getAmount(), gold.getAmount()};
+    public int[] getWalletValues() {
+        return new int[]{food.getAmount(), alloy.getAmount(), gold.getAmount()};
     }
     public void addResources(TransferPackage transfer) {
         if (transfer == null) {
@@ -53,7 +53,7 @@ public class Wallet {
         depositFromWallet.subtractResources(transfer);
     }
     public void depositAll(Wallet depositFromWallet){
-        double[] all = depositFromWallet.getWalletValues();
+        int[] all = depositFromWallet.getWalletValues();
         TransferPackage transfer = TransferPackage.fromArray(all);
         this.addResources(transfer);
         depositFromWallet.subtractResources(transfer);
@@ -76,22 +76,22 @@ public class Wallet {
 
 
 
-    public void addFood(double amount) {
+    public void addFood(int amount) {
         food.add(amount);
     }
-    public void addAlloy(double amount) {
+    public void addAlloy(int amount) {
         alloy.add(amount);
     }
-    public void addGold(double amount) {
+    public void addGold(int amount) {
         gold.add(amount);
     }
-    public void subtractFood(double amount) {
+    public void subtractFood(int amount) {
         food.subtract(amount);
     }
-    public void subtractAlloy(double amount) {
+    public void subtractAlloy(int amount) {
         alloy.subtract(amount);
     }
-    public void subtractGold(double amount) {
+    public void subtractGold(int amount) {
         gold.subtract(amount);
     }
 

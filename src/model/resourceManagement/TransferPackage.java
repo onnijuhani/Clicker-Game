@@ -2,26 +2,18 @@ package model.resourceManagement;
 
 import model.resourceManagement.resources.Resource;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+public record TransferPackage(int food, int alloy, int gold) {
 
-public record TransferPackage(double food, double alloy, double gold) {
-
-    public TransferPackage(double food, double alloy, double gold) {
-        this.food = round(food);
-        this.alloy = round(alloy);
-        this.gold = round(gold);
+    public TransferPackage(int food, int alloy, int gold) {
+        this.food = food;
+        this.alloy = alloy;
+        this.gold =  gold;
     }
 
-    private static double round(double value) {
-        return BigDecimal.valueOf(value)
-                .setScale(2, RoundingMode.HALF_UP)
-                .doubleValue();
+    public int[] getAll() {
+        return new int[]{food, alloy, gold};
     }
-    public double[] getAll() {
-        return new double[]{food, alloy, gold};
-    }
-    public static TransferPackage fromArray(double[] values) {
+    public static TransferPackage fromArray(int[] values) {
         if (values.length != 3) {
             throw new IllegalArgumentException("Array must have exactly 3 elements.");
         }
@@ -30,7 +22,10 @@ public record TransferPackage(double food, double alloy, double gold) {
     public static TransferPackage fromAnotherPackage(TransferPackage other) {
         return new TransferPackage(other.food, other.alloy, other.gold);
     }
-    public static TransferPackage fromEnum(Resource type, double amount) {
+
+
+
+    public static TransferPackage fromEnum(Resource type, int amount) {
         switch (type) {
             case Food:
                 return new TransferPackage(amount, 0, 0);
@@ -44,16 +39,16 @@ public record TransferPackage(double food, double alloy, double gold) {
     }
     @Override
     public String toString() {
-        return String.format("[food=%.2f, alloy=%.2f, gold=%.2f]", food, alloy, gold);
+        return String.format("[food, alloy, gold]", food, alloy, gold);
     }
 
-    public double food() {
+    public int food() {
         return food;
     }
-    public double alloy() {
+    public int alloy() {
         return alloy;
     }
-    public double gold() {
+    public int gold() {
         return gold;
     }
 }

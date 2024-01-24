@@ -13,13 +13,13 @@ public class Tax {
     public Tax() {
         taxInfoByResource = new EnumMap<>(Resource.class);
         for (Resource resource : Resource.values()) {
-            taxInfoByResource.put(resource, new TaxInfo(60, 0)); // Default tax info
+            taxInfoByResource.put(resource, new TaxInfo(60)); // Default tax info
         }
     }
 
-    public void setTaxInfo(Resource resource, int taxPercentage, int minimumTaxableAmount) {
+    public void setTaxInfo(Resource resource, int taxPercentage) {
         taxInfoByResource.get(resource).setTaxPercentage(taxPercentage);
-        taxInfoByResource.get(resource).setMinimumTaxableAmount(minimumTaxableAmount);
+
     }
 
     public TaxInfo getTaxInfo(Resource resource) {
@@ -28,18 +28,22 @@ public class Tax {
 
 
     public void collectTax(Wallet fromWallet, EventTracker taxPayer, Wallet toWallet, EventTracker taxMan) {
-        double foodTax = taxInfoByResource.get(Resource.Food).calculateTax(fromWallet.getFood().getAmount());
-        double alloyTax = taxInfoByResource.get(Resource.Alloy).calculateTax(fromWallet.getAlloy().getAmount());
-        double goldTax = taxInfoByResource.get(Resource.Gold).calculateTax(fromWallet.getGold().getAmount());
+        int foodTax = (int) taxInfoByResource.get(Resource.Food).calculateTax(fromWallet.getFood().getAmount());
+        int alloyTax = (int) taxInfoByResource.get(Resource.Alloy).calculateTax(fromWallet.getAlloy().getAmount());
+        int goldTax = (int) taxInfoByResource.get(Resource.Gold).calculateTax(fromWallet.getGold().getAmount());
 
         TransferPackage transfer = new TransferPackage(foodTax,alloyTax,goldTax);
         toWallet.deposit(fromWallet, transfer);
 
-        taxPayer.addEvent(EventTracker.Message("Major","Tax paid "+transfer.toString()));
-        taxMan.addEvent(EventTracker.Message("Major","Tax Collected"+transfer.toString()));
+        String taxPaid = EventTracker.Message("Major","Tax paid "+transfer);
+        String taxCollected = EventTracker.Message("Major","Tax Collected"+transfer);
+        taxPayer.addEvent(taxPaid);
+        taxMan.addEvent(taxCollected);
+
+
     }
 
-    private double getResourceAmount(Wallet wallet, Resource resource) {
+    private int getResourceAmount(Wallet wallet, Resource resource) {
         return switch (resource) {
             case Food -> wallet.getFood().getAmount();
             case Alloy -> wallet.getAlloy().getAmount();
@@ -61,20 +65,18 @@ public class Tax {
 
     public static class TaxInfo {
         private double taxPercentage;
-        private int minimumTaxableAmount;
 
-        public TaxInfo(double taxPercentage, int minimumTaxableAmount) {
+
+        public TaxInfo(double taxPercentage) {
             this.taxPercentage = taxPercentage;
-            this.minimumTaxableAmount = minimumTaxableAmount;
+
         }
 
         public void setTaxPercentage(int taxPercentage) {
             this.taxPercentage = taxPercentage;
         }
 
-        public void setMinimumTaxableAmount(int minimumTaxableAmount) {
-            this.minimumTaxableAmount = minimumTaxableAmount;
-        }
+
 
         public double calculateTax(double amount) {
             return amount * (taxPercentage / 100.0);
@@ -84,9 +86,7 @@ public class Tax {
             return taxPercentage;
         }
 
-        public double getMinimumTaxableAmount() {
-            return minimumTaxableAmount;
-        }
+
     }
 }
 

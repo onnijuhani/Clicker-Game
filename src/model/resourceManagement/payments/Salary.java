@@ -2,40 +2,35 @@ package model.resourceManagement.payments;
 
 public class Salary{
 
-    private double food;
-    private double alloy;
-    private double gold;
+    private int food;
+    private int alloy;
+    private int gold;
 
-    public Salary(double food, double alloy, double gold){
+    public Salary(int food, int alloy, int gold){
         this.food = food;
         this.alloy = alloy;
         this.gold = gold;
     }
-    public double[] getAll(){
-        return new double[]{food, alloy, gold};
+    public int[] getAll(){
+        return new int[]{food, alloy, gold};
     }
 
-    public void changePay(double foodRate, double alloyRate, double goldRate){
-        this.food = this.food * (1 + foodRate);
-        this.alloy = this.alloy * (1 + alloyRate);
-        this.gold = this.gold * (1 + goldRate);
-    }
-    public double getFood() {
+    public int getFood() {
         return food;
     }
-    public void setFood(double food) {
+    public void setFood(int food) {
         this.food = food;
     }
-    public double getAlloy() {
+    public int getAlloy() {
         return alloy;
     }
-    public void setAlloy(double alloy) {
+    public void setAlloy(int alloy) {
         this.alloy = alloy;
     }
-    public double getGold() {
+    public int getGold() {
         return gold;
     }
-    public void setGold(double gold) {
+    public void setGold(int gold) {
         this.gold = gold;
     }
 }
