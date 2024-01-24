@@ -1,12 +1,16 @@
 
 package controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import model.worldCreation.Area;
+import model.worldCreation.City;
+import model.characters.Character;
+import model.worldCreation.ControlledArea;
+
+import java.util.List;
 
 public class ExploreMapController extends BaseController {
 
@@ -25,6 +29,51 @@ public class ExploreMapController extends BaseController {
     @FXML
     private TextArea testi;
     private MainController main;
+    @FXML
+    private ListView<Character> objectListView;
+    @FXML
+    private Label authorityLabel;
+
+    @FXML
+    private Hyperlink authorityLink;
+
+    void updateAuthorityLink(){
+        ControlledArea currentView = (ControlledArea) model.accessCurrentView().getCurrentView();
+        authorityLink.setText(currentView.getAuthority().toString());
+    }
+
+
+    public void updateObjectListView() {
+
+        City currentView = (City) model.accessCurrentView().getCurrentView();
+        List list = currentView.getImportantCharacters();
+        ObservableList<Character> characters = FXCollections.observableArrayList(list);
+        objectListView.setItems(characters);
+
+        objectListView.setCellFactory(lv -> new ListCell<Character>() {
+            private final Hyperlink link = new Hyperlink();
+
+            @Override
+            protected void updateItem(Character character, boolean empty) {
+                super.updateItem(character, empty);
+                if (empty || character == null) {
+                    setGraphic(null);
+                } else {
+                    link.setText(character.toString()); // Assuming Character has a getName() method
+                    link.setOnAction(e -> openCharacterProfile(character));
+                    setGraphic(link);
+                }
+            }
+        });
+    }
+
+    private void openCharacterProfile(Character character) {
+        // Logic to open character profile
+        // For example, open a new window or change the view to display the character's details
+    }
+
+
+
     @FXML
     private void updateHigherType() {
         var currentView = model.accessCurrentView().getCurrentView();
@@ -90,6 +139,8 @@ public class ExploreMapController extends BaseController {
         updateContainType();
         updateHigherType();
         updateTextArea();
+        updateObjectListView();
+        updateAuthorityLink();
     }
 
 
@@ -115,8 +166,13 @@ public class ExploreMapController extends BaseController {
         }
     }
 
-    void updateCurrentViewLabel(){
-        this.currentViewLabel.setText(model.accessCurrentView().getCurrentView().toString());
+    void updateCurrentViewLabel() {
+        String currentViewName = model.accessCurrentView().getCurrentView().getName();
+
+        String pattern = " \\(.*?\\)"; //regular expressions that should remove (Home) or (King) or both to display just the name
+        String cleanName = currentViewName.replaceAll(pattern, "");
+
+        this.currentViewLabel.setText(cleanName);
     }
 
     void updateHigherButtonText(){

@@ -2,6 +2,7 @@ package model.characters.npc;
 
 import model.Settings;
 import model.characters.Peasant;
+import model.characters.Status;
 import model.characters.authority.Authority;
 
 public class Miner extends Peasant {
@@ -11,5 +12,6 @@ public class Miner extends Peasant {
         this.quarterAuthority = quarterAuthority;
         super.employment = new Employment(0, Settings.get("minerGenerate"), 0, workWallet);
         this.totalAmount += 1;
+        this.status = Status.Miner;
     }
 }

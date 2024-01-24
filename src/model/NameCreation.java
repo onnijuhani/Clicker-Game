@@ -7,7 +7,6 @@ import java.util.*;
 
 public class NameCreation {
 
-
     // these sets exist to make sure same name doesn't exist 2 times.
     private static final Set<String> generatedNationNames = new HashSet<>();
     private static final Set<String> generatedContinentNames = new HashSet<>();
@@ -27,7 +26,7 @@ public class NameCreation {
                 "Deca", "Aeon", "Nexus", "Haven", "Refuge", "Sanctuary", "Oasis"
         };
 
-        // Optional: Add extra flair with a random chance
+        // Optional: Add extra flair
         String[] extraFlair = {
                 "Forgotten", "Hidden", "Lost", "Ancient", "Shrouded", "Mystical", "Ethereal",
                 "Sacred", "Forbidden", "Enchanted", "Infinite", "Timeless"

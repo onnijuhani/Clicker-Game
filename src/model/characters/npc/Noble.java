@@ -1,5 +1,6 @@
 package model.characters.npc;
 
+import model.characters.Status;
 import model.characters.Support;
 import model.characters.authority.Authority;
 import model.resourceManagement.payments.Salary;
@@ -11,5 +12,6 @@ public class Noble extends Support {
         super(authority);
         this.salary = new Salary(200, 75, 50);
         this.totalAmount += 1;
+        this.status = Status.Noble;
     }
 }

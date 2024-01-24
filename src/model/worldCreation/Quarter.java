@@ -21,7 +21,7 @@ public class Quarter extends ControlledArea implements Details {
     private City city;
     private int numOfPeasants;
     private boolean isPopulationChanged = true;
-    private String importantCharactersCache;
+    private String citizenCache;
 
     public Quarter(String name, City city, Authority authority) {
         this.name = name;
@@ -55,7 +55,7 @@ public class Quarter extends ControlledArea implements Details {
         int population = numOfPeasants;
         int contents = allProperties.getProperties().size();
 
-        String popList = getImportantCharacters();
+        String popList = getCitizens();
 
         return ("Authority here is: " + this.getAuthority() + "\n"+
                 "Living in a: " + this.getAuthority().getProperty() + "\n"+
@@ -70,30 +70,30 @@ public class Quarter extends ControlledArea implements Details {
 
 
     @NotNull
-    public String getImportantCharacters() {
+    public String getCitizens() {
 
-        //important characters are only calculated the first time they are needed
-        //and whenever the character list changes. List is stored at importantCharactersCache.
+        //Citizens are only calculated the first time they are needed
+        //and whenever the character list changes. List is stored at citizenCache
 
-        if (isPopulationChanged || importantCharactersCache == null) {
-            importantCharactersCache = calculateImportantCharacters();
+        if (isPopulationChanged || citizenCache == null) {
+            citizenCache = calculateCitizens();
             isPopulationChanged = false;
         }
-        return importantCharactersCache;
+        return citizenCache;
     }
 
     @NotNull
-    private String calculateImportantCharacters() {
+    private String calculateCitizens() {
 
         StringBuilder sb = new StringBuilder();
         List<Status> statusOrder = getStatusRank();
 
         // Sort by Status
         populationMap.entrySet().stream()
-                .filter(entry -> statusOrder.contains(entry.getKey())) // Include only important statuses
-                .sorted(Comparator.comparingInt(entry -> statusOrder.indexOf(entry.getKey())))
+                .filter(entry -> statusOrder.contains(entry.getKey())) // Filter based on the key (Status)
+                .sorted(Comparator.comparingInt(entry -> statusOrder.indexOf(entry.getKey()))) // Sort based on the key's index in statusOrder
                 .forEachOrdered(entry -> {
-                    for (Character character : entry.getValue()) {
+                    for (Character character : entry.getValue()) { // Iterate over the LinkedList<Character>
                         sb.append("    ").append(character).append("\n");
                     }
                 });
@@ -101,14 +101,24 @@ public class Quarter extends ControlledArea implements Details {
         return sb.toString();
     }
 
+
+
     @NotNull
-    private static List<Status> getStatusRank() {
-        List<Status> statusOrder = List.of(
-                Status.King, Status.Noble, Status.Vanguard,
-                Status.Governor, Status.Mercenary, Status.Mayor
-                //doesn't include unimportant ranks
-        );
-        return statusOrder;
+    public List<Character> getImportantCharactersList() {
+        List<Character> characters = new ArrayList<>();
+        List<Status> statusOrder = getImportantStatusRank();
+
+        // Sort by Status
+        populationMap.entrySet().stream()
+                .filter(entry -> statusOrder.contains(entry.getKey())) // Include only important statuses
+                .sorted(Comparator.comparingInt(entry -> statusOrder.indexOf(entry.getKey())))
+                .forEachOrdered(entry -> {
+                    for (Character character : entry.getValue()) {
+                        characters.add(character);
+                    }
+                });
+
+        return characters;
     }
 
     @Override

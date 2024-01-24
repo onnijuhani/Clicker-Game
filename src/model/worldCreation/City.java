@@ -5,13 +5,15 @@ import model.Settings;
 import model.buildings.Property;
 import model.buildings.PropertyCreation;
 import model.buildings.PropertyTracker;
+import model.characters.Character;
+import model.characters.Status;
 import model.characters.authority.Authority;
 import model.characters.authority.QuarterAuthority;
 import model.characters.npc.Captain;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class City extends ControlledArea implements Details {
     private Quarter[] quarters;
@@ -37,7 +39,7 @@ public class City extends ControlledArea implements Details {
         int population = getCityPopulation();
 
 
-        String popList = getCityImportantCharacters();
+        String popList = getCityImportantCharactersString();
 
         return ("Authority here is: " + this.getAuthority() + "\n"+
                 "Living in a: " + this.getAuthority().getProperty() + "\n"+
@@ -48,15 +50,44 @@ public class City extends ControlledArea implements Details {
         );
     }
 
-    public String getCityImportantCharacters() {
+    public String getCityImportantCharactersString() {
         StringBuilder cityCharactersSb = new StringBuilder();
 
-        for (Quarter quarter : quarters) { // Assuming 'quarters' is a collection of Quarter objects
-            cityCharactersSb.append(quarter.getImportantCharacters());
+        for (Quarter quarter : quarters) {
+            cityCharactersSb.append(quarter.getCitizens());
         }
 
         return cityCharactersSb.toString();
     }
+
+    public List<Character> getImportantCharacters() {
+        List<Character> characters = new ArrayList<>();
+
+        // Collect all important characters from quarters
+        for (Quarter quarter : quarters) {
+            characters.addAll(quarter.getImportantCharactersList());
+        }
+
+        // Define the status rank order
+        List<Status> statusOrder = getImportantStatusRank();
+
+        // Sort the characters list based on the status rank
+        return characters.stream()
+                .filter(character -> statusOrder.contains(character.getStatus()))
+                .sorted(Comparator.comparingInt(character -> statusOrder.indexOf(character.getStatus())))
+                .collect(Collectors.toList());
+    }
+    @NotNull
+    @Override
+    public List<Status> getImportantStatusRank() {
+        List<Status> statusOrder = List.of(
+                Status.King, Status.Noble, Status.Vanguard,
+                Status.Governor, Status.Mercenary
+                //doesn't include unimportant ranks also Mayor excluded since he will show up as authority anyway
+        );
+        return statusOrder;
+    }
+
 
     private int getCityPopulation() {
         int population = 0;

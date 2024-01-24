@@ -126,15 +126,17 @@ public class MainController extends BaseController {
         tracker.addEvent(EventTracker.Message("Major","New Game Started"));
 
         Quarter spawn = model.accessWorld().getSpawnQuarter();
-        tracker.addEvent(EventTracker.Message("Major","Starting District is: "+spawn));
-        tracker.addEvent(EventTracker.Message("Major","Starting City is: "+spawn.getHigher()));
-        tracker.addEvent(EventTracker.Message("Major","Starting Province is: "+spawn.getHigher().getHigher()));
-        tracker.addEvent(EventTracker.Message("Major","Starting Nation is: "+spawn.getHigher().getHigher().getHigher()));
-        tracker.addEvent(EventTracker.Message("Major","Starting Continent is: "+spawn.getHigher().getHigher().getHigher().getHigher()));
+        tracker.addEvent(EventTracker.Message("Major","Starting District is: "+cleanName(spawn.toString())));
+        tracker.addEvent(EventTracker.Message("Major","Starting City is: "+cleanName(spawn.getHigher().toString())));
+        tracker.addEvent(EventTracker.Message("Major","Starting Province is: "+cleanName(spawn.getHigher().getHigher().toString())));
+        tracker.addEvent(EventTracker.Message("Major","Starting Nation is: "+cleanName(spawn.getNation().toString())));
+        tracker.addEvent(EventTracker.Message("Major","Starting Continent is: "+cleanName(spawn.getNation().getHigher().toString())));
 
-
-
-
+    }
+    private String cleanName(String name) {
+        String pattern = " \\(.*?\\)"; //regular expressions that should remove (Home) or (King) or both to display just the name
+        String cleanName = name.replaceAll(pattern, "");
+        return cleanName;
     }
 
     public void updateEventList() {

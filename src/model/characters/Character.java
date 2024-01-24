@@ -41,6 +41,10 @@ public class Character implements TimeObserver, FoodObserver, Details {
         return this.getClass().getSimpleName() +" "+ name;
     }
 
+    public Status getStatus(){
+        return status;
+    }
+
 
     protected static int totalAmount;
     protected LinkedList<Slave> slaves;
@@ -53,6 +57,7 @@ public class Character implements TimeObserver, FoodObserver, Details {
     protected LinkedList<Character> enemies;
     protected EventTracker eventTracker;
     protected int foodConsumption = 10;
+    protected Status status;
     public Character() {
         this.wallet = new Wallet();
         this.slaves = new LinkedList<>();

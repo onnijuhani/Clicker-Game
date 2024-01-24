@@ -54,12 +54,12 @@
       </Pane>
       <AnchorPane prefHeight="845.0" prefWidth="1600.0" style="-fx-background-color: #373745; -fx-border-color: white;">
          <children>
-            <ListView fx:id="eventList" accessibleText="event listing" fixedCellSize="-2.0" layoutX="149.0" layoutY="441.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="319.0" prefWidth="525.0" style="-fx-background-color: gray; -fx-background-radius: 10;">
+            <ListView fx:id="eventList" accessibleText="event listing" fixedCellSize="-2.0" layoutX="150.0" layoutY="441.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="319.0" prefWidth="515.0" style="-fx-background-color: gray; -fx-background-radius: 10;">
                <effect>
                   <DropShadow height="79.62" radius="37.1125" spread="0.13" width="70.83" />
                </effect>
             </ListView>
-            <Button fx:id="clickMeButton" alignment="CENTER" contentDisplay="CENTER" layoutX="328.0" layoutY="769.0" mnemonicParsing="false" onMouseClicked="#generateResources" prefHeight="38.0" prefWidth="155.0" style="-fx-background-radius: 15;" text="Click Me!">
+            <Button fx:id="clickMeButton" alignment="CENTER" contentDisplay="CENTER" layoutX="330.0" layoutY="769.0" mnemonicParsing="false" onMouseClicked="#generateResources" prefHeight="38.0" prefWidth="155.0" style="-fx-background-radius: 15;" text="Click Me!">
                <font>
                   <Font size="22.0" />
                </font>
@@ -103,7 +103,7 @@
                   </TabPane>
                </children>
             </AnchorPane>
-            <AnchorPane layoutX="686.0" layoutY="441.0">
+            <AnchorPane layoutX="678.0" layoutY="441.0" prefHeight="234.0" prefWidth="114.0">
                <children>
                   <fx:include fx:id="workWallet" source="workWallet.fxml" />
                </children>
@@ -122,6 +122,24 @@
                   </HBox>
                </children>
             </VBox>
+            <AnchorPane layoutX="821.0" layoutY="273.0" prefHeight="544.0" prefWidth="754.0" style="-fx-background-color: white;">
+               <children>
+                  <TabPane prefHeight="544.0" prefWidth="754.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Character">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                      <Tab text="Property">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                    </tabs>
+                  </TabPane>
+               </children>
+            </AnchorPane>
          </children></AnchorPane>
   </children>
 </VBox>
