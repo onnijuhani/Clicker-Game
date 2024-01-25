@@ -8,9 +8,9 @@ import model.characters.npc.Merchant;
 import model.characters.npc.Miner;
 import model.characters.player.EventTracker;
 import model.resourceManagement.payments.Tax;
-import model.resourceManagement.resources.Resource;
+import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.WorkWallet;
-import time.Time;
+import model.time.Time;
 
 import java.util.LinkedList;
 
@@ -21,8 +21,8 @@ public class QuarterAuthority extends Authority {
         if (day == Time.quarterTax) {
             imposeTax();
             paySupporters();
-            cashOutSalary();
         }
+
     }
 
     private LinkedList<Peasant> peasants;
@@ -54,7 +54,6 @@ public class QuarterAuthority extends Authority {
             WorkWallet taxedWallet = peasant.getWorkWallet();
             EventTracker tracker = peasant.getEventTracker();
             taxForm.collectTax(taxedWallet,tracker,workWallet,this.getCharacter().getEventTracker());
-            peasant.getWorkWallet().setTaxedOrNot(true);
         }
     }
     public void addPeasant(Peasant peasant){

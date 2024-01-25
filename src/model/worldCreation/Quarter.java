@@ -30,10 +30,7 @@ public class Quarter extends ControlledArea implements Details {
         this.propertyTracker = new PropertyTracker();
         this.authority = authority;
         this.allProperties = new PropertyTracker();
-        Authority captain = this.authority;
         this.populationMap = new HashMap<>();
-        captain.getCharacter().setNation(city.getProvince().getNation());
-        captain.setSupervisor(city.getAuthority());
         initializePopulationMap();
         populateQuarter();
     }
@@ -72,7 +69,7 @@ public class Quarter extends ControlledArea implements Details {
     @NotNull
     public String getCitizens() {
 
-        //Citizens are only calculated the first time they are needed
+        //Citizens are only calculated the first model.time they are needed
         //and whenever the character list changes. List is stored at citizenCache
 
         if (isPopulationChanged || citizenCache == null) {
@@ -171,15 +168,16 @@ public class Quarter extends ControlledArea implements Details {
         LinkedList<Character> merchantList = getCharacterList(Status.Merchant);
 
         QuarterAuthority quarterCaptain = (QuarterAuthority) this.authority;
-        setCaptainHome(quarterCaptain);
+        setUpCaptainAttributes(quarterCaptain);
         addCharacter(Status.Captain, quarterCaptain.getCharacter());
 
         peasantFactory(quarterCaptain, farmerList, minerList, merchantList);
     }
 
 
-    private void setCaptainHome(QuarterAuthority quarterCaptain) {
+    private void setUpCaptainAttributes(QuarterAuthority quarterCaptain) {
         quarterCaptain.getCharacter().setNation(this.city.getProvince().getNation());
+        quarterCaptain.setSupervisor(city.getAuthority());
     }
 
     private void peasantFactory(QuarterAuthority quarterCaptain, LinkedList<Character> farmers, LinkedList<Character> miners, LinkedList<Character> merchants) {
@@ -195,6 +193,7 @@ public class Quarter extends ControlledArea implements Details {
             Farmer farmer = new Farmer(quarterCaptain);
             farmer.setNation(nation);
             farmer.getProperty().setLocation(this);
+            farmer.setAuthority(quarterCaptain);
             quarterCaptain.addPeasant(farmer);
             farmers.add(farmer);
         }
@@ -202,6 +201,7 @@ public class Quarter extends ControlledArea implements Details {
             Miner miner = new Miner(quarterCaptain);
             miner.setNation(nation);
             miner.getProperty().setLocation(this);
+            miner.setAuthority(quarterCaptain);
             quarterCaptain.addPeasant(miner);
             miners.add(miner);
         }
@@ -209,6 +209,7 @@ public class Quarter extends ControlledArea implements Details {
             Merchant merch = new Merchant(quarterCaptain);
             merch.setNation(nation);
             merch.getProperty().setLocation(this);
+            merch.setAuthority(quarterCaptain);
             quarterCaptain.addPeasant(merch);
             merchants.add(merch);
         }

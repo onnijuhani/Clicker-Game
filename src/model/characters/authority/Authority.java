@@ -9,8 +9,8 @@ import model.resourceManagement.TransferPackage;
 import model.resourceManagement.payments.Salary;
 import model.resourceManagement.payments.Tax;
 import model.resourceManagement.wallets.WorkWallet;
-import time.TimeEventManager;
-import time.TimeObserver;
+import model.time.TimeEventManager;
+import model.time.TimeObserver;
 
 import java.util.ArrayList;
 
@@ -22,8 +22,8 @@ public class Authority implements TimeObserver {
         if (day == 0) {
             imposeTax();
             paySupporters();
-            cashOutSalary();
         }
+
     }
     protected Property property;
     protected AuthorityCharacter character;
@@ -41,7 +41,7 @@ public class Authority implements TimeObserver {
     public Authority(Character character) {
         this.character = (AuthorityCharacter) character;
         this.taxForm = new Tax();
-        this.workWallet = new WorkWallet();
+        this.workWallet = new WorkWallet(character.getWallet());
         this.subordinate = new ArrayList<>();
         this.supporters = new ArrayList<>();
         this.property = character.getProperty();
@@ -49,17 +49,13 @@ public class Authority implements TimeObserver {
     }
     public void imposeTax(){
         for (Authority authority : subordinate){
-            WorkWallet taxedWallet = authority.getWorkWallet();
+            WorkWallet walletUnderTaxation = authority.getWorkWallet();
             EventTracker tracker = authority.getCharacter().getEventTracker();
-            taxForm.collectTax(taxedWallet,tracker,workWallet,this.getCharacter().getEventTracker());
-            taxedWallet.setTaxedOrNot(true);
+            taxForm.collectTax(walletUnderTaxation,tracker,workWallet,this.getCharacter().getEventTracker());
         }
     }
 
-    public void cashOutSalary() {
-        getCharacter().getWallet().depositAll(workWallet);
-        workWallet.setTaxedOrNot(false);
-    }
+
 
     public void paySupporters(){
         for (Support support : getSupporters()) {

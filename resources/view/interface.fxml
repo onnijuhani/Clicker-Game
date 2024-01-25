@@ -54,7 +54,7 @@
              <fx:include fx:id="topSection" source="topSection.fxml" />
          </children>
       </Pane>
-      <AnchorPane prefHeight="845.0" prefWidth="1600.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #e0bed5, #b499b0, #8a758b, #635468, #3e3446); -fx-border-color: white;">
+      <AnchorPane prefHeight="845.0" prefWidth="1600.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #cfc2cd, #ada2ac, #8f848e, #796e78, #665965); -fx-border-color: white;">
          <children>
             <ListView fx:id="eventList" accessibleText="event listing" fixedCellSize="-2.0" layoutX="143.0" layoutY="441.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="319.0" prefWidth="515.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #59033f, #4c023f, #3e023e, #30033c, #210339); -fx-background-radius: 10;">
                <effect>
@@ -131,9 +131,9 @@
                   </HBox>
                </children>
             </VBox>
-            <AnchorPane layoutX="795.0" layoutY="271.0" prefHeight="544.0" prefWidth="791.0" style="-fx-background-color: white; -fx-background-radius: 15;">
+            <AnchorPane layoutX="795.0" layoutY="147.0" prefHeight="668.0" prefWidth="791.0">
                <children>
-                  <TabPane prefHeight="544.0" prefWidth="791.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
+                  <TabPane prefHeight="668.0" prefWidth="791.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
                       <Tab text="Character">
                         <content>
@@ -146,7 +146,7 @@
                       </Tab>
                       <Tab text="Property">
                         <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-radius: 15;">
+                          <AnchorPane prefHeight="557.0" prefWidth="791.0" style="-fx-background-radius: 25;">
                                  <children>
                                     <fx:include fx:id="property" source="property.fxml" />
                                  </children></AnchorPane>

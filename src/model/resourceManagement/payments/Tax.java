@@ -2,8 +2,9 @@ package model.resourceManagement.payments;
 
 import model.characters.player.EventTracker;
 import model.resourceManagement.TransferPackage;
-import model.resourceManagement.resources.Resource;
+import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Wallet;
+import model.resourceManagement.wallets.WorkWallet;
 
 import java.util.EnumMap;
 
@@ -27,27 +28,30 @@ public class Tax {
     }
 
 
-    public void collectTax(Wallet fromWallet, EventTracker taxPayer, Wallet toWallet, EventTracker taxMan) {
-        int foodTax = (int) taxInfoByResource.get(Resource.Food).calculateTax(fromWallet.getFood().getAmount());
-        int alloyTax = (int) taxInfoByResource.get(Resource.Alloy).calculateTax(fromWallet.getAlloy().getAmount());
-        int goldTax = (int) taxInfoByResource.get(Resource.Gold).calculateTax(fromWallet.getGold().getAmount());
+    public void collectTax(WorkWallet fromWallet, EventTracker taxPayerTracker, WorkWallet toWallet, EventTracker taxManTracker) {
+        int foodTax = (int) taxInfoByResource.get(Resource.Food).calculateTax(fromWallet.getFood());
+        int alloyTax = (int) taxInfoByResource.get(Resource.Alloy).calculateTax(fromWallet.getAlloy());
+        int goldTax = (int) taxInfoByResource.get(Resource.Gold).calculateTax(fromWallet.getGold());
 
         TransferPackage transfer = new TransferPackage(foodTax,alloyTax,goldTax);
         toWallet.deposit(fromWallet, transfer);
 
+        fromWallet.setTaxedOrNot(true);
+        fromWallet.cashOutSalary(); //after taxation salary is added to the main wallet of the owner. This wallet cannot be taxed.
+
         String taxPaid = EventTracker.Message("Major","Tax paid "+transfer);
         String taxCollected = EventTracker.Message("Major","Tax Collected"+transfer);
-        taxPayer.addEvent(taxPaid);
-        taxMan.addEvent(taxCollected);
+        taxPayerTracker.addEvent(taxPaid);
+        taxManTracker.addEvent(taxCollected);
 
 
     }
 
     private int getResourceAmount(Wallet wallet, Resource resource) {
         return switch (resource) {
-            case Food -> wallet.getFood().getAmount();
-            case Alloy -> wallet.getAlloy().getAmount();
-            case Gold -> wallet.getGold().getAmount();
+            case Food -> wallet.getFood();
+            case Alloy -> wallet.getAlloy();
+            case Gold -> wallet.getGold();
             default -> 0;
         };
     }

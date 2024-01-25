@@ -1,7 +1,7 @@
 package model.characters.authority;
 
 import model.characters.Character;
-import time.Time;
+import model.time.Time;
 
 public class ProvinceAuthority extends Authority {
     @Override
@@ -9,7 +9,7 @@ public class ProvinceAuthority extends Authority {
         if (day == Time.provinceTax) {
             imposeTax();
             paySupporters();
-            cashOutSalary();
+
         }
 
     }

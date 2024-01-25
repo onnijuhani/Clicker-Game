@@ -1,7 +1,5 @@
 package model.resourceManagement;
 
-import model.resourceManagement.resources.Resource;
-
 public record TransferPackage(int food, int alloy, int gold) {
 
     public TransferPackage(int food, int alloy, int gold) {
@@ -39,7 +37,7 @@ public record TransferPackage(int food, int alloy, int gold) {
     }
     @Override
     public String toString() {
-        return String.format("[food, alloy, gold]", food, alloy, gold);
+        return " (food: "+food+" alloy: "+alloy+" gold: "+gold+")";
     }
 
     public int food() {

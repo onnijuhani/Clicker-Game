@@ -1,4 +1,4 @@
-package time;
+package model.time;
 
 public interface PropertyObserver {
     void propertyUpdate();

@@ -1,5 +1,6 @@
 package controller;
 
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -27,6 +28,14 @@ public class PropertyController extends BaseController {
     }
     public void updatePropertyImage(){
         propertyPicture.setImage(currentProperty.getImage());
+
+
+
+
+
+
+
+
     }
     public void updatePropertyType(){
         propertyType.setText(currentProperty.getClass().getSimpleName());

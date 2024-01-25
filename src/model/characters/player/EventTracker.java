@@ -1,6 +1,6 @@
 package model.characters.player;
 
-import time.Time;
+import model.time.Time;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,7 +17,7 @@ public class EventTracker {
         String time = (Time.getDay()<10 ? Time.getClock()+"  " : Time.getClock());
         return String.format("%s %s '%s'", now.format(formatter), type, time+"          "+message);
     }
-    private static final int MAX_EVENTS = 10000; // Max number of events per list
+    private static final int MAX_EVENTS = 10; // Max number of events per list
 
     private LinkedList<String> majorEvents = new LinkedList<>();
     private LinkedList<String> resourceEvents = new LinkedList<>();

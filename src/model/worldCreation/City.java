@@ -24,14 +24,12 @@ public class City extends ControlledArea implements Details {
         this.province = province;
         this.nation = province.getNation();
         this.propertyTracker = new PropertyTracker();
+        this.authority = authority;
         this.createQuarters();
-        super.authority = authority;
-        Authority mayor = this.authority;
-        mayor.getCharacter().setNation(getProvince().getNation());
-        mayor.setSupervisor(province.getAuthority());
         for (Quarter quarter : quarters) {
-            mayor.setSubordinate(quarter.authority);
+            authority.setSubordinate(quarter.authority);
         }
+        authority.setSupervisor(province.getAuthority());
     }
     @Override
     public String getDetails() {
@@ -82,7 +80,7 @@ public class City extends ControlledArea implements Details {
     public List<Status> getImportantStatusRank() {
         List<Status> statusOrder = List.of(
                 Status.King, Status.Noble, Status.Vanguard,
-                Status.Governor, Status.Mercenary
+                Status.Governor, Status.Mercenary, Status.Mayor
                 //doesn't include unimportant ranks also Mayor excluded since he will show up as authority anyway
         );
         return statusOrder;
@@ -108,6 +106,7 @@ public class City extends ControlledArea implements Details {
 
             Captain captain = new Captain();
             captain.setNation(nation);
+            captain.setAuthority(getAuthority());
             Property property = PropertyCreation.createProperty(name, "Quarter");
             property.setOwner(captain);
             propertyTracker.addProperty(property);

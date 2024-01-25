@@ -25,14 +25,12 @@ public class Province extends ControlledArea implements Details {
         this.name = name;
         this.nation = nation;
         this.propertyTracker = new PropertyTracker();
+        this.authority = authority;
         this.createCities();
-        super.authority = authority;
-        Authority governor = this.authority;
-        governor.getCharacter().setNation(nation);
-        governor.setSupervisor(nation.getAuthority());
         for (City city : cities) {
-            governor.setSubordinate(city.authority);
+            authority.setSubordinate(city.authority);
         }
+        authority.setSupervisor(nation.getAuthority());
     }
     @Override
     public String getDetails() {
@@ -50,6 +48,7 @@ public class Province extends ControlledArea implements Details {
 
             Mayor mayor = new Mayor();
             mayor.setNation(nation);
+            mayor.setAuthority(getAuthority());
             Property property = PropertyCreation.createProperty(name, "City");
             property.setOwner(mayor);
             propertyTracker.addProperty(property);

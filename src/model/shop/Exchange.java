@@ -3,7 +3,7 @@ package model.shop;
 import model.characters.Character;
 import model.characters.player.EventTracker;
 import model.resourceManagement.TransferPackage;
-import model.resourceManagement.resources.Resource;
+import model.resourceManagement.Resource;
 
 public class Exchange {
 

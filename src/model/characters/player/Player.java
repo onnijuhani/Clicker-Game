@@ -12,7 +12,7 @@ import model.resourceManagement.payments.Tax;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.worldCreation.Quarter;
-import time.Time;
+import model.time.Time;
 
 import java.util.ArrayList;
 
@@ -35,11 +35,12 @@ public class Player extends Character {
     private Status status = Status.Peasant;
 
     public Player(Quarter spawn){
+        setAuthority(spawn.getAuthority());
         this.wallet = new Wallet();
         this.property = new Shack("Your Own");
         this.property.setLocation(spawn);
         this.property.setOwner(this);
-        this.workWallet = new WorkWallet();
+        this.workWallet = new WorkWallet(wallet);
         this.eventTracker = new EventTracker();
         this.setNation(spawn.getAuthority().getCharacter().getNation());
         this.clicker = new Clicker(this);
@@ -51,19 +52,13 @@ public class Player extends Character {
     public void payTaxes(){
         if (status == Status.Peasant) {
             Tax taxForm = getSupervisor().getTaxForm();
-            Wallet supervisorWallet = getSupervisor().getCharacter().getWallet();
+            WorkWallet supervisorWallet = getSupervisor().getWorkWallet();
             EventTracker supervisorTracker = getSupervisor().getCharacter().getEventTracker();
             taxForm.collectTax(workWallet, eventTracker, supervisorWallet, supervisorTracker);
-            workWallet.setTaxedOrNot(true);
-            cashOutSalary();
         }
     }
 
-    public void cashOutSalary() {
-        wallet.depositAll(workWallet);
-        String message = EventTracker.Message("Major","Salary added to main wallet");
-        eventTracker.addEvent(message);
-    }
+
 
     public Property getProperty() {
         return property;

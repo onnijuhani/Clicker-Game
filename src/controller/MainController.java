@@ -36,7 +36,7 @@ public class MainController extends BaseController {
     private PropertyController propertyController;
 
     @FXML
-    private Button clickMeButton;
+    protected Button clickMeButton;
     @FXML
     private ListView<String> eventList;
     private Timeline updateTimeline;
@@ -54,6 +54,7 @@ public class MainController extends BaseController {
         super.setModel(model);
         if (topSectionController != null) {
             topSectionController.setModel(model);
+            topSectionController.setMain(this);
         } else {
             System.out.println("TopSectionController is null");
         }
@@ -96,6 +97,7 @@ public class MainController extends BaseController {
             characterController.setCurrentCharacter(model.accessPlayer());
             characterController.updateCharacterTab();
             propertyController.updatePropertyTab();
+
         } else {
             System.out.println("CharacterController is null");
         }

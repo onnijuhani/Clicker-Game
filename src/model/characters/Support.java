@@ -6,11 +6,11 @@ import model.resourceManagement.payments.Salary;
 
 public class Support extends Character {
     protected Salary salary;
-    protected Authority authorityTo;
+
     public static int totalAmount;
 
     public Support(Authority authorityTo) {
-        this.authorityTo = authorityTo;
+        this.authority = authorityTo;
         this.totalAmount += 1;
         createProperty();
     }

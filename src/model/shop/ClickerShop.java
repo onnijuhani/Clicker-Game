@@ -5,7 +5,7 @@ import model.characters.player.Player;
 import model.characters.player.clicker.AlloyClicker;
 import model.characters.player.clicker.ClickerTools;
 import model.characters.player.clicker.GoldClicker;
-import model.resourceManagement.resources.Resource;
+import model.resourceManagement.Resource;
 
 public class ClickerShop {
     private int alloyClickerPrice = 100;

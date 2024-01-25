@@ -1,51 +1,51 @@
 package model.resourceManagement.wallets;
 
-import model.resourceManagement.resources.Alloy;
-import model.resourceManagement.resources.Food;
-import model.resourceManagement.resources.Gold;
-import model.resourceManagement.resources.Resource;
 import model.resourceManagement.TransferPackage;
+import model.resourceManagement.Resource;
 
 public class Wallet {
-    private Food food;
-    private Alloy alloy;
-    private Gold gold;
+    private int food;
+    private int alloy;
+    private int gold;
+
+
+
     public Wallet() {
-        this.food = new Food();
-        this.alloy = new Alloy();
-        this.gold = new Gold();
+        this.food = 0;
+        this.alloy = 0;
+        this.gold = 0;
     }
     public boolean hasEnoughResource(Resource type, int amount) {
         switch (type) {
             case Food:
-                return food.getAmount() >= amount;
+                return food >= amount;
             case Alloy:
-                return alloy.getAmount() >= amount;
+                return alloy >= amount;
             case Gold:
-                return gold.getAmount() >= amount;
+                return gold >= amount;
             default:
                 throw new IllegalArgumentException("Unsupported resource type: " + type);
         }
     }
     public int[] getWalletValues() {
-        return new int[]{food.getAmount(), alloy.getAmount(), gold.getAmount()};
+        return new int[]{food, alloy, gold};
     }
     public void addResources(TransferPackage transfer) {
         if (transfer == null) {
             throw new IllegalArgumentException("TransferPackage cannot be null.");
         }
-        this.food.add(transfer.food());
-        this.alloy.add(transfer.alloy());
-        this.gold.add(transfer.gold());
+        this.food += transfer.food();
+        this.alloy += transfer.alloy();
+        this.gold += transfer.gold();
     }
 
     public void subtractResources(TransferPackage transfer) {
         if (transfer == null) {
             throw new IllegalArgumentException("TransferPackage cannot be null.");
         }
-        this.food.subtract(transfer.food());
-        this.alloy.subtract(transfer.alloy());
-        this.gold.subtract(transfer.gold());
+        this.food -= transfer.food();
+        this.alloy-= transfer.alloy();
+        this.gold -= transfer.gold();
     }
 
     public void deposit(Wallet depositFromWallet, TransferPackage transfer){
@@ -65,54 +65,47 @@ public class Wallet {
     }
     @Override
     public String toString() {
-        return "Food: "+food.getAmount() + " Alloys: "+alloy.getAmount() + " Gold: "+gold.getAmount();
+        return "Food: "+food + " Alloys: "+alloy + " Gold: "+gold;
     }
 
     public String toStringValuesRows() {
-        return "Food: " + Math.round(food.getAmount()) +
-                "\nAlloys: " + Math.round(alloy.getAmount()) +
-                "\nGold: " + Math.round(gold.getAmount());
+        return "Food: " + food +
+                "\nAlloys: " + alloy +
+                "\nGold: " + gold;
     }
 
 
 
-    public void addFood(int amount) {
-        food.add(amount);
-    }
-    public void addAlloy(int amount) {
-        alloy.add(amount);
-    }
-    public void addGold(int amount) {
-        gold.add(amount);
-    }
+
     public void subtractFood(int amount) {
-        food.subtract(amount);
+        food =- amount;
     }
     public void subtractAlloy(int amount) {
-        alloy.subtract(amount);
+        alloy -= amount;
     }
     public void subtractGold(int amount) {
-        gold.subtract(amount);
+        gold -= amount;
     }
 
-    public Food getFood() {
+    public int getFood() {
         return food;
     }
-    public void setFood(Food food) {
+    public void setFood(int food) {
         this.food = food;
     }
-    public Alloy getAlloy() {
+    public int getAlloy() {
         return alloy;
     }
-    public void setAlloy(Alloy alloy) {
+    public void setAlloy(int alloy) {
         this.alloy = alloy;
     }
-    public Gold getGold() {
+    public int getGold() {
         return gold;
     }
-    public void setGold(Gold gold) {
+    public void setGold(int gold) {
         this.gold = gold;
     }
+
 }
 
 

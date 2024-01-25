@@ -6,8 +6,8 @@ import model.characters.authority.Authority;
 import model.characters.player.EventTracker;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
-import time.GenerateManager;
-import time.GenerateObserver;
+import model.time.GenerateManager;
+import model.time.GenerateObserver;
 
 import java.util.LinkedList;
 
@@ -16,9 +16,6 @@ public class Peasant extends Character implements GenerateObserver {
     @Override
     public void generateUpdate() {
         getEmployment().generatePayment();
-        if (getWorkWallet().isTaxed()) {
-            cashOutSalary();
-        }
     }
 
 
@@ -35,7 +32,7 @@ public class Peasant extends Character implements GenerateObserver {
         this.enemies = new LinkedList<>();
         this.name = NameCreation.generateCharacterName();
         this.eventTracker = new EventTracker();
-        this.workWallet = new WorkWallet();
+        this.workWallet = new WorkWallet(wallet);
         this.property = PropertyCreation.createPeasantProperty(this);
         GenerateManager.subscribe(this);
     }
@@ -44,10 +41,7 @@ public class Peasant extends Character implements GenerateObserver {
         return false;
     }
 
-    public void cashOutSalary() {
-        wallet.depositAll(workWallet);
-        workWallet.setTaxedOrNot(false);
-    }
+
 
     public Employment getEmployment() {
         return employment;

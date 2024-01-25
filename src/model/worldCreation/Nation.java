@@ -29,14 +29,13 @@ public class Nation extends ControlledArea implements Details {
         this.propertyTracker = new PropertyTracker();
         this.allQuarters = new LinkedList<>();
         this.nation = this;
+        this.authority = authority;
         this.createProvinces();
-        super.authority = authority;
         this.exchange = new Exchange();
-        Authority king = this.authority;
-        king.getCharacter().setNation(this);
         for (Province province : provinces) {
-            king.setSubordinate(province.authority);
+            authority.setSubordinate(province.authority);
         }
+        authority.setSupervisor(authority);
     }
     @Override
     public String getDetails() {
@@ -53,6 +52,8 @@ public class Nation extends ControlledArea implements Details {
             String name = NameCreation.generateProvinceName();
 
             Governor governor = new Governor();
+            governor.setAuthority(getAuthority());
+            governor.setNation(nation);
             Property property = PropertyCreation.createProperty(name, "Province");
             property.setOwner(governor);
             propertyTracker.addProperty(property);
@@ -62,10 +63,15 @@ public class Nation extends ControlledArea implements Details {
             Province province = new Province(name, this, authority);
             provinces[i] = province;
 
-            // set home for governor
-            int homeIndex = random.nextInt(nation.getAllQuarters().size());
-            Quarter home = nation.getAllQuarters().get(homeIndex);
-            home.addCharacter(Status.Governor,governor);
+            // set home for governor. inefficient way but governor must live in his home province
+            while (true) {
+                int homeIndex = random.nextInt(nation.getAllQuarters().size());
+                Quarter home = nation.getAllQuarters().get(homeIndex);
+                if (home.getHigher().getHigher().equals(province)) {
+                    home.addCharacter(Status.Governor, governor);
+                    break;
+                }
+            }
 
             mercenaryFactory(province, authority, random);
 
@@ -79,6 +85,7 @@ public class Nation extends ControlledArea implements Details {
             Mercenary mercenary = new Mercenary(authority);
             mercenary.setNation(nation);
             authority.addSupporter(mercenary);
+            mercenary.setAuthority(getAuthority());
 
             City city = province.getContents().get(random.nextInt(province.getContents().size()));
             Quarter quarter = city.getContents().get(random.nextInt(city.getContents().size()));

@@ -1,5 +1,5 @@
 
-package time;
+package model.time;
 
 import java.util.ArrayList;
 import java.util.List;

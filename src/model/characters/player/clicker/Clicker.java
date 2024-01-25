@@ -4,7 +4,7 @@ import model.characters.Status;
 import model.characters.player.EventTracker;
 import model.characters.player.Player;
 import model.resourceManagement.TransferPackage;
-import model.resourceManagement.resources.Resource;
+import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 

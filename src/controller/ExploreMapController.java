@@ -80,7 +80,6 @@ public class ExploreMapController extends BaseController {
 
     private void openCharacterProfile(Character character) {
         characterController.setCurrentCharacter(character);
-
     }
 
 

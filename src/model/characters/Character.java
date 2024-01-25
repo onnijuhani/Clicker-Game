@@ -2,19 +2,20 @@ package model.characters;
 
 import model.NameCreation;
 import model.buildings.Property;
+import model.characters.authority.Authority;
 import model.characters.npc.Slave;
 import model.characters.player.EventTracker;
 import model.characters.player.Player;
-import model.resourceManagement.resources.Resource;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.shop.Exchange;
 import model.worldCreation.Details;
 import model.worldCreation.Nation;
-import time.FoodManager;
-import time.FoodObserver;
-import time.TimeEventManager;
-import time.TimeObserver;
+import model.time.FoodManager;
+import model.time.FoodObserver;
+import model.time.TimeEventManager;
+import model.time.TimeObserver;
+import model.resourceManagement.Resource;
 
 import java.util.LinkedList;
 
@@ -45,7 +46,7 @@ public class Character implements TimeObserver, FoodObserver, Details {
         return status;
     }
 
-
+    protected Authority authority;
     protected static int totalAmount;
     protected LinkedList<Slave> slaves;
     protected  Nation nation;
@@ -83,12 +84,13 @@ public class Character implements TimeObserver, FoodObserver, Details {
         Exchange exchange = nation.getExchange();
 
 
+
         try {
             if (wallet.hasEnoughResource(Resource.Food, foodNeeded)) {
                 wallet.subtractFood(foodNeeded);
             } else {
                 // Calculate how much more food is needed
-                int additionalFoodNeeded = foodNeeded - wallet.getFood().getAmount();
+                int additionalFoodNeeded = foodNeeded - wallet.getFood();
 
                 // Check if enough gold is available to buy the required food
                 int costInGold = exchange.calculateExchangeCost(additionalFoodNeeded, Resource.Food, Resource.Gold);
@@ -169,6 +171,12 @@ public class Character implements TimeObserver, FoodObserver, Details {
     }
     public void setEventTracker(EventTracker eventTracker) {
         this.eventTracker = eventTracker;
+    }
+    public Authority getAuthority() {
+        return authority;
+    }
+    public void setAuthority(Authority authority) {
+        this.authority = authority;
     }
 
 }

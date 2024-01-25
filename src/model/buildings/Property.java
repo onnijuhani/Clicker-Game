@@ -1,10 +1,10 @@
 package model.buildings;
 
 
-import time.PropertyManager;
+import model.time.PropertyManager;
 import javafx.scene.image.Image;
 import model.Images;
-import time.PropertyObserver;
+import model.time.PropertyObserver;
 import model.characters.Character;
 import model.resourceManagement.wallets.Vault;
 import model.worldCreation.Details;
@@ -14,7 +14,7 @@ public class Property implements PropertyObserver, Details {
     @Override
     public void propertyUpdate() {
         if (firstTimeReached) {
-                // Skip the first time this condition is met
+                // Skip the first model.time this condition is met
                 firstTimeReached = false;
         } else {
                 maintenance.payMaintenance(this);

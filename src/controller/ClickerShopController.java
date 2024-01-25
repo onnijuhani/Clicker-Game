@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import model.resourceManagement.resources.Resource;
+import model.resourceManagement.Resource;
 
 public class ClickerShopController extends BaseController {
     @FXML private Button buyAlloyClickerButton;
@@ -52,7 +52,7 @@ public class ClickerShopController extends BaseController {
         } catch (IllegalArgumentException e) {
             model.accessPlayer().getEventTracker().addEvent("Not Enough Gold To Buy Gold Clicker");
         }
-        // Update UI or perform other actions after purchase...
+
     }
 
     @FXML

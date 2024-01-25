@@ -43,9 +43,13 @@ public class Continent extends Area implements Details {
             propertyTracker.addProperty(property);
 
             Authority authority = new NationAuthority(king);
+            king.setAuthority(authority);
+
 
             Nation nation = new Nation(nationName, this, authority);
             nations[i] = nation;
+
+            king.setNation(nation);
 
             // set home for king
             int homeIndex = random.nextInt(nation.getAllQuarters().size());
@@ -72,6 +76,7 @@ public class Continent extends Area implements Details {
         for (int nob = 0; nob < nationAmount; nob++) {
             Noble noble = new Noble(authority);
             noble.setNation(nation);
+            noble.setAuthority(authority);
             authority.addSupporter(noble);
 
             noble.getProperty().setLocation(home);
@@ -83,6 +88,7 @@ public class Continent extends Area implements Details {
         for (int vang = 0; vang < provinceAmount; vang++) {
             Vanguard vanguard = new Vanguard(authority);
             vanguard.setNation(nation);
+            vanguard.setAuthority(authority);
             authority.addSupporter(vanguard);
 
             //  random province from the nation

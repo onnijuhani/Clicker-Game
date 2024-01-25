@@ -1,7 +1,7 @@
 package model.characters.authority;
 
 import model.characters.Character;
-import time.Time;
+import model.time.Time;
 
 public class NationAuthority extends Authority {
     @Override
@@ -9,7 +9,10 @@ public class NationAuthority extends Authority {
         if (day == Time.nationTax) {
             imposeTax();
             paySupporters();
-            cashOutSalary();
+            if(getSupervisor().equals(this)) {
+                workWallet.setTaxedOrNot(true); //nation authority can set his own taxation status if he is his own authority
+                workWallet.cashOutSalary();
+            }
         }
     }
     public NationAuthority(Character character) {

@@ -4,7 +4,7 @@ package controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import model.resourceManagement.resources.Resource;
+import model.resourceManagement.Resource;
 
 public class ExchangeController extends BaseController {
 
@@ -20,9 +20,6 @@ public class ExchangeController extends BaseController {
     @FXML
     private Label goldToFoodPrice;
 
-    public void setMain(MainController main) {
-        this.main = main;
-    }
     private MainController main;
 
     @FXML
@@ -76,5 +73,7 @@ public class ExchangeController extends BaseController {
         model.accessShop().getExchange().exchangeResources(amountToBuy,Resource.Gold,Resource.Alloy,model.accessPlayer());
         main.updateEventList();
     }
-
+    public void setMain(MainController main) {
+        this.main = main;
+    }
 }
