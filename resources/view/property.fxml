@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="638.0" prefWidth="791.0" style="-fx-background-color: black; -fx-border-color: white; -fx-border-width: 3;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PropertyController">
+   <children>
+      <ImageView fx:id="propertyPicture" blendMode="SRC_ATOP" cache="true" fitHeight="635.0" fitWidth="788.0" layoutX="2.0" layoutY="2.0" pickOnBounds="true">
+         <image>
+            <Image url="@../Properties/cottage.png" />
+         </image></ImageView>
+      <Label fx:id="propertyName" layoutX="25.0" layoutY="38.0" prefHeight="52.0" prefWidth="380.0" text="Property Name" textFill="WHITE">
+         <font>
+            <Font size="26.0" />
+         </font>
+      </Label>
+      <Label fx:id="propertyType" layoutX="25.0" layoutY="21.0" prefHeight="26.0" prefWidth="183.0" text="Type" textFill="WHITE">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

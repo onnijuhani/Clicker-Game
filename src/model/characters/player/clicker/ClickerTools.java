@@ -4,10 +4,13 @@ public class ClickerTools{
     protected int resourceAmount = 1;
     public ClickerTools(){
     }
-    public double getResourceAmount(){
+    public int getResourceAmount(){
         return resourceAmount;
     }
     public void increaseAmount(){
         resourceAmount++;
+    }
+    public void upgradeAmount(){
+        resourceAmount *= 2;
     }
 }
