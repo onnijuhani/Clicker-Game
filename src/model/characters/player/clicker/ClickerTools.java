@@ -1,16 +1,28 @@
 package model.characters.player.clicker;
 
-public class ClickerTools{
+import model.shop.UpgradeSystem;
+
+import model.resourceManagement.Resource;
+
+public class ClickerTools extends UpgradeSystem {
     protected int resourceAmount = 1;
-    public ClickerTools(){
+    private final Resource type;
+
+    public ClickerTools(int basePrice, Resource type){
+        super(basePrice);
+        this.type = type;
     }
     public int getResourceAmount(){
         return resourceAmount;
     }
-    public void increaseAmount(){
-        resourceAmount++;
-    }
-    public void upgradeAmount(){
+
+    public void upgradeResourceAmount(){
         resourceAmount *= 2;
     }
+    @Override
+    public void upgrade() {
+        level++;
+        upgradeResourceAmount();
+    }
+
 }

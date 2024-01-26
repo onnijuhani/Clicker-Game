@@ -17,7 +17,11 @@ public class EventTracker {
         String time = (Time.getDay()<10 ? Time.getClock()+"  " : Time.getClock());
         return String.format("%s %s '%s'", now.format(formatter), type, time+"          "+message);
     }
-    private static final int MAX_EVENTS = 10; // Max number of events per list
+    private int maxErrorEvents = 5;
+    private int maxMajorEvents = 50;
+    private int maxResourceEvents = 20;
+    private int maxMinorEvents = 10;
+    private int maxShopEvents = 25;
 
     private LinkedList<String> majorEvents = new LinkedList<>();
     private LinkedList<String> resourceEvents = new LinkedList<>();
@@ -73,22 +77,22 @@ public class EventTracker {
 
         switch (type) {
             case "Error":
-                addEventToCategory(errorEvents, message);
+                addEventToCategory(errorEvents, message, maxErrorEvents);
                 break;
             case "Major":
-                addEventToCategory(majorEvents, message);
+                addEventToCategory(majorEvents, message, maxMajorEvents);
                 break;
             case "Resource":
-                addEventToCategory(resourceEvents, message);
+                addEventToCategory(resourceEvents, message, maxResourceEvents);
                 break;
             case "Minor":
-                addEventToCategory(minorEvents, message);
+                addEventToCategory(minorEvents, message, maxMinorEvents);
                 break;
             case "Shop":
-                addEventToCategory(shopEvents, message);
+                addEventToCategory(shopEvents, message, maxShopEvents);
                 break;
             default:
-                System.out.println("Unknown event type: " + type);  // Debugging: Log unknown types
+                System.out.println("Unknown event type: " + type);
                 break;
         }
     }
@@ -99,11 +103,27 @@ public class EventTracker {
         return extractedType;
     }
 
-    private void addEventToCategory(LinkedList<String> eventList, String event) {
-        if (eventList.size() >= MAX_EVENTS) {
+    private void addEventToCategory(LinkedList<String> eventList, String event, int maxSize) {
+        if (eventList.size() >= maxSize) {
             eventList.removeFirst(); // Remove the oldest event to maintain the size
         }
         eventList.add(event);
+    }
+
+    public void setMaxErrorEvents(int size) {
+        this.maxErrorEvents = size;
+    }
+    public void setMaxMajorEvents(int size) {
+        this.maxMajorEvents = size;
+    }
+    public void setMaxResourceEvents(int size) {
+        this.maxResourceEvents = size;
+    }
+    public void setMaxMinorEvents(int size) {
+        this.maxMinorEvents = size;
+    }
+    public void setMaxShopEvents(int size) {
+        this.maxShopEvents = size;
     }
 }
 

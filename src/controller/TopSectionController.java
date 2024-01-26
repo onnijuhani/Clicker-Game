@@ -20,9 +20,9 @@ public class TopSectionController extends BaseController {
     @FXML
     private Label goldLabel;
     @FXML
-    private Button startTimeBtn;
+    protected Button startTimeBtn;
     @FXML
-    private Button stopTimeBtn;
+    protected Button stopTimeBtn;
 
     @FXML
     private Label timeView;
@@ -65,8 +65,11 @@ public class TopSectionController extends BaseController {
 
     @FXML
     void startTime(MouseEvent event) {
+        main.incrementClicker.setDisable(true);
+        main.incrementClicker.setSelected(false);
+        model.accessTime().setManualSimulation(false);
+
         model.accessTime().startSimulation();
-        updateTimeline.play();
 
         startTimeBtn.setDisable(true); // Disable the start button
         stopTimeBtn.setDisable(false); // Enable the stop button
@@ -74,8 +77,11 @@ public class TopSectionController extends BaseController {
 
     @FXML
     void stopTime(MouseEvent event) {
+        main.incrementClicker.setDisable(false);
+        main.incrementClicker.setSelected(false);
+        model.accessTime().setManualSimulation(false);
+
         model.accessTime().stopSimulation();
-        updateTimeline.stop();
 
         stopTimeBtn.setDisable(true); // Disable the stop button
         startTimeBtn.setDisable(false); // Enable the start button

@@ -32,11 +32,13 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -119,7 +121,7 @@
             </AnchorPane>
             <VBox layoutX="14.0" layoutY="441.0" prefHeight="319.0" prefWidth="114.0">
                <children>
-                  <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" style="-fx-background-color: white; -fx-background-radius: 25;">
+                  <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-color: linear-gradient(from 15% 100% to 100% 15%, #59033f, #4c023f, #3e023e, #30033c, #210339); -fx-border-radius: 25;">
                      <children>
                         <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Hide Generate Messages" textAlignment="CENTER" wrappingWidth="78.30859375" />
                         <CheckBox fx:id="generateMessages" mnemonicParsing="false" onAction="#hideGenerateMessages" prefHeight="15.0" prefWidth="15.0">
@@ -128,6 +130,25 @@
                            </font>
                         </CheckBox>
                      </children>
+                     <VBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-color: linear-gradient(from 15% 100% to 100% 15%, #59033f, #4c023f, #3e023e, #30033c, #210339); -fx-border-radius: 25;">
+                     <children>
+                        <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Advance Day per Click" textAlignment="CENTER" wrappingWidth="78.30859375" />
+                        <CheckBox fx:id="incrementClicker" mnemonicParsing="false" onAction="#incrementByClick" prefWidth="15.0">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                           <tooltip>
+                              <Tooltip text="Progress the time by using the Clicker. Allows precise time control." />
+                           </tooltip>
+                        </CheckBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </VBox.margin>
                   </HBox>
                </children>
             </VBox>

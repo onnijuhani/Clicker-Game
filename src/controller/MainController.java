@@ -43,6 +43,8 @@ public class MainController extends BaseController {
 
     @FXML
     private CheckBox generateMessages;
+    @FXML
+    protected CheckBox incrementClicker;
 
     private List<String> lastEvents = new ArrayList<>();
 
@@ -60,7 +62,6 @@ public class MainController extends BaseController {
         }
         if (clickerShopController != null) {
             clickerShopController.setModel(model);
-            clickerShopController.updateClickerShopPrices();
         } else {
             System.out.println("ClickerShopController is null");
         }
@@ -98,6 +99,7 @@ public class MainController extends BaseController {
             characterController.updateCharacterTab();
             propertyController.updatePropertyTab();
 
+
         } else {
             System.out.println("CharacterController is null");
         }
@@ -110,7 +112,9 @@ public class MainController extends BaseController {
         Platform.runLater(() -> clickMeButton.requestFocus());
         Platform.runLater(() -> generateStartingMessage());
         Platform.runLater(() -> updateEventList());
+
         Platform.runLater(() -> exploreMapController.updateExploreTab());
+        Platform.runLater(() -> clickerShopController.updateClickerShopPrices());
         updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateEventList()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
@@ -131,27 +135,30 @@ public class MainController extends BaseController {
 
     @FXML
     void generateResources(MouseEvent event) {
+
         if (model.accessPlayer().getStatus() == Status.Peasant) {
             if (!model.accessTime().isSimulationRunning()) {
+                if (model.accessTime().isManualSimulation()) {
+                    model.accessTime().incrementByClick();
+                    model.accessPlayer().getClicker().generateResources();
+                    topSectionController.updateWallet();
+                    topSectionController.updateTopSection();
+                    updateEventList();
+                    workWalletController.updateWorkWallet();
+                    return;
+                }
                 model.accessPlayer().getEventTracker().addEvent(EventTracker.Message("Error", "Simulation is paused. Cannot generate resources."));
                 updateEventList();
                 workWalletController.updateWorkWallet();
+
                 return;
             }
             model.accessPlayer().getClicker().generateResources();
             topSectionController.updateWallet();
             updateEventList();
             workWalletController.updateWorkWallet();
-        } else {
-            if (!model.accessTime().isSimulationRunning()) {
-                model.accessPlayer().getEventTracker().addEvent(EventTracker.Message("Error", "Simulation is paused. Cannot generate resources."));
-                updateEventList();
-                return;
-            }
-            model.accessPlayer().getClicker().generateResources();
-            topSectionController.updateWallet();
-            updateEventList();
         }
+
     }
    void generateStartingMessage(){
         EventTracker tracker = model.accessPlayer().getEventTracker();
@@ -190,6 +197,16 @@ public class MainController extends BaseController {
     @FXML
     void updateExchange(){
         exchangeController.updateExchangePrices();
+    }
+
+    @FXML
+    void incrementByClick(ActionEvent event) {
+        boolean isChecked = incrementClicker.isSelected();
+        model.accessTime().setManualSimulation(isChecked);
+        model.accessTime().incrementByClick();
+
+        topSectionController.stopTimeBtn.setDisable(true); // Disable the stop button
+        topSectionController.startTimeBtn.setDisable(false); // Enable the start button
     }
 
     @FXML

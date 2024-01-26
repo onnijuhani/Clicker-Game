@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class Player extends Character {
     @Override
     public void timeUpdate(int day, int month, int year) {
-        if (day == Time.provinceTax) {
+        if (day == Time.quarterTax) {
             payTaxes();
         }
     }
@@ -37,6 +37,7 @@ public class Player extends Character {
     public Player(Quarter spawn){
         setAuthority(spawn.getAuthority());
         this.wallet = new Wallet();
+        wallet.setFood(10000);
         this.property = new Shack("Your Own");
         this.property.setLocation(spawn);
         this.property.setOwner(this);

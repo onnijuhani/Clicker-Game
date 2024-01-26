@@ -2,14 +2,16 @@ package controller;
 
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import model.resourceManagement.Resource;
+import model.shop.Exchange;
 
 public class ExchangeController extends BaseController {
 
     @FXML
-    private Label alloysToGoldPrice;
+    private Label alloyToGoldPrice;
 
     @FXML
     private Label foodToGoldPrice;
@@ -20,7 +22,21 @@ public class ExchangeController extends BaseController {
     @FXML
     private Label goldToFoodPrice;
 
+
+    @FXML
+    private Button foodGoldBtn;
+    @FXML
+    private Button alloyGoldBtn;
+    @FXML
+    private Button goldAlloyBtn;
+    @FXML
+    private Button goldFoodBtn;
+
+
     private MainController main;
+
+
+
 
     @FXML
     public void initialize() {
@@ -32,19 +48,40 @@ public class ExchangeController extends BaseController {
         model.accessShop().getExchange().increaseDefaultPrices();
         updateExchangePrices();
     }
+
     @FXML
     void decreasePrices(MouseEvent event) {
-        model.accessShop().getExchange().decreaseDefaultPrices();
+        Exchange exchange = model.accessShop().getExchange();
+        if (exchange.getDefaultGold() > 1 && exchange.getDefaultFoodAlloys() > 1) {
+            exchange.decreaseDefaultPrices();
+        }
         updateExchangePrices();
     }
     void updateExchangePrices(){
         int defaultGold = model.accessShop().getExchange().getDefaultGold();
-        foodToGoldPrice.setText(model.accessShop().getExchange().getExchangeCostString(defaultGold,Resource.Gold,Resource.Food));
-        alloysToGoldPrice.setText(model.accessShop().getExchange().getExchangeCostString(defaultGold,Resource.Gold,Resource.Alloy));
+
+        String[] foodGold = model.accessShop().getExchange().getExchangeCost(defaultGold,Resource.Gold,Resource.Food);
+        foodToGoldPrice.setText(foodGold[0]);
+        foodGoldBtn.setText(foodGold[1]);
+
+        String[] alloyGold = model.accessShop().getExchange().getExchangeCost(defaultGold,Resource.Gold,Resource.Alloy);
+        alloyToGoldPrice.setText(alloyGold[0]);
+        alloyGoldBtn.setText(alloyGold[1]);
+
+
 
         int defaultFoodAlloys = model.accessShop().getExchange().getDefaultFoodAlloys();
-        goldToFoodPrice.setText(model.accessShop().getExchange().getExchangeCostString(defaultFoodAlloys,Resource.Food,Resource.Gold));
-        goldToAlloysPrice.setText(model.accessShop().getExchange().getExchangeCostString(defaultFoodAlloys,Resource.Alloy,Resource.Gold));
+
+        String[] goldFood = model.accessShop().getExchange().getExchangeCost(defaultFoodAlloys,Resource.Food,Resource.Gold);
+        goldToFoodPrice.setText(goldFood[0]);
+        goldFoodBtn.setText(goldFood[1]);
+
+        String[] goldAlloy = model.accessShop().getExchange().getExchangeCost(defaultFoodAlloys,Resource.Alloy,Resource.Gold);
+        goldToAlloysPrice.setText(goldAlloy[0]);
+        goldAlloyBtn.setText(goldAlloy[1]);
+
+
+
     }
     @FXML
     void buyGoldFoodBtn(MouseEvent event) {

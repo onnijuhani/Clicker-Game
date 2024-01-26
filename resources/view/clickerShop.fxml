@@ -6,6 +6,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -23,27 +24,49 @@
                   <Font name="System Bold" size="16.0" />
                </font>
             </Label>
-            <Button alignment="CENTER" cancelButton="true" contentDisplay="CENTER" disable="true" mnemonicParsing="false" prefHeight="33.0" prefWidth="72.0" text="Owned!">
-               <tooltip>
-                  <Tooltip text="Food Clicker: Generates 1 Food per click. This is your starting item in the game.">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Tooltip>
-               </tooltip></Button>
-            <Label alignment="BOTTOM_CENTER" prefHeight="36.0" prefWidth="140.0" text="Upgrade For:">
+            <StackPane alignment="TOP_CENTER" prefHeight="56.0" prefWidth="140.0">
+               <children>
+                  <Button fx:id="buyFoodClickerButton" alignment="CENTER" cancelButton="true" contentDisplay="CENTER" disable="true" mnemonicParsing="false" prefHeight="32.0" prefWidth="72.0" text="Owned!" visible="false">
+                     <tooltip>
+                        <Tooltip text="Food Clicker: Generates 1 Food per click. This is your starting item in the game.">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Tooltip>
+                     </tooltip>
+                  </Button>
+                  <VBox fx:id="foodBox" alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label fx:id="foodLevel" alignment="CENTER" prefHeight="30.0" prefWidth="148.0" text="Label">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="foodInfo" alignment="CENTER" prefHeight="30.0" prefWidth="152.0" text="Label">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+            <Label alignment="BOTTOM_CENTER" prefHeight="21.0" prefWidth="140.0" text="Upgrade For:">
                <font>
                   <Font name="System Bold" size="16.0" />
                </font>
             </Label>
-            <Button alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#upgradeFoodClicker" prefHeight="33.0" prefWidth="72.0" text="price">
+            <Button fx:id="foodUpgradeBtn" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#upgradeFoodClicker" prefHeight="27.0" prefWidth="72.0" text="price">
                <tooltip>
                   <Tooltip contentDisplay="TEXT_ONLY" text="Upgrade Food Clicker: Doubles current production rate and the cost for the next upgrade." wrapText="true">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </Tooltip>
-               </tooltip></Button>
+               </tooltip>
+               <font>
+                  <Font size="13.0" />
+               </font></Button>
          </children>
       </VBox>
       <VBox alignment="TOP_CENTER" layoutX="317.0" layoutY="196.0" prefHeight="149.0" prefWidth="140.0" style="-fx-background-color: rgba(190,196,203,0.90) rgba(190,196,203,0.90);">
@@ -53,23 +76,45 @@
                   <Font name="System Bold" size="16.0" />
                </font>
             </Label>
-            <Button fx:id="buyAlloyClickerButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#buyAlloyClicker" prefHeight="33.0" prefWidth="72.0" text="Buy Now">
-               <tooltip>
-                  <Tooltip text="Alloy Clicker: Produces 1 Alloy per click. Purchasing this item significantly boosts your game progression." />
-               </tooltip></Button>
-            <Label alignment="BOTTOM_CENTER" prefHeight="36.0" prefWidth="140.0" text="Upgrade For:">
+            <StackPane alignment="TOP_CENTER" prefHeight="56.0" prefWidth="140.0">
+               <children>
+                  <Button fx:id="buyAlloyClickerButton" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false" onMouseClicked="#buyAlloyClicker" prefHeight="32.0" prefWidth="72.0" text="Buy Now">
+                     <tooltip>
+                        <Tooltip text="Alloy Clicker: Produces 1 Alloy per click. Purchasing this item significantly boosts your game progression." />
+                     </tooltip>
+                  </Button>
+                  <VBox fx:id="alloyBox" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
+                     <children>
+                        <Label fx:id="alloyLevel" alignment="CENTER" prefHeight="30.0" prefWidth="148.0" text="Label">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="alloyInfo" alignment="CENTER" prefHeight="30.0" prefWidth="152.0" text="Label">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+            <Label alignment="BOTTOM_CENTER" prefHeight="21.0" prefWidth="140.0" text="Upgrade For:">
                <font>
                   <Font name="System Bold" size="16.0" />
                </font>
             </Label>
-            <Button alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#upgradeAlloyClicker" prefHeight="33.0" prefWidth="72.0" text="price">
+            <Button fx:id="alloyUpgradeBtn" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#upgradeAlloyClicker" prefHeight="27.0" prefWidth="72.0" text="price">
                <tooltip>
                   <Tooltip text="Upgrade Alloy Clicker: Doubles current production rate and the cost for the next upgrade.">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </Tooltip>
-               </tooltip></Button>
+               </tooltip>
+               <font>
+                  <Font size="13.0" />
+               </font></Button>
          </children>
       </VBox>
       <VBox alignment="TOP_CENTER" layoutX="506.0" layoutY="196.0" prefHeight="149.0" prefWidth="140.0" style="-fx-background-color: rgba(190,196,203,0.90);">
@@ -79,23 +124,46 @@
                   <Font name="System Bold" size="16.0" />
                </font>
             </Label>
-            <Button fx:id="buyGoldClickerButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#buyGoldClicker" prefHeight="33.0" prefWidth="72.0" text="Buy Now">
-               <tooltip>
-                  <Tooltip text="Gold Clicker: Generates 1 Gold per click. As the most valuable resource in the game, acquiring this item greatly accelerates your progression." />
-               </tooltip></Button>
-            <Label alignment="BOTTOM_CENTER" prefHeight="36.0" prefWidth="140.0" text="Upgrade For:">
+            <StackPane alignment="TOP_CENTER" prefHeight="56.0" prefWidth="140.0">
+               <children>
+                  <Button fx:id="buyGoldClickerButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#buyGoldClicker" prefHeight="32.0" prefWidth="72.0" text="Buy Now">
+                     <tooltip>
+                        <Tooltip text="Gold Clicker: Generates 1 Gold per click. As the most valuable resource in the game, acquiring this item greatly accelerates your progression." />
+                     </tooltip>
+                  </Button>
+                  <VBox fx:id="goldBox" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
+                     <children>
+                        <Label fx:id="goldLevel" alignment="CENTER" prefHeight="30.0" prefWidth="148.0" text="Label">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="goldInfo" alignment="CENTER" prefHeight="30.0" prefWidth="152.0" text="Label">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+            <Label alignment="BOTTOM_CENTER" prefHeight="21.0" prefWidth="140.0" text="Upgrade For:">
                <font>
                   <Font name="System Bold" size="16.0" />
                </font>
             </Label>
-            <Button alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#upgradeGoldClicker" prefHeight="33.0" prefWidth="72.0" text="price">
+            <Button fx:id="goldUpgradeBtn" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#upgradeGoldClicker" prefHeight="27.0" prefWidth="72.0" text="price">
                <tooltip>
                   <Tooltip text="Upgrade Gold Clicker: Doubles current production rate and the cost for the next upgrade.">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </Tooltip>
-               </tooltip></Button>
+               </tooltip>
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
          </children>
       </VBox>
    </children>

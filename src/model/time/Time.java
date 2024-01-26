@@ -12,6 +12,8 @@ public class Time {
     public static int day = 0;
     private ScheduledExecutorService executorService;
     private boolean isSimulationRunning = false;
+
+    private boolean isManualSimulation = false;
     private boolean isFirstDay = true;
     private boolean isFifthDay = true;
     private final int foodConsumption = Settings.get("foodConsumption");
@@ -69,6 +71,19 @@ public class Time {
         isFirstDay = false; // After the first increment, it's no longer the first day
     }
 
+    public void incrementByClick(){
+        if (!isSimulationRunning) {
+            incrementDay();
+        }
+    }
+
+    public void setManualSimulation(boolean manualSimulation) {
+        isManualSimulation = manualSimulation;
+        if (isSimulationRunning) {
+            isSimulationRunning = !manualSimulation;
+        }
+    }
+
     public int getYear() {
         return year;
     }
@@ -118,6 +133,10 @@ public class Time {
 
     public boolean isSimulationRunning() {
         return isSimulationRunning;
+    }
+
+    public boolean isManualSimulation() {
+        return isManualSimulation;
     }
 
     public void updateSpeed(Speed command) {

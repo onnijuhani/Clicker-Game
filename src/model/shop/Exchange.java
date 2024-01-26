@@ -56,11 +56,11 @@ public class Exchange {
         double costWithoutFee = amountToBuy / rate;
         return (int) (costWithoutFee * (1 + marketFee));
     }
-    public String getExchangeCostString(int amountToBuy, Resource buyType, Resource sellType) {
+    public String[] getExchangeCost(int amountToBuy, Resource buyType, Resource sellType) {
         double cost = calculateExchangeCost(amountToBuy, buyType, sellType);
         long roundedCost = Math.round(cost);
         long roundedAmountToBuy = Math.round(amountToBuy);
-        return roundedAmountToBuy + " " + buyType + "\n" + roundedCost + ": " + sellType;
+        return new String[]{roundedCost + " " + sellType, roundedAmountToBuy + " " + buyType};
     }
     public void increaseDefaultPrices() {
         defaultFoodAlloys *= 2;

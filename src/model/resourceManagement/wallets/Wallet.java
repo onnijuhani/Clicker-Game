@@ -78,7 +78,7 @@ public class Wallet {
 
 
     public void subtractFood(int amount) {
-        food =- amount;
+        food -= amount;
     }
     public void subtractAlloy(int amount) {
         alloy -= amount;

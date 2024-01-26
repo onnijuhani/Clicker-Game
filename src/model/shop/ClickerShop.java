@@ -1,25 +1,27 @@
 package model.shop;
 
+import model.Settings;
 import model.characters.player.EventTracker;
 import model.characters.player.Player;
 import model.characters.player.clicker.AlloyClicker;
+import model.characters.player.clicker.Clicker;
 import model.characters.player.clicker.ClickerTools;
 import model.characters.player.clicker.GoldClicker;
 import model.resourceManagement.Resource;
 
 public class ClickerShop {
-    private int alloyClickerPrice = 100;
-    private int goldClickerPrice = 1000;
+
 
     public ClickerShop() {
     }
     public boolean buyClicker(Resource type, Player player) {
-        int price = getPrice(type);
+        ClickerTools newTool = createClickerTool(type);
+        int price = newTool.getUpgradePrice();  // Get the base price from the newTool
+
         if (player.getWallet().hasEnoughResource(Resource.Gold, price)) {
             player.getWallet().subtractGold(price);
-            ClickerTools newTool = createClickerTool(type);
             player.getClicker().addClickerTool(type, newTool);
-            player.getEventTracker().addEvent(EventTracker.Message("Minor", "Successfully purchased " + type + " Clicker!"));
+            player.getEventTracker().addEvent(EventTracker.Message("Shop", "Successfully purchased " + type + " Clicker!"));
             return true; // Purchase was successful
         } else {
             player.getEventTracker().addEvent(EventTracker.Message("Error", "Insufficient gold to buy " + type + " clicker."));
@@ -27,32 +29,37 @@ public class ClickerShop {
         }
     }
 
-    public int getPrice(Resource type) {
-        switch (type) {
-            case Alloy:
-                return alloyClickerPrice;
-            case Gold:
-                return goldClickerPrice;
-            default:
-                throw new IllegalArgumentException("Clicker type not available for purchase.");
-        }
-    }
+
 
     public ClickerTools createClickerTool(Resource type) {
         switch (type) {
             case Alloy:
-                return new AlloyClicker();
+                return new AlloyClicker(Settings.get("alloyClicker"), Resource.Alloy);
             case Gold:
-                return new GoldClicker();
+                return new GoldClicker(Settings.get("goldClicker"), Resource.Gold);
+            case Food:
+                return new GoldClicker(Settings.get("foodClicker"), Resource.Food);
             default:
                 throw new IllegalArgumentException("Invalid clicker type.");
         }
     }
 
-    public void setAlloyClickerPrice(int price) {
-        this.alloyClickerPrice = price;
+    public boolean buyUpgrade(Resource type, Player player) {
+        Clicker clicker = player.getClicker();
+        UpgradeSystem item = clicker.getClickerTool(type);
+        int upgradePrice = item.getUpgradePrice();
+
+        if (player.getWallet().hasEnoughResource(Resource.Gold, upgradePrice)) {
+            player.getWallet().subtractGold(upgradePrice); // Deduct the price
+            item.upgrade(); // Upgrade the item
+
+            player.getEventTracker().addEvent(EventTracker.Message("Shop", "Successfully upgraded " + type + " Clicker to level " + item.getUpgradeLevel() + "!"));
+            return true;
+        } else {
+            player.getEventTracker().addEvent(EventTracker.Message("Error", "Insufficient gold to upgrade " + type + " clicker to level " + (item.getUpgradeLevel() + 1) + "."));
+            return false;
+        }
     }
-    public void setGoldClickerPrice(int price) {
-        this.goldClickerPrice = price;
-    }
+
+
 }

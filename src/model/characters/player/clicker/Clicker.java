@@ -1,5 +1,6 @@
 package model.characters.player.clicker;
 
+import model.Settings;
 import model.characters.Status;
 import model.characters.player.EventTracker;
 import model.characters.player.Player;
@@ -12,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Clicker {
-    private Map<Resource, ClickerTools> clickerTools;
+    private Map<Resource, ClickerTools> ownedClickerTools;
     private EventTracker eventTracker;
     private int totalClicks = 0;
     private Wallet wallet;
@@ -24,21 +25,25 @@ public class Clicker {
         this.wallet = player.getWallet();
         this.workWallet = player.getWorkWallet();
         this.status = player.getStatus();
-        this.clickerTools = new HashMap<>();
-        this.clickerTools.put(Resource.Food, new FoodClicker());
+        this.ownedClickerTools = new HashMap<>();
+        this.ownedClickerTools.put(Resource.Food, new FoodClicker(Settings.get("foodClicker"), Resource.Food));
     }
     public void addClickerTool(Resource type, ClickerTools tool) {
-        clickerTools.put(type, tool);
+        ownedClickerTools.put(type, tool);
     }
+
+
+
+
+
     public void generateResources() {
+        TransferPackage resourcesGenerated = generate();
         if (status == Status.Peasant) {
-            TransferPackage resourcesGenerated = generate();
             workWallet.addResources(resourcesGenerated);
             totalClicks++;
             String message = "Into Worker Wallet "+transferMessage(resourcesGenerated);
             eventTracker.addEvent(EventTracker.Message("Resource", message));
         } else {
-            TransferPackage resourcesGenerated = generate();
             wallet.addResources(resourcesGenerated);
             totalClicks++;
             String message = transferMessage(resourcesGenerated);
@@ -50,7 +55,7 @@ public class Clicker {
         int totalAlloy = 0;
         int totalGold = 0;
 
-        for (Map.Entry<Resource, ClickerTools> entry : clickerTools.entrySet()) {
+        for (Map.Entry<Resource, ClickerTools> entry : ownedClickerTools.entrySet()) {
             double amount = entry.getValue().getResourceAmount();
             switch (entry.getKey()) {
                 case Food:
@@ -73,29 +78,26 @@ public class Clicker {
                 resourcesGenerated.alloy() + " alloys, " +
                 resourcesGenerated.gold() + " gold!";
     }
-    public ClickerTools getFoodClicker() {
-        return clickerTools.get(Resource.Food);
-    }
-    public ClickerTools getAlloyClicker() {
-        return clickerTools.get(Resource.Alloy);
-    }
-    public ClickerTools getGoldClicker() {
-        return clickerTools.get(Resource.Gold);
+    public ClickerTools getClickerTool(Resource resourceType) {
+        return ownedClickerTools.get(resourceType);
     }
     public int getTotalClicks() {
         return totalClicks;
     }
 
     public boolean isFoodClickerOwned() {
-        return clickerTools.containsKey(Resource.Food);
+        System.out.println(ownedClickerTools.containsKey(Resource.Food));
+        return ownedClickerTools.containsKey(Resource.Food);
     }
 
     public boolean isAlloyClickerOwned() {
-        return clickerTools.containsKey(Resource.Alloy);
+        System.out.println(ownedClickerTools.containsKey(Resource.Alloy));
+        return ownedClickerTools.containsKey(Resource.Alloy);
     }
 
     public boolean isGoldClickerOwned() {
-        return clickerTools.containsKey(Resource.Gold);
+        System.out.println(ownedClickerTools.containsKey(Resource.Gold));
+        return ownedClickerTools.containsKey(Resource.Gold);
     }
 
 }
