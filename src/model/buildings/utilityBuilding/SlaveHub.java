@@ -1,14 +1,16 @@
 package model.buildings.utilityBuilding;
 
 import model.Settings;
+import model.characters.Character;
 
 public class SlaveHub extends UtilityBuilding {
     private int slaveAmount;
     private final int[] production = {10, 5 ,1};
 
-    public SlaveHub(int basePrice) {
-        super(basePrice);
+    public SlaveHub(int basePrice, Character owner) {
+        super(basePrice, owner);
         this.slaveAmount = Settings.get("mineProduction");
+        this.name = UtilityBuildings.SlaveHub;
     }
 
     public int slaveAmount() {
@@ -31,6 +33,7 @@ public class SlaveHub extends UtilityBuilding {
         level++;
         increaseSlaveAmount();
     }
+
     public int getSlaveAmount() {
         return slaveAmount;
     }

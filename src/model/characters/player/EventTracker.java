@@ -22,12 +22,14 @@ public class EventTracker {
     private int maxResourceEvents = 20;
     private int maxMinorEvents = 10;
     private int maxShopEvents = 25;
+    private int maxUtilityEvents = 25;
 
     private LinkedList<String> majorEvents = new LinkedList<>();
     private LinkedList<String> resourceEvents = new LinkedList<>();
     private LinkedList<String> errorEvents = new LinkedList<>();
     private LinkedList<String> minorEvents = new LinkedList<>();
     private LinkedList<String> shopEvents = new LinkedList<>();
+    private LinkedList<String> utilityEvents = new LinkedList<>();
     private PlayerPreferences preferences;
 
     public EventTracker() {
@@ -41,7 +43,8 @@ public class EventTracker {
                         getPreferences().isShowErrorEvents() ? errorEvents.stream() : Stream.<String>empty(),
                         getPreferences().isShowResourceEvents() ? resourceEvents.stream() : Stream.<String>empty(),
                         getPreferences().isShowMinorEvents() ? minorEvents.stream() : Stream.<String>empty(),
-                        getPreferences().isShowShopEvents() ? shopEvents.stream() : Stream.<String>empty()
+                        getPreferences().isShowShopEvents() ? shopEvents.stream() : Stream.<String>empty(),
+                        getPreferences().isShowShopEvents() ? utilityEvents.stream() : Stream.<String>empty()
                 )
                 .flatMap(s -> s)
                 .sorted(Comparator.comparing((String message) -> LocalDateTime.parse(message.split(" ")[0] + " " + message.split(" ")[1], formatter)))
@@ -72,6 +75,9 @@ public class EventTracker {
     public LinkedList<String> getShopEvents() {
         return shopEvents;
     }
+    public LinkedList<String> getUtilityEvents() {
+        return utilityEvents;
+    }
     public void addEvent(String message) {
         String type = extractTypeFromMessage(message);
 
@@ -90,6 +96,9 @@ public class EventTracker {
                 break;
             case "Shop":
                 addEventToCategory(shopEvents, message, maxShopEvents);
+                break;
+            case "Utility":
+                addEventToCategory(utilityEvents, message, maxUtilityEvents);
                 break;
             default:
                 System.out.println("Unknown event type: " + type);

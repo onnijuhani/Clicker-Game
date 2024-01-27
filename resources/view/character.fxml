@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="639.0" prefWidth="791.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #675167, #59435a, #4a364e, #3d2942, #2f1d36); -fx-border-color: white; -fx-border-width: 1;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CharacterController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="639.0" prefWidth="791.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-border-color: white; -fx-border-width: 1;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CharacterController">
    <children>
       <ImageView fx:id="characterPicture" fitHeight="417.0" fitWidth="234.0" layoutX="566.0" layoutY="228.0" pickOnBounds="true" preserveRatio="true">
          <image>

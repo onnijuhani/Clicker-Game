@@ -1,6 +1,7 @@
 package model.buildings.utilityBuilding;
 
 import model.Settings;
+import model.characters.Character;
 
 import java.util.Random;
 
@@ -10,10 +11,11 @@ public class MysticMine extends UtilityBuilding {
     private int goldProduction;
     private Random random = new Random();
 
-    public MysticMine(int basePrice) {
-        super(basePrice);
+    public MysticMine(int basePrice, Character owner) {
+        super(basePrice, owner);
         this.alloyProduction = Settings.get("mineProduction")*2;
         this.goldProduction = Settings.get("mineProduction");
+        this.name = UtilityBuildings.MysticMine;
     }
 
     public void upgradeProduction() {

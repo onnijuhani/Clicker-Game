@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="workWalletWindow" prefHeight="234.0" prefWidth="114.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #59033f, #4c023f, #3e023e, #30033c, #210339); -fx-background-radius: 15; -fx-border-color: white; -fx-border-radius: 15; -fx-border-width: 2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.WorkWalletController">
+<AnchorPane fx:id="workWalletWindow" prefHeight="234.0" prefWidth="114.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 15; -fx-border-color: white; -fx-border-radius: 15; -fx-border-width: 2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.WorkWalletController">
    <children>
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="5.0" layoutY="6.0" prefHeight="35.0" prefWidth="113.0" text="Work Wallet" textAlignment="CENTER" textFill="WHITE">
          <font>

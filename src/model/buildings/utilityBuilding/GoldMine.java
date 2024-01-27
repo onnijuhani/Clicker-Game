@@ -1,14 +1,16 @@
 package model.buildings.utilityBuilding;
 
 import model.Settings;
+import model.characters.Character;
 
 public class GoldMine extends UtilityBuilding {
 
     private int production; //production is always per month
 
-    public GoldMine(int basePrice) {
-        super(basePrice);
+    public GoldMine(int basePrice, Character owner) {
+        super(basePrice, owner);
         this.production = Settings.get("mineProduction");
+        this.name = UtilityBuildings.GoldMine;
     }
 
 

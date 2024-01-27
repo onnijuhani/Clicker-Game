@@ -23,6 +23,7 @@ public class Time {
     public static final int cityTax = Settings.get("cityTax");
     public static final int provinceTax = Settings.get("provinceTax");
     public static final int nationTax = Settings.get("nationTax");
+    public static final int utilitySlots = Settings.get("utilitySlots");
 
     private int milliseconds = 1000;
 
@@ -67,6 +68,9 @@ public class Time {
         }
         if (day == generate) {
             GenerateManager.notifyTimeUpdate();
+        }
+        if (day == utilitySlots) {
+            UtilityManager.notifyTimeUpdate();
         }
         isFirstDay = false; // After the first increment, it's no longer the first day
     }

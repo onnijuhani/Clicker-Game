@@ -15,7 +15,7 @@ public class UpgradeSystem {
     }
 
     public int getUpgradePrice() {
-        return basePrice * (int) Math.pow(3, level - 1);
+        return basePrice * (int) Math.pow(3, level -1 );
     }
 
     public void upgrade() {

@@ -14,7 +14,7 @@
    <children>
       <ImageView fitHeight="405.0" fitWidth="773.0" layoutY="1.0" pickOnBounds="true">
          <image>
-            <Image url="@../BackGround/market.png" />
+            <Image url="@../pics/DALL·E%202024-01-27%2016.35.51%20-%20Generate%20an%20image%20of%20a%20dark%20and%20gothic%20planet%20from%20space,%20focusing%20closer%20to%20show%20a%20continent.%20The%20continent%20should%20be%20defined%20by%20jagged%20mountains,%20da.png" />
          </image>
       </ImageView>
       <VBox alignment="TOP_CENTER" layoutX="129.0" layoutY="196.0" prefHeight="149.0" prefWidth="140.0" style="-fx-background-color: rgba(190,196,203,0.90);">

@@ -179,7 +179,7 @@ public class ExploreMapController extends BaseController {
     void updateCurrentViewLabel() {
         String currentViewName = model.accessCurrentView().getCurrentView().getName();
 
-        String pattern = " \\(.*?\\)"; //regular expressions that should remove (Home) or (King) or both to display just the name
+        String pattern = " \\(.*?\\)"; //remove (Home) or (King) or both to display just the name
         String cleanName = currentViewName.replaceAll(pattern, "");
 
         this.currentViewLabel.setText(cleanName);

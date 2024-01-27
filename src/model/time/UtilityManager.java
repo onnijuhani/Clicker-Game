@@ -16,7 +16,6 @@ public class UtilityManager {
         }
 
         public static void notifyTimeUpdate() {
-            // Notify all observers
             for (UtilityObserver observer : observers) {
                 observer.utilityUpdate();
             }
