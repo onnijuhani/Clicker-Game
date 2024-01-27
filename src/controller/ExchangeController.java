@@ -61,24 +61,24 @@ public class ExchangeController extends BaseController {
         int defaultGold = model.accessShop().getExchange().getDefaultGold();
 
         String[] foodGold = model.accessShop().getExchange().getExchangeCost(defaultGold,Resource.Gold,Resource.Food);
-        foodToGoldPrice.setText(foodGold[0]);
-        foodGoldBtn.setText(foodGold[1]);
+        foodToGoldPrice.setText(foodGold[1]);
+        foodGoldBtn.setText(foodGold[0]);
 
         String[] alloyGold = model.accessShop().getExchange().getExchangeCost(defaultGold,Resource.Gold,Resource.Alloy);
-        alloyToGoldPrice.setText(alloyGold[0]);
-        alloyGoldBtn.setText(alloyGold[1]);
+        alloyToGoldPrice.setText(alloyGold[1]);
+        alloyGoldBtn.setText(alloyGold[0]+"s");
 
 
 
         int defaultFoodAlloys = model.accessShop().getExchange().getDefaultFoodAlloys();
 
         String[] goldFood = model.accessShop().getExchange().getExchangeCost(defaultFoodAlloys,Resource.Food,Resource.Gold);
-        goldToFoodPrice.setText(goldFood[0]);
-        goldFoodBtn.setText(goldFood[1]);
+        goldToFoodPrice.setText(goldFood[1]);
+        goldFoodBtn.setText(goldFood[0]);
 
         String[] goldAlloy = model.accessShop().getExchange().getExchangeCost(defaultFoodAlloys,Resource.Alloy,Resource.Gold);
-        goldToAlloysPrice.setText(goldAlloy[0]);
-        goldAlloyBtn.setText(goldAlloy[1]);
+        goldToAlloysPrice.setText(goldAlloy[1]+"s");
+        goldAlloyBtn.setText(goldAlloy[0]);
 
 
 

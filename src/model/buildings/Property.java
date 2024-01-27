@@ -1,6 +1,7 @@
 package model.buildings;
 
 
+import model.buildings.utilityBuilding.UtilitySlot;
 import model.time.PropertyManager;
 import javafx.scene.image.Image;
 import model.Images;
@@ -40,12 +41,17 @@ public class Property implements PropertyObserver, Details {
     protected Properties propertyEnum;
 
 
+
+    protected UtilitySlot utilitySlot;
+
+
     public Property(PropertyConfig.PropertyValues propertyValues, String name) {
         this.strength = propertyValues.power;
         this.vault = new Vault();
         this.name = name;
         this.maintenance = new Maintenance(propertyValues);
         PropertyManager.subscribe(this);
+        this.utilitySlot = new UtilitySlot(5);
     }
 
     public Image getImage() {
@@ -102,5 +108,12 @@ public class Property implements PropertyObserver, Details {
 
     public void setMaintenance(Maintenance maintenance) {
         this.maintenance = maintenance;
+    }
+    public UtilitySlot getUtilitySlot() {
+        return utilitySlot;
+    }
+
+    public void setUtilitySlot(UtilitySlot utilitySlot) {
+        this.utilitySlot = utilitySlot;
     }
 }

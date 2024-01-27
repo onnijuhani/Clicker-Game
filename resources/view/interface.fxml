@@ -63,6 +63,11 @@
                   <DropShadow height="79.62" radius="37.1125" spread="0.13" width="70.83" />
                </effect>
             </ListView>
+            <Button fx:id="pauseBtn" alignment="CENTER" contentDisplay="CENTER" layoutX="146.0" layoutY="768.0" mnemonicParsing="false" onMouseClicked="#pauseTime" prefHeight="46.0" prefWidth="164.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #cfc2cd, #ada2ac, #8f848e, #ada2ac, #cfc2cd); -fx-background-radius: 15;" text="Pause">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Button>
             <Button fx:id="clickMeButton" alignment="CENTER" contentDisplay="CENTER" layoutX="323.0" layoutY="769.0" mnemonicParsing="false" onMouseClicked="#generateResources" prefHeight="38.0" prefWidth="155.0" style="-fx-background-radius: 15;" text="Click Me!">
                <font>
                   <Font size="22.0" />
@@ -78,7 +83,7 @@
                                  <children>
                                     <ImageView fitHeight="376.0" fitWidth="773.0" pickOnBounds="true">
                                        <image>
-                                          <Image url="@../pics/DALL·E%202024-01-17%2014.57.02%20-%20A%20futuristic%20world%20viewed%20from%20space,%20incorporating%20a%20dark,%20Gothic%20aesthetic%20with%20medieval%20style%20architecture%20amid%20advanced%20technological%20elements.%20Th.png" />
+                                          <Image url="@../pics/DALL·E%202024-01-27%2013.08.18%20-%20Create%20an%20image%20of%20a%20fantasy%20world%20landscape%20viewed%20from%20a%20distance.%20In%20the%20forefront,%20there%20should%20be%20an%20expansive%20wild%20meadow,%20dotted%20with%20vibrant%20w.png" />
                                        </image>
                                     </ImageView>
                                  </children></AnchorPane>

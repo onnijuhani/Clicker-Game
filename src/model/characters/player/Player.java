@@ -37,7 +37,6 @@ public class Player extends Character {
     public Player(Quarter spawn){
         setAuthority(spawn.getAuthority());
         this.wallet = new Wallet();
-        wallet.setFood(10000);
         this.property = new Shack("Your Own");
         this.property.setLocation(spawn);
         this.property.setOwner(this);

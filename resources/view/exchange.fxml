@@ -14,7 +14,7 @@
    <children>
       <ImageView fitHeight="405.0" fitWidth="773.0" layoutX="-1.0" layoutY="4.0" pickOnBounds="true">
          <image>
-            <Image url="@../BackGround/exchange.png" />
+            <Image url="@../pics/DALL·E%202024-01-27%2013.08.40%20-%20Create%20an%20image%20of%20a%20fantasy%20world%20landscape%20viewed%20from%20a%20distance.%20In%20the%20forefront,%20there%20should%20be%20an%20expansive%20wild%20meadow,%20dotted%20with%20vibrant%20w.png" />
          </image>
       </ImageView>
       <AnchorPane layoutX="47.0" layoutY="206.0" prefHeight="136.0" prefWidth="662.0">
@@ -23,16 +23,16 @@
                <children>
                   <VBox alignment="CENTER" prefHeight="146.0" prefWidth="107.0" style="-fx-background-color: rgba(190,196,203,0.95); -fx-background-radius: 15; -fx-border-color: white; -fx-border-radius: 15;">
                      <children>
-                        <Label alignment="CENTER" prefHeight="45.0" prefWidth="103.0" text="Food To Gold" textAlignment="CENTER">
+                        <Label alignment="CENTER" prefHeight="23.0" prefWidth="103.0" style="-fx-background-radius: 25;" text="GOLD" textAlignment="CENTER">
                            <font>
-                              <Font name="System Bold" size="15.0" />
+                              <Font name="System Bold" size="19.0" />
                            </font>
                         </Label>
-                        <Label fx:id="foodToGoldPrice" alignment="CENTER" prefHeight="36.0" prefWidth="107.0" text="Label" textAlignment="CENTER">
+                        <Label fx:id="foodToGoldPrice" alignment="CENTER" prefHeight="51.0" prefWidth="105.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #cfc2cd, #ada2ac, #8f848e, #ada2ac, #cfc2cd); -fx-background-radius: 25; -fx-border-width: 5; -fx-border-color: rgba(190,196,203,0.95); -fx-border-radius: 25;" text="Label" textAlignment="CENTER">
                            <font>
-                              <Font size="14.0" />
+                              <Font name="System Bold" size="17.0" />
                            </font></Label>
-                        <Button fx:id="foodGoldBtn" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#buyGoldFoodBtn" prefHeight="35.0" prefWidth="100.0" text="Buy Gold">
+                        <Button fx:id="foodGoldBtn" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#buyGoldFoodBtn" prefHeight="35.0" prefWidth="100.0" style="-fx-background-radius: 10;" text="Buy Gold">
                            <font>
                               <Font size="15.0" />
                            </font></Button>
@@ -41,18 +41,18 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                   </VBox>
-                  <VBox alignment="CENTER" prefHeight="92.0" prefWidth="107.0" style="-fx-background-color: rgba(190,196,203,0.95); -fx-background-radius: 15;">
+                  <VBox alignment="CENTER" prefHeight="92.0" prefWidth="107.0" style="-fx-background-color: rgba(190,196,203,0.95); -fx-background-radius: 15; -fx-border-color: white; -fx-border-radius: 15;">
                      <children>
-                        <Label alignment="CENTER" prefHeight="45.0" prefWidth="103.0" text="Alloys To Gold" textAlignment="CENTER">
+                        <Label alignment="CENTER" prefHeight="23.0" prefWidth="103.0" text="GOLD" textAlignment="CENTER">
                            <font>
-                              <Font name="System Bold" size="15.0" />
+                              <Font name="System Bold" size="20.0" />
                            </font>
                         </Label>
-                        <Label fx:id="alloyToGoldPrice" alignment="CENTER" prefHeight="36.0" prefWidth="107.0" text="Label" textAlignment="CENTER">
+                        <Label fx:id="alloyToGoldPrice" alignment="CENTER" prefHeight="51.0" prefWidth="105.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #cfc2cd, #ada2ac, #8f848e, #ada2ac, #cfc2cd); -fx-background-radius: 25; -fx-border-width: 5; -fx-border-color: rgba(190,196,203,0.95); -fx-border-radius: 25;" text="Label" textAlignment="CENTER">
                            <font>
-                              <Font size="14.0" />
+                              <Font name="System Bold" size="16.0" />
                            </font></Label>
-                        <Button fx:id="alloyGoldBtn" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#buyGoldAlloysBtn" prefHeight="35.0" prefWidth="100.0" text="Buy Gold">
+                        <Button fx:id="alloyGoldBtn" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#buyGoldAlloysBtn" prefHeight="35.0" prefWidth="100.0" style="-fx-background-radius: 10;" text="Buy Gold">
                            <font>
                               <Font size="15.0" />
                            </font></Button>
@@ -65,18 +65,18 @@
             </HBox>
             <HBox alignment="CENTER" layoutX="398.0" prefHeight="138.0" prefWidth="264.0">
                <children>
-                  <VBox alignment="CENTER" prefHeight="92.0" prefWidth="107.0" style="-fx-background-color: rgba(190,196,203,0.95); -fx-background-radius: 15;">
+                  <VBox alignment="CENTER" prefHeight="92.0" prefWidth="107.0" style="-fx-background-color: rgba(190,196,203,0.95); -fx-background-radius: 15; -fx-border-color: white; -fx-border-radius: 15;">
                      <children>
-                        <Label alignment="CENTER" prefHeight="45.0" prefWidth="103.0" text="Gold To Food" textAlignment="CENTER">
+                        <Label alignment="CENTER" prefHeight="23.0" prefWidth="103.0" text="FOOD" textAlignment="CENTER">
                            <font>
-                              <Font name="System Bold" size="15.0" />
+                              <Font name="System Bold" size="20.0" />
                            </font>
                         </Label>
-                        <Label fx:id="goldToFoodPrice" alignment="CENTER" prefHeight="36.0" prefWidth="107.0" text="Label" textAlignment="CENTER">
+                        <Label fx:id="goldToFoodPrice" alignment="CENTER" prefHeight="51.0" prefWidth="105.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #cfc2cd, #ada2ac, #8f848e, #ada2ac, #cfc2cd); -fx-background-radius: 25; -fx-border-width: 5; -fx-border-color: rgba(190,196,203,0.95); -fx-border-radius: 25;" text="Label" textAlignment="CENTER">
                            <font>
-                              <Font size="14.0" />
+                              <Font name="System Bold" size="16.0" />
                            </font></Label>
-                        <Button fx:id="goldFoodBtn" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#buyFoodGoldBtn" prefHeight="35.0" prefWidth="100.0" text="Buy Food">
+                        <Button fx:id="goldFoodBtn" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#buyFoodGoldBtn" prefHeight="35.0" prefWidth="100.0" style="-fx-background-radius: 10;" text="Buy Food">
                            <font>
                               <Font size="15.0" />
                            </font></Button>
@@ -85,18 +85,18 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                   </VBox>
-                  <VBox alignment="CENTER" prefHeight="92.0" prefWidth="107.0" style="-fx-background-color: rgba(190,196,203,0.95); -fx-background-radius: 15;">
+                  <VBox alignment="CENTER" prefHeight="92.0" prefWidth="107.0" style="-fx-background-color: rgba(190,196,203,0.95); -fx-background-radius: 15; -fx-border-color: white; -fx-border-radius: 15;">
                      <children>
-                        <Label alignment="CENTER" prefHeight="45.0" prefWidth="103.0" text="Gold To Alloys" textAlignment="CENTER">
+                        <Label alignment="CENTER" prefHeight="23.0" prefWidth="103.0" text="ALLOYS" textAlignment="CENTER">
                            <font>
-                              <Font name="System Bold" size="15.0" />
+                              <Font name="System Bold" size="20.0" />
                            </font>
                         </Label>
-                        <Label fx:id="goldToAlloysPrice" alignment="CENTER" prefHeight="36.0" prefWidth="107.0" text="Label" textAlignment="CENTER">
+                        <Label fx:id="goldToAlloysPrice" alignment="CENTER" prefHeight="51.0" prefWidth="105.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #cfc2cd, #ada2ac, #8f848e, #ada2ac, #cfc2cd); -fx-background-radius: 25; -fx-border-width: 5; -fx-border-color: rgba(190,196,203,0.95); -fx-border-radius: 25;" text="Label" textAlignment="CENTER">
                            <font>
-                              <Font size="14.0" />
+                              <Font name="System Bold" size="16.0" />
                            </font></Label>
-                        <Button fx:id="goldAlloyBtn" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#buyAlloysGoldBtn" prefHeight="36.0" prefWidth="100.0" text="Buy Alloys">
+                        <Button fx:id="goldAlloyBtn" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#buyAlloysGoldBtn" prefHeight="36.0" prefWidth="100.0" style="-fx-background-radius: 10;" text="Buy Alloys">
                            <font>
                               <Font size="15.0" />
                            </font></Button>
@@ -107,7 +107,7 @@
                   </VBox>
                </children>
             </HBox>
-            <HBox alignment="CENTER" layoutX="278.0" layoutY="50.0" prefHeight="61.0" prefWidth="107.0" style="-fx-background-color: rgba(190,196,203,0.95) rgba(190,196,203,0.95); -fx-background-radius: 25;">
+            <HBox alignment="CENTER" layoutX="278.0" layoutY="50.0" prefHeight="61.0" prefWidth="107.0" style="-fx-background-color: rgba(190,196,203,0.95) rgba(190,196,203,0.95); -fx-background-radius: 25; -fx-border-radius: 25; -fx-border-color: white;">
                <children>
                   <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#increasePrices" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 35;" text="+">
                      <HBox.margin>

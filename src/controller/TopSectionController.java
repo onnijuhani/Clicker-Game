@@ -81,6 +81,7 @@ public class TopSectionController extends BaseController {
         main.incrementClicker.setSelected(false);
         model.accessTime().setManualSimulation(false);
 
+
         model.accessTime().stopSimulation();
 
         stopTimeBtn.setDisable(true); // Disable the stop button
@@ -93,6 +94,7 @@ public class TopSectionController extends BaseController {
         fasterBtn.setDisable(Time.getSpeed().equals(Speed.Fast));
         slowerBtn.setDisable(false);
         main.clickMeButton.setDisable(false);
+        main.updatePauseBtnText();
     }
 
 
@@ -105,6 +107,7 @@ public class TopSectionController extends BaseController {
         if (Time.getSpeed().equals(Speed.Slow)){
             model.accessPlayer().getEventTracker().addEvent(EventTracker.Message("Major","Clicker is disabled"));
         }
+        main.updatePauseBtnText();
     }
     public void setMain(MainController main) {
         this.main = main;

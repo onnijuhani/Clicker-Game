@@ -11,8 +11,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 import model.Model;
-import model.characters.Status;
 import model.characters.player.EventTracker;
+import model.time.Time;
 import model.worldCreation.Quarter;
 
 import java.util.ArrayList;
@@ -45,6 +45,8 @@ public class MainController extends BaseController {
     private CheckBox generateMessages;
     @FXML
     protected CheckBox incrementClicker;
+    @FXML
+    protected Button pauseBtn;
 
     private List<String> lastEvents = new ArrayList<>();
 
@@ -135,31 +137,31 @@ public class MainController extends BaseController {
 
     @FXML
     void generateResources(MouseEvent event) {
-
-        if (model.accessPlayer().getStatus() == Status.Peasant) {
-            if (!model.accessTime().isSimulationRunning()) {
-                if (model.accessTime().isManualSimulation()) {
-                    model.accessTime().incrementByClick();
-                    model.accessPlayer().getClicker().generateResources();
-                    topSectionController.updateWallet();
-                    topSectionController.updateTopSection();
-                    updateEventList();
-                    workWalletController.updateWorkWallet();
-                    return;
-                }
-                model.accessPlayer().getEventTracker().addEvent(EventTracker.Message("Error", "Simulation is paused. Cannot generate resources."));
-                updateEventList();
+        if (!model.accessTime().isSimulationRunning()) {
+            if (model.accessTime().isManualSimulation()) {
+                model.accessTime().incrementByClick();
+                model.accessPlayer().getClicker().generateResources();
+                topSectionController.updateWallet();
+                topSectionController.updateTopSection();
                 workWalletController.updateWorkWallet();
-
                 return;
             }
-            model.accessPlayer().getClicker().generateResources();
-            topSectionController.updateWallet();
+            model.accessPlayer().getEventTracker().addEvent(EventTracker.Message("Error", "Simulation is paused. Cannot generate resources."));
             updateEventList();
             workWalletController.updateWorkWallet();
+            return;
         }
-
+        model.accessPlayer().getClicker().generateResources();
+        topSectionController.updateWallet();
+        updateEventList();
+        workWalletController.updateWorkWallet();
     }
+
+
+
+
+
+
    void generateStartingMessage(){
         EventTracker tracker = model.accessPlayer().getEventTracker();
         tracker.addEvent(EventTracker.Message("Major","New Game Started"));
@@ -179,6 +181,7 @@ public class MainController extends BaseController {
     }
 
     public void updateEventList() {
+        updatePauseBtnText();
         List<String> events = model.accessPlayer().getEventTracker().getCombinedEvents();
         eventList.getItems().clear();
 
@@ -204,11 +207,38 @@ public class MainController extends BaseController {
         boolean isChecked = incrementClicker.isSelected();
         model.accessTime().setManualSimulation(isChecked);
         model.accessTime().incrementByClick();
+        model.accessTime().stopSimulation();
 
         topSectionController.stopTimeBtn.setDisable(true); // Disable the stop button
         topSectionController.startTimeBtn.setDisable(false); // Enable the start button
     }
+    @FXML
+    void pauseTime(MouseEvent event) {
+        if(getModel().accessTime().isSimulationRunning()) {
+            model.accessTime().stopSimulation();
+            topSectionController.startTimeBtn.setDisable(false);
+            topSectionController.stopTimeBtn.setDisable(true);
+            incrementClicker.setDisable(false);
+            incrementClicker.setSelected(false);
+        } else if (!getModel().accessTime().isSimulationRunning()) {
+            model.accessTime().startSimulation();
+            topSectionController.startTimeBtn.setDisable(true);
+            topSectionController.stopTimeBtn.setDisable(false);
+            incrementClicker.setDisable(true);
+            incrementClicker.setSelected(false);
+        }
+        clickMeButton.requestFocus();
+        model.accessTime().setManualSimulation(false);
+    }
 
+
+    void updatePauseBtnText(){
+        if(getModel().accessTime().isSimulationRunning()){
+            pauseBtn.setText(" ▶ " + Time.getSpeed().toString() + " Speed");
+        } else if (!getModel().accessTime().isSimulationRunning()) {
+            pauseBtn.setText(" ⏸ Paused");
+        }
+    }
     @FXML
     void hideGenerateMessages(ActionEvent event) {
         boolean isChecked = generateMessages.isSelected();
