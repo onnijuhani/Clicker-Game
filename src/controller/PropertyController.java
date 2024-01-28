@@ -25,9 +25,13 @@ public class PropertyController extends BaseController {
     private Label propertyType;
     @FXML
     private Button showHideButton;
-    private boolean isShowing = true;
     @FXML
     private AnchorPane content;
+    @FXML
+    private Label utilitySlots;
+
+
+    private boolean isShowing = true;
     private MainController main;
     private CharacterController characterController;
     private Property property;
@@ -36,35 +40,28 @@ public class PropertyController extends BaseController {
 
 
 
+
+     //MEADOWLANDS
     @FXML
-    private Label meadowInfo;
+    private Label utilityInfo1;
     @FXML
-    private Button meadowPrice;
+    private Button utilityPrice1;
     @FXML
-    private Button meadowUpgrade;
+    private Button utilityUpgrade1;
     @FXML
-    private VBox meadowLands;
+    private VBox utilityInfoView1;
     @FXML
-    private VBox meadowBuy;
+    private VBox utilityBuyView1;
+    @FXML
+    private VBox utilityPlayerView1;
 
 
 
-
-    void detectPlayer(){
-        if (character instanceof Player) {
-            if (property.getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
-                loadMeadowlands();
-            }else{
-                meadowBuy.setVisible(true);
-                meadowLands.setVisible(false);
-            }
-        }
-    }
     @FXML
     void buyMeadow(ActionEvent event) {
         boolean wasPurchaseSuccessful = shop.getUtilityBuildingShop().buyBuilding(UtilityBuildings.MeadowLands, character);
         if (wasPurchaseSuccessful) {
-            loadMeadowlands();
+            differentiatePlayer();
         }
     }
 
@@ -72,21 +69,49 @@ public class PropertyController extends BaseController {
     void upgradeMeadow(ActionEvent event) {
         boolean wasUpgradeSuccessful = shop.getUtilityBuildingShop().upgradeBuilding(UtilityBuildings.MeadowLands, character);
         if (wasUpgradeSuccessful) {
-            loadMeadowlands();
+            differentiatePlayer();
         }
     }
 
-    private void loadMeadowlands() {
-        meadowUpgrade.setText(property.getUtilitySlot().getUtilityBuilding(UtilityBuildings.MeadowLands).getUpgradePrice() + " Gold");
-        meadowInfo.setText(property.getUtilitySlot().getUtilityBuilding(UtilityBuildings.MeadowLands).getInfo());
-        meadowBuy.setVisible(false);
-        meadowLands.setVisible(true);
+    private void differentiatePlayer() {
+        if(character instanceof Player) {
+            if (property.getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
+                utilityUpgrade1.setText(property.getUtilitySlot().getUtilityBuilding(UtilityBuildings.MeadowLands).getUpgradePrice() + " Gold");
+                showPlayerVersion();
+            } else {
+                showMeadowBuyScreen();
+            }
+
+        } else {
+            showNPCVersion();
+            if (property.getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
+                utilityInfo1.setText(property.getUtilitySlot().getUtilityBuilding(UtilityBuildings.MeadowLands).getInfo());
+            } else {
+                utilityInfo1.setText("Not Owned");
+            }
+        }
     }
 
+    private void showMeadowBuyScreen() {
+        utilityBuyView1.setVisible(true);
+        utilityInfoView1.setVisible(false);
+    }
+
+    private void showPlayerVersion() {
+        utilityPlayerView1.setVisible(true);
+        utilityBuyView1.setVisible(false);
+        utilityInfoView1.setVisible(true);
+        utilityInfo1.setText(property.getUtilitySlot().getUtilityBuilding(UtilityBuildings.MeadowLands).getInfo());
+    }
+    private void showNPCVersion() {
+        utilityBuyView1.setVisible(false);
+        utilityInfoView1.setVisible(true);
+        utilityPlayerView1.setVisible(false);
+    }
+
+
     void updatePrices() {
-        meadowPrice.setText(Settings.get("meadowLandsCost") + " Gold");
-
-
+        utilityPrice1.setText(Settings.get("meadowLandsCost") + " Gold");
 
 
     }
@@ -97,7 +122,8 @@ public class PropertyController extends BaseController {
         updatePropertyType();
         updatePropertyImage();
         updatePrices();
-        detectPlayer();
+        differentiatePlayer();
+        updateUtilitySlot();
 
     }
 
@@ -126,6 +152,12 @@ public class PropertyController extends BaseController {
         propertyType.setText(property.getClass().getSimpleName());
 
     }
+    void updateUtilitySlot(){
+        int amountTotal = property.getUtilitySlot().getSlotAmount();
+        int amountUsed = property.getUtilitySlot().getOwnedUtilityBuildings().size();
+
+        utilitySlots.setText(amountUsed + "/" + amountTotal);
+    }
 
     public void setMain(MainController main) {
         this.main = main;
@@ -140,25 +172,18 @@ public class PropertyController extends BaseController {
     public void setCharacterController(controller.CharacterController characterController) {
         this.characterController = characterController;
     }
-    public Property getCurrentProperty() {
-        return property;
-    }
 
     public void setCurrentProperty(Property property) {
         this.property = property;
         setCharacter();
         setShop();
+        updatePropertyTab();
     }
 
-    public Character getCharacter() {
-        return character;
-    }
     public void setCharacter() {
         this.character = property.getOwner();
     }
-    public Shop getShop() {
-        return shop;
-    }
+
     public void setShop() {
         this.shop = model.accessShop();
     }

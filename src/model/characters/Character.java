@@ -2,6 +2,7 @@ package model.characters;
 
 import model.NameCreation;
 import model.buildings.Property;
+import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.authority.Authority;
 import model.characters.npc.Slave;
 import model.characters.player.EventTracker;
@@ -31,6 +32,7 @@ public class Character implements TimeObserver, FoodObserver, Details {
         if (this instanceof Player){
             this.getEventTracker().addEvent(EventTracker.Message("Minor",foodConsumption+" Food Consumed."));
         }
+        buyMeadowLandsTEST();
     }
 
     @Override
@@ -50,7 +52,7 @@ public class Character implements TimeObserver, FoodObserver, Details {
     protected static int totalAmount;
     protected LinkedList<Slave> slaves;
     protected  Nation nation;
-    public String name;
+    protected String name;
     protected Wallet wallet;
     protected WorkWallet workWallet;
     protected Property property;
@@ -72,6 +74,10 @@ public class Character implements TimeObserver, FoodObserver, Details {
         FoodManager.subscribe(this);
     }
 
+    protected void buyMeadowLandsTEST(){
+        nation.getShop().getUtilityBuildingShop().buyBuilding(UtilityBuildings.MeadowLands,this);
+    }
+
     protected boolean shouldSubscribeToTimeEvent() {
         return true;
     }
@@ -81,7 +87,7 @@ public class Character implements TimeObserver, FoodObserver, Details {
         Wallet wallet = character.getWallet();
         int foodNeeded = foodConsumption;
         foodConsumption+=1;
-        Exchange exchange = nation.getExchange();
+        Exchange exchange = nation.getShop().getExchange();
 
 
 

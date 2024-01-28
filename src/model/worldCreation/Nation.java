@@ -10,7 +10,7 @@ import model.characters.authority.Authority;
 import model.characters.authority.ProvinceAuthority;
 import model.characters.npc.Governor;
 import model.characters.npc.Mercenary;
-import model.shop.Exchange;
+import model.shop.Shop;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +20,7 @@ import java.util.Random;
 public class Nation extends ControlledArea implements Details {
     private Province[] provinces;
     private Continent continent;
-    private final Exchange exchange;
+    private final Shop shop;
     protected LinkedList<Quarter> allQuarters;
 
     public Nation(String name, Continent continent, Authority authority) {
@@ -31,7 +31,7 @@ public class Nation extends ControlledArea implements Details {
         this.nation = this;
         this.authority = authority;
         this.createProvinces();
-        this.exchange = new Exchange();
+        this.shop = new Shop();
         for (Province province : provinces) {
             authority.setSubordinate(province.authority);
         }
@@ -97,8 +97,8 @@ public class Nation extends ControlledArea implements Details {
         }
     }
 
-    public Exchange getExchange() {
-        return exchange;
+    public Shop getShop() {
+        return shop;
     }
     @Override
     public ArrayList<Province> getContents() {
