@@ -48,6 +48,8 @@ public class Maintenance {
 
     @Override
     public String toString() {
-        return "Maintenance cost: " + food + " - " + alloy + " - " + gold;
+        return food + " Food " + "\n" +
+                alloy + " Alloys " + "\n" +
+                 gold + " Gold";
     }
 }

@@ -7,11 +7,11 @@ import model.characters.Character;
 import model.characters.player.EventTracker;
 import model.resourceManagement.Resource;
 
-public class UtilityBuildingShop {
+public class UtilityShop {
 
 
 
-    public UtilityBuildingShop() {
+    public UtilityShop() {
 
     }
 
@@ -30,6 +30,7 @@ public class UtilityBuildingShop {
             } else {
                 character.getEventTracker().addEvent(EventTracker.Message("Error", "Insufficient gold to upgrade " + type));
                 return false; // Upgrade failed
+
             }
         } else {
             character.getEventTracker().addEvent(EventTracker.Message("Error", type + " not owned."));
@@ -40,6 +41,10 @@ public class UtilityBuildingShop {
 
 
     public boolean buyBuilding(UtilityBuildings type, Character character) {
+        if(character.getProperty().getUtilitySlot().getSlotAmount() == character.getProperty().getUtilitySlot().usedSlotAmount()){
+            character.getEventTracker().addEvent(EventTracker.Message("Error", "No more available utility slots"));
+            return false;
+        }
         int price = getBuildingPrice(type);
         if (!character.getWallet().hasEnoughResource(Resource.Gold, price)) {
             character.getEventTracker().addEvent(EventTracker.Message("Error", "Insufficient gold to buy " + type));
@@ -65,7 +70,7 @@ public class UtilityBuildingShop {
             case AlloyMine:   return Settings.get("alloyMineCost");
             case GoldMine:    return Settings.get("goldMineCost");
             case MysticMine:  return Settings.get("mysticMineCost");
-            case SlaveHub:    return Settings.get("slaveHubCost");
+            case SlaveFacility:    return Settings.get("slaveFacilityCost");
             default:          return Integer.MAX_VALUE; // Unknown type
         }
     }
@@ -76,7 +81,7 @@ public class UtilityBuildingShop {
             case AlloyMine:   return new AlloyMine(price, character);
             case GoldMine:    return new GoldMine(price, character);
             case MysticMine:  return new MysticMine(price, character);
-            case SlaveHub:    return new SlaveHub(price, character);
+            case SlaveFacility:    return new SlaveFacility(price, character);
             default:          return null; // Unknown type
         }
     }

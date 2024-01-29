@@ -10,12 +10,16 @@ import model.time.UtilityObserver;
 public class UtilityBuilding extends UpgradeSystem implements UtilityObserver {
 
     protected UtilityBuildings name;
-    protected int production;
+
     protected Character owner;
 
     @Override
     public void utilityUpdate() {
         generateAction();
+    }
+    @Override
+    public int getUpgradePrice() {
+        return basePrice * (int) Math.pow(2, level );
     }
 
     public String getInfo(){

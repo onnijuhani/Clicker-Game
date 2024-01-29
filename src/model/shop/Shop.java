@@ -3,12 +3,11 @@ package model.shop;
 public class Shop {
     private Exchange exchange;
     private ClickerShop clickerShop;
-    private UtilityBuildingShop utilityBuildingShop;
-
+    private UtilityShop utilityShop;
     public Shop(){
         this.exchange = new Exchange();
         this.clickerShop = new ClickerShop();
-        this.utilityBuildingShop = new UtilityBuildingShop();
+        this.utilityShop = new UtilityShop();
     }
     public Exchange getExchange() {
         return exchange;
@@ -16,12 +15,9 @@ public class Shop {
     public ClickerShop getClickerShop() {
         return clickerShop;
     }
-    public UtilityBuildingShop getUtilityBuildingShop() {
-        return utilityBuildingShop;
+    public UtilityShop getUtilityShop() {
+        return utilityShop;
     }
-
-
-
 }
 
 

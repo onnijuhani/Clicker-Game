@@ -30,9 +30,15 @@ public class Character implements TimeObserver, FoodObserver, Details {
     public void foodUpdate() {
         foodConsumption(this);
         if (this instanceof Player){
-            this.getEventTracker().addEvent(EventTracker.Message("Minor",foodConsumption+" Food Consumed."));
+            this.getEventTracker().addEvent(EventTracker.Message("Minor",foodConsumption[0]+" Food Consumed."));
+            return;
         }
-        buyMeadowLandsTEST();
+        if(!property.getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
+            buyMeadowLandsTEST();
+        }
+        if(property.getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
+            upgrade();
+        }
     }
 
     @Override
@@ -59,7 +65,7 @@ public class Character implements TimeObserver, FoodObserver, Details {
     protected LinkedList<Character> allies;
     protected LinkedList<Character> enemies;
     protected EventTracker eventTracker;
-    protected int foodConsumption = 1;
+    protected int[] foodConsumption = {5,0};
     protected Status status;
     public Character() {
         this.wallet = new Wallet();
@@ -75,7 +81,12 @@ public class Character implements TimeObserver, FoodObserver, Details {
     }
 
     protected void buyMeadowLandsTEST(){
-        nation.getShop().getUtilityBuildingShop().buyBuilding(UtilityBuildings.MeadowLands,this);
+        nation.getShop().getUtilityShop().buyBuilding(UtilityBuildings.MeadowLands,this);
+    }
+    protected void upgrade(){
+        if(property.getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
+            nation.getShop().getUtilityShop().upgradeBuilding(UtilityBuildings.MeadowLands, this);
+        }
     }
 
     protected boolean shouldSubscribeToTimeEvent() {
@@ -85,8 +96,14 @@ public class Character implements TimeObserver, FoodObserver, Details {
     public void foodConsumption(Character character) {
 
         Wallet wallet = character.getWallet();
-        int foodNeeded = foodConsumption;
-        foodConsumption+=1;
+
+        //food consumption goes up every year by 5
+        int foodNeeded = foodConsumption[0];
+        foodConsumption[1] += 1;
+        if(foodConsumption[1] == 11) {
+            foodConsumption[0]+=5;
+            foodConsumption[1] = 0;
+        }
         Exchange exchange = nation.getShop().getExchange();
 
 

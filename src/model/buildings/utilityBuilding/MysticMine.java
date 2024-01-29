@@ -2,6 +2,8 @@ package model.buildings.utilityBuilding;
 
 import model.Settings;
 import model.characters.Character;
+import model.characters.player.EventTracker;
+import model.resourceManagement.TransferPackage;
 
 import java.util.Random;
 
@@ -40,20 +42,26 @@ public class MysticMine extends UtilityBuilding {
     private int calculateNormalDistValue(int mean) {
         double result = random.nextGaussian() * ( (double) mean ) + (double) mean / 2;
 
-        // If the result is negative, set it to 0
         if (result < 0) {
             result = 0;
         }
 
         return (int) Math.round(result);
     }
-
-
-    public int getAlloyProduction() {
-        return alloyProduction;
+    @Override
+    public String getInfo(){
+        return (
+                "Level " + getUpgradeLevel() +"\n"+
+                        "Alloys and Gold"
+        );
+    }
+    @Override
+    protected void generateAction() {
+        TransferPackage transfer = new TransferPackage(0, calculateRandomAlloyProduction(),calculateRandomGoldProduction());
+        owner.getWallet().addResources(transfer);
+        owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
     }
 
-    public int getGoldProduction() {
-        return goldProduction;
-    }
+
+
 }

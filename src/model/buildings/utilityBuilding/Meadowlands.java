@@ -6,6 +6,7 @@ import model.characters.player.EventTracker;
 import model.resourceManagement.TransferPackage;
 
 public class Meadowlands extends UtilityBuilding {
+    private int production;
 
     public Meadowlands(int basePrice, Character owner) {
         super(basePrice, owner);
@@ -16,7 +17,7 @@ public class Meadowlands extends UtilityBuilding {
     public String getInfo(){
         return (
                 "Level " + getUpgradeLevel() + "\n"+
-                "Produces " + production + " Food"
+                production + " Food"
                 );
     }
     @Override

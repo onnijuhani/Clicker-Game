@@ -39,6 +39,10 @@ public class UtilitySlot {
         this.ownedUtilityBuildings = ownedUtilityBuildings;
     }
 
+    public int usedSlotAmount(){
+        return getOwnedUtilityBuildings().size();
+    }
+
 
 }
 

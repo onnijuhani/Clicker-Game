@@ -20,16 +20,6 @@
          <image>
             <Image url="@../Properties/cottage.png" />
          </image></ImageView>
-      <Label fx:id="propertyName" layoutX="25.0" layoutY="38.0" prefHeight="52.0" prefWidth="380.0" text="Property Name" textFill="WHITE">
-         <font>
-            <Font size="26.0" />
-         </font>
-      </Label>
-      <Label fx:id="propertyType" layoutX="25.0" layoutY="21.0" prefHeight="26.0" prefWidth="183.0" text="Type" textFill="WHITE">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
       <AnchorPane fx:id="content" layoutX="2.0" layoutY="2.0" prefHeight="635.0" prefWidth="788.0">
          <children>
             <VBox layoutX="445.0" layoutY="28.0" prefHeight="587.0" prefWidth="315.0">
@@ -66,7 +56,7 @@
                            <children>
                               <StackPane>
                                  <children>
-                                    <VBox fx:id="utilityBuyView1" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+                                    <VBox fx:id="utilityBuyView" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
                                        <children>
                                           <Label alignment="CENTER" prefHeight="31.0" prefWidth="156.0" text="Meadowlands" textAlignment="CENTER" textFill="WHITE" underline="true">
                                              <font>
@@ -78,21 +68,82 @@
                                                 <Font size="15.0" />
                                              </font>
                                           </Label>
-                                          <HBox>
+                                          <HBox alignment="CENTER">
                                              <children>
-                                                <Label alignment="CENTER" prefHeight="26.0" prefWidth="90.0" text="Buy Now" textAlignment="CENTER" textFill="WHITE">
+                                                <Label alignment="CENTER" text="Buy Now" textAlignment="CENTER" textFill="WHITE">
                                                    <font>
                                                       <Font name="System Bold" size="15.0" />
                                                    </font>
+                                                   <padding>
+                                                      <Insets right="5.0" />
+                                                   </padding>
                                                 </Label>
-                                                <Button fx:id="utilityPrice1" mnemonicParsing="false" onAction="#buyMeadow" prefHeight="25.0" prefWidth="59.0" text="price" />
+                                                <Button fx:id="utilityPrice" mnemonicParsing="false" onAction="#buyMeadow" text="price" />
                                              </children>
                                           </HBox>
                                        </children>
                                     </VBox>
-                                    <VBox fx:id="utilityInfoView1" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+                                    <VBox fx:id="utilityInfoView" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" visible="false">
                                        <children>
                                           <Label alignment="CENTER" prefHeight="34.0" prefWidth="158.0" text="Meadowlands" textAlignment="CENTER" textFill="WHITE">
+                                             <font>
+                                                <Font name="System Bold" size="18.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="utilityInfo" alignment="CENTER" prefHeight="64.0" prefWidth="156.0" text="Description" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <VBox fx:id="utilityPlayerView" alignment="CENTER" prefHeight="66.0" prefWidth="156.0">
+                                             <children>
+                                                <Label alignment="CENTER" prefHeight="25.0" prefWidth="82.0" text="Upgrade" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="System Bold" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Button fx:id="utilityUpgrade" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#upgradeMeadow" prefHeight="25.0" prefWidth="82.0" text="Upgrade" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <GridPane.margin>
+                                    <Insets bottom="2.0" left="4.0" right="4.0" top="2.0" />
+                                 </GridPane.margin>
+                              </StackPane>
+                              <StackPane GridPane.columnIndex="1">
+                                 <children>
+                                    <VBox fx:id="utilityBuyView1" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+                                       <children>
+                                          <Label alignment="CENTER" prefHeight="31.0" prefWidth="156.0" text="Alloy Mine" textAlignment="CENTER" textFill="WHITE" underline="true">
+                                             <font>
+                                                <Font name="System Bold" size="18.0" />
+                                             </font>
+                                          </Label>
+                                          <Label alignment="CENTER" contentDisplay="CENTER" ellipsisString="" prefHeight="65.0" prefWidth="134.0" text="Produces Alloys Automatically" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                             <font>
+                                                <Font size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <HBox alignment="CENTER">
+                                             <children>
+                                                <Label alignment="CENTER" text="Buy Now" textAlignment="CENTER" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                   <padding>
+                                                      <Insets right="5.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Button fx:id="utilityPrice1" mnemonicParsing="false" onAction="#buyAlloy" text="price" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox fx:id="utilityInfoView1" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" visible="false">
+                                       <children>
+                                          <Label alignment="CENTER" prefHeight="34.0" prefWidth="158.0" text="Alloy Mine" textAlignment="CENTER" textFill="WHITE">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
@@ -109,7 +160,175 @@
                                                       <Font name="System Bold" size="16.0" />
                                                    </font>
                                                 </Label>
-                                                <Button fx:id="utilityUpgrade1" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#upgradeMeadow" prefHeight="25.0" prefWidth="82.0" text="Upgrade" />
+                                                <Button fx:id="utilityUpgrade1" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#upgradeAlloy" prefHeight="25.0" prefWidth="82.0" text="Upgrade" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <GridPane.margin>
+                                    <Insets bottom="2.0" left="4.0" right="4.0" top="2.0" />
+                                 </GridPane.margin>
+                              </StackPane>
+                              <StackPane GridPane.rowIndex="1">
+                                 <children>
+                                    <VBox fx:id="utilityBuyView2" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+                                       <children>
+                                          <Label alignment="CENTER" prefHeight="31.0" prefWidth="156.0" text="Gold Mine" textAlignment="CENTER" textFill="WHITE" underline="true">
+                                             <font>
+                                                <Font name="System Bold" size="18.0" />
+                                             </font>
+                                          </Label>
+                                          <Label alignment="CENTER" contentDisplay="CENTER" ellipsisString="" prefHeight="65.0" prefWidth="134.0" text="Produces Gold Automatically" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                             <font>
+                                                <Font size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <HBox alignment="CENTER">
+                                             <children>
+                                                <Label alignment="CENTER" text="Buy Now" textAlignment="CENTER" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                   <padding>
+                                                      <Insets right="5.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Button fx:id="utilityPrice2" mnemonicParsing="false" onAction="#buyGold" text="price" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox fx:id="utilityInfoView2" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" visible="false">
+                                       <children>
+                                          <Label alignment="CENTER" prefHeight="34.0" prefWidth="158.0" text="Gold Mine" textAlignment="CENTER" textFill="WHITE">
+                                             <font>
+                                                <Font name="System Bold" size="18.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="utilityInfo2" alignment="CENTER" prefHeight="64.0" prefWidth="156.0" text="Description" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <VBox fx:id="utilityPlayerView2" alignment="CENTER" prefHeight="66.0" prefWidth="156.0">
+                                             <children>
+                                                <Label alignment="CENTER" prefHeight="25.0" prefWidth="82.0" text="Upgrade" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="System Bold" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Button fx:id="utilityUpgrade2" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#upgradeGold" prefHeight="25.0" prefWidth="82.0" text="Upgrade" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </StackPane>
+                              <StackPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <children>
+                                    <VBox fx:id="utilityBuyView3" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+                                       <children>
+                                          <Label alignment="CENTER" prefHeight="31.0" prefWidth="156.0" text="Slave Facility" textAlignment="CENTER" textFill="WHITE" underline="true">
+                                             <font>
+                                                <Font name="System Bold" size="18.0" />
+                                             </font>
+                                          </Label>
+                                          <Label alignment="CENTER" contentDisplay="CENTER" ellipsisString="" prefHeight="65.0" prefWidth="134.0" text="Slaves Produce Basic Resources" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                             <font>
+                                                <Font size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <HBox alignment="CENTER">
+                                             <children>
+                                                <Label alignment="CENTER" text="Buy Now" textAlignment="CENTER" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                   <padding>
+                                                      <Insets right="5.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Button fx:id="utilityPrice3" mnemonicParsing="false" onAction="#buySlaveFacility" text="price" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox fx:id="utilityInfoView3" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" visible="false">
+                                       <children>
+                                          <Label alignment="CENTER" prefHeight="34.0" prefWidth="158.0" text="Slave Facility" textAlignment="CENTER" textFill="WHITE">
+                                             <font>
+                                                <Font name="System Bold" size="18.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="utilityInfo3" alignment="CENTER" prefHeight="64.0" prefWidth="156.0" text="Description" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <VBox fx:id="utilityPlayerView3" alignment="CENTER" prefHeight="66.0" prefWidth="156.0">
+                                             <children>
+                                                <Label alignment="CENTER" prefHeight="25.0" prefWidth="82.0" text="Upgrade" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="System Bold" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Button fx:id="utilityUpgrade3" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#upgradeSlaveFacility" prefHeight="25.0" prefWidth="82.0" text="Upgrade" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </StackPane>
+                              <StackPane GridPane.rowIndex="2">
+                                 <children>
+                                    <VBox fx:id="utilityBuyView4" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+                                       <children>
+                                          <Label alignment="CENTER" prefHeight="31.0" prefWidth="156.0" text="Mystic Mine" textAlignment="CENTER" textFill="WHITE" underline="true">
+                                             <font>
+                                                <Font name="System Bold" size="18.0" />
+                                             </font>
+                                          </Label>
+                                          <Label alignment="CENTER" contentDisplay="CENTER" ellipsisString="" prefHeight="65.0" prefWidth="134.0" text="Chance to produce large amounts of Alloys and Gold" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                             <font>
+                                                <Font size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <HBox alignment="CENTER">
+                                             <children>
+                                                <Label alignment="CENTER" text="Buy Now" textAlignment="CENTER" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                   <padding>
+                                                      <Insets right="5.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Button fx:id="utilityPrice4" mnemonicParsing="false" onAction="#buyMysticMine" text="price" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox fx:id="utilityInfoView4" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" visible="false">
+                                       <children>
+                                          <Label alignment="CENTER" prefHeight="34.0" prefWidth="158.0" text="Mystic Mine" textAlignment="CENTER" textFill="WHITE">
+                                             <font>
+                                                <Font name="System Bold" size="18.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="utilityInfo4" alignment="CENTER" prefHeight="64.0" prefWidth="156.0" text="Description" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <VBox fx:id="utilityPlayerView4" alignment="CENTER" prefHeight="66.0" prefWidth="156.0">
+                                             <children>
+                                                <Label alignment="CENTER" prefHeight="25.0" prefWidth="82.0" text="Upgrade" textFill="WHITE">
+                                                   <font>
+                                                      <Font name="System Bold" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Button fx:id="utilityUpgrade4" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#upgradeMysticMine" prefHeight="25.0" prefWidth="82.0" text="Upgrade" />
                                              </children>
                                           </VBox>
                                        </children>
@@ -122,8 +341,32 @@
                   </StackPane>
                </children>
             </VBox>
+            <VBox fx:id="utilityBuyView5" alignment="CENTER" layoutX="14.0" layoutY="153.0" prefHeight="119.0" prefWidth="134.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+               <children>
+                  <Label alignment="CENTER" prefHeight="30.0" prefWidth="116.0" text="Maintenance" textFill="WHITE">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="maintenanceCost" alignment="CENTER" prefHeight="77.0" prefWidth="94.0" text="Label" textFill="WHITE">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
          </children>
       </AnchorPane>
-      <Button fx:id="showHideButton" layoutX="25.0" layoutY="84.0" mnemonicParsing="false" onAction="#showHideContent" text="Hide" />
+      <Label fx:id="propertyName" alignment="CENTER" layoutX="25.0" layoutY="38.0" prefHeight="52.0" prefWidth="380.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" text="Property Name" textFill="WHITE">
+         <font>
+            <Font size="26.0" />
+         </font>
+      </Label>
+      <Label fx:id="propertyType" alignment="CENTER" layoutX="25.0" layoutY="8.0" prefHeight="30.0" prefWidth="380.0" text="Type" textFill="WHITE">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Button fx:id="showHideButton" layoutX="38.0" layoutY="113.0" mnemonicParsing="false" onAction="#showHideContent" text="Hide" />
    </children>
 </AnchorPane>
