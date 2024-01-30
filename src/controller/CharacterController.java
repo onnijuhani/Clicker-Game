@@ -26,6 +26,10 @@ public class CharacterController extends BaseController  {
     private Label walletInfo;
     @FXML
     private Hyperlink authority;
+    @FXML
+    private Hyperlink homeQuarter;
+
+
 
     private Timeline updateTimeline;
 
@@ -50,6 +54,7 @@ public class CharacterController extends BaseController  {
         propertyController.updatePropertyTab();
         updateWalletInfo();
         updateAuthority();
+        updateHomeQuarter();
     }
     public void updateCharacterName(){
         characterName.setText(currentCharacter.getName());
@@ -113,6 +118,15 @@ public class CharacterController extends BaseController  {
     @FXML
     void changeCurrent(ActionEvent event) {
         openCharacterProfile(currentCharacter.getAuthority().getCharacter());
+    }
+
+    void updateHomeQuarter(){
+        homeQuarter.setText(currentCharacter.getProperty().getLocation().toString());
+    }
+    @FXML
+    void openHomeQuarter(ActionEvent event) {
+        model.accessCurrentView().setCurrentView(currentCharacter.getProperty().getLocation());
+        main.exploreMapController.updateExploreTab();
     }
 
     private void openCharacterProfile(Character character) {

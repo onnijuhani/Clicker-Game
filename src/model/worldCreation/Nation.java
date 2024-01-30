@@ -70,6 +70,7 @@ public class Nation extends ControlledArea implements Details {
                 if (home.getHigher().getHigher().equals(province)) {
                     home.addCharacter(Status.Governor, governor);
                     NameCreation.generateMajorQuarterName(home);
+                    governor.getProperty().setLocation(home);
                     break;
                 }
             }

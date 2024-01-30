@@ -29,7 +29,7 @@ public class MainController extends BaseController {
     @FXML
     private WorkWalletController workWalletController;
     @FXML
-    private ExploreMapController exploreMapController;
+    protected ExploreMapController exploreMapController;
     @FXML
     private CharacterController characterController;
     @FXML

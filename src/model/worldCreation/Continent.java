@@ -54,6 +54,7 @@ public class Continent extends Area implements Details {
             // set home for king
             int homeIndex = random.nextInt(nation.getAllQuarters().size());
             Quarter home = nation.getAllQuarters().get(homeIndex);
+            king.getProperty().setLocation(home);
             home.addCharacter(Status.King,king);
             changeKingAreaNames(home);
 

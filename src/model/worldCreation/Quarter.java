@@ -168,6 +168,7 @@ public class Quarter extends ControlledArea implements Details {
     private void setUpCaptainAttributes(QuarterAuthority quarterCaptain) {
         quarterCaptain.getCharacter().setNation(this.city.getProvince().getNation());
         quarterCaptain.setSupervisor(city.getAuthority());
+        quarterCaptain.getProperty().setLocation(this);
     }
 
     private void peasantFactory(QuarterAuthority quarterCaptain, LinkedList<Character> farmers, LinkedList<Character> miners, LinkedList<Character> merchants) {
