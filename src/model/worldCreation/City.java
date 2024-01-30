@@ -16,6 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class City extends ControlledArea implements Details {
+
     private Quarter[] quarters;
     private Province province;
 
@@ -37,51 +38,40 @@ public class City extends ControlledArea implements Details {
         int population = getCityPopulation();
 
 
-        String popList = getCityImportantCharactersString();
-
         return ("Authority here is: " + this.getAuthority() + "\n"+
                 "Living in a: " + this.getAuthority().getProperty() + "\n"+
                 "Population: " + population + "\n"+
-                "Comprised of "+quarterAmount+" districts" + "\n"+
-                (popList.isBlank() ? "" : "Here Lives: "+ "\n")+
-                popList
+                "Comprised of "+quarterAmount+" districts"
+
         );
     }
 
-    public String getCityImportantCharactersString() {
-        StringBuilder cityCharactersSb = new StringBuilder();
 
-        for (Quarter quarter : quarters) {
-            cityCharactersSb.append(quarter.getCitizens());
-        }
 
-        return cityCharactersSb.toString();
-    }
 
-    public List<Character> getImportantCharacters() {
+    protected void updateCitizenCache() {
+
         List<Character> characters = new ArrayList<>();
 
-        // Collect all important characters from quarters
         for (Quarter quarter : quarters) {
-            characters.addAll(quarter.getImportantCharactersList());
+            characters.addAll(quarter.getImportantCharacters());
         }
 
-        // Define the status rank order
         List<Status> statusOrder = getImportantStatusRank();
-
-        // Sort the characters list based on the status rank
-        return characters.stream()
+        citizenCache = characters.stream()
                 .filter(character -> statusOrder.contains(character.getStatus()))
                 .sorted(Comparator.comparingInt(character -> statusOrder.indexOf(character.getStatus())))
                 .collect(Collectors.toList());
     }
+
     @NotNull
     @Override
     public List<Status> getImportantStatusRank() {
         List<Status> statusOrder = List.of(
-                Status.King, Status.Noble, Status.Vanguard,
-                Status.Governor, Status.Mercenary, Status.Mayor
-                //doesn't include unimportant ranks also Mayor excluded since he will show up as authority anyway
+                Status.King,
+                Status.Mayor,
+                Status.Governor,
+                Status.Mercenary
         );
         return statusOrder;
     }
@@ -129,4 +119,14 @@ public class City extends ControlledArea implements Details {
     public Area getHigher() {
         return province;
     }
+
+    public Quarter[] getQuarters() {
+        return quarters;
+    }
+
+    public void setQuarters(Quarter[] quarters) {
+        this.quarters = quarters;
+    }
 }
+
+

@@ -5,16 +5,19 @@ import model.Settings;
 import model.buildings.Property;
 import model.buildings.PropertyCreation;
 import model.buildings.PropertyTracker;
+import model.characters.Character;
 import model.characters.Status;
 import model.characters.authority.Authority;
 import model.characters.authority.CityAuthority;
 import model.characters.npc.Mayor;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Province extends ControlledArea implements Details {
+
+
     private City[] cities;
     @Override
     public Area getHigher() {
@@ -71,4 +74,39 @@ public class Province extends ControlledArea implements Details {
         return new ArrayList<>(Arrays.asList(cities));
     }
 
+    protected void updateCitizenCache() {
+
+        List<Character> characters = new ArrayList<>();
+
+        for (City city : cities) {
+            for (Quarter quarter : city.getQuarters()) {
+                characters.addAll(quarter.getImportantCharacters());
+            }
+        }
+
+        List<Status> statusOrder = getImportantStatusRank();
+        citizenCache = characters.stream()
+                .filter(character -> statusOrder.contains(character.getStatus()))
+                .sorted(Comparator.comparingInt(character -> statusOrder.indexOf(character.getStatus())))
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    @Override
+    public List<Status> getImportantStatusRank() {
+        List<Status> statusOrder = List.of(
+                Status.King,
+                Status.Vanguard,
+                Status.Governor
+        );
+        return statusOrder;
+    }
+
+    public City[] getCities() {
+        return cities;
+    }
+
+    public void setCities(City[] cities) {
+        this.cities = cities;
+    }
 }

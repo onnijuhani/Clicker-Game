@@ -18,10 +18,11 @@ public class Quarter extends ControlledArea implements Details {
 
     private HashMap<Status, LinkedList<Character>> populationMap;
     private PropertyTracker allProperties;
+
     private City city;
     private int numOfPeasants;
     private boolean isPopulationChanged = true;
-    private String citizenCache;
+
 
     public Quarter(String name, City city, Authority authority) {
         this.name = name;
@@ -39,9 +40,6 @@ public class Quarter extends ControlledArea implements Details {
         return populationMap.getOrDefault(status, new LinkedList<>());
     }
 
-
-
-
     @Override
     public Area getHigher() {
         return city;
@@ -52,7 +50,7 @@ public class Quarter extends ControlledArea implements Details {
         int population = numOfPeasants;
         int contents = allProperties.getProperties().size();
 
-        String popList = getCitizens();
+        String popList = getCitizensAsString();
 
         return ("Authority here is: " + this.getAuthority() + "\n"+
                 "Living in a: " + this.getAuthority().getProperty() + "\n"+
@@ -64,59 +62,51 @@ public class Quarter extends ControlledArea implements Details {
         );
     }
 
+    @NotNull
+    private String getCitizensAsString() {
+        List<Character> citizens = calculateCitizens();
+        StringBuilder sb = new StringBuilder();
 
+        for (Character character : citizens) {
+            sb.append("    ").append(character).append("\n");
+        }
+
+        return sb.toString();
+    }
 
     @NotNull
-    public String getCitizens() {
+    public void updateCitizenCache() {
 
         //Citizens are only calculated the first model.time they are needed
         //and whenever the character list changes. List is stored at citizenCache
 
         if (isPopulationChanged || citizenCache == null) {
             citizenCache = calculateCitizens();
+            getCity().onCitizenUpdate();
+            getCity().getProvince().onCitizenUpdate();
+            getCity().getProvince().getNation().onCitizenUpdate();
             isPopulationChanged = false;
         }
-        return citizenCache;
     }
 
     @NotNull
-    private String calculateCitizens() {
-
-        StringBuilder sb = new StringBuilder();
+    private List<Character> calculateCitizens() {
+        ArrayList<Character> citizens = new ArrayList<>();
         List<Status> statusOrder = getStatusRank();
 
         // Sort by Status
         populationMap.entrySet().stream()
                 .filter(entry -> statusOrder.contains(entry.getKey())) // Filter based on the key (Status)
                 .sorted(Comparator.comparingInt(entry -> statusOrder.indexOf(entry.getKey()))) // Sort based on the key's index in statusOrder
-                .forEachOrdered(entry -> {
-                    for (Character character : entry.getValue()) { // Iterate over the LinkedList<Character>
-                        sb.append("    ").append(character).append("\n");
-                    }
-                });
+                .forEachOrdered(entry -> citizens.addAll(entry.getValue())); // Add all Characters to the ArrayList
 
-        return sb.toString();
+        return citizens;
     }
 
 
 
-    @NotNull
-    public List<Character> getImportantCharactersList() {
-        List<Character> characters = new ArrayList<>();
-        List<Status> statusOrder = getImportantStatusRank();
 
-        // Sort by Status
-        populationMap.entrySet().stream()
-                .filter(entry -> statusOrder.contains(entry.getKey())) // Include only important statuses
-                .sorted(Comparator.comparingInt(entry -> statusOrder.indexOf(entry.getKey())))
-                .forEachOrdered(entry -> {
-                    for (Character character : entry.getValue()) {
-                        characters.add(character);
-                    }
-                });
 
-        return characters;
-    }
 
     @Override
     public ArrayList<Quarter> getContents() {
@@ -236,6 +226,14 @@ public class Quarter extends ControlledArea implements Details {
 
     public int getNumOfPeasants() {
         return numOfPeasants;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
     }
 
 }

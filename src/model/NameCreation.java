@@ -222,7 +222,10 @@ public class NameCreation {
 
         String[] kingPrefixes = {"Royal"};
         String[] vanguardPrefixes = {"Vanguard's", "Guardian's", "Sentinel"};
-        String[] mercenaryPrefixes = {"Mercenary's", "Warrior's", "Soldier's"};
+        String[] governorPrefixes = {"Governor's", "Provincial", "Territorial" };
+        String[] mercenaryPrefixes = {"Mercenary's", "Warrior's", "Soldier's", "Devil's"};
+        String[] mayorPrefixes = {"Mayor's", "Urban", "Township's", "Community's", "Citys" };
+
 
         String[] suffixes = {"Haven", "Domain", "Lair", "Territory", "Estate", "Sanctum", "Gardens", "Hold", "Quarters", "Landing", "Imperative"};
 
@@ -230,7 +233,9 @@ public class NameCreation {
 
         boolean hasKing = populationList.containsKey(Status.King) && !populationList.get(Status.King).isEmpty();
         boolean hasVanguard = populationList.containsKey(Status.Vanguard) && !populationList.get(Status.Vanguard).isEmpty();
+        boolean hasGovernor = populationList.containsKey(Status.Governor) && !populationList.get(Status.Governor).isEmpty();
         boolean hasMercenary = populationList.containsKey(Status.Mercenary) && !populationList.get(Status.Mercenary).isEmpty();
+        boolean hasMayor = populationList.containsKey(Status.Mayor) && !populationList.get(Status.Mayor).isEmpty();
 
         String selectedSuffix = suffixes[random.nextInt(suffixes.length)];
         String selectedPrefix;
@@ -240,10 +245,16 @@ public class NameCreation {
         } else if (hasVanguard) {
             selectedPrefix = vanguardPrefixes[random.nextInt(vanguardPrefixes.length)];
             quarter.setName(selectedPrefix + " " + selectedSuffix);
+        } else if (hasGovernor) {
+            selectedPrefix = governorPrefixes[random.nextInt(governorPrefixes.length)];
+            quarter.setName(selectedPrefix + " " + selectedSuffix);
         } else if (hasMercenary) {
             selectedPrefix = mercenaryPrefixes[random.nextInt(mercenaryPrefixes.length)];
             quarter.setName(selectedPrefix + " " + selectedSuffix);
-        }
+        } else if (hasMayor) {
+        selectedPrefix = mayorPrefixes[random.nextInt(mayorPrefixes.length)];
+        quarter.setName(selectedPrefix + " " + selectedSuffix);
+    }
 
 
 

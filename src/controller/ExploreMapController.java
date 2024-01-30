@@ -8,7 +8,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import model.characters.Character;
 import model.worldCreation.Area;
-import model.worldCreation.City;
 import model.worldCreation.ControlledArea;
 
 import java.util.List;
@@ -31,7 +30,7 @@ public class ExploreMapController extends BaseController {
     private TextArea testi;
     private MainController main;
     @FXML
-    private ListView<Character> objectListView;
+    private ListView<Character> livesHereListView;
     @FXML
     private Label authorityLabel;
 
@@ -41,41 +40,51 @@ public class ExploreMapController extends BaseController {
     private CharacterController characterController;
 
     void updateAuthorityLink(){
-        ControlledArea currentView = (ControlledArea) model.accessCurrentView().getCurrentView();
-        authorityLink.setText(currentView.getAuthority().toString());
+        if (model.accessCurrentView().getCurrentView() instanceof ControlledArea) {
+            ControlledArea currentView = (ControlledArea) model.accessCurrentView().getCurrentView();
+            authorityLink.setText(currentView.getAuthority().toString());
+        }
     }
-
 
     @FXML
     void authorityLinkClick(ActionEvent event) {
-        ControlledArea currentView = (ControlledArea) model.accessCurrentView().getCurrentView();
-        openCharacterProfile(currentView.getAuthority().getCharacter());
+        if (model.accessCurrentView().getCurrentView() instanceof ControlledArea) {
+            ControlledArea currentView = (ControlledArea) model.accessCurrentView().getCurrentView();
+            openCharacterProfile(currentView.getAuthority().getCharacter());
+        }
 
     }
 
 
-    public void updateObjectListView() {
+    public void updateLivesHereListView() {
 
-        City currentView = (City) model.accessCurrentView().getCurrentView();
-        List list = currentView.getImportantCharacters();
-        ObservableList<Character> characters = FXCollections.observableArrayList(list);
-        objectListView.setItems(characters);
+        if (model.accessCurrentView().getCurrentView() instanceof ControlledArea) {
 
-        objectListView.setCellFactory(lv -> new ListCell<Character>() {
-            private final Hyperlink link = new Hyperlink();
+            ControlledArea currentView = (ControlledArea) model.accessCurrentView().getCurrentView();
+            List list = currentView.getImportantCharacters();
+            ObservableList<Character> characters = FXCollections.observableArrayList(list);
+            livesHereListView.setItems(characters);
 
-            @Override
-            protected void updateItem(Character character, boolean empty) {
-                super.updateItem(character, empty);
-                if (empty || character == null) {
-                    setGraphic(null);
-                } else {
-                    link.setText(character.toString()); // Assuming Character has a getName() method
-                    link.setOnAction(e -> openCharacterProfile(character));
-                    setGraphic(link);
+            livesHereListView.setCellFactory(lv -> new ListCell<Character>() {
+                private final Hyperlink link = new Hyperlink();
+
+                @Override
+                protected void updateItem(Character character, boolean empty) {
+                    super.updateItem(character, empty);
+                    if (empty || character == null) {
+                        setGraphic(null);
+                    } else {
+                        link.setText(character.toString()); // Assuming Character has a getName() method
+                        link.setOnAction(e -> openCharacterProfile(character));
+                        setGraphic(link);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            livesHereListView.setItems(FXCollections.observableArrayList()); // Clears the list when it goes to continent
+        }
+
+
     }
 
     private void openCharacterProfile(Character character) {
@@ -149,7 +158,7 @@ public class ExploreMapController extends BaseController {
         updateContainType();
         updateHigherType();
         updateTextArea();
-        updateObjectListView();
+        updateLivesHereListView();
         updateAuthorityLink();
     }
 

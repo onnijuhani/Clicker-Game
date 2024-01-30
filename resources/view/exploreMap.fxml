@@ -32,7 +32,7 @@
       </AnchorPane>
       <Label fx:id="areaType" alignment="CENTER" layoutX="135.0" layoutY="14.0" prefHeight="17.0" prefWidth="253.0" text="Area Type" textAlignment="CENTER" textFill="WHITE" />
       <TextArea fx:id="testi" layoutX="298.0" layoutY="206.0" prefHeight="157.0" prefWidth="217.0" promptText="fdfdfdfd" style="-fx-border-color: black;" />
-      <ListView id="box" fx:id="objectListView" layoutX="35.0" layoutY="206.0" prefHeight="157.0" prefWidth="253.0" style="-fx-border-color: black;" styleClass="box" />
+      <ListView id="box" fx:id="livesHereListView" layoutX="35.0" layoutY="206.0" prefHeight="157.0" prefWidth="253.0" style="-fx-border-color: black;" styleClass="box" />
       <Text fill="WHITE" layoutX="35.0" layoutY="201.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Here Lives:" wrappingWidth="194.13671875">
          <font>
             <Font name="System Bold" size="12.0" />

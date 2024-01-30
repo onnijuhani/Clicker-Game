@@ -5,17 +5,17 @@ import model.Settings;
 import model.buildings.Property;
 import model.buildings.PropertyCreation;
 import model.buildings.PropertyTracker;
+import model.characters.Character;
 import model.characters.Status;
 import model.characters.authority.Authority;
 import model.characters.authority.ProvinceAuthority;
 import model.characters.npc.Governor;
 import model.characters.npc.Mercenary;
 import model.shop.Shop;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Nation extends ControlledArea implements Details {
     private Province[] provinces;
@@ -69,6 +69,7 @@ public class Nation extends ControlledArea implements Details {
                 Quarter home = nation.getAllQuarters().get(homeIndex);
                 if (home.getHigher().getHigher().equals(province)) {
                     home.addCharacter(Status.Governor, governor);
+                    NameCreation.generateMajorQuarterName(home);
                     break;
                 }
             }
@@ -96,6 +97,35 @@ public class Nation extends ControlledArea implements Details {
             NameCreation.generateMajorQuarterName(quarter);
         }
     }
+
+    @Override
+    protected void updateCitizenCache() {
+        List<Character> characters = new ArrayList<>();
+        for (Province province : provinces) {
+            for (City city : province.getCities()) {
+                for (Quarter quarter : city.getQuarters()) {
+                    characters.addAll(quarter.getImportantCharacters());
+                }
+            }
+        }
+        List<Status> statusOrder = getImportantStatusRank();
+        citizenCache = characters.stream()
+                .filter(character -> statusOrder.contains(character.getStatus()))
+                .sorted(Comparator.comparingInt(character -> statusOrder.indexOf(character.getStatus())))
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    @Override
+    public List<Status> getImportantStatusRank() {
+        List<Status> statusOrder = List.of(
+                Status.King,
+                Status.Vanguard,
+                Status.Noble
+        );
+        return statusOrder;
+    }
+
 
     public Shop getShop() {
         return shop;
