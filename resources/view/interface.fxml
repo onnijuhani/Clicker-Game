@@ -50,7 +50,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <ScrollPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <content>
       <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" style="-fx-background-color: linear-gradient(gray, black);">
@@ -84,13 +83,6 @@
                               <Tab text="Untitled Tab 1">
                                  <content>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="376.0" prefWidth="658.0" style="-fx-background-color: white;">
-                                       <children>
-                                          <ImageView fitHeight="376.0" fitWidth="773.0" pickOnBounds="true">
-                                             <image>
-                                                <Image url="@../pics/DALL·E%202024-01-27%2013.08.18%20-%20Create%20an%20image%20of%20a%20fantasy%20world%20landscape%20viewed%20from%20a%20distance.%20In%20the%20forefront,%20there%20should%20be%20an%20expansive%20wild%20meadow,%20dotted%20with%20vibrant%20w.png" />
-                                             </image>
-                                          </ImageView>
-                                       </children>
                                     </AnchorPane>
                                  </content>
                               </Tab>
@@ -185,6 +177,15 @@
                                     </AnchorPane>
                               </content>
                             </Tab>
+                              <Tab text="Untitled Tab">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <fx:include fx:id="construct" source="construct.fxml" />
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
                           </tabs>
                         </TabPane>
                      </children>

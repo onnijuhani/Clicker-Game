@@ -36,6 +36,9 @@ public class MainController extends BaseController {
     private PropertyController propertyController;
 
     @FXML
+    private constructController constructController;
+
+    @FXML
     protected Button clickMeButton;
     @FXML
     private ListView<String> eventList;
@@ -100,10 +103,13 @@ public class MainController extends BaseController {
             characterController.setCurrentCharacter(model.accessPlayer());
             characterController.updateCharacterTab();
             propertyController.updatePropertyTab();
-
-
         } else {
             System.out.println("CharacterController is null");
+        }
+        if (constructController != null) {
+            constructController.setModel(model);
+        } else {
+            System.out.println("ConstructController is null");
         }
     }
 

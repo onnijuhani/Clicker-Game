@@ -32,16 +32,17 @@ public class Property implements PropertyObserver, Details {
 
     private boolean firstTimeReached = true;
     protected double strength;
+
+
+
     protected Vault vault;
     protected Quarter location;
     protected Character owner;
     protected Maintenance maintenance;
     protected String name;
-    protected Buildings buildings;
     protected Properties propertyEnum;
 
-
-
+    protected int underConstruction;
     protected UtilitySlot utilitySlot;
 
 
@@ -94,13 +95,6 @@ public class Property implements PropertyObserver, Details {
         return name;
     }
 
-    public Buildings getBuildings() {
-        return buildings;
-    }
-
-    public void setBuildings(Buildings buildings) {
-        this.buildings = buildings;
-    }
 
     public Maintenance getMaintenance() {
         return maintenance;
@@ -115,5 +109,8 @@ public class Property implements PropertyObserver, Details {
 
     public void setUtilitySlot(UtilitySlot utilitySlot) {
         this.utilitySlot = utilitySlot;
+    }
+    public void setVault(Vault vault) {
+        this.vault = vault;
     }
 }

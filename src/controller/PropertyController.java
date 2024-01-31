@@ -251,7 +251,7 @@ public class PropertyController extends BaseController {
     }
 
     public void setShop() {
-        this.shop = model.accessShop();
+        this.shop = character.getNation().getShop();
     }
 
 

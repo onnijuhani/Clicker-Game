@@ -27,6 +27,11 @@ public class Wallet {
                 throw new IllegalArgumentException("Unsupported resource type: " + type);
         }
     }
+
+    public boolean hasEnoughResources(TransferPackage transfer) {
+        int[] amounts = transfer.getAll();
+        return food >= amounts[0] && alloy >= amounts[1] && gold >= amounts[2];
+    }
     public int[] getWalletValues() {
         return new int[]{food, alloy, gold};
     }
