@@ -45,6 +45,7 @@ public class Time {
 
     public void incrementDay() {
 
+
         day++;
         if (day > 30) {
             day = 1;
@@ -58,10 +59,7 @@ public class Time {
                 day == cityTax ||
                 day == provinceTax ||
                 day == nationTax) {
-            TimeEventManager.notifyTimeUpdate(day, month, year);
-        }
-        if (day == foodConsumption && !isFirstDay) {
-            FoodManager.notifyTimeUpdate();
+            TaxEventManager.notifyTimeUpdate(day, month, year);
         }
         if (day == maintenance) {
             PropertyManager.notifyTimeUpdate();
@@ -71,6 +69,9 @@ public class Time {
         }
         if (day == utilitySlots) {
             UtilityManager.notifyTimeUpdate();
+        }
+        if (!isFirstDay) {
+            NpcManager.notifyTimeUpdate(day, month, year);
         }
         isFirstDay = false; // After the first increment, it's no longer the first day
     }

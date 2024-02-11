@@ -206,12 +206,12 @@ public class MainController extends BaseController {
 
         Shop shop = model.accessPlayer().getNation().getShop();
         System.out.println(shop.getWallet());
+        System.out.println(shop.getExchange().getRates());
     }
 
     @FXML
     void updateExchange(){
-        exchangeController.updateExchangePrices();
-        exchangeController.updateMarketFee();
+        exchangeController.updateExchange();
     }
 
     @FXML

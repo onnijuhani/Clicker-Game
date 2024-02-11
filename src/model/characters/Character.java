@@ -1,6 +1,7 @@
 package model.characters;
 
 import model.NameCreation;
+import model.Settings;
 import model.buildings.Property;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.authority.Authority;
@@ -12,32 +13,34 @@ import model.resourceManagement.wallets.WorkWallet;
 import model.shop.Exchange;
 import model.worldCreation.Details;
 import model.worldCreation.Nation;
-import model.time.FoodManager;
-import model.time.FoodObserver;
-import model.time.TimeEventManager;
-import model.time.TimeObserver;
+import model.time.NpcManager;
+import model.time.NpcObserver;
+import model.time.TaxEventManager;
+import model.time.TaxObserver;
 import model.resourceManagement.Resource;
 
 import java.util.LinkedList;
 
-public class Character implements TimeObserver, FoodObserver, Details {
+public class Character implements TaxObserver, NpcObserver, Details {
 
     @Override
-    public void timeUpdate(int day, int month, int year) {
+    public void taxUpdate(int day, int month, int year) {
     }
 
     @Override
-    public void foodUpdate() {
-        foodConsumption(this);
-        if (this instanceof Player){
-            this.getEventTracker().addEvent(EventTracker.Message("Minor",foodConsumption[0]+" Food Consumed."));
-            return;
-        }
-        if(!property.getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
-            buyMeadowLandsTEST();
-        }
-        if(property.getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
-            upgrade();
+    public void npcUpdate(int day, int month, int year) {
+        if (day == foodUpdateDay) {
+            foodConsumption(this);
+            if (this instanceof Player) {
+                this.getEventTracker().addEvent(EventTracker.Message("Minor", foodConsumption[0] + " Food Consumed."));
+                return;
+            }
+            if (!property.getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
+                buyMeadowLandsTEST();
+            }
+            if (property.getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
+                upgrade();
+            }
         }
     }
 
@@ -67,17 +70,19 @@ public class Character implements TimeObserver, FoodObserver, Details {
     protected EventTracker eventTracker;
     protected int[] foodConsumption = {5,0};
     protected Status status;
+    protected int foodUpdateDay;
     public Character() {
         this.wallet = new Wallet();
         this.slaves = new LinkedList<>();
         this.allies = new LinkedList<>();
         this.enemies = new LinkedList<>();
+        this.foodUpdateDay = Settings.get("foodConsumption");
         this.name = NameCreation.generateCharacterName();
         this.eventTracker = new EventTracker();
         if (shouldSubscribeToTimeEvent()) {
-            TimeEventManager.subscribe(this);
+            TaxEventManager.subscribe(this);
         }
-        FoodManager.subscribe(this);
+        NpcManager.subscribe(this);
     }
 
     protected void buyMeadowLandsTEST(){

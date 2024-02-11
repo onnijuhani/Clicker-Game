@@ -17,7 +17,7 @@ public class Shop {
 
     private void initializeWallet(){
         this.wallet = new Wallet();
-        TransferPackage startingBalance = new TransferPackage(1000,1000,500);
+        TransferPackage startingBalance = new TransferPackage(10000,5000,1000);
         wallet.addResources(startingBalance);
     }
 

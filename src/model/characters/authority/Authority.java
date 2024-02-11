@@ -9,15 +9,15 @@ import model.resourceManagement.TransferPackage;
 import model.resourceManagement.payments.Salary;
 import model.resourceManagement.payments.Tax;
 import model.resourceManagement.wallets.WorkWallet;
-import model.time.TimeEventManager;
-import model.time.TimeObserver;
+import model.time.TaxEventManager;
+import model.time.TaxObserver;
 
 import java.util.ArrayList;
 
-public class Authority implements TimeObserver {
+public class Authority implements TaxObserver {
 
     @Override
-    public void timeUpdate(int day, int month, int year) {
+    public void taxUpdate(int day, int month, int year) {
         System.out.println("Kuka tätä kutsui??"+this);
         if (day == 0) {
             imposeTax();
@@ -35,7 +35,7 @@ public class Authority implements TimeObserver {
     protected WorkWallet workWallet;
 
     public void subscribeToTimeEvents() {
-        TimeEventManager.subscribe(this);
+        TaxEventManager.subscribe(this);
     }
 
     public Authority(Character character) {

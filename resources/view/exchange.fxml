@@ -141,5 +141,19 @@
             </HBox>
          </children>
       </AnchorPane>
+      <VBox alignment="CENTER" layoutX="153.0" layoutY="44.0" prefHeight="67.0" prefWidth="450.0" style="-fx-background-color: rgba(190,196,203,0.95); -fx-background-radius: 15; -fx-border-color: white; -fx-border-radius: 15;">
+         <children>
+            <Label text="Shop Wallet">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <Label fx:id="shopWallet" alignment="CENTER" style="-fx-background-radius: 25;" text="Wallet" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="17.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

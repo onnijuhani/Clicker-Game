@@ -4,7 +4,7 @@ import model.characters.Character;
 
 public class CityAuthority extends Authority {
     @Override
-    public void timeUpdate(int day, int month, int year) {
+    public void taxUpdate(int day, int month, int year) {
             imposeTax();
             paySupporters();
         }

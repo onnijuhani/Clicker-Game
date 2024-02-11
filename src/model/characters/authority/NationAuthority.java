@@ -5,7 +5,7 @@ import model.time.Time;
 
 public class NationAuthority extends Authority {
     @Override
-    public void timeUpdate(int day, int month, int year) {
+    public void taxUpdate(int day, int month, int year) {
         if (day == Time.nationTax) {
             imposeTax();
             paySupporters();
