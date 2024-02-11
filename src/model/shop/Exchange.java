@@ -2,20 +2,18 @@ package model.shop;
 
 import model.characters.Character;
 import model.characters.player.EventTracker;
-import model.resourceManagement.TransferPackage;
 import model.resourceManagement.Resource;
+import model.resourceManagement.TransferPackage;
+import model.resourceManagement.wallets.Wallet;
 
-public class Exchange {
-
+public class Exchange extends ShopComponents {
     private ExchangeRates rates;
     private int defaultFoodAlloys = 100;
     private int defaultGold = 10;
+    private double marketFee = 0.35;
 
-    private double marketFee = 0.25;
-
-
-
-    public Exchange(){
+    public Exchange(Wallet wallet){
+        super(wallet);
         this.rates = new ExchangeRates();
     }
 
@@ -23,6 +21,12 @@ public class Exchange {
         double rate = rates.getRate(sellType, buyType);
         double costWithoutFee = amountToBuy / rate;
         int totalCost = (int) (costWithoutFee * (1 + marketFee));
+
+        if (!wallet.hasEnoughResource(buyType, amountToBuy)) {
+            String errorMessage = EventTracker.Message("Error", "Market has insufficient resources for the exchange.");
+            character.getEventTracker().addEvent(errorMessage);
+            return;
+        }
 
         if (!character.getWallet().hasEnoughResource(sellType, totalCost)) {
             String errorMessage = EventTracker.Message( "Error","Insufficient resources for the exchange.");
@@ -33,8 +37,8 @@ public class Exchange {
         TransferPackage costPackage = TransferPackage.fromEnum(sellType, totalCost);
         TransferPackage purchasePackage = TransferPackage.fromEnum(buyType, amountToBuy);
 
-        character.getWallet().subtractResources(costPackage);
-        character.getWallet().addResources(purchasePackage);
+        this.wallet.deposit(character.getWallet(), costPackage);
+        character.getWallet().deposit(this.wallet, purchasePackage);
 
         String message = EventTracker.Message("Shop","Exchanged " + sellType + " for " + buyType);
         character.getEventTracker().addEvent(message);

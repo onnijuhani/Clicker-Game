@@ -7,6 +7,7 @@ import javafx.scene.layout.VBox;
 import model.Settings;
 import model.characters.player.clicker.*;
 import model.resourceManagement.Resource;
+import model.shop.Shop;
 
 public class ClickerShopController extends BaseController {
     @FXML private Button buyAlloyClickerButton;
@@ -41,6 +42,7 @@ public class ClickerShopController extends BaseController {
     private Label goldInfo;
     @FXML
     private Label goldLevel;
+    private Shop shop; //shop in the player's nation
 
 
 
@@ -92,7 +94,7 @@ public class ClickerShopController extends BaseController {
 
     @FXML
     void buyAlloyClicker() {
-        boolean purchaseSuccessful = model.accessShop().getClickerShop().buyClicker(Resource.Alloy, model.accessPlayer());
+        boolean purchaseSuccessful = shop.getClickerShop().buyClicker(Resource.Alloy, model.accessPlayer());
         buyAlloyClickerButton.setVisible(!purchaseSuccessful);
         alloyBox.setVisible(purchaseSuccessful);
         updateClickerShopPrices();
@@ -100,7 +102,7 @@ public class ClickerShopController extends BaseController {
 
     @FXML
     void buyGoldClicker() {
-        boolean purchaseSuccessful = model.accessShop().getClickerShop().buyClicker(Resource.Gold, model.accessPlayer());
+        boolean purchaseSuccessful = shop.getClickerShop().buyClicker(Resource.Gold, model.accessPlayer());
         buyGoldClickerButton.setVisible(!purchaseSuccessful);
         goldBox.setVisible(purchaseSuccessful);
         updateClickerShopPrices();
@@ -127,11 +129,15 @@ public class ClickerShopController extends BaseController {
         Clicker clicker = model.accessPlayer().getClicker();
         ClickerTools tool = clicker.getClickerTool(resource);
         if (tool != null) {
-            boolean upgradeSuccessful = model.accessShop().getClickerShop().buyUpgrade(resource, model.accessPlayer());
+            boolean upgradeSuccessful = shop.getClickerShop().buyUpgrade(resource, model.accessPlayer());
             if (upgradeSuccessful) {
                 upgradeButton.setText("Upgrade to Level " + (tool.getUpgradeLevel() + 1) + " (" + tool.getUpgradePrice() + " Gold)");
             }
         }
         updateClickerShopPrices();
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 }

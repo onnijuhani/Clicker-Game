@@ -12,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 import model.Model;
 import model.characters.player.EventTracker;
+import model.shop.Shop;
 import model.time.Time;
 import model.worldCreation.Quarter;
 
@@ -36,7 +37,7 @@ public class MainController extends BaseController {
     private PropertyController propertyController;
 
     @FXML
-    private constructController constructController;
+    private ConstructController constructController;
 
     @FXML
     protected Button clickMeButton;
@@ -103,6 +104,7 @@ public class MainController extends BaseController {
             characterController.setCurrentCharacter(model.accessPlayer());
             characterController.updateCharacterTab();
             propertyController.updatePropertyTab();
+            clickerShopController.setShop(model.accessPlayer().getNation().getShop());
         } else {
             System.out.println("CharacterController is null");
         }
@@ -201,11 +203,15 @@ public class MainController extends BaseController {
 
         // Scroll to the last message
         eventList.scrollTo(eventList.getItems().size() - 1);
+
+        Shop shop = model.accessPlayer().getNation().getShop();
+        System.out.println(shop.getWallet());
     }
 
     @FXML
     void updateExchange(){
         exchangeController.updateExchangePrices();
+        exchangeController.updateMarketFee();
     }
 
     @FXML

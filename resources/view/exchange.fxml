@@ -23,15 +23,21 @@
                <children>
                   <VBox alignment="CENTER" prefHeight="146.0" prefWidth="107.0" style="-fx-background-color: rgba(190,196,203,0.95); -fx-background-radius: 15; -fx-border-color: white; -fx-border-radius: 15;">
                      <children>
-                        <Label alignment="CENTER" prefHeight="23.0" prefWidth="103.0" style="-fx-background-radius: 25;" text="GOLD" textAlignment="CENTER">
+                        <Label alignment="CENTER" style="-fx-background-radius: 25;" text="BUY GOLD" textAlignment="CENTER">
                            <font>
-                              <Font name="System Bold" size="19.0" />
+                              <Font name="System Bold" size="17.0" />
                            </font>
                         </Label>
                         <Label fx:id="foodToGoldPrice" alignment="CENTER" prefHeight="51.0" prefWidth="105.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #cfc2cd, #ada2ac, #8f848e, #ada2ac, #cfc2cd); -fx-background-radius: 25; -fx-border-width: 5; -fx-border-color: rgba(190,196,203,0.95); -fx-border-radius: 25;" text="Label" textAlignment="CENTER">
                            <font>
                               <Font name="System Bold" size="17.0" />
-                           </font></Label>
+                           </font>
+                           <padding>
+                              <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                           </padding>
+                           <VBox.margin>
+                              <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                           </VBox.margin></Label>
                         <Button fx:id="foodGoldBtn" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#buyGoldFoodBtn" prefHeight="35.0" prefWidth="100.0" style="-fx-background-radius: 10;" text="Buy Gold">
                            <font>
                               <Font size="15.0" />
@@ -43,9 +49,9 @@
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="92.0" prefWidth="107.0" style="-fx-background-color: rgba(190,196,203,0.95); -fx-background-radius: 15; -fx-border-color: white; -fx-border-radius: 15;">
                      <children>
-                        <Label alignment="CENTER" prefHeight="23.0" prefWidth="103.0" text="GOLD" textAlignment="CENTER">
+                        <Label alignment="CENTER" text="BUY GOLD" textAlignment="CENTER">
                            <font>
-                              <Font name="System Bold" size="20.0" />
+                              <Font name="System Bold" size="17.0" />
                            </font>
                         </Label>
                         <Label fx:id="alloyToGoldPrice" alignment="CENTER" prefHeight="51.0" prefWidth="105.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #cfc2cd, #ada2ac, #8f848e, #ada2ac, #cfc2cd); -fx-background-radius: 25; -fx-border-width: 5; -fx-border-color: rgba(190,196,203,0.95); -fx-border-radius: 25;" text="Label" textAlignment="CENTER">
@@ -67,9 +73,9 @@
                <children>
                   <VBox alignment="CENTER" prefHeight="92.0" prefWidth="107.0" style="-fx-background-color: rgba(190,196,203,0.95); -fx-background-radius: 15; -fx-border-color: white; -fx-border-radius: 15;">
                      <children>
-                        <Label alignment="CENTER" prefHeight="23.0" prefWidth="103.0" text="FOOD" textAlignment="CENTER">
+                        <Label alignment="CENTER" prefHeight="23.0" prefWidth="103.0" text="BUY FOOD" textAlignment="CENTER">
                            <font>
-                              <Font name="System Bold" size="20.0" />
+                              <Font name="System Bold" size="17.0" />
                            </font>
                         </Label>
                         <Label fx:id="goldToFoodPrice" alignment="CENTER" prefHeight="51.0" prefWidth="105.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #cfc2cd, #ada2ac, #8f848e, #ada2ac, #cfc2cd); -fx-background-radius: 25; -fx-border-width: 5; -fx-border-color: rgba(190,196,203,0.95); -fx-border-radius: 25;" text="Label" textAlignment="CENTER">
@@ -87,9 +93,9 @@
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="92.0" prefWidth="107.0" style="-fx-background-color: rgba(190,196,203,0.95); -fx-background-radius: 15; -fx-border-color: white; -fx-border-radius: 15;">
                      <children>
-                        <Label alignment="CENTER" prefHeight="23.0" prefWidth="103.0" text="ALLOYS" textAlignment="CENTER">
+                        <Label alignment="CENTER" prefHeight="23.0" prefWidth="103.0" text="BUY ALLOYS" textAlignment="CENTER">
                            <font>
-                              <Font name="System Bold" size="20.0" />
+                              <Font name="System Bold" size="17.0" />
                            </font>
                         </Label>
                         <Label fx:id="goldToAlloysPrice" alignment="CENTER" prefHeight="51.0" prefWidth="105.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #cfc2cd, #ada2ac, #8f848e, #ada2ac, #cfc2cd); -fx-background-radius: 25; -fx-border-width: 5; -fx-border-color: rgba(190,196,203,0.95); -fx-border-radius: 25;" text="Label" textAlignment="CENTER">
@@ -122,6 +128,15 @@
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Button>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="290.0" layoutY="7.0" prefHeight="36.0" prefWidth="83.0" style="-fx-background-color: rgba(190,196,203,0.95) rgba(190,196,203,0.95); -fx-background-radius: 25; -fx-border-radius: 25; -fx-border-color: white;">
+               <children>
+                  <Label fx:id="marketFee" text="fee">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
                </children>
             </HBox>
          </children>

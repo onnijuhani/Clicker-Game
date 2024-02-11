@@ -8,18 +8,22 @@ import model.characters.player.clicker.Clicker;
 import model.characters.player.clicker.ClickerTools;
 import model.characters.player.clicker.GoldClicker;
 import model.resourceManagement.Resource;
+import model.resourceManagement.TransferPackage;
+import model.resourceManagement.wallets.Wallet;
 
-public class ClickerShop {
+public class ClickerShop extends ShopComponents {
 
 
-    public ClickerShop() {
+    public ClickerShop(Wallet wallet) {
+        super(wallet);
     }
     public boolean buyClicker(Resource type, Player player) {
         ClickerTools newTool = createClickerTool(type);
         int price = newTool.getUpgradePrice();  // Get the base price from the newTool
+        TransferPackage transfer = new TransferPackage(0 ,0, price);
 
         if (player.getWallet().hasEnoughResource(Resource.Gold, price)) {
-            player.getWallet().subtractGold(price);
+            this.wallet.deposit(player.getWallet(), transfer);
             player.getClicker().addClickerTool(type, newTool);
             player.getEventTracker().addEvent(EventTracker.Message("Shop", "Successfully purchased " + type + " Clicker!"));
             return true; // Purchase was successful
@@ -48,9 +52,10 @@ public class ClickerShop {
         Clicker clicker = player.getClicker();
         UpgradeSystem item = clicker.getClickerTool(type);
         int upgradePrice = item.getUpgradePrice();
+        TransferPackage transfer = new TransferPackage(0 ,0, upgradePrice);
 
         if (player.getWallet().hasEnoughResource(Resource.Gold, upgradePrice)) {
-            player.getWallet().subtractGold(upgradePrice); // Deduct the price
+            this.wallet.deposit(player.getWallet(), transfer);
             item.upgrade(); // Upgrade the item
 
             player.getEventTracker().addEvent(EventTracker.Message("Shop", "Successfully upgraded " + type + " Clicker to level " + item.getUpgradeLevel() + "!"));

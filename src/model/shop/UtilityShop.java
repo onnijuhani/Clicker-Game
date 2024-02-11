@@ -6,13 +6,15 @@ import model.buildings.utilityBuilding.*;
 import model.characters.Character;
 import model.characters.player.EventTracker;
 import model.resourceManagement.Resource;
+import model.resourceManagement.wallets.Wallet;
 
-public class UtilityShop {
+public class UtilityShop extends ShopComponents {
 
 
 
-    public UtilityShop() {
 
+    public UtilityShop(Wallet wallet) {
+        super(wallet);
     }
 
     public boolean upgradeBuilding(UtilityBuildings type, Character character) {

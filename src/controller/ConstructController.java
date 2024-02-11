@@ -8,7 +8,7 @@ import javafx.scene.control.ListView;
 import model.buildings.Construct;
 import model.buildings.Properties;
 
-public class constructController extends BaseController {
+public class ConstructController extends BaseController {
 
     @FXML
     private Label newCost;

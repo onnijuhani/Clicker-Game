@@ -3,9 +3,8 @@ package model;
 import model.characters.player.Player;
 import model.map.CurrentPosition;
 import model.map.CurrentView;
-import model.shop.Shop;
-import model.worldCreation.*;
 import model.time.Time;
+import model.worldCreation.CreateWorld;
 
 public class Model {
 
@@ -13,7 +12,7 @@ public class Model {
     private CurrentPosition currentPosition;
     private CurrentView currentView;
     private Player player;
-    private Shop shop;
+
     private Time time;
 
 
@@ -25,13 +24,9 @@ public class Model {
         this.currentView = new CurrentView();
         currentView.setCurrentView(world.getSpawnQuarter().getHigher());
         this.player = new Player(world.getSpawnQuarter());
-        this.shop = new Shop();
         this.time = new Time();
     }
 
-    public Shop accessShop(){
-        return shop;
-    }
 
     public Time accessTime() {
         return time;
