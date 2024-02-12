@@ -19,7 +19,41 @@ public class Exchange extends ShopComponents {
         this.rates = new ExchangeRates();
     }
 
+    public void sellResource(int amountToSell, Resource sellType, Character character) {
+        updateExchangeRates();
+        System.out.println(character);
+
+        double amountAfterFee = amountToSell - amountToSell * marketFee;
+
+        double rate = rates.getRate(Resource.Gold, sellType);
+        int amountGold = (int) (amountAfterFee / rate);
+
+
+        if (!wallet.hasEnoughResource(Resource.Gold, amountGold)) {
+            String errorMessage = EventTracker.Message("Error", "Market has insufficient resources for the exchange.");
+            character.getEventTracker().addEvent(errorMessage);
+            return;
+        }
+
+        if (!character.getWallet().hasEnoughResource(sellType, amountToSell)) {
+            String errorMessage = EventTracker.Message( "Error","Insufficient resources for the exchange.");
+            character.getEventTracker().addEvent(errorMessage);
+            return;
+        }
+
+        TransferPackage costPackage = TransferPackage.fromEnum(sellType, (int) amountAfterFee);
+        TransferPackage purchasePackage = TransferPackage.fromEnum(Resource.Gold, amountGold);
+
+        this.wallet.deposit(character.getWallet(), costPackage);
+        character.getWallet().deposit(this.wallet, purchasePackage);
+
+        String message = EventTracker.Message("Shop","Exchanged " + sellType + " for " + amountGold);
+        character.getEventTracker().addEvent(message);
+
+    }
+
     public void exchangeResources(int amountToBuy, Resource buyType, Resource sellType, Character character) {
+        System.out.println("started");
 
         updateExchangeRates(); // Update rates based on current wallet status
 
@@ -27,16 +61,23 @@ public class Exchange extends ShopComponents {
         double costWithoutFee = amountToBuy / rate;
         int totalCost = (int) (costWithoutFee * (1 + marketFee));
 
+        System.out.println(rate+" rate");
+        System.out.println(amountToBuy);
+
 
         if (!wallet.hasEnoughResource(buyType, amountToBuy)) {
             String errorMessage = EventTracker.Message("Error", "Market has insufficient resources for the exchange.");
             character.getEventTracker().addEvent(errorMessage);
+            System.out.println("Error1");
             return;
         }
 
         if (!character.getWallet().hasEnoughResource(sellType, totalCost)) {
             String errorMessage = EventTracker.Message( "Error","Insufficient resources for the exchange.");
             character.getEventTracker().addEvent(errorMessage);
+            System.out.println("Error2");
+            System.out.println(character.getWallet());
+            System.out.println(totalCost+" cost");
             return;
         }
 
@@ -48,6 +89,8 @@ public class Exchange extends ShopComponents {
 
         String message = EventTracker.Message("Shop","Exchanged " + sellType + " for " + buyType);
         character.getEventTracker().addEvent(message);
+
+        System.out.println(costPackage);
     }
 
     private void updateExchangeRates() {
@@ -56,6 +99,14 @@ public class Exchange extends ShopComponents {
         int goldAmount = wallet.getGold();
 
         rates.updateRates(foodAmount, alloyAmount, goldAmount);
+    }
+
+    public double[] getRatioBalance() {
+        int[] amounts = wallet.getWalletValues();
+        double foodRatio = amounts[2] != 0 ? amounts[0] / amounts[2] : 0;
+        double alloyRatio = amounts[2] != 0 ? amounts[1] / amounts[2] : 0;
+        // Correct syntax to return an array
+        return new double[]{foodRatio, alloyRatio};
     }
 
 

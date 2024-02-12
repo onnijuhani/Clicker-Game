@@ -5,19 +5,20 @@ import model.Settings;
 import model.buildings.Property;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.authority.Authority;
+import model.characters.decisions.MarketActions;
 import model.characters.npc.Slave;
 import model.characters.player.EventTracker;
 import model.characters.player.Player;
+import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.shop.Exchange;
-import model.worldCreation.Details;
-import model.worldCreation.Nation;
 import model.time.NpcManager;
 import model.time.NpcObserver;
 import model.time.TaxEventManager;
 import model.time.TaxObserver;
-import model.resourceManagement.Resource;
+import model.worldCreation.Details;
+import model.worldCreation.Nation;
 
 import java.util.LinkedList;
 
@@ -42,6 +43,8 @@ public class Character implements TaxObserver, NpcObserver, Details {
                 upgrade();
             }
         }
+        System.out.println("market actions started");
+        MarketActions.decideMarketActions(this);
     }
 
     @Override
@@ -74,10 +77,12 @@ public class Character implements TaxObserver, NpcObserver, Details {
         this.foodUpdateDay = Settings.get("foodConsumption");
         this.name = NameCreation.generateCharacterName();
         this.eventTracker = new EventTracker();
-        if (shouldSubscribeToTimeEvent()) {
+        if (shouldSubscribeToTaxEvent()) {
             TaxEventManager.subscribe(this);
         }
-        NpcManager.subscribe(this);
+        if (shouldSubscribeToNpcEvent()) {
+            NpcManager.subscribe(this);
+        }
     }
 
     protected void buyMeadowLandsTEST(){
@@ -89,9 +94,13 @@ public class Character implements TaxObserver, NpcObserver, Details {
         }
     }
 
-    protected boolean shouldSubscribeToTimeEvent() {
+    protected boolean shouldSubscribeToTaxEvent() {
         return true;
     }
+    protected boolean shouldSubscribeToNpcEvent() {
+        return true;
+    }
+
 
     public void foodConsumption(Character character) {
 

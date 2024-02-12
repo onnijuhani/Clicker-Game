@@ -205,8 +205,6 @@ public class MainController extends BaseController {
         eventList.scrollTo(eventList.getItems().size() - 1);
 
         Shop shop = model.accessPlayer().getNation().getShop();
-        System.out.println(shop.getWallet());
-        System.out.println(shop.getExchange().getRates());
     }
 
     @FXML

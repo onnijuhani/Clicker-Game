@@ -37,7 +37,7 @@ public class Peasant extends Character implements GenerateObserver {
         GenerateManager.subscribe(this);
     }
     @Override
-    protected boolean shouldSubscribeToTimeEvent() {
+    protected boolean shouldSubscribeToTaxEvent() {
         return false;
     }
 

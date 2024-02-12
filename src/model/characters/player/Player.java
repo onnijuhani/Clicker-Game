@@ -60,6 +60,10 @@ public class Player extends Character {
             taxForm.collectTax(workWallet, eventTracker, supervisorWallet, supervisorTracker);
         }
     }
+    @Override
+    protected boolean shouldSubscribeToNpcEvent() {
+        return false;
+    }
 
 
 
