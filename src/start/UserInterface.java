@@ -1,4 +1,4 @@
-package view;
+package start;
 
 import controller.MainController;
 import javafx.application.Application;
@@ -15,7 +15,7 @@ public class UserInterface extends Application {
             Model model = new Model();
 
             // Load main interface
-            FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/view/interface.fxml"));
+            FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/start/interface.fxml"));
             Parent mainRoot = mainLoader.load();
             MainController mainController = mainLoader.getController();
             mainController.setModel(model);

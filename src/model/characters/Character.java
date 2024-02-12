@@ -52,15 +52,10 @@ public class Character implements TaxObserver, NpcObserver, Details {
     public String toString() {
         return this.getClass().getSimpleName() +" "+ name;
     }
-
-    public Status getStatus(){
-        return status;
-    }
-
     protected Authority authority;
     protected static int totalAmount;
     protected LinkedList<Slave> slaves;
-    protected  Nation nation;
+    protected Nation nation;
     protected String name;
     protected Wallet wallet;
     protected WorkWallet workWallet;
@@ -158,9 +153,9 @@ public class Character implements TaxObserver, NpcObserver, Details {
     public void setNation(Nation nation) {
         this.nation = nation;
     }
-
-
-
+    public Status getStatus(){
+        return status;
+    }
     public void setProperty(Property property){
         this.property = property;
     }

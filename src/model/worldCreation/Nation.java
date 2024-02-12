@@ -49,34 +49,49 @@ public class Nation extends ControlledArea implements Details {
 
         for (int i = 0; i < numberOfProvinces; i++) {
 
-            String name = NameCreation.generateProvinceName();
+            // generates name for the province
+            String provinceName = NameCreation.generateProvinceName();
 
-            Governor governor = new Governor();
-            governor.setAuthority(getAuthority());
-            governor.setNation(nation);
-            Property property = PropertyCreation.createProperty(name, "Province");
-            property.setOwner(governor);
-            propertyTracker.addProperty(property);
+            // generates governor
+            Governor governor = governorFactory(provinceName);
 
+            //assigns the governor as the authority of the province
             Authority authority = new ProvinceAuthority(governor);
 
-            Province province = new Province(name, this, authority);
+            // new province is created
+            Province province = new Province(provinceName, this, authority);
             provinces[i] = province;
 
-            // set home for governor. inefficient way but governor must live in his home province
-            while (true) {
-                int homeIndex = random.nextInt(nation.getAllQuarters().size());
-                Quarter home = nation.getAllQuarters().get(homeIndex);
-                if (home.getHigher().getHigher().equals(province)) {
-                    home.addCharacter(Status.Governor, governor);
-                    NameCreation.generateMajorQuarterName(home);
-                    governor.getProperty().setLocation(home);
-                    break;
-                }
-            }
+            // set home for governor. Governor must live in his home province. Should be updated for more efficiency
+            setGovernorHome(random, province, governor);
 
+            // generate mercenaries for governor
             mercenaryFactory(province, authority, random);
 
+        }
+    }
+
+    @NotNull
+    private Governor governorFactory(String provinceName) {
+        Governor governor = new Governor();
+        governor.setAuthority(getAuthority());
+        governor.setNation(nation);
+        Property property = PropertyCreation.createProperty(provinceName, "Province");
+        property.setOwner(governor);
+        propertyTracker.addProperty(property);
+        return governor;
+    }
+
+    private void setGovernorHome(Random random, Province province, Governor governor) {
+        while (true) {
+            int homeIndex = random.nextInt(nation.getAllQuarters().size());
+            Quarter home = nation.getAllQuarters().get(homeIndex);
+            if (home.getHigher().getHigher().equals(province)) {
+                home.addCharacter(Status.Governor, governor);
+                NameCreation.generateMajorQuarterName(home);
+                governor.getProperty().setLocation(home);
+                break;
+            }
         }
     }
 

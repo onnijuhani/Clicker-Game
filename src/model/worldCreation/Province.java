@@ -47,29 +47,39 @@ public class Province extends ControlledArea implements Details {
 
         for (int i = 0; i < numberOfCities; i++) {
 
-            String name = NameCreation.generateCityName();
+            String cityName = NameCreation.generateCityName();
 
-            Mayor mayor = new Mayor();
-            mayor.setNation(nation);
-            mayor.setAuthority(getAuthority());
-            Property property = PropertyCreation.createProperty(name, "City");
-            property.setOwner(mayor);
-            propertyTracker.addProperty(property);
+            Mayor mayor = mayorFactory(cityName);
 
             Authority authority = new CityAuthority(mayor);
 
-            City city = new City(name, this, authority);
+            City city = new City(cityName, this, authority);
             cities[i] = city;
 
-            // set home for mayor
-            int homeIndex = random.nextInt(city.getContents().size());
-            Quarter home = city.getContents().get(homeIndex);
-            home.addCharacter(Status.Mayor,mayor);
-            mayor.getProperty().setLocation(home);
-            NameCreation.generateMajorQuarterName(home);
+            setMayorHome(random, city, mayor);
 
         }
     }
+
+    @NotNull
+    private Mayor mayorFactory(String cityName) {
+        Mayor mayor = new Mayor();
+        mayor.setNation(nation);
+        mayor.setAuthority(getAuthority());
+        Property property = PropertyCreation.createProperty(cityName, "City");
+        property.setOwner(mayor);
+        propertyTracker.addProperty(property);
+        return mayor;
+    }
+
+    private static void setMayorHome(Random random, City city, Mayor mayor) {
+        int homeIndex = random.nextInt(city.getContents().size());
+        Quarter home = city.getContents().get(homeIndex);
+        home.addCharacter(Status.Mayor, mayor);
+        mayor.getProperty().setLocation(home);
+        NameCreation.generateMajorQuarterName(home);
+    }
+
     @Override
     public ArrayList<City> getContents() {
         return new ArrayList<>(Arrays.asList(cities));

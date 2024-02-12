@@ -50,14 +50,14 @@
 
 <ScrollPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <content>
-      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" style="-fx-background-color: linear-gradient(gray, black);">
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: linear-gradient(gray, black);">
         <children>
-            <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="71.0" prefWidth="1600.0">
+            <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
                <children>
                    <fx:include fx:id="topSection" source="topSection.fxml" />
                </children>
             </Pane>
-            <AnchorPane prefHeight="845.0" prefWidth="1600.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #232526, #414345); -fx-border-color: white;">
+            <AnchorPane style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #232526, #414345); -fx-border-color: white;">
                <children>
                   <ListView fx:id="eventList" accessibleText="event listing" fixedCellSize="-2.0" layoutX="143.0" layoutY="441.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="319.0" prefWidth="515.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 10;">
                      <effect>
@@ -159,7 +159,7 @@
                           <tabs>
                             <Tab text="Character">
                               <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="639.0" prefWidth="1085.0" style="-fx-border-radius: 15; -fx-border-color: black;">
+                                <AnchorPane minHeight="0.0" minWidth="0.0" style="-fx-border-radius: 15; -fx-border-color: black;">
                                        <children>
                                           <fx:include fx:id="character" source="character.fxml" />
                                        </children>

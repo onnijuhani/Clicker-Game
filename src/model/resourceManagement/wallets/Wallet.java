@@ -28,6 +28,24 @@ public class Wallet {
         }
     }
 
+    public int getResource(Resource type) {
+        return switch (type) {
+            case Food -> food;
+            case Alloy -> alloy;
+            case Gold -> gold;
+            default -> throw new IllegalArgumentException("Unsupported resource type: " + type);
+        };
+    }
+
+    public boolean hasResources(int food, int alloy, int gold){
+        TransferPackage test = new TransferPackage(food, alloy, gold);
+        if (this.hasEnoughResources(test)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public boolean hasEnoughResources(TransferPackage transfer) {
         int[] amounts = transfer.getAll();
         return food >= amounts[0] && alloy >= amounts[1] && gold >= amounts[2];
@@ -35,6 +53,7 @@ public class Wallet {
     public int[] getWalletValues() {
         return new int[]{food, alloy, gold};
     }
+
     public void addResources(TransferPackage transfer) {
         if (transfer == null) {
             throw new IllegalArgumentException("TransferPackage cannot be null.");

@@ -77,7 +77,7 @@ public class Quarter extends ControlledArea implements Details {
     @NotNull
     public void updateCitizenCache() {
 
-        //Citizens are only calculated the first model.time they are needed
+        //Citizens are only calculated the first time they are needed
         //and whenever the character list changes. List is stored at citizenCache
 
         if (isPopulationChanged || citizenCache == null) {

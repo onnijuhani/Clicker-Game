@@ -13,7 +13,7 @@ public class CreateWorld {
     public CreateWorld() {
         this.size = Size.MEDIUM;
         this.world = new World(generateWorldName(), this.size);
-        this.spawnQuarter = createSpawn(); //setting is in the method crashes the game
+        this.spawnQuarter = createSpawn(); //setting this in the method itself crashes the game. Must be assigned here
         changeSpawnName();
     }
 

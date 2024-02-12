@@ -92,22 +92,31 @@ public class City extends ControlledArea implements Details {
         quarters = new Quarter[numberOfQuarters];
 
         for (int i = 0; i < numberOfQuarters; i++) {
-            String name = names.get(i);
 
-            Captain captain = new Captain();
-            captain.setNation(nation);
-            captain.setAuthority(getAuthority());
-            Property property = PropertyCreation.createProperty(name, "Quarter");
-            property.setOwner(captain);
-            propertyTracker.addProperty(property);
+            String quarterName = names.get(i);
+
+            Captain captain = captainFactory(quarterName);
 
             Authority authority = new QuarterAuthority(captain);
 
-            Quarter quarter = new Quarter(name, this, authority);
+            Quarter quarter = new Quarter(quarterName, this, authority);
             quarters[i] = quarter;
+
             this.nation.addQuarterToNation(quarter);
         }
     }
+
+    @NotNull
+    private Captain captainFactory(String quarterName) {
+        Captain captain = new Captain();
+        captain.setNation(nation);
+        captain.setAuthority(getAuthority());
+        Property property = PropertyCreation.createProperty(quarterName, "Quarter");
+        property.setOwner(captain);
+        propertyTracker.addProperty(property);
+        return captain;
+    }
+
     @Override
     public ArrayList<Quarter> getContents() {
         return new ArrayList<>(Arrays.asList(quarters));

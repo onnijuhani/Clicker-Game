@@ -148,42 +148,42 @@ public class Time {
         if (command.equals(speed)) {
             speedToMilliseconds();
             if (isSimulationRunning) {
-                rescheduleSimulation(); // Reschedule the task with the new speed
+                rescheduleSimulation();
             }
 
         } else if (command.equals(Speed.Fast) && speed.equals(Speed.Slow)) {
             setSpeed(Speed.Normal);
             speedToMilliseconds();
             if (isSimulationRunning) {
-                rescheduleSimulation(); // Reschedule the task with the new speed
+                rescheduleSimulation();
             }
 
         } else if (command.equals(Speed.Fast) && speed.equals(Speed.Normal)) {
             setSpeed(Speed.Fast);
             speedToMilliseconds();
             if (isSimulationRunning) {
-                rescheduleSimulation(); // Reschedule the task with the new speed
+                rescheduleSimulation();
             }
 
         } else if (command.equals(Speed.Slow) && speed.equals(Speed.Fast)) {
             setSpeed(Speed.Normal);
             speedToMilliseconds();
             if (isSimulationRunning) {
-                rescheduleSimulation(); // Reschedule the task with the new speed
+                rescheduleSimulation();
             }
 
         } else if (command.equals(Speed.Slow) && speed.equals(Speed.Normal)) {
             setSpeed(Speed.Slow);
             speedToMilliseconds();
             if (isSimulationRunning) {
-                rescheduleSimulation(); // Reschedule the task with the new speed
+                rescheduleSimulation();
             }
         }
     }
 
     private void rescheduleSimulation() {
         if (executorService != null && !executorService.isShutdown()) {
-            executorService.shutdownNow(); // Stop the current task
+            executorService.shutdownNow();
         }
         executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleAtFixedRate(this::incrementDay, 0, milliseconds, TimeUnit.MILLISECONDS);

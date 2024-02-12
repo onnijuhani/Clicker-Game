@@ -11,6 +11,7 @@ import model.characters.authority.NationAuthority;
 import model.characters.npc.King;
 import model.characters.npc.Noble;
 import model.characters.npc.Vanguard;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,10 +38,7 @@ public class Continent extends Area implements Details {
 
             String nationName = NameCreation.generateNationName();
 
-            King king = new King();
-            Property property = PropertyCreation.createProperty(name, "Nation");
-            property.setOwner(king);
-            propertyTracker.addProperty(property);
+            King king = kingFactory();
 
             Authority authority = new NationAuthority(king);
             king.setAuthority(authority);
@@ -52,16 +50,33 @@ public class Continent extends Area implements Details {
             king.setNation(nation);
 
             // set home for king
-            int homeIndex = random.nextInt(nation.getAllQuarters().size());
-            Quarter home = nation.getAllQuarters().get(homeIndex);
-            king.getProperty().setLocation(home);
-            home.addCharacter(Status.King,king);
-            changeKingAreaNames(home);
+            Quarter home = setKingHome(random, nation, king);
 
             supportFactory(nation, authority, random, home);
+
+            //quarter where important characters live should have special name
             NameCreation.generateMajorQuarterName(home);
 
         }
+    }
+
+    @NotNull
+    private Quarter setKingHome(Random random, Nation nation, King king) {
+        int homeIndex = random.nextInt(nation.getAllQuarters().size());
+        Quarter home = nation.getAllQuarters().get(homeIndex);
+        king.getProperty().setLocation(home);
+        home.addCharacter(Status.King, king);
+        changeKingAreaNames(home);
+        return home;
+    }
+
+    @NotNull
+    private King kingFactory() {
+        King king = new King();
+        Property property = PropertyCreation.createProperty(name, "Nation");
+        property.setOwner(king);
+        propertyTracker.addProperty(property);
+        return king;
     }
 
     private void changeKingAreaNames(Quarter spawnQuarter){
