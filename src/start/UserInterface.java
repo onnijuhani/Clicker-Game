@@ -15,7 +15,7 @@ public class UserInterface extends Application {
             Model model = new Model();
 
             // Load main interface
-            FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/start/interface.fxml"));
+            FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/view/interface.fxml"));
             Parent mainRoot = mainLoader.load();
             MainController mainController = mainLoader.getController();
             mainController.setModel(model);
@@ -26,6 +26,11 @@ public class UserInterface extends Application {
             // Set up the stage with mainRoot
             Scene scene = new Scene(mainRoot);
             primaryStage.setScene(scene);
+            primaryStage.setMinWidth(1600);
+            primaryStage.setMinWidth(1600);
+            primaryStage.setMinHeight(920);
+            primaryStage.setMaxHeight(920);
+            primaryStage.setResizable(false);
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
