@@ -3,7 +3,7 @@ package model.worldCreation;
 import model.characters.Character;
 import model.characters.Status;
 import model.characters.authority.Authority;
-import org.jetbrains.annotations.NotNull;
+
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,7 +30,7 @@ public abstract class ControlledArea extends Area implements Details {
         this.name += " (King)";
     }
 
-    @NotNull
+
     public List<Status> getImportantStatusRank() {
         List<Status> statusOrder = List.of(
                 Status.King, Status.Noble, Status.Vanguard,
@@ -43,7 +43,7 @@ public abstract class ControlledArea extends Area implements Details {
     }
 
 
-    @NotNull
+
     public List<Status> getStatusRank() {
         List<Status> statusOrder = List.of(
                 Status.King, Status.Noble, Status.Vanguard,

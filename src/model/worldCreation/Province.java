@@ -10,7 +10,7 @@ import model.characters.Status;
 import model.characters.authority.Authority;
 import model.characters.authority.CityAuthority;
 import model.characters.npc.Mayor;
-import org.jetbrains.annotations.NotNull;
+
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -61,7 +61,7 @@ public class Province extends ControlledArea implements Details {
         }
     }
 
-    @NotNull
+
     private Mayor mayorFactory(String cityName) {
         Mayor mayor = new Mayor();
         mayor.setNation(nation);
@@ -102,7 +102,7 @@ public class Province extends ControlledArea implements Details {
                 .collect(Collectors.toList());
     }
 
-    @NotNull
+
     @Override
     public List<Status> getImportantStatusRank() {
         List<Status> statusOrder = List.of(

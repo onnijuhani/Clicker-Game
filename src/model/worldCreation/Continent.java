@@ -11,7 +11,7 @@ import model.characters.authority.NationAuthority;
 import model.characters.npc.King;
 import model.characters.npc.Noble;
 import model.characters.npc.Vanguard;
-import org.jetbrains.annotations.NotNull;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +60,7 @@ public class Continent extends Area implements Details {
         }
     }
 
-    @NotNull
+
     private Quarter setKingHome(Random random, Nation nation, King king) {
         int homeIndex = random.nextInt(nation.getAllQuarters().size());
         Quarter home = nation.getAllQuarters().get(homeIndex);
@@ -70,7 +70,7 @@ public class Continent extends Area implements Details {
         return home;
     }
 
-    @NotNull
+
     private King kingFactory() {
         King king = new King();
         Property property = PropertyCreation.createProperty(name, "Nation");

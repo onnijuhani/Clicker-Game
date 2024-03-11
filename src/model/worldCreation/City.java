@@ -10,7 +10,7 @@ import model.characters.Status;
 import model.characters.authority.Authority;
 import model.characters.authority.QuarterAuthority;
 import model.characters.npc.Captain;
-import org.jetbrains.annotations.NotNull;
+
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -64,7 +64,7 @@ public class City extends ControlledArea implements Details {
                 .collect(Collectors.toList());
     }
 
-    @NotNull
+
     @Override
     public List<Status> getImportantStatusRank() {
         List<Status> statusOrder = List.of(
@@ -106,7 +106,7 @@ public class City extends ControlledArea implements Details {
         }
     }
 
-    @NotNull
+
     private Captain captainFactory(String quarterName) {
         Captain captain = new Captain();
         captain.setNation(nation);

@@ -10,7 +10,6 @@ import model.characters.authority.QuarterAuthority;
 import model.characters.npc.Farmer;
 import model.characters.npc.Merchant;
 import model.characters.npc.Miner;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -62,7 +61,7 @@ public class Quarter extends ControlledArea implements Details {
         );
     }
 
-    @NotNull
+
     private String getCitizensAsString() {
         List<Character> citizens = calculateCitizens();
         StringBuilder sb = new StringBuilder();
@@ -74,7 +73,7 @@ public class Quarter extends ControlledArea implements Details {
         return sb.toString();
     }
 
-    @NotNull
+
     public void updateCitizenCache() {
 
         //Citizens are only calculated the first time they are needed
@@ -89,7 +88,7 @@ public class Quarter extends ControlledArea implements Details {
         }
     }
 
-    @NotNull
+
     private List<Character> calculateCitizens() {
         ArrayList<Character> citizens = new ArrayList<>();
         List<Status> statusOrder = getStatusRank();

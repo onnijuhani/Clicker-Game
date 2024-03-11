@@ -12,7 +12,7 @@ import model.characters.authority.ProvinceAuthority;
 import model.characters.npc.Governor;
 import model.characters.npc.Mercenary;
 import model.shop.Shop;
-import org.jetbrains.annotations.NotNull;
+
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -71,7 +71,7 @@ public class Nation extends ControlledArea implements Details {
         }
     }
 
-    @NotNull
+
     private Governor governorFactory(String provinceName) {
         Governor governor = new Governor();
         governor.setAuthority(getAuthority());
@@ -131,7 +131,7 @@ public class Nation extends ControlledArea implements Details {
                 .collect(Collectors.toList());
     }
 
-    @NotNull
+
     @Override
     public List<Status> getImportantStatusRank() {
         List<Status> statusOrder = List.of(
