@@ -3,23 +3,23 @@ package model.characters.combat;
 
 import model.shop.UpgradeSystem;
 
-public class CombatPower {
+public class CombatStats {
 
     /* Tried using Composition over Inheritance here to reduce code */
     private final UpgradeSystem offense;
     private final UpgradeSystem defense;
 
-    public CombatPower(int offenseBasePrice, int defenseBasePrice) {
+    public CombatStats(int offenseBasePrice, int defenseBasePrice) {
         this.offense = new UpgradeSystem(offenseBasePrice);
         this.defense = new UpgradeSystem(defenseBasePrice);
     }
 
     public void upgradeOffense() {
-        offense.upgrade();
+        offense.upgradeLevel();
     }
 
     public void upgradeDefense() {
-        defense.upgrade();
+        defense.upgradeLevel();
     }
 
     public UpgradeSystem getOffense() {

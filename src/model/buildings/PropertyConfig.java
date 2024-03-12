@@ -52,15 +52,22 @@ public class PropertyConfig {
         int food;
         int alloy;
         int gold;
+
+
+
         int power;
+
 
         public PropertyValues(int food, int alloy, int gold, int power) {
             this.food = food;
             this.alloy = alloy;
             this.gold = gold;
             this.power = power;
-
         }
+        public int getPower() {
+            return power;
+        }
+
     }
 }
 

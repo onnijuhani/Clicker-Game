@@ -33,7 +33,7 @@ public class SlaveFacility extends UtilityBuilding {
     }
 
     @Override
-    public void upgrade() {
+    public void upgradeLevel() {
         level++;
         increaseSlotAmount();
     }

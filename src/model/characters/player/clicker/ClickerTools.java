@@ -20,7 +20,7 @@ public class ClickerTools extends UpgradeSystem {
         resourceAmount *= 2;
     }
     @Override
-    public void upgrade() {
+    public void upgradeLevel() {
         level++;
         upgradeResourceAmount();
     }

@@ -9,15 +9,12 @@ import model.resourceManagement.wallets.WorkWallet;
 import model.time.GenerateManager;
 import model.time.GenerateObserver;
 
-import java.util.LinkedList;
-
 public class Peasant extends Character implements GenerateObserver {
 
     @Override
     public void generateUpdate() {
         getEmployment().generatePayment();
     }
-
 
     protected Authority quarterAuthority;
     protected double generateRate = 0;
@@ -27,9 +24,6 @@ public class Peasant extends Character implements GenerateObserver {
 
     public Peasant() {
         this.wallet = new Wallet();
-        this.slaves = new LinkedList<>();
-        this.allies = new LinkedList<>();
-        this.enemies = new LinkedList<>();
         this.name = NameCreation.generateCharacterName();
         this.eventTracker = new EventTracker();
         this.workWallet = new WorkWallet(wallet);

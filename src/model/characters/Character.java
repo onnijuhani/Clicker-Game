@@ -5,7 +5,7 @@ import model.Settings;
 import model.buildings.Property;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.authority.Authority;
-import model.characters.combat.CombatPower;
+import model.characters.combat.CombatStats;
 import model.characters.decisions.MarketActions;
 import model.characters.npc.Slave;
 import model.characters.player.EventTracker;
@@ -64,22 +64,22 @@ public class Character implements TaxObserver, NpcObserver, Details {
     protected Wallet wallet;
     protected WorkWallet workWallet;
     protected Property property;
-    protected LinkedList<Character> allies;
-    protected LinkedList<Character> enemies;
+
+    protected LoyaltyManager loyaltyManager;
+
     protected EventTracker eventTracker;
     protected int[] foodConsumption = {5,0};
     protected Status status;
     protected int foodUpdateDay;
-    protected CombatPower combatPower;
+    protected CombatStats combatStats;
     public Character() {
         this.wallet = new Wallet();
         this.slaves = new LinkedList<>();
-        this.allies = new LinkedList<>();
-        this.enemies = new LinkedList<>();
+        this.loyaltyManager = new LoyaltyManager();
         this.foodUpdateDay = Settings.get("foodConsumption");
         this.name = NameCreation.generateCharacterName();
         this.eventTracker = new EventTracker();
-        this.combatPower = new CombatPower(10,5);
+        this.combatStats = new CombatStats(10,5);
         if (shouldSubscribeToTaxEvent()) {
             TaxEventManager.subscribe(this);
         }
@@ -183,18 +183,7 @@ public class Character implements TaxObserver, NpcObserver, Details {
         this.wallet = wallet;
     }
 
-    public void addAlly(Character ally){
-        allies.add(ally);
-    }
-    public void deleteAlly(Character ally){
-        allies.remove(ally);
-    }
-    public void addEnemy(Character enemy){
-        enemies.add(enemy);
-    }
-    public void deleteEnemy(Character enemy){
-        enemies.remove(enemy);
-    }
+
     public EventTracker getEventTracker() {
         return eventTracker;
     }
@@ -206,6 +195,21 @@ public class Character implements TaxObserver, NpcObserver, Details {
     }
     public void setAuthority(Authority authority) {
         this.authority = authority;
+    }
+    public CombatStats getCombatStats() {
+        return combatStats;
+    }
+
+    public void setCombatStats(CombatStats combatStats) {
+        this.combatStats = combatStats;
+    }
+
+    public LoyaltyManager getLoyaltyManager() {
+        return loyaltyManager;
+    }
+
+    public void setLoyaltyManager(LoyaltyManager loyaltyManager) {
+        this.loyaltyManager = loyaltyManager;
     }
 
 }

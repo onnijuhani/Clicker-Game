@@ -2,6 +2,7 @@ package model.buildings;
 
 
 import model.buildings.utilityBuilding.UtilitySlot;
+import model.shop.UpgradeSystem;
 import model.time.PropertyManager;
 import javafx.scene.image.Image;
 import model.Images;
@@ -31,7 +32,8 @@ public class Property implements PropertyObserver, Details {
     }
 
     private boolean firstTimeReached = true;
-    protected double strength;
+
+    private UpgradeSystem defense;
 
 
 
@@ -47,7 +49,7 @@ public class Property implements PropertyObserver, Details {
 
 
     public Property(PropertyConfig.PropertyValues propertyValues, String name) {
-        this.strength = propertyValues.power;
+        this.defense = new UpgradeSystem(propertyValues.getPower());
         this.vault = new Vault();
         this.name = name;
         this.maintenance = new Maintenance(propertyValues);
@@ -87,10 +89,6 @@ public class Property implements PropertyObserver, Details {
         return location != null;
     }
 
-    public void setStrength(int strength) {
-        this.strength = strength;
-    }
-
     public String getName() {
         return name;
     }
@@ -113,4 +111,12 @@ public class Property implements PropertyObserver, Details {
     public void setVault(Vault vault) {
         this.vault = vault;
     }
+
+    public UpgradeSystem getDefense() {
+        return defense;
+    }
+    public void setDefense(UpgradeSystem defense) {
+        this.defense = defense;
+    }
+
 }

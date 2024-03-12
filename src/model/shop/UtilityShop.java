@@ -26,7 +26,7 @@ public class UtilityShop extends ShopComponents {
             int upgradePrice = building.getUpgradePrice();
             if (character.getWallet().hasEnoughResource(Resource.Gold, upgradePrice)) {
                 character.getWallet().subtractGold(upgradePrice);
-                building.upgrade();
+                building.upgradeLevel();
                 character.getEventTracker().addEvent(EventTracker.Message("Shop", "Successfully upgraded " + type + " to level " + building.getUpgradeLevel() + "!"));
                 return true; // Upgrade was successful
             } else {

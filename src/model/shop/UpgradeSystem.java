@@ -17,8 +17,13 @@ public class UpgradeSystem {
         return basePrice * (int) Math.pow(4, level -1 );
     }
 
-    public void upgrade() {
+    public void upgradeLevel() {
         level++;
+    }
+    public void decreaseLevel() {
+        if (level > 1) {
+            level--;
+        }
     }
 
 }
