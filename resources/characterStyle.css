@@ -1,0 +1,18 @@
+.charbox {
+    -fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F1221, #202741, #2E3E51);
+    -fx-background-radius: 35;
+    -fx-border-radius: 35;
+    -fx-border-color: white;
+}
+.utilityBox {
+    -fx-background-color: rgba(190,196,203,0.95);
+    -fx-background-radius: 15;
+    -fx-border-color: white;
+    -fx-border-radius: 15;
+}
+.walletBox {
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-width: 1; 
+    -fx-background-color: white;
+}

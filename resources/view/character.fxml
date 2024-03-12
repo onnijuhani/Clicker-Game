@@ -11,14 +11,33 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="639.0" prefWidth="791.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-border-color: white; -fx-border-width: 1;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CharacterController">
-
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="700.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-border-color: white; -fx-border-width: 1;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CharacterController">
+  
    <children>
-      <ImageView fx:id="characterPicture" fitHeight="417.0" fitWidth="234.0" layoutX="555.0" layoutY="228.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../pics/testii.png" />
-         </image>
-      </ImageView>
+      <VBox alignment="CENTER" layoutX="466.0" layoutY="104.0" AnchorPane.bottomAnchor="0.0">
+         <children>
+            <AnchorPane id="charbox" styleClass="charbox">
+               <children>
+                  <Label fx:id="walletInfo" alignment="CENTER" contentDisplay="CENTER" layoutX="72.0" layoutY="41.0" text="WalletInfo" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP" underline="true" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </VBox.margin>
+            </AnchorPane>
+            <ImageView fx:id="characterPicture" fitHeight="417.0" fitWidth="234.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../pics/testii.png" />
+               </image>
+            </ImageView>
+         </children>
+      </VBox>
       <AnchorPane id="mainBox" layoutX="26.0" layoutY="24.0" prefHeight="213.0" prefWidth="397.0" styleClass="charbox">
          <children>
             <VBox alignment="CENTER" layoutX="-5.0">
@@ -99,7 +118,7 @@
             </VBox>
          </children>
       </AnchorPane>
-      <Button fx:id="previousBtn" layoutX="683.0" layoutY="21.0" mnemonicParsing="false" onAction="#getPrevious" prefHeight="25.0" prefWidth="71.0" text="Previous" />
+      <Button fx:id="previousBtn" layoutX="618.0" layoutY="14.0" mnemonicParsing="false" onAction="#getPrevious" prefHeight="25.0" prefWidth="71.0" text="Previous" />
       <VBox alignment="CENTER" layoutX="26.0" layoutY="260.0" prefHeight="120.0" prefWidth="190.0" styleClass="charbox">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" text="Attack Power" textFill="WHITE">
@@ -180,14 +199,5 @@
             </HBox>
          </children>
       </VBox>
-      <AnchorPane layoutX="567.0" layoutY="150.0" prefHeight="103.0" prefWidth="211.0" styleClass="charbox">
-         <children>
-            <Label fx:id="walletInfo" layoutX="72.0" layoutY="41.0" text="WalletInfo" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP" underline="true">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-         </children>
-      </AnchorPane>
    </children>
 </AnchorPane>

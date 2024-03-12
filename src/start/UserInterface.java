@@ -29,10 +29,10 @@ public class UserInterface extends Application {
             String css = this.getClass().getResource("/characterStyle.css").toExternalForm();
             scene.getStylesheets().add(css);
             primaryStage.setScene(scene);
-            primaryStage.setMinWidth(1600);
-            primaryStage.setMinWidth(1600);
-            primaryStage.setMinHeight(920);
-            primaryStage.setMaxHeight(920);
+//            primaryStage.setMinWidth(1600);
+//            primaryStage.setMinWidth(1600);
+//            primaryStage.setMinHeight(920);
+//            primaryStage.setMaxHeight(920);
             primaryStage.setResizable(false);
 
             // make sure game stops running when window is closed

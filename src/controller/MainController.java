@@ -194,7 +194,7 @@ public class MainController extends BaseController {
         eventList.getItems().clear();
 
         // Determine the start index for the last 20 messages
-        int start = Math.max(0, events.size() - 14);
+        int start = Math.max(0, events.size() - 13);
 
         // Add only the last 20 messages (or fewer if less than 20 messages are available)
         for (int i = start; i < events.size(); i++) {
