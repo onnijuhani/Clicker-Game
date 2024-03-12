@@ -343,30 +343,101 @@
             </VBox>
             <VBox fx:id="utilityBuyView5" alignment="CENTER" layoutX="14.0" layoutY="153.0" prefHeight="119.0" prefWidth="134.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
                <children>
-                  <Label alignment="CENTER" prefHeight="30.0" prefWidth="116.0" text="Maintenance" textFill="WHITE">
+                  <Label alignment="CENTER" text="Maintenance" textFill="WHITE">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label fx:id="maintenanceCost" alignment="CENTER" text="Label" textFill="WHITE">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Label>
+               </children>
+            </VBox>
+            <VBox fx:id="utilityBuyView51" alignment="CENTER" layoutX="79.0" layoutY="424.0" prefHeight="119.0" prefWidth="274.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+               <children>
+                  <Label alignment="CENTER" text="Vault" textFill="WHITE">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label fx:id="vaultValue" alignment="CENTER" text="Vault Value" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Button fx:id="robVaultBtn" mnemonicParsing="false" onAction="#robVault" text="Plunder">
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+            <VBox fx:id="utilityBuyView52" alignment="CENTER" layoutX="14.0" layoutY="283.0" prefHeight="130.0" prefWidth="134.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+               <children>
+                  <Label alignment="CENTER" text="Defence" textFill="WHITE">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label fx:id="defenceLevel" alignment="CENTER" text="level" textFill="WHITE">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label fx:id="upgradeDefLabel" alignment="CENTER" text="Upgrade" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                     <padding>
+                        <Insets right="5.0" />
+                     </padding>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Button fx:id="upgradeDefBtn" mnemonicParsing="false" onAction="#upgradeDef" text="price">
+                     <VBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" layoutX="26.0" layoutY="14.0">
+               <children>
+                  <Label fx:id="propertyType" alignment="CENTER" contentDisplay="CENTER" text="Type" textFill="WHITE">
                      <font>
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <Label fx:id="maintenanceCost" alignment="CENTER" prefHeight="77.0" prefWidth="94.0" text="Label" textFill="WHITE">
+                  <Label fx:id="propertyName" alignment="CENTER" prefHeight="52.0" prefWidth="380.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" text="Property Name" textFill="WHITE">
                      <font>
-                        <Font size="16.0" />
+                        <Font size="26.0" />
                      </font>
                   </Label>
                </children>
             </VBox>
          </children>
       </AnchorPane>
-      <Label fx:id="propertyName" alignment="CENTER" layoutX="25.0" layoutY="38.0" prefHeight="52.0" prefWidth="380.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" text="Property Name" textFill="WHITE">
-         <font>
-            <Font size="26.0" />
-         </font>
-      </Label>
-      <Label fx:id="propertyType" alignment="CENTER" layoutX="25.0" layoutY="8.0" prefHeight="30.0" prefWidth="380.0" text="Type" textFill="WHITE">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
       <Button fx:id="showHideButton" layoutX="38.0" layoutY="113.0" mnemonicParsing="false" onAction="#showHideContent" text="Hide" />
    </children>
 </AnchorPane>

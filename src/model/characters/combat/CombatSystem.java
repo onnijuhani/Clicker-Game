@@ -12,6 +12,7 @@ public class CombatSystem {
     private final CombatStats defenderStats;
     private final Property venue;
     private final UpgradeSystem venueStats;
+
     public CombatSystem(Character attacker, Character defender, Property venue) {
         this.attacker = attacker;
         this.defender = defender;
@@ -38,12 +39,25 @@ public class CombatSystem {
     }
 
     public void robbery() {
+
+        if (attacker.getLoyaltyManager().isAlly(defender)) {
+            System.out.println("Cannot attack allies!");
+            attacker.getEventTracker().addEvent(EventTracker.Message(
+                    "Major", "Attempted to rob " + defender.getProperty().getName() +
+                            " owned by ally " + defender.getName() + ". Action not allowed."));
+            return; // Abort the robbery because the defender is an ally
+        }
+
         int effectiveAttackerOffense = attackerStats.getOffense().getUpgradeLevel();
+        System.out.println("effectiveAttackerOffense "+effectiveAttackerOffense);
         int effectiveDefenderDefense = venueStats.getUpgradeLevel();
+        System.out.println("effectiveDefenderDefense "+effectiveDefenderDefense);
 
         boolean attackerWins = battle(effectiveAttackerOffense, effectiveDefenderDefense);
 
         if (attackerWins) {
+            System.out.println("Attacker wins!");
+
             attacker.getEventTracker().addEvent(EventTracker.Message(
                     "Major", "Robbed the "
                             + defender.getProperty().getName() + " vault"));
@@ -52,7 +66,7 @@ public class CombatSystem {
                     "Major", "You have been robbed by " + attacker.getName()
             )));
 
-            System.out.println("Attacker wins!");
+
             venue.getVault().robbery(attacker, defender);
 
 
@@ -90,7 +104,10 @@ public class CombatSystem {
         double successChanceModifier = statDifference * 0.05;
         double finalSuccessChance = Math.min(1, Math.max(0, baseSuccessChance + successChanceModifier));
 
+        System.out.println("finalSuccessChance "+finalSuccessChance);
+
         double randomValue = Math.random();
+        System.out.println("randomValue "+randomValue);
         boolean attackerWins;
         attackerWins = randomValue < finalSuccessChance;
         return attackerWins;

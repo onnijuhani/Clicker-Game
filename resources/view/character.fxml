@@ -12,78 +12,182 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="639.0" prefWidth="791.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-border-color: white; -fx-border-width: 1;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CharacterController">
+
    <children>
-      <ImageView fx:id="characterPicture" fitHeight="417.0" fitWidth="234.0" layoutX="566.0" layoutY="228.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="characterPicture" fitHeight="417.0" fitWidth="234.0" layoutX="555.0" layoutY="228.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../pics/testii.png" />
          </image>
       </ImageView>
-      <AnchorPane layoutX="26.0" layoutY="24.0" prefHeight="213.0" prefWidth="397.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F1221, #202741, #2E3E51); -fx-background-radius: 35; -fx-border-radius: 35; -fx-border-color: white;">
+      <AnchorPane id="mainBox" layoutX="26.0" layoutY="24.0" prefHeight="213.0" prefWidth="397.0" styleClass="charbox">
          <children>
-            <VBox layoutX="-5.0" prefHeight="68.0" prefWidth="400.0">
+            <VBox alignment="CENTER" layoutX="-5.0">
                <children>
-                  <Label fx:id="characterStatus" prefHeight="26.0" prefWidth="183.0" text="Status" textFill="WHITE">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
+                  <VBox>
+                     <children>
+                        <Label fx:id="characterStatus" text="Status" textFill="WHITE">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="25.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="characterName" text="Character Name" textFill="WHITE">
+                           <font>
+                              <Font size="26.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="50.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets top="4.0" />
+                     </padding>
                      <VBox.margin>
-                        <Insets left="25.0" />
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </VBox.margin>
-                  </Label>
-                  <Label fx:id="characterName" prefHeight="52.0" prefWidth="323.0" text="Character Name" textFill="WHITE">
-                     <font>
-                        <Font size="26.0" />
-                     </font>
+                  </VBox>
+                  <VBox>
+                     <children>
+                        <Label text="Under the authority of:" textFill="WHITE">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="25.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Hyperlink fx:id="authority" onAction="#changeCurrent" text="Under" textFill="WHITE">
+                           <font>
+                              <Font size="19.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="50.0" />
+                           </VBox.margin>
+                        </Hyperlink>
+                     </children>
                      <VBox.margin>
-                        <Insets left="50.0" />
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </VBox.margin>
-                  </Label>
+                  </VBox>
+                  <HBox alignment="CENTER_LEFT">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" text="Home:" textAlignment="CENTER" textFill="WHITE">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="25.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Hyperlink fx:id="homeQuarter" onAction="#openHomeQuarter" text="Hyperlink" textFill="WHITE">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Hyperlink>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </HBox>
                </children>
-               <padding>
-                  <Insets top="4.0" />
-               </padding>
             </VBox>
-            <VBox layoutX="4.0" layoutY="95.0" prefHeight="50.0" prefWidth="382.0">
-               <children>
-                  <Label prefHeight="16.0" prefWidth="256.0" text="Under the authority of:" textFill="WHITE">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="25.0" />
-                     </VBox.margin>
-                  </Label>
-                  <Hyperlink fx:id="authority" onAction="#changeCurrent" prefHeight="28.0" prefWidth="294.0" text="Under" textFill="WHITE">
-                     <font>
-                        <Font size="19.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="50.0" />
-                     </VBox.margin>
-                  </Hyperlink>
-               </children>
-            </VBox>
-            <HBox layoutX="12.0" layoutY="170.0" prefHeight="29.0" prefWidth="374.0">
-               <children>
-                  <Label alignment="CENTER" prefHeight="29.0" prefWidth="65.0" text="Home:" textAlignment="CENTER" textFill="WHITE">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <Hyperlink fx:id="homeQuarter" onAction="#openHomeQuarter" prefHeight="29.0" prefWidth="309.0" text="Hyperlink" textFill="WHITE">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Hyperlink>
-               </children>
-            </HBox>
          </children>
       </AnchorPane>
-      <Label fx:id="walletInfo" layoutX="614.0" layoutY="123.0" prefHeight="126.0" prefWidth="153.0" text="WalletInfo" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP" underline="true">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
       <Button fx:id="previousBtn" layoutX="683.0" layoutY="21.0" mnemonicParsing="false" onAction="#getPrevious" prefHeight="25.0" prefWidth="71.0" text="Previous" />
+      <VBox alignment="CENTER" layoutX="26.0" layoutY="260.0" prefHeight="120.0" prefWidth="190.0" styleClass="charbox">
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" text="Attack Power" textFill="WHITE">
+               <font>
+                  <Font size="21.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="3.0" top="3.0" />
+               </VBox.margin>
+            </Label>
+            <Label fx:id="attackLevelLabel" text="Attack Level" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="3.0" top="3.0" />
+               </VBox.margin>
+            </Label>
+            <HBox fx:id="attackBox" alignment="CENTER">
+               <children>
+                  <Label text="Train" textFill="WHITE">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Button fx:id="attackTrainBtn" mnemonicParsing="false" onAction="#attackUpgrade" text="price">
+                     <HBox.margin>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="3.0" top="3.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox alignment="CENTER" layoutX="233.0" layoutY="260.0" prefHeight="120.0" prefWidth="190.0" styleClass="charbox">
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" text="Defence Power" textFill="WHITE">
+               <font>
+                  <Font size="21.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="3.0" top="3.0" />
+               </VBox.margin>
+            </Label>
+            <Label fx:id="defenseLevelLabel" text="Defence Level" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="3.0" top="3.0" />
+               </VBox.margin>
+            </Label>
+            <HBox fx:id="defenseBox" alignment="CENTER">
+               <children>
+                  <Label text="Train" textFill="WHITE">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Button fx:id="defenseTrainBtn" mnemonicParsing="false" onAction="#defenseUpgrade" text="price">
+                     <HBox.margin>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="3.0" top="3.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+      <AnchorPane layoutX="567.0" layoutY="150.0" prefHeight="103.0" prefWidth="211.0" styleClass="charbox">
+         <children>
+            <Label fx:id="walletInfo" layoutX="72.0" layoutY="41.0" text="WalletInfo" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP" underline="true">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

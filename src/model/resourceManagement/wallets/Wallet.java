@@ -92,6 +92,10 @@ public class Wallet {
         return "Food: "+food + " Alloys: "+alloy + " Gold: "+gold;
     }
 
+    public String toShortString() {
+        return "F:"+food + " A:"+alloy + " G:"+gold;
+    }
+
     public String toStringValuesRows() {
         return "Food: " + food +
                 "\nAlloys: " + alloy +

@@ -1,14 +1,16 @@
 package model.buildings;
 
 
-import model.buildings.utilityBuilding.UtilitySlot;
-import model.shop.UpgradeSystem;
-import model.time.PropertyManager;
 import javafx.scene.image.Image;
 import model.Images;
-import model.time.PropertyObserver;
+import model.buildings.utilityBuilding.UtilitySlot;
 import model.characters.Character;
+import model.characters.player.EventTracker;
+import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Vault;
+import model.shop.UpgradeSystem;
+import model.time.PropertyManager;
+import model.time.PropertyObserver;
 import model.worldCreation.Details;
 import model.worldCreation.Quarter;
 public class Property implements PropertyObserver, Details {
@@ -51,10 +53,19 @@ public class Property implements PropertyObserver, Details {
     public Property(PropertyConfig.PropertyValues propertyValues, String name) {
         this.defense = new UpgradeSystem(propertyValues.getPower());
         this.vault = new Vault();
+
+        depositStartingBalance(propertyValues);
+
         this.name = name;
         this.maintenance = new Maintenance(propertyValues);
         PropertyManager.subscribe(this);
         this.utilitySlot = new UtilitySlot(5);
+    }
+
+    private void depositStartingBalance(PropertyConfig.PropertyValues propertyValues) {
+        vault.setFood(propertyValues.food);
+        vault.setAlloy(propertyValues.alloy);
+        vault.setGold(propertyValues.gold);
     }
 
     public Image getImage() {
@@ -72,9 +83,17 @@ public class Property implements PropertyObserver, Details {
         owner.setProperty(this);
     }
 
-    public Vault getVault() {
-        return vault;
+    public void upgradeDefence(){
+        int price = getDefense().getUpgradePrice();
+        if(owner.getWallet().hasEnoughResource(Resource.Alloy,price)){
+            owner.getWallet().subtractAlloy(price);
+            getDefense().upgradeLevel();
+            owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName()+"'s defence was increased"));
+        }else{
+            owner.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough alloys to increase property defence"));
+        }
     }
+
 
     public Quarter getLocation() {
         return location;
@@ -110,6 +129,9 @@ public class Property implements PropertyObserver, Details {
     }
     public void setVault(Vault vault) {
         this.vault = vault;
+    }
+    public Vault getVault() {
+        return vault;
     }
 
     public UpgradeSystem getDefense() {

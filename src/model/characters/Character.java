@@ -79,7 +79,7 @@ public class Character implements TaxObserver, NpcObserver, Details {
         this.foodUpdateDay = Settings.get("foodConsumption");
         this.name = NameCreation.generateCharacterName();
         this.eventTracker = new EventTracker();
-        this.combatStats = new CombatStats(10,5);
+        this.combatStats = new CombatStats(10,5, this);
         if (shouldSubscribeToTaxEvent()) {
             TaxEventManager.subscribe(this);
         }

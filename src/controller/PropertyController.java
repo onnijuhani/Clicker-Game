@@ -12,6 +12,7 @@ import model.Settings;
 import model.buildings.Property;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.Character;
+import model.characters.combat.CombatService;
 import model.characters.player.Player;
 import model.shop.Shop;
 
@@ -43,9 +44,17 @@ public class PropertyController extends BaseController {
     @FXML
     private Label maintenanceCost;
 
+    @FXML
+    private Label vaultValue;
+    @FXML
+    private Button robVaultBtn;
+    @FXML
+    private Label defenceLevel;
 
-
-
+    @FXML
+    private Button upgradeDefBtn;
+    @FXML
+    private Label upgradeDefLabel;
 
 
      //MEADOWLANDS
@@ -168,7 +177,14 @@ public class PropertyController extends BaseController {
         }
         ui.priceButton.setVisible(false);
         ui.upgradeButton.setVisible(false);
+
     }
+
+    @FXML
+    void robVault(){
+        CombatService.executeRobbery(model.accessPlayer(), character, property);
+    }
+
 
     private void differentiatePlayer() {
         if(character instanceof Player) {
@@ -176,7 +192,10 @@ public class PropertyController extends BaseController {
         } else {
             buildingUIs.keySet().forEach(this::updateNPCUIForBuilding);
         }
+        playerVersionState();
     }
+
+
 
     public void updatePropertyTab(){
         updatePropertyName();
@@ -186,8 +205,12 @@ public class PropertyController extends BaseController {
         updatePrices();
         differentiatePlayer();
         updateUtilitySlot();
+        updateVaultValue();
+        updateDefenceLevel();
 
     }
+
+
 
     @FXML
     void showHideContent(ActionEvent event) {
@@ -202,6 +225,33 @@ public class PropertyController extends BaseController {
         }
     }
 
+
+
+    void playerVersionState(){
+        if(model.accessPlayer().equals(character)) {
+            robVaultBtn.setVisible(false);
+            upgradeDefBtn.setVisible(true);
+            upgradeDefBtn.setText(property.getDefense().getUpgradePrice()+" Alloys");
+            upgradeDefLabel.setVisible(true);
+
+        }else{
+            robVaultBtn.setVisible(true);
+            upgradeDefBtn.setVisible(false);
+            upgradeDefLabel.setVisible(false);
+        }
+    }
+
+    @FXML
+    void upgradeDef(){
+        property.upgradeDefence();
+        updatePropertyTab();
+    }
+    void updateVaultValue() {
+        vaultValue.setText(property.getVault().toShortString());
+    }
+    void updateDefenceLevel() {
+        defenceLevel.setText("Level: " + property.getDefense().getUpgradeLevel());
+    }
 
     void updateMaintenance(){
         maintenanceCost.setText(property.getMaintenance().toString());

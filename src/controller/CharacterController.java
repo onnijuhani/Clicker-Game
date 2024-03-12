@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 import model.characters.Character;
 
@@ -28,7 +29,20 @@ public class CharacterController extends BaseController  {
     private Hyperlink authority;
     @FXML
     private Hyperlink homeQuarter;
+    @FXML
+    private Label attackLevelLabel;
+    @FXML
+    private Label defenseLevelLabel;
+    @FXML
+    private Button attackTrainBtn;
+    @FXML
+    private Button defenseTrainBtn;
 
+
+    @FXML
+    private HBox attackBox;
+    @FXML
+    private HBox defenseBox;
 
 
     private Timeline updateTimeline;
@@ -55,6 +69,17 @@ public class CharacterController extends BaseController  {
         updateWalletInfo();
         updateAuthority();
         updateHomeQuarter();
+        differentiatePlayer();
+        updateCombatStats();
+    }
+
+
+    void updateCombatStats(){
+        attackLevelLabel.setText("Level: "+currentCharacter.getCombatStats().getOffenseLevel());
+        defenseLevelLabel.setText("Level: "+currentCharacter.getCombatStats().getDefenseLevel());
+
+        attackTrainBtn.setText(currentCharacter.getCombatStats().getOffense().getUpgradePrice()+" Gold");
+        defenseTrainBtn.setText(currentCharacter.getCombatStats().getDefense().getUpgradePrice()+" Gold");
     }
     public void updateCharacterName(){
         characterName.setText(currentCharacter.getName());
@@ -66,6 +91,8 @@ public class CharacterController extends BaseController  {
     public void setMain(MainController main) {
         this.main = main;
     }
+
+
     @FXML
     public void initialize() {
         updateTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateCharacterTab()));
@@ -82,6 +109,29 @@ public class CharacterController extends BaseController  {
             isNavigatingBack = false;
         }
         updatePreviousButtonState(); // Update the button state
+    }
+
+    @FXML
+    void attackUpgrade(){
+        model.accessPlayer().getCombatStats().upgradeOffense();
+        updateCombatStats();
+    }
+    @FXML
+    void defenseUpgrade(){
+        model.accessPlayer().getCombatStats().upgradeDefence();
+        updateCombatStats();
+    }
+
+
+
+    void differentiatePlayer(){
+        if (currentCharacter.equals(model.accessPlayer())){
+            attackBox.setVisible(true);
+            defenseBox.setVisible(true);
+        }else{
+            attackBox.setVisible(false);
+            defenseBox.setVisible(false);
+        }
     }
 
 
