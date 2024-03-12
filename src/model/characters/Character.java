@@ -5,6 +5,7 @@ import model.Settings;
 import model.buildings.Property;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.authority.Authority;
+import model.characters.combat.CombatPower;
 import model.characters.decisions.MarketActions;
 import model.characters.npc.Slave;
 import model.characters.player.EventTracker;
@@ -69,6 +70,7 @@ public class Character implements TaxObserver, NpcObserver, Details {
     protected int[] foodConsumption = {5,0};
     protected Status status;
     protected int foodUpdateDay;
+    protected CombatPower combatPower;
     public Character() {
         this.wallet = new Wallet();
         this.slaves = new LinkedList<>();
@@ -77,6 +79,7 @@ public class Character implements TaxObserver, NpcObserver, Details {
         this.foodUpdateDay = Settings.get("foodConsumption");
         this.name = NameCreation.generateCharacterName();
         this.eventTracker = new EventTracker();
+        this.combatPower = new CombatPower(10,5);
         if (shouldSubscribeToTaxEvent()) {
             TaxEventManager.subscribe(this);
         }
@@ -180,12 +183,6 @@ public class Character implements TaxObserver, NpcObserver, Details {
         this.wallet = wallet;
     }
 
-    public void addSlave(Slave slave){
-        slaves.add(slave);
-    }
-    public void deleteSlave(Slave slave){
-        slaves.remove(slave);
-    }
     public void addAlly(Character ally){
         allies.add(ally);
     }
