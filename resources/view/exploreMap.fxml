@@ -46,7 +46,7 @@
                         <Insets top="2.0" />
                      </VBox.margin>
                   </HBox>
-                  <ListView fx:id="areasList" accessibleRole="BUTTON" prefHeight="230.0" prefWidth="248.0" style="-fx-border-color: black;" />
+                  <ListView fx:id="areasList" accessibleRole="BUTTON" prefHeight="228.0" prefWidth="248.0" style="-fx-border-color: black;" />
                </children>
                <VBox.margin>
                   <Insets />

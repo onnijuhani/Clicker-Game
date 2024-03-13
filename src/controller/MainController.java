@@ -224,6 +224,8 @@ public class MainController extends BaseController {
 
         topSectionController.stopTimeBtn.setDisable(true); // Disable the stop button
         topSectionController.startTimeBtn.setDisable(false); // Enable the start button
+
+
     }
     public void toggleSimulation() {
         if(getModel().accessTime().isSimulationRunning()) {

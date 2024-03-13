@@ -194,7 +194,7 @@
                         <Insets bottom="5.0" top="5.0" />
                      </VBox.margin>
                   </HBox>
-                  <Button fx:id="pauseBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#pauseTime" prefWidth="120.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #232526, #414345); -fx-background-radius: 15;" text="Pause" textFill="WHITE">
+                  <Button fx:id="pauseBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#pauseTime" prefWidth="120.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #232526, #414345); -fx-background-radius: 15;" text="Pause" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="System Italic" size="15.0" />
                      </font>

@@ -18,7 +18,6 @@ public class SlaveFacility extends UtilityBuilding {
         this.name = UtilityBuildings.SlaveFacility;
     }
 
-
     public void increaseSlotAmount() {
         this.slots *= 2;
         addSlave();
@@ -26,10 +25,10 @@ public class SlaveFacility extends UtilityBuilding {
     }
 
 
-    public void increaseProduction(){
-        production[0] = production[0] * slaveAmount;
-        production[1] = production[1] * slaveAmount;
-        production[2] = production[2] * slaveAmount;
+    public void increaseProduction() {
+        production[0] *= 2;
+        production[1] *= 2;
+        production[2] *= 2;
     }
 
     @Override
@@ -42,7 +41,7 @@ public class SlaveFacility extends UtilityBuilding {
     public String getInfo(){
         return (
                 "Level " + getUpgradeLevel() + "\n"+
-                "Produces " + Arrays.toString(production)
+                        "Food, Alloys and Gold" + "\n" + Arrays.toString(production)
         );
     }
     @Override
@@ -52,8 +51,8 @@ public class SlaveFacility extends UtilityBuilding {
         owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
     }
 
-    public void addSlave(){
-        if (slots == slaveAmount){
+    public void addSlave() {
+        if (slots == slaveAmount) {
             return;
         }
         slaveAmount *= 2;

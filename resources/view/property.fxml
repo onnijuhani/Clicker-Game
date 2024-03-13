@@ -309,9 +309,9 @@
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="utilityInfo3" alignment="CENTER" prefHeight="64.0" prefWidth="156.0" text="Description" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                          <Label fx:id="utilityInfo3" alignment="CENTER" prefHeight="64.0" prefWidth="156.0" text="Description" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP" wrapText="true">
                                              <font>
-                                                <Font size="16.0" />
+                                                <Font size="14.0" />
                                              </font>
                                           </Label>
                                           <VBox fx:id="utilityPlayerView3" alignment="CENTER" prefHeight="66.0" prefWidth="156.0">

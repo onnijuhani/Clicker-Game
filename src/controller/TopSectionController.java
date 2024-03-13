@@ -103,6 +103,7 @@ public class TopSectionController extends BaseController {
         model.accessTime().updateSpeed(Speed.Slow);
         slowerBtn.setDisable(Time.getSpeed().equals(Speed.Slow));
         fasterBtn.setDisable(false);
+
         main.clickMeButton.setDisable(Time.getSpeed().equals(Speed.Slow));
         if (Time.getSpeed().equals(Speed.Slow)){
             model.accessPlayer().getEventTracker().addEvent(EventTracker.Message("Major","Clicker is disabled"));
