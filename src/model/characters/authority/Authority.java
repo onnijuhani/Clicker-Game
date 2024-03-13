@@ -4,7 +4,7 @@ import model.buildings.Property;
 import model.characters.AuthorityCharacter;
 import model.characters.Character;
 import model.characters.Support;
-import model.characters.player.EventTracker;
+import model.stateSystem.EventTracker;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.payments.Salary;
 import model.resourceManagement.payments.Tax;

@@ -2,8 +2,12 @@ package model.characters.combat;
 
 import model.buildings.Property;
 import model.characters.Character;
-import model.characters.player.EventTracker;
+import model.characters.GameEvent;
+import model.stateSystem.Event;
+import model.stateSystem.EventTracker;
 import model.shop.UpgradeSystem;
+import model.stateSystem.State;
+import model.time.TimeEventManager;
 
 public class CombatSystem {
     private final Character attacker;
@@ -40,14 +44,37 @@ public class CombatSystem {
 
     public void robbery() {
 
+        if (attacker.getState() == State.IN_BATTLE || venue.getState() == State.IN_BATTLE) {
+            System.out.println("Either attacker or property is already in a battle.");
+            attacker.getEventTracker().addEvent(EventTracker.Message(
+                    "Error", "Either attacker or property is already in a battle. Action not allowed."));
+            return; // Can not enter battle
+        }
+
         if (attacker.getLoyaltyManager().isAlly(defender)) {
             System.out.println("Cannot attack allies!");
             attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Attempted to rob " + defender.getProperty().getName() +
+                    "Error", "Attempted to rob " + defender.getProperty().getName() +
                             " owned by ally " + defender.getName() + ". Action not allowed."));
             return; // Abort the robbery because the defender is an ally
         }
 
+        attacker.setState(State.IN_BATTLE);
+        venue.setState(State.IN_BATTLE);
+
+        int daysUntilEvent = 30;
+
+        GameEvent gameEvent = new GameEvent(Event.ROBBERY,attacker,defender);
+
+
+
+        attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Robbery Started"));
+        defender.getEventTracker().addEvent(EventTracker.Message("Major", "You are being robbed by "+ attacker));
+
+        TimeEventManager.scheduleEvent(this::endRobbery, daysUntilEvent, gameEvent);
+    }
+
+    private void endRobbery() {
         int effectiveAttackerOffense = attackerStats.getOffense().getUpgradeLevel();
         System.out.println("effectiveAttackerOffense "+effectiveAttackerOffense);
         int effectiveDefenderDefense = venueStats.getUpgradeLevel();
@@ -69,7 +96,6 @@ public class CombatSystem {
 
             venue.getVault().robbery(attacker, defender);
 
-
         } else {
             System.out.println("Defender wins!");
 
@@ -82,9 +108,9 @@ public class CombatSystem {
                     "Major", "Successfully defended a robbery. Defense level increased."));
 
         }
-
         executeLoyaltyChanges();
-
+        attacker.setState(State.NONE);
+        venue.setState(State.NONE);
     }
 
     private void executeLoyaltyChanges() {

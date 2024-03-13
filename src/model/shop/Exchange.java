@@ -1,7 +1,7 @@
 package model.shop;
 
 import model.characters.Character;
-import model.characters.player.EventTracker;
+import model.stateSystem.EventTracker;
 import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;

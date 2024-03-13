@@ -11,7 +11,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 import model.Model;
-import model.characters.player.EventTracker;
+import model.stateSystem.EventTracker;
 import model.time.Time;
 import model.worldCreation.Quarter;
 

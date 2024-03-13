@@ -2,7 +2,7 @@ package model.buildings.utilityBuilding;
 
 import model.Settings;
 import model.characters.Character;
-import model.characters.player.EventTracker;
+import model.stateSystem.EventTracker;
 import model.resourceManagement.TransferPackage;
 
 public class Meadowlands extends UtilityBuilding {

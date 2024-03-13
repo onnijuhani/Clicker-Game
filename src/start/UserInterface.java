@@ -12,6 +12,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import model.Model;
 
+import java.util.Objects;
+
 public class UserInterface extends Application {
     public void start(Stage primaryStage) {
         try {
@@ -23,12 +25,12 @@ public class UserInterface extends Application {
             MainController mainController = mainLoader.getController();
             mainController.setModel(model);
 
-            Image icon = new Image(getClass().getResourceAsStream("/pics/icon.png"));
+            Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pics/icon.png")));
             primaryStage.getIcons().add(icon);
 
 
             Scene scene = new Scene(mainRoot);
-            String css = this.getClass().getResource("/characterStyle.css").toExternalForm();
+            String css = Objects.requireNonNull(this.getClass().getResource("/characterStyle.css")).toExternalForm();
             scene.getStylesheets().add(css);
             primaryStage.setScene(scene);
 

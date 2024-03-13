@@ -12,11 +12,8 @@ public class Time {
     public static int day = 0;
     private ScheduledExecutorService executorService;
     private boolean isSimulationRunning = false;
-
     private boolean isManualSimulation = false;
     private boolean isFirstDay = true;
-    private boolean isFifthDay = true;
-    private final int foodConsumption = Settings.get("foodConsumption");
     private final int generate = Settings.get("generate");
     private final int maintenance = Settings.get("maintenance");
     public static final int quarterTax = Settings.get("quarterTax");
@@ -24,7 +21,6 @@ public class Time {
     public static final int provinceTax = Settings.get("provinceTax");
     public static final int nationTax = Settings.get("nationTax");
     public static final int utilitySlots = Settings.get("utilitySlots");
-
     private int milliseconds = 1000;
 
 
@@ -44,8 +40,6 @@ public class Time {
     }
 
     public void incrementDay() {
-
-
         day++;
         if (day > 30) {
             day = 1;
@@ -74,6 +68,8 @@ public class Time {
             NpcManager.notifyTimeUpdate(day, month, year);
         }
         isFirstDay = false; // After the first increment, it's no longer the first day
+
+        TimeEventManager.processScheduledEvents(); // All scheduled events require information every day
     }
 
     public void incrementByClick(){

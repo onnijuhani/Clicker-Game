@@ -7,7 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
-import model.characters.player.EventTracker;
+import model.stateSystem.EventTracker;
 import model.time.Speed;
 import model.time.Time;
 
@@ -38,7 +38,7 @@ public class TopSectionController extends BaseController {
     private Timeline updateTimeline;
 
     public void initialize() {
-        updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> updateTopSection()));
+        updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateTopSection()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         stopTimeBtn.setDisable(true);
         updateTimeline.play();

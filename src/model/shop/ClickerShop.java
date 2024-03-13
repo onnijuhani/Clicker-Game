@@ -1,7 +1,7 @@
 package model.shop;
 
 import model.Settings;
-import model.characters.player.EventTracker;
+import model.stateSystem.EventTracker;
 import model.characters.player.Player;
 import model.characters.player.clicker.AlloyClicker;
 import model.characters.player.clicker.Clicker;

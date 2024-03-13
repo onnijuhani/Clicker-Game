@@ -2,7 +2,7 @@ package model.characters.player.clicker;
 
 import model.Settings;
 import model.characters.Status;
-import model.characters.player.EventTracker;
+import model.stateSystem.EventTracker;
 import model.characters.player.Player;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.Resource;

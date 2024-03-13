@@ -12,7 +12,7 @@ import model.Settings;
 import model.buildings.Property;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.Character;
-import model.characters.combat.CombatService;
+import model.characters.decisions.CombatService;
 import model.characters.player.Player;
 import model.shop.Shop;
 
@@ -182,7 +182,7 @@ public class PropertyController extends BaseController {
 
     @FXML
     void robVault(){
-        CombatService.executeRobbery(model.accessPlayer(), character, property);
+        CombatService.executeRobbery(model.accessPlayer(), character);
     }
 
 

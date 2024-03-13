@@ -1,7 +1,7 @@
 package model.buildings.utilityBuilding;
 
 import model.characters.Character;
-import model.characters.player.EventTracker;
+import model.stateSystem.EventTracker;
 import model.resourceManagement.TransferPackage;
 
 import java.util.Arrays;

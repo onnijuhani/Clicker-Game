@@ -1,5 +1,6 @@
-package model.characters.player;
+package model.stateSystem;
 
+import model.characters.player.PlayerPreferences;
 import model.time.Time;
 
 import java.time.LocalDateTime;

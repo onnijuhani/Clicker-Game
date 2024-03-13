@@ -9,5 +9,8 @@
         <module name="Clicker Game" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="clickerGame" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>

@@ -11,6 +11,7 @@ import model.characters.player.clicker.Clicker;
 import model.resourceManagement.payments.Tax;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
+import model.stateSystem.EventTracker;
 import model.worldCreation.Quarter;
 import model.time.Time;
 

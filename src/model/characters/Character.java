@@ -7,12 +7,13 @@ import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.authority.Authority;
 import model.characters.combat.CombatStats;
 import model.characters.npc.Slave;
-import model.characters.player.EventTracker;
 import model.characters.player.Player;
 import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.shop.Exchange;
+import model.stateSystem.EventTracker;
+import model.stateSystem.State;
 import model.time.NpcManager;
 import model.time.NpcObserver;
 import model.time.TaxEventManager;
@@ -20,7 +21,9 @@ import model.time.TaxObserver;
 import model.worldCreation.Details;
 import model.worldCreation.Nation;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Character implements TaxObserver, NpcObserver, Details {
 
@@ -69,6 +72,9 @@ public class Character implements TaxObserver, NpcObserver, Details {
     protected Status status;
     protected int foodUpdateDay;
     protected CombatStats combatStats;
+
+    private State state = State.NONE;
+    private List<GameEvent> ongoingEvents = new ArrayList<>();
     public Character() {
         this.wallet = new Wallet();
         this.slaves = new LinkedList<>();
@@ -207,6 +213,25 @@ public class Character implements TaxObserver, NpcObserver, Details {
 
     public void setLoyaltyManager(LoyaltyManager loyaltyManager) {
         this.loyaltyManager = loyaltyManager;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+
+
+    public void addEvent(GameEvent gameEvent) {
+        ongoingEvents.add(gameEvent);
+        System.out.println("ongoingEvents "+ this + gameEvent.getEvent());
+    }
+
+    public List<GameEvent> getOngoingEvents() {
+        return ongoingEvents;
     }
 
 }

@@ -6,7 +6,7 @@ import model.characters.Peasant;
 import model.characters.npc.Farmer;
 import model.characters.npc.Merchant;
 import model.characters.npc.Miner;
-import model.characters.player.EventTracker;
+import model.stateSystem.EventTracker;
 import model.resourceManagement.payments.Tax;
 import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.WorkWallet;

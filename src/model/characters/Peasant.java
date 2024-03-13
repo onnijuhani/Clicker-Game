@@ -3,7 +3,7 @@ package model.characters;
 import model.NameCreation;
 import model.buildings.PropertyCreation;
 import model.characters.authority.Authority;
-import model.characters.player.EventTracker;
+import model.stateSystem.EventTracker;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.time.GenerateManager;

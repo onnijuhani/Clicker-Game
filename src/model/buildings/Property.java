@@ -5,10 +5,11 @@ import javafx.scene.image.Image;
 import model.Images;
 import model.buildings.utilityBuilding.UtilitySlot;
 import model.characters.Character;
-import model.characters.player.EventTracker;
+import model.stateSystem.EventTracker;
 import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Vault;
 import model.shop.UpgradeSystem;
+import model.stateSystem.State;
 import model.time.PropertyManager;
 import model.time.PropertyObserver;
 import model.worldCreation.Details;
@@ -37,8 +38,6 @@ public class Property implements PropertyObserver, Details {
 
     private UpgradeSystem defense;
 
-
-
     protected Vault vault;
     protected Quarter location;
     protected Character owner;
@@ -46,8 +45,9 @@ public class Property implements PropertyObserver, Details {
     protected String name;
     protected Properties propertyEnum;
 
-    protected int underConstruction;
     protected UtilitySlot utilitySlot;
+    private State state = State.NONE;
+
 
 
     public Property(PropertyConfig.PropertyValues propertyValues, String name) {
@@ -141,4 +141,11 @@ public class Property implements PropertyObserver, Details {
         this.defense = defense;
     }
 
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
 }

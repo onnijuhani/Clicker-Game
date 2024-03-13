@@ -3,7 +3,7 @@ package model.buildings;
 import model.Settings;
 import model.buildings.utilityBuilding.UtilitySlot;
 import model.characters.Character;
-import model.characters.player.EventTracker;
+import model.stateSystem.EventTracker;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Vault;
 import model.resourceManagement.wallets.Wallet;
@@ -14,7 +14,7 @@ public class Construct {
     public static void constructProperty(Properties type, Character character){
 
         Property oldHouse = character.getProperty();
-        Quarter location =oldHouse.getLocation();
+        Quarter location = oldHouse.getLocation();
         UtilitySlot oldUtilitySlot = oldHouse.getUtilitySlot();
         Vault oldVault = oldHouse.getVault();
         String oldName = oldHouse.getName();
@@ -29,6 +29,7 @@ public class Construct {
             character.getEventTracker().addEvent(EventTracker.Message("Major", "New property constructed"));
 
             Property newHouse = initiateNewProperty(type, oldName);
+            assert newHouse != null;
             newHouse.setLocation(location);
             newHouse.setVault(oldVault);
             newHouse.getUtilitySlot().setOwnedUtilityBuildings(oldUtilitySlot.getOwnedUtilityBuildings());

@@ -1,7 +1,7 @@
 package model.buildings.utilityBuilding;
 
 import model.characters.Character;
-import model.characters.player.EventTracker;
+import model.stateSystem.EventTracker;
 import model.resourceManagement.wallets.Wallet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,20 +23,20 @@ class AlloyMineTest {
 
     @Test
     void testInitialProduction() {
-        assertEquals(1, alloyMine.getProduction(), "Initial production should match Settings mineProduction");
+        assertEquals(10, alloyMine.getProduction(), "Initial production should match Settings mineProduction");
     }
 
     @Test
     void testUpgradeProduction() {
         alloyMine.upgradeProduction();
-        assertEquals(2, alloyMine.getProduction(), "Production should double after upgrade");
+        assertEquals(20, alloyMine.getProduction(), "Production should double after upgrade");
     }
 
     @Test
     void testUpgradeLevelIncreasesProduction() {
         alloyMine.upgradeLevel();
         assertEquals(2, alloyMine.getUpgradeLevel(), "Upgrade level should increase");
-        assertEquals(2, alloyMine.getProduction(), "Production should double with level upgrade");
+        assertEquals(20, alloyMine.getProduction(), "Production should double with level upgrade");
     }
 
     @Test
@@ -56,7 +56,7 @@ class AlloyMineTest {
         }
         alloyMine.generateAction();
 
-        int correctAmount = (int) (1 * Math.pow(2, tests));
+        int correctAmount = (int) (10 * Math.pow(2, tests));
 
         assertEquals(correctAmount, wallet.getAlloy(), "AlloyMine should generate and add alloys to the owner's wallet");
         verify(eventTracker).addEvent(anyString());

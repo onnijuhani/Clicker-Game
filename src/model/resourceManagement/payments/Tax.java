@@ -1,6 +1,6 @@
 package model.resourceManagement.payments;
 
-import model.characters.player.EventTracker;
+import model.stateSystem.EventTracker;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Wallet;
