@@ -12,7 +12,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 import model.Model;
 import model.characters.player.EventTracker;
-import model.shop.Shop;
 import model.time.Time;
 import model.worldCreation.Quarter;
 
@@ -143,8 +142,8 @@ public class MainController extends BaseController {
         return topSectionController;
     }
 
-    @FXML
-    void generateResources(MouseEvent event) {
+    // New method without MouseEvent parameter
+    public void generateResourcesAction() {
         if (!model.accessTime().isSimulationRunning()) {
             if (model.accessTime().isManualSimulation()) {
                 model.accessTime().incrementByClick();
@@ -152,22 +151,23 @@ public class MainController extends BaseController {
                 topSectionController.updateWallet();
                 topSectionController.updateTopSection();
                 workWalletController.updateWorkWallet();
-                return;
+            } else {
+                model.accessPlayer().getEventTracker().addEvent(EventTracker.Message("Error", "Simulation is paused. Cannot generate resources."));
+                updateEventList();
+                workWalletController.updateWorkWallet();
             }
-            model.accessPlayer().getEventTracker().addEvent(EventTracker.Message("Error", "Simulation is paused. Cannot generate resources."));
+        } else {
+            model.accessPlayer().getClicker().generateResources();
+            topSectionController.updateWallet();
             updateEventList();
             workWalletController.updateWorkWallet();
-            return;
         }
-        model.accessPlayer().getClicker().generateResources();
-        topSectionController.updateWallet();
-        updateEventList();
-        workWalletController.updateWorkWallet();
     }
 
-
-
-
+    @FXML
+    public void generateResources(MouseEvent event) {
+        generateResourcesAction();
+    }
 
 
    void generateStartingMessage(){
@@ -191,20 +191,23 @@ public class MainController extends BaseController {
     public void updateEventList() {
         updatePauseBtnText();
         List<String> events = model.accessPlayer().getEventTracker().getCombinedEvents();
+
+        boolean newMessagesAdded = eventList.getItems().size() != events.size();
+
+        // How many messages should be shown
+        int start = Math.max(0, events.size() - 500);
+
+
         eventList.getItems().clear();
-
-        // Determine the start index for the last 20 messages
-        int start = Math.max(0, events.size() - 13);
-
-        // Add only the last 20 messages (or fewer if less than 20 messages are available)
         for (int i = start; i < events.size(); i++) {
             eventList.getItems().add(events.get(i));
         }
 
-        // Scroll to the last message
-        eventList.scrollTo(eventList.getItems().size() - 1);
+        // Auto-scroll to the last message only if new messages have been added
+        if (newMessagesAdded) {
+            eventList.scrollTo(eventList.getItems().size() - 1);
+        }
 
-        Shop shop = model.accessPlayer().getNation().getShop();
     }
 
     @FXML
@@ -222,15 +225,14 @@ public class MainController extends BaseController {
         topSectionController.stopTimeBtn.setDisable(true); // Disable the stop button
         topSectionController.startTimeBtn.setDisable(false); // Enable the start button
     }
-    @FXML
-    void pauseTime(MouseEvent event) {
+    public void toggleSimulation() {
         if(getModel().accessTime().isSimulationRunning()) {
             model.accessTime().stopSimulation();
             topSectionController.startTimeBtn.setDisable(false);
             topSectionController.stopTimeBtn.setDisable(true);
             incrementClicker.setDisable(false);
             incrementClicker.setSelected(false);
-        } else if (!getModel().accessTime().isSimulationRunning()) {
+        } else {
             model.accessTime().startSimulation();
             topSectionController.startTimeBtn.setDisable(true);
             topSectionController.stopTimeBtn.setDisable(false);
@@ -239,6 +241,11 @@ public class MainController extends BaseController {
         }
         clickMeButton.requestFocus();
         model.accessTime().setManualSimulation(false);
+    }
+
+    @FXML
+    void pauseTime(MouseEvent event) {
+        toggleSimulation();
     }
 
 

@@ -46,7 +46,7 @@ public class ExchangeController extends BaseController {
 
     @FXML
     public void initialize() {
-        updateTimeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> updateExchange()));
+        updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateExchange()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
     }

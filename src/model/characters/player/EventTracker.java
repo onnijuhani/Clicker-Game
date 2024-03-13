@@ -14,8 +14,8 @@ public class EventTracker {
     public static String Message(String type, String message) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String time = (Time.getDay()<10 ? Time.getClock()+"  " : Time.getClock());
-        return String.format("%s %s '%s'", now.format(formatter), type, time+"          "+message);
+        String time = (Time.getDay()<10 ? Time.getClock()+"" : Time.getClock());
+        return String.format("%s %s %s", now.format(formatter), type, time+":  "+message);
     }
     private int maxErrorEvents = 5;
     private int maxMajorEvents = 50;

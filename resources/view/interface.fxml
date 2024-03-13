@@ -46,14 +46,14 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" style="-fx-background-color: gray;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+<VBox alignment="CENTER" prefWidth="1415.0" style="-fx-background-color: gray;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
   <children>
        <fx:include fx:id="topSection" source="topSection.fxml" />
       <AnchorPane>
          <children>
-            <VBox alignment="CENTER" layoutX="12.0" layoutY="17.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+            <VBox alignment="CENTER_RIGHT" layoutX="-11.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
                <children>
-                  <TabPane prefHeight="340.0" prefWidth="773.0" tabClosingPolicy="UNAVAILABLE">
+                  <TabPane prefHeight="330.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE">
                      <tabs>
                         <Tab text="Untitled Tab 1">
                            <content>
@@ -93,9 +93,9 @@
                         <Insets bottom="5.0" />
                      </VBox.margin>
                   </TabPane>
-                  <HBox alignment="CENTER_RIGHT">
+                  <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
                      <children>
-                        <ListView fx:id="eventList" accessibleText="event listing" fixedCellSize="-2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="260.0" prefWidth="500.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 10;">
+                        <ListView fx:id="eventList" accessibleText="event listing" fixedCellSize="-2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="270.0" prefWidth="440.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 10;">
                            <effect>
                               <DropShadow height="79.62" radius="37.1125" spread="0.13" width="70.83" />
                            </effect>
@@ -103,13 +103,13 @@
                               <Insets left="5.0" />
                            </opaqueInsets>
                            <HBox.margin>
-                              <Insets left="5.0" />
+                              <Insets />
                            </HBox.margin>
                         </ListView>
-                        <AnchorPane prefHeight="234.0" prefWidth="114.0">
+                        <AnchorPane>
                            <children>
                               <fx:include fx:id="workWallet" source="workWallet.fxml" />
-                              <Button fx:id="clickMeButton" alignment="CENTER" contentDisplay="CENTER" layoutX="3.0" layoutY="224.0" mnemonicParsing="false" onMouseClicked="#generateResources" style="-fx-background-radius: 15;" text="Click Me!">
+                              <Button fx:id="clickMeButton" alignment="CENTER" contentDisplay="CENTER" layoutX="3.0" layoutY="220.0" mnemonicParsing="false" onKeyPressed="#generateResources" onMouseClicked="#generateResources" style="-fx-background-radius: 15;" text="Click Me!" AnchorPane.bottomAnchor="5.0">
                                  <font>
                                     <Font size="20.0" />
                                  </font>
@@ -119,14 +119,17 @@
                               </Button>
                            </children>
                            <HBox.margin>
-                              <Insets left="17.0" />
+                              <Insets left="10.0" />
                            </HBox.margin>
                         </AnchorPane>
                      </children>
+                     <VBox.margin>
+                        <Insets top="4.0" />
+                     </VBox.margin>
                   </HBox>
                </children>
             </VBox>
-            <TabPane layoutX="795.0" layoutY="3.0" prefHeight="620.0" prefWidth="700.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="785.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+            <TabPane layoutX="795.0" layoutY="3.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="700.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
               <tabs>
                 <Tab text="Character">
                   <content>
@@ -157,11 +160,10 @@
                   </Tab>
               </tabs>
                <padding>
-                  <Insets bottom="5.0" />
+                  <Insets bottom="5.0" left="2.0" />
                </padding>
             </TabPane>
-            <Button layoutX="790.0" layoutY="560.0" mnemonicParsing="false" onAction="#getPlayer" prefHeight="24.0" prefWidth="80.0" text="Reset" />
-            <VBox fillWidth="false" layoutX="12.0" layoutY="350.0" AnchorPane.leftAnchor="5.0">
+            <VBox fillWidth="false" layoutX="100.0" layoutY="372.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="350.0">
                <children>
                   <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-color: linear-gradient(from 15% 100% to 100% 15%, #59033f, #4c023f, #3e023e, #30033c, #210339); -fx-border-radius: 25;">
                      <children>
@@ -199,6 +201,7 @@
                   </Button>
                </children>
             </VBox>
+            <Button layoutX="720.0" layoutY="560.0" mnemonicParsing="false" onAction="#getPlayer" prefHeight="24.0" prefWidth="80.0" text="Reset" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="615.0" />
          </children>
       </AnchorPane>
   </children>

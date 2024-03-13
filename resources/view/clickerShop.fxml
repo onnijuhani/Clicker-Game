@@ -12,14 +12,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="340.0" prefWidth="773.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ClickerShopController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="700.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ClickerShopController">
    <children>
-      <ImageView fitHeight="340.0" fitWidth="773.0" layoutY="1.0" pickOnBounds="true">
+      <ImageView fitHeight="298.0" fitWidth="698.0" layoutY="1.0" pickOnBounds="true" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0">
          <image>
             <Image url="@../BackGround/property.png" />
          </image>
       </ImageView>
-      <HBox layoutX="147.0" layoutY="97.0">
+      <HBox layoutX="110.0" layoutY="97.0">
          <children>
             <VBox alignment="TOP_CENTER" prefHeight="149.0" prefWidth="140.0" styleClass="utilityBox">
                <children>
@@ -201,5 +201,13 @@
             </VBox>
          </children>
       </HBox>
+      <Label layoutX="193.0" layoutY="33.0" styleClass="utilityBox" text="Buy and Upgrade Your Clicker">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+         <padding>
+            <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+         </padding>
+      </Label>
    </children>
 </AnchorPane>

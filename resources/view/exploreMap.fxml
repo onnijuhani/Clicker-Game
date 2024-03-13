@@ -12,9 +12,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="320.0" prefWidth="773.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364);" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ExploreMapController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="700.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364);" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ExploreMapController">
    <children>
-      <VBox layoutX="511.0" layoutY="11.0">
+      <VBox layoutX="511.0" layoutY="11.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="5.0">
          <children>
             <VBox>
                <children>
@@ -42,8 +42,11 @@
                         </Label>
                         <Label fx:id="containType" text="Label" textFill="WHITE" />
                      </children>
+                     <VBox.margin>
+                        <Insets top="2.0" />
+                     </VBox.margin>
                   </HBox>
-                  <ListView fx:id="areasList" accessibleRole="BUTTON" prefHeight="235.0" prefWidth="248.0" style="-fx-border-color: black;" />
+                  <ListView fx:id="areasList" accessibleRole="BUTTON" prefHeight="230.0" prefWidth="248.0" style="-fx-border-color: black;" />
                </children>
                <VBox.margin>
                   <Insets />
@@ -66,7 +69,7 @@
             </Hyperlink>
          </children>
       </VBox>
-      <HBox layoutX="18.0" layoutY="160.0">
+      <HBox layoutX="18.0" layoutY="160.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="2.0">
          <children>
             <VBox>
                <children>
@@ -75,12 +78,12 @@
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Text>
-                  <ListView id="box" fx:id="livesHereListView" prefHeight="129.0" prefWidth="259.0" style="-fx-border-color: black;" styleClass="box" />
+                  <ListView id="box" fx:id="livesHereListView" prefHeight="150.0" prefWidth="250.0" style="-fx-border-color: black;" styleClass="box" />
                </children>
             </VBox>
-            <TextArea fx:id="testi" prefHeight="129.0" prefWidth="224.0" promptText="fdfdfdfd" style="-fx-border-color: black;">
+            <TextArea fx:id="testi" editable="false" prefHeight="129.0" prefWidth="190.0" promptText="Basic Information here" style="-fx-border-color: black;" wrapText="true">
                <HBox.margin>
-                  <Insets left="5.0" />
+                  <Insets left="4.0" />
                </HBox.margin>
             </TextArea>
          </children>

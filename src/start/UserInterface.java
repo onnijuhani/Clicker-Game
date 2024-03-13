@@ -7,6 +7,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import model.Model;
 
@@ -29,11 +31,25 @@ public class UserInterface extends Application {
             String css = this.getClass().getResource("/characterStyle.css").toExternalForm();
             scene.getStylesheets().add(css);
             primaryStage.setScene(scene);
-//            primaryStage.setMinWidth(1600);
-//            primaryStage.setMinWidth(1600);
-//            primaryStage.setMinHeight(920);
-//            primaryStage.setMaxHeight(920);
+
             primaryStage.setResizable(false);
+
+
+            // Key event SPACE for CLICKER
+            scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                if (event.getCode() == KeyCode.SPACE) {
+                    mainController.generateResourcesAction();
+                    event.consume();
+                }
+            });
+
+            // Key event ENTER to stop time
+            scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                if (event.getCode() == KeyCode.ENTER) {
+                    mainController.toggleSimulation();
+                    event.consume();
+                }
+            });
 
             // make sure game stops running when window is closed
             primaryStage.setOnCloseRequest(event -> Platform.exit());

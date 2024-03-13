@@ -6,7 +6,6 @@ import model.buildings.Property;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.authority.Authority;
 import model.characters.combat.CombatStats;
-import model.characters.decisions.MarketActions;
 import model.characters.npc.Slave;
 import model.characters.player.EventTracker;
 import model.characters.player.Player;
@@ -44,8 +43,6 @@ public class Character implements TaxObserver, NpcObserver, Details {
                 upgrade();
             }
         }
-        System.out.println("market actions started");
-        MarketActions.decideMarketActions(this);
     }
 
     @Override

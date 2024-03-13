@@ -10,15 +10,15 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="340.0" prefWidth="773.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ExchangeController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ExchangeController">
    <children>
-      <ImageView fitHeight="338.0" fitWidth="771.0" layoutX="-1.0" layoutY="4.0" pickOnBounds="true" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0">
+      <ImageView fitHeight="298.0" fitWidth="698.0" layoutX="-1.0" layoutY="4.0" pickOnBounds="true" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0">
          <image>
             <Image url="@../pics/DALL·E%202024-01-27%2013.08.40%20-%20Create%20an%20image%20of%20a%20fantasy%20world%20landscape%20viewed%20from%20a%20distance.%20In%20the%20forefront,%20there%20should%20be%20an%20expansive%20wild%20meadow,%20dotted%20with%20vibrant%20w.png" />
          </image>
       </ImageView>
       <AnchorPane layoutX="47.0" layoutY="206.0" prefHeight="136.0" prefWidth="662.0" />
-      <VBox alignment="CENTER" layoutX="153.0" layoutY="44.0" prefHeight="67.0" prefWidth="450.0" style="-fx-background-color: rgba(190,196,203,0.95); -fx-background-radius: 15; -fx-border-color: white; -fx-border-radius: 15;">
+      <VBox alignment="CENTER" layoutX="125.0" layoutY="44.0" prefHeight="67.0" prefWidth="450.0" style="-fx-background-color: rgba(190,196,203,0.95); -fx-background-radius: 15; -fx-border-color: white; -fx-border-radius: 15;">
          <children>
             <Label text="Shop Wallet">
                <font>
@@ -32,7 +32,7 @@
             </Label>
          </children>
       </VBox>
-      <HBox layoutX="66.0" layoutY="136.0">
+      <HBox layoutX="38.0" layoutY="137.0">
          <children>
             <HBox alignment="CENTER" prefHeight="138.0" prefWidth="264.0">
                <children>

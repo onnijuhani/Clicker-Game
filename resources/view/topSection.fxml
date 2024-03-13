@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane fx:id="topSection" alignment="CENTER" prefHeight="72.0" prefWidth="1400.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F1221, #202741, #2E3E51); -fx-border-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TopSectionController">
+<GridPane fx:id="topSection" alignment="CENTER" prefHeight="60.0" prefWidth="1410.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F1221, #202741, #2E3E51); -fx-border-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TopSectionController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -24,7 +24,7 @@
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <GridPane alignment="TOP_CENTER">
+      <GridPane alignment="TOP_CENTER" styleClass="walletBack">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -46,7 +46,7 @@
                   <Font name="Arial Black" size="18.0" />
                </font>
                <GridPane.margin>
-                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                  <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
                </GridPane.margin>
                <tooltip>
                   <Tooltip text="Food is the most basic resource in the game, crucial for property maintenance. Tradable for more valuable resources in the exchange.">
@@ -57,8 +57,11 @@
                </tooltip>
             </TextField>
          </children>
+         <GridPane.margin>
+            <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+         </GridPane.margin>
       </GridPane>
-      <GridPane alignment="CENTER" prefHeight="74.0" prefWidth="320.0" GridPane.columnIndex="1">
+      <GridPane alignment="CENTER" prefHeight="74.0" prefWidth="320.0" styleClass="walletBack" GridPane.columnIndex="1">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -80,7 +83,7 @@
                   <Font name="Arial Black" size="18.0" />
                </font>
                <GridPane.margin>
-                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                  <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
                </GridPane.margin>
                <tooltip>
                   <Tooltip text="Alloys are vital for constructing buildings and setting up defenses on your property. Tradable for in the exchange.">
@@ -91,8 +94,11 @@
                </tooltip>
             </TextField>
          </children>
+         <GridPane.margin>
+            <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+         </GridPane.margin>
       </GridPane>
-      <GridPane GridPane.columnIndex="2">
+      <GridPane styleClass="walletBack" GridPane.columnIndex="2">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -114,13 +120,16 @@
                   <Font name="Arial Black" size="18.0" />
                </font>
                <GridPane.margin>
-                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                  <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
                </GridPane.margin>
                <tooltip>
                   <Tooltip text="Gold is the most valuable resource and primary currency in the game. Essential for shop transactions and most upgrades. Tradable in the exchange and crucial for game progression." />
                </tooltip>
             </TextField>
          </children>
+         <GridPane.margin>
+            <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+         </GridPane.margin>
       </GridPane>
       <GridPane alignment="CENTER" GridPane.columnIndex="3">
          <columnConstraints>
@@ -139,15 +148,14 @@
                            <children>
                               <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="speed" textAlignment="CENTER" wrappingWidth="29.11669921875">
                                  <font>
-                                    <Font size="11.0" />
+                                    <Font size="9.0" />
                                  </font>
                               </Text>
-                              <Label fx:id="speedLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="0.0" text="Normal Speed  " textAlignment="CENTER" textFill="WHITE">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
+                              <Label fx:id="speedLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="0.0" text="Normal Speed  " textAlignment="CENTER" textFill="WHITE" />
                            </children>
+                           <VBox.margin>
+                              <Insets top="2.0" />
+                           </VBox.margin>
                         </VBox>
                         <HBox alignment="CENTER">
                            <children>
@@ -173,20 +181,29 @@
                                  </tooltip>
                               </Button>
                            </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
                         </HBox>
                      </children>
+                     <VBox.margin>
+                        <Insets left="20.0" />
+                     </VBox.margin>
                   </VBox>
                </children>
             </VBox>
             <VBox alignment="CENTER" GridPane.columnIndex="1">
                <children>
-                  <Label fx:id="timeView" alignment="CENTER" contentDisplay="CENTER" prefHeight="34.0" prefWidth="260.0" text="Time" textAlignment="CENTER" textFill="WHITE">
+                  <Label fx:id="timeView" alignment="CENTER" contentDisplay="CENTER" text="Time" textAlignment="CENTER" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
                      <tooltip>
                         <Tooltip consumeAutoHidingEvents="false" text="Timer: Represents game model.time where 1 second equals one day. You have the ability to start or stop model.time as needed." textAlignment="RIGHT" textOverrun="CLIP" />
                      </tooltip>
+                     <VBox.margin>
+                        <Insets top="3.0" />
+                     </VBox.margin>
                   </Label>
                   <HBox alignment="CENTER">
                      <children>
@@ -201,6 +218,9 @@
                            </HBox.margin>
                         </Button>
                      </children>
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin>
                   </HBox>
                </children>
             </VBox>
