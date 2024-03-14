@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 import model.characters.Character;
+import model.characters.decisions.CombatService;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -56,6 +57,9 @@ public class CharacterController extends BaseController  {
     private boolean isNavigatingBack = false;
     @FXML
     private Button previousBtn;
+    @FXML
+    private HBox CombatBox;
+
 
     private void updateWalletInfo(){
         walletInfo.setText(currentCharacter.getWallet().toStringValuesRows());
@@ -111,14 +115,20 @@ public class CharacterController extends BaseController  {
         updatePreviousButtonState(); // Update the button state
     }
 
+
+    @FXML
+    void executeDuel(){
+        CombatService.executeDuel(model.accessPlayer(), currentCharacter);
+    }
+
     @FXML
     void attackUpgrade(){
-        model.accessPlayer().getCombatStats().upgradeOffense();
+        model.accessPlayer().getCombatStats().upgradeOffenseWithGold();
         updateCombatStats();
     }
     @FXML
     void defenseUpgrade(){
-        model.accessPlayer().getCombatStats().upgradeDefence();
+        model.accessPlayer().getCombatStats().upgradeDefenceWithGold();
         updateCombatStats();
     }
 
@@ -128,9 +138,11 @@ public class CharacterController extends BaseController  {
         if (currentCharacter.equals(model.accessPlayer())){
             attackBox.setVisible(true);
             defenseBox.setVisible(true);
+            CombatBox.setVisible(false);
         }else{
             attackBox.setVisible(false);
             defenseBox.setVisible(false);
+            CombatBox.setVisible(true);
         }
     }
 

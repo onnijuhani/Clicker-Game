@@ -65,7 +65,7 @@ public class Character implements TaxObserver, NpcObserver, Details {
     protected WorkWallet workWallet;
     protected Property property;
 
-    protected LoyaltyManager loyaltyManager;
+    protected RelationshipManager relationshipManager;
 
     protected EventTracker eventTracker;
     protected int[] foodConsumption = {5,0};
@@ -73,12 +73,14 @@ public class Character implements TaxObserver, NpcObserver, Details {
     protected int foodUpdateDay;
     protected CombatStats combatStats;
 
-    private State state = State.NONE;
-    private List<GameEvent> ongoingEvents = new ArrayList<>();
+    protected State state = State.NONE;
+    protected List<GameEvent> ongoingEvents = new ArrayList<>();
+
+
     public Character() {
         this.wallet = new Wallet();
         this.slaves = new LinkedList<>();
-        this.loyaltyManager = new LoyaltyManager();
+        this.relationshipManager = new RelationshipManager();
         this.foodUpdateDay = Settings.get("foodConsumption");
         this.name = NameCreation.generateCharacterName();
         this.eventTracker = new EventTracker();
@@ -207,12 +209,12 @@ public class Character implements TaxObserver, NpcObserver, Details {
         this.combatStats = combatStats;
     }
 
-    public LoyaltyManager getLoyaltyManager() {
-        return loyaltyManager;
+    public RelationshipManager getLoyaltyManager() {
+        return relationshipManager;
     }
 
-    public void setLoyaltyManager(LoyaltyManager loyaltyManager) {
-        this.loyaltyManager = loyaltyManager;
+    public void setLoyaltyManager(RelationshipManager relationshipManager) {
+        this.relationshipManager = relationshipManager;
     }
 
     public State getState() {
@@ -233,6 +235,8 @@ public class Character implements TaxObserver, NpcObserver, Details {
     public List<GameEvent> getOngoingEvents() {
         return ongoingEvents;
     }
+
+
 
 }
 

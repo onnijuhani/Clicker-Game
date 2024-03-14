@@ -19,7 +19,7 @@ public class CombatStats {
         this.character = character;
     }
 
-    public void upgradeOffense(){
+    public void upgradeOffenseWithGold(){
         int price = getOffense().getUpgradePrice();
         if(character.getWallet().hasEnoughResource(Resource.Gold,price)){
             character.getWallet().subtractGold(price);
@@ -30,7 +30,7 @@ public class CombatStats {
         }
     }
 
-    public void upgradeDefence(){
+    public void upgradeDefenceWithGold(){
         int price = getDefense().getUpgradePrice();
         if(character.getWallet().hasEnoughResource(Resource.Gold,price)){
             character.getWallet().subtractGold(price);
@@ -40,6 +40,21 @@ public class CombatStats {
             character.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough Gold to increase defence"));
         }
     }
+
+    public void increaseOffence(){
+        getOffense().upgradeLevel();
+    }
+    public void increaseDefence(){
+        getDefense().upgradeLevel();
+    }
+
+    public void decreaseOffense(){
+        getOffense().decreaseLevel();
+    }
+    public void decreaseDefence(){
+        getDefense().decreaseLevel();
+    }
+
 
     public int getOffenseLevel(){
         return offense.getUpgradeLevel();

@@ -3,9 +3,15 @@ package model.characters;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LoyaltyManager {
+public class RelationshipManager {
     private final Set<Character> allies = new HashSet<>();
     private final Set<Character> enemies = new HashSet<>();
+
+    private final Set<Character> listOfDefeatedCharacters = new HashSet<>();
+
+    public void addDefeatedCharacter(Character character) {
+        listOfDefeatedCharacters.add(character);
+    }
 
     public void addAlly(Character character) {
         if (enemies.contains(character)) {
@@ -65,4 +71,7 @@ public class LoyaltyManager {
         return new HashSet<>(enemies); // Same here
     }
 
+    public Set<Character> getListOfDefeatedCharacters() {
+        return listOfDefeatedCharacters;
+    }
 }

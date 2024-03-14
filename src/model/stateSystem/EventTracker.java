@@ -25,13 +25,13 @@ public class EventTracker {
     private int maxShopEvents = 25;
     private int maxUtilityEvents = 25;
 
-    private LinkedList<String> majorEvents = new LinkedList<>();
-    private LinkedList<String> resourceEvents = new LinkedList<>();
-    private LinkedList<String> errorEvents = new LinkedList<>();
-    private LinkedList<String> minorEvents = new LinkedList<>();
-    private LinkedList<String> shopEvents = new LinkedList<>();
-    private LinkedList<String> utilityEvents = new LinkedList<>();
-    private PlayerPreferences preferences;
+    private final LinkedList<String> majorEvents = new LinkedList<>();
+    private final LinkedList<String> resourceEvents = new LinkedList<>();
+    private final LinkedList<String> errorEvents = new LinkedList<>();
+    private final LinkedList<String> minorEvents = new LinkedList<>();
+    private final LinkedList<String> shopEvents = new LinkedList<>();
+    private final LinkedList<String> utilityEvents = new LinkedList<>();
+    private final PlayerPreferences preferences;
 
     public EventTracker() {
         preferences = new PlayerPreferences();
