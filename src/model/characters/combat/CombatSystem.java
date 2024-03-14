@@ -2,12 +2,12 @@ package model.characters.combat;
 
 import model.buildings.Property;
 import model.characters.Character;
-import model.characters.GameEvent;
+import model.stateSystem.GameEvent;
 import model.stateSystem.Event;
 import model.stateSystem.EventTracker;
 import model.shop.UpgradeSystem;
 import model.stateSystem.State;
-import model.time.TimeEventManager;
+import model.time.EventManager;
 
 public class CombatSystem {
     private final Character attacker;
@@ -66,12 +66,10 @@ public class CombatSystem {
 
         GameEvent gameEvent = new GameEvent(Event.ROBBERY,attacker,defender);
 
-
-
         attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Robbery Started"));
         defender.getEventTracker().addEvent(EventTracker.Message("Major", "You are being robbed by "+ attacker));
 
-        TimeEventManager.scheduleEvent(this::decideRobbery, daysUntilEvent, gameEvent);
+        EventManager.scheduleEvent(this::decideRobbery, daysUntilEvent, gameEvent);
     }
 
     private void decideRobbery() {
@@ -153,7 +151,7 @@ public class CombatSystem {
         attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Duel Started"));
         defender.getEventTracker().addEvent(EventTracker.Message("Major", "You are being attacked (duel) by "+ attacker));
 
-        TimeEventManager.scheduleEvent(this::decideDuel, daysUntilEvent, gameEvent);
+        EventManager.scheduleEvent(this::decideDuel, daysUntilEvent, gameEvent);
     }
 
     private void decideDuel() {

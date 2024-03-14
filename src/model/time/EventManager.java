@@ -1,12 +1,12 @@
 package model.time;
 
-import model.characters.GameEvent;
+import model.stateSystem.GameEvent;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class TimeEventManager {
+public class EventManager {
     private static final List<ScheduledEvent> scheduledEvents = new ArrayList<>();
 
     public static void scheduleEvent(Runnable eventAction, int daysUntilEvent, GameEvent gameEvent) {
@@ -28,6 +28,8 @@ public class TimeEventManager {
 
         gameEvent.setExecutionTime(targetDay, targetMonth, targetYear);
         scheduledEvents.add(new ScheduledEvent(eventAction, targetDay, targetMonth,targetYear, gameEvent));
+
+
     }
 
 

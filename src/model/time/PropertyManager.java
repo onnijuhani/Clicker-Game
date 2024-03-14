@@ -13,6 +13,9 @@ public class PropertyManager {
     public static void subscribe(PropertyObserver observer) {
         observers.add(observer);
     }
+    public static void unsubscribe(PropertyObserver observer) {
+        observers.remove(observer);
+    }
     public static void notifyTimeUpdate() {
         // Notify all observers
         for (PropertyObserver observer : observers) {

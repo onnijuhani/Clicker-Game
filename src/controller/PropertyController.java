@@ -9,18 +9,22 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import model.Settings;
+import model.buildings.Construct;
 import model.buildings.Property;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.Character;
 import model.characters.decisions.CombatService;
 import model.characters.player.Player;
+import model.resourceManagement.TransferPackage;
 import model.shop.Shop;
+import model.stateSystem.Event;
+import model.stateSystem.GameEvent;
 
 import java.util.HashMap;
 import java.util.Map;
 
+// UPDATED BY CHARACTER CONTROLLER
 public class PropertyController extends BaseController {
-
     @FXML
     private Label propertyName;
     @FXML
@@ -33,8 +37,6 @@ public class PropertyController extends BaseController {
     private AnchorPane content;
     @FXML
     private Label utilitySlots;
-
-
     private boolean isShowing = true;
     private MainController main;
     private CharacterController characterController;
@@ -55,7 +57,19 @@ public class PropertyController extends BaseController {
     private Button upgradeDefBtn;
     @FXML
     private Label upgradeDefLabel;
+    @FXML
+    private Label upgradeCost;
+    @FXML
+    void upgradeProperty(){
+        Construct.constructProperty(character);
+    }
+    @FXML
+    private VBox upgradeBox;
 
+    @FXML
+    private Label constructDaysLeft;
+    @FXML
+    private Button constructBtn;
 
      //MEADOWLANDS
     @FXML
@@ -127,7 +141,7 @@ public class PropertyController extends BaseController {
     @FXML
     private VBox utilityPlayerView4;
 
-    private Map<UtilityBuildings, UtilityBuildingUI> buildingUIs = new HashMap<>();
+    private final Map<UtilityBuildings, UtilityBuildingUI> buildingUIs = new HashMap<>();
 
     private void initializeUIMappings() {
         buildingUIs.put(UtilityBuildings.MeadowLands, new UtilityBuildingUI(utilityInfo, utilityPrice, utilityUpgrade, utilityInfoView, utilityBuyView, utilityPlayerView));
@@ -143,8 +157,6 @@ public class PropertyController extends BaseController {
         utilityPrice2.setText(Settings.get("goldMineCost") + " Gold");
         utilityPrice3.setText(Settings.get("slaveFacilityCost") + " Gold");
         utilityPrice4.setText(Settings.get("mysticMineCost") + " Gold");
-
-
     }
 
 
@@ -196,7 +208,6 @@ public class PropertyController extends BaseController {
     }
 
 
-
     public void updatePropertyTab(){
         updatePropertyName();
         updatePropertyType();
@@ -207,8 +218,44 @@ public class PropertyController extends BaseController {
         updateUtilitySlot();
         updateVaultValue();
         updateDefenceLevel();
+        updateConstructInfo();
 
     }
+
+    void updateConstructionTimeLeft() {
+        GameEvent constructionEvent = character.getOngoingEvents().stream()
+                .filter(event -> event.getEvent() == Event.CONSTRUCTION)
+                .findFirst()
+                .orElse(null);
+
+        if (constructionEvent != null) {
+            // Ongoing construction
+            int[] timeLeft = constructionEvent.timeLeftUntilExecution();
+            constructDaysLeft.setText(String.format("%d days, %d months, %d years left", timeLeft[2], timeLeft[1], timeLeft[0]));
+            constructBtn.setDisable(true);
+            constructBtn.setText("Under Construction");
+            constructDaysLeft.setVisible(true);
+        } else {
+            // No ongoing construction event
+            constructDaysLeft.setText("No construction in progress");
+            constructBtn.setDisable(false);
+            constructDaysLeft.setVisible(false);
+        }
+    }
+
+    void updateConstructInfo(){
+        upgradeBox.setVisible(character instanceof Player);
+        TransferPackage cost = Construct.getCost(character);
+        constructBtn.setText("Construct "+ Construct.getNextProperty(character));
+        if (cost != null) {
+            upgradeCost.setText(cost.toShortString());
+        } else {
+            upgradeCost.setText("Max");
+            constructBtn.setVisible(false);
+        }
+        updateConstructionTimeLeft();
+    }
+
 
 
 
@@ -218,7 +265,7 @@ public class PropertyController extends BaseController {
             content.setVisible(false);
             showHideButton.setText("Show");
             isShowing = false;
-        } else if (!isShowing) {
+        } else {
             content.setVisible(true);
             showHideButton.setText("Hide");
             isShowing = true;

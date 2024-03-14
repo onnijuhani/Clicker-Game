@@ -46,8 +46,6 @@ public class CharacterController extends BaseController  {
     private HBox defenseBox;
 
 
-    private Timeline updateTimeline;
-
     private MainController main;
     private PropertyController propertyController;
 
@@ -99,7 +97,7 @@ public class CharacterController extends BaseController  {
 
     @FXML
     public void initialize() {
-        updateTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateCharacterTab()));
+        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateCharacterTab()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
     }

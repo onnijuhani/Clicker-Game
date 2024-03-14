@@ -29,8 +29,8 @@ public class Player extends Character {
 
     private WorkWallet workWallet;
     private String name;
-    private EventTracker eventTracker;
-    private Clicker clicker;
+    private final EventTracker eventTracker;
+    private final Clicker clicker;
     private Authority supervisor;
     private ArrayList<Authority> subordinate;
     private Status status = Status.Peasant;

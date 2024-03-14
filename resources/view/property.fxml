@@ -496,6 +496,39 @@
                   </Label>
                </children>
             </VBox>
+            <VBox fx:id="upgradeBox" alignment="CENTER" layoutX="140.0" layoutY="152.0" prefHeight="119.0" prefWidth="217.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+               <children>
+                  <Label alignment="CENTER" text="Upgrade" textFill="WHITE">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label fx:id="upgradeCost" text="Cost" textFill="WHITE">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Button fx:id="constructBtn" mnemonicParsing="false" onAction="#upgradeProperty" text="Construct">
+                     <VBox.margin>
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Label fx:id="constructDaysLeft" alignment="CENTER" text="Days Left" textFill="WHITE">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                     </VBox.margin>
+                  </Label>
+               </children>
+            </VBox>
          </children>
       </AnchorPane>
       <Button fx:id="showHideButton" layoutX="38.0" layoutY="113.0" mnemonicParsing="false" onAction="#showHideContent" text="Hide" />

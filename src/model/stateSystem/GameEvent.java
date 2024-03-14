@@ -1,23 +1,25 @@
-package model.characters;
+package model.stateSystem;
 
-import model.stateSystem.Event;
+import model.characters.Character;
 import model.time.Time;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class GameEvent {
 
     private Event event;
     private int executionDay;
     private int executionMonth;
-
     private int executionYear;
-    private final Character initiator;
-    private final Character target;
+    private final List<Character> participants;
 
-    public GameEvent(Event event, Character initiator, Character target) {
+    public GameEvent(Event event, Character... participants) {
         this.event = event;
-        this.initiator = initiator;
-        this.target = target;
-        startEvent(initiator, target);
+        this.participants = Arrays.asList(participants);
+        for (Character participant : participants) {
+            participant.addEvent(this);
+        }
     }
 
     public int[] timeLeftUntilExecution() {
@@ -34,6 +36,7 @@ public class GameEvent {
         int monthsLeft = (daysUntilExecution % 360) / 30;
         int daysLeft = (daysUntilExecution % 360) % 30;
 
+
         return new int[]{yearsLeft, monthsLeft, daysLeft};
     }
 
@@ -49,9 +52,10 @@ public class GameEvent {
         target.addEvent(this);
     }
 
-    public void endEvent(){
-        initiator.getOngoingEvents().remove(this);
-        target.getOngoingEvents().remove(this);
+    public void endEvent() {
+        for (Character participant : participants) {
+            participant.getOngoingEvents().remove(this);
+        }
     }
 
 

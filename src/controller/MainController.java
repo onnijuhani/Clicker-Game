@@ -35,8 +35,6 @@ public class MainController extends BaseController {
     @FXML
     private PropertyController propertyController;
 
-    @FXML
-    private ConstructController constructController;
 
     @FXML
     protected Button clickMeButton;
@@ -106,11 +104,6 @@ public class MainController extends BaseController {
             clickerShopController.setShop(model.accessPlayer().getNation().getShop());
         } else {
             System.out.println("CharacterController is null");
-        }
-        if (constructController != null) {
-            constructController.setModel(model);
-        } else {
-            System.out.println("ConstructController is null");
         }
     }
 

@@ -1,6 +1,6 @@
 package model.time;
 
-import model.characters.GameEvent;
+import model.stateSystem.GameEvent;
 
 public record ScheduledEvent(Runnable action, int executionDay, int executionMonth, int executionYear, GameEvent gameEvent) {
 

@@ -5,10 +5,10 @@ import javafx.scene.image.Image;
 import model.Images;
 import model.buildings.utilityBuilding.UtilitySlot;
 import model.characters.Character;
-import model.stateSystem.EventTracker;
 import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Vault;
 import model.shop.UpgradeSystem;
+import model.stateSystem.EventTracker;
 import model.stateSystem.State;
 import model.time.PropertyManager;
 import model.time.PropertyObserver;
@@ -18,6 +18,9 @@ public class Property implements PropertyObserver, Details {
 
     @Override
     public void propertyUpdate() {
+        if (owner == null){
+            return;
+        }
         if (firstTimeReached) {
                 // Skip the first model.time this condition is met
                 firstTimeReached = false;
@@ -33,11 +36,8 @@ public class Property implements PropertyObserver, Details {
     public String toString() {
         return name;
     }
-
     private boolean firstTimeReached = true;
-
     private UpgradeSystem defense;
-
     protected Vault vault;
     protected Quarter location;
     protected Character owner;
@@ -47,8 +47,6 @@ public class Property implements PropertyObserver, Details {
 
     protected UtilitySlot utilitySlot;
     private State state = State.NONE;
-
-
 
     public Property(PropertyConfig.PropertyValues propertyValues, String name) {
         this.defense = new UpgradeSystem(propertyValues.getPower());
@@ -72,8 +70,6 @@ public class Property implements PropertyObserver, Details {
         return Images.PropertyImg.getImage(propertyEnum);
     }
 
-
-
     public Character getOwner() {
         return owner;
     }
@@ -93,8 +89,6 @@ public class Property implements PropertyObserver, Details {
             owner.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough alloys to increase property defence"));
         }
     }
-
-
     public Quarter getLocation() {
         return location;
     }
@@ -103,27 +97,21 @@ public class Property implements PropertyObserver, Details {
         this.location = location;
         location.addProperty(this);
     }
-
     public boolean hasLocation() {
         return location != null;
     }
-
     public String getName() {
         return name;
     }
-
-
     public Maintenance getMaintenance() {
         return maintenance;
     }
-
     public void setMaintenance(Maintenance maintenance) {
         this.maintenance = maintenance;
     }
     public UtilitySlot getUtilitySlot() {
         return utilitySlot;
     }
-
     public void setUtilitySlot(UtilitySlot utilitySlot) {
         this.utilitySlot = utilitySlot;
     }
@@ -133,18 +121,15 @@ public class Property implements PropertyObserver, Details {
     public Vault getVault() {
         return vault;
     }
-
     public UpgradeSystem getDefense() {
         return defense;
     }
     public void setDefense(UpgradeSystem defense) {
         this.defense = defense;
     }
-
     public State getState() {
         return state;
     }
-
     public void setState(State state) {
         this.state = state;
     }

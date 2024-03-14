@@ -6,9 +6,9 @@ import model.resourceManagement.wallets.Vault;
 import model.resourceManagement.wallets.Wallet;
 
 public class Maintenance {
-    private int food;
-    private int alloy;
-    private int gold;
+    private final int food;
+    private final int alloy;
+    private final int gold;
 
     public Maintenance(PropertyConfig.PropertyValues propertyValues) {
         this.food = propertyValues.food;
@@ -29,7 +29,7 @@ public class Maintenance {
             ownerWallet.subtractResources(maintenanceCost);
             property.getOwner().getEventTracker().addEvent(EventTracker.Message("Minor",message));
         } else {
-            String errorMessage = "Maintenance not paid" + maintenanceCost.toString();
+            String errorMessage = "Maintenance not paid" + maintenanceCost;
             property.getOwner().getEventTracker().addEvent(EventTracker.Message("Error",errorMessage));
         }
     }

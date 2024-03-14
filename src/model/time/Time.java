@@ -69,7 +69,7 @@ public class Time {
         }
         isFirstDay = false; // After the first increment, it's no longer the first day
 
-        TimeEventManager.processScheduledEvents(); // All scheduled events require information every day
+        EventManager.processScheduledEvents(); // All scheduled events require information every day
     }
 
     public void incrementByClick(){
@@ -108,7 +108,7 @@ public class Time {
             milliseconds = 1000;
         }
         if (speed.equals(Speed.Fast)) {
-            milliseconds = 300;
+            milliseconds = 25;
         }
         if (speed.equals(Speed.Slow)) {
             milliseconds = 2000;

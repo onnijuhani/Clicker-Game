@@ -13,6 +13,7 @@ import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.shop.Exchange;
 import model.stateSystem.EventTracker;
+import model.stateSystem.GameEvent;
 import model.stateSystem.State;
 import model.time.NpcManager;
 import model.time.NpcObserver;
@@ -229,7 +230,6 @@ public class Character implements TaxObserver, NpcObserver, Details {
 
     public void addEvent(GameEvent gameEvent) {
         ongoingEvents.add(gameEvent);
-        System.out.println("ongoingEvents "+ this + gameEvent.getEvent());
     }
 
     public List<GameEvent> getOngoingEvents() {
