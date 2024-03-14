@@ -19,6 +19,12 @@ public class Property implements PropertyObserver, Details {
     @Override
     public void propertyUpdate() {
         if (owner == null){
+            /*
+            first time reached allows 1 maintenance free month at the start of the game
+            property under construction appears here and shouldn't give free month when ready
+            this is set in Construction also
+            */
+            firstTimeReached = false;
             return;
         }
         if (firstTimeReached) {
@@ -36,6 +42,7 @@ public class Property implements PropertyObserver, Details {
     public String toString() {
         return name;
     }
+
     private boolean firstTimeReached = true;
     private UpgradeSystem defense;
     protected Vault vault;
@@ -99,6 +106,9 @@ public class Property implements PropertyObserver, Details {
     }
     public boolean hasLocation() {
         return location != null;
+    }
+    public void setFirstTimeReached(boolean firstTimeReached) {
+        this.firstTimeReached = firstTimeReached;
     }
     public String getName() {
         return name;

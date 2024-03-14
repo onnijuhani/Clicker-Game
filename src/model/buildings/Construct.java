@@ -41,6 +41,7 @@ public class Construct {
 
             // THIS SHOULDN'T BE CREATED HERE SINCE IT SUBSCRIBES TO MAINTENANCE PAY WITHOUT OWNER
             Property newHouse = initiateNewProperty(newType, oldName);
+            newHouse.setFirstTimeReached(false);
 
             GameEvent gameEvent = new GameEvent(Event.CONSTRUCTION, character);
             character.getEventTracker().addEvent(EventTracker.Message("Major", "Construction Started"));

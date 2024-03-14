@@ -408,7 +408,7 @@
                         <Font size="20.0" />
                      </font>
                      <VBox.margin>
-                        <Insets top="5.0" />
+                        <Insets top="3.0" />
                      </VBox.margin>
                   </Label>
                   <Label fx:id="maintenanceCost" alignment="CENTER" text="Label" textFill="WHITE">
@@ -416,7 +416,7 @@
                         <Font size="16.0" />
                      </font>
                      <VBox.margin>
-                        <Insets top="5.0" />
+                        <Insets />
                      </VBox.margin>
                   </Label>
                </children>
@@ -433,7 +433,7 @@
                   </Label>
                   <Label fx:id="vaultValue" alignment="CENTER" text="Vault Value" textFill="WHITE" wrapText="true">
                      <font>
-                        <Font size="14.0" />
+                        <Font size="15.0" />
                      </font>
                      <VBox.margin>
                         <Insets top="5.0" />
@@ -461,7 +461,7 @@
                         <Font size="16.0" />
                      </font>
                      <VBox.margin>
-                        <Insets top="5.0" />
+                        <Insets top="1.0" />
                      </VBox.margin>
                   </Label>
                   <Label fx:id="upgradeDefLabel" alignment="CENTER" text="Upgrade" textAlignment="CENTER" textFill="WHITE">
@@ -531,6 +531,6 @@
             </VBox>
          </children>
       </AnchorPane>
-      <Button fx:id="showHideButton" layoutX="38.0" layoutY="113.0" mnemonicParsing="false" onAction="#showHideContent" text="Hide" />
+      <Button fx:id="showHideButton" layoutX="92.0" layoutY="555.0" mnemonicParsing="false" onAction="#showHideContent" text="Hide" />
    </children>
 </AnchorPane>
