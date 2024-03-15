@@ -23,8 +23,11 @@ public class CombatStats {
         int price = getOffense().getUpgradePrice();
         if(person.getWallet().hasEnoughResource(Resource.Gold,price)){
             person.getWallet().subtractGold(price);
-            getOffense().upgradeLevel();
-            person.getEventTracker().addEvent(EventTracker.Message("Utility",  "Offence was increased"));
+            if(getOffense().upgradeLevel()) {
+                person.getEventTracker().addEvent(EventTracker.Message("Utility", "Offence was increased"));
+            }else{ // useless because UI doesn't allow the button to be pressed anyway.
+                person.getEventTracker().addEvent(EventTracker.Message("Error", "Offence is already at max level"));
+            }
         }else{
             person.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough Gold to increase offence"));
         }

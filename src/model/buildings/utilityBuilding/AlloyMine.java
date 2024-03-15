@@ -25,9 +25,15 @@ public class AlloyMine extends UtilityBuilding {
     }
 
     @Override
-    public void upgradeLevel() {
-        level++;
-        upgradeProduction();
+    public boolean upgradeLevel() {
+        if (level < MAX_LEVEL) {
+            level++;
+            upgradeProduction();
+            return true;
+        } else {
+            owner.getEventTracker().addEvent(EventTracker.Message("Error", "Max level reached"));
+            return false;
+        }
     }
 
     @Override

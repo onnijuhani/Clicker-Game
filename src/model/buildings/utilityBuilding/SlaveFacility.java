@@ -32,9 +32,15 @@ public class SlaveFacility extends UtilityBuilding {
     }
 
     @Override
-    public void upgradeLevel() {
-        level++;
-        increaseSlotAmount();
+    public boolean upgradeLevel() {
+        if (level < MAX_LEVEL) {
+            level++;
+            increaseSlotAmount();
+            return true;
+        } else {
+            owner.getEventTracker().addEvent(EventTracker.Message("Error", "Max level reached"));
+            return false;
+        }
     }
 
     @Override

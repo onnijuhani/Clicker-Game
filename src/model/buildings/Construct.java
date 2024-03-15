@@ -55,7 +55,7 @@ public class Construct {
     }
 
     private static int getDaysUntilEvent(Properties newType) {
-        int baseConstructionTime = 30;
+        int baseConstructionTime = 1;
         double constructionTimeMultiplier = Math.pow(1.6, newType.ordinal());
         return (int) (baseConstructionTime * constructionTimeMultiplier);
     }

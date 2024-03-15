@@ -114,7 +114,7 @@
                                                       <Font name="System Bold" size="16.0" />
                                                    </font>
                                                 </Label>
-                                                <Button fx:id="utilityUpgrade" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#upgradeMeadow" prefHeight="25.0" prefWidth="82.0" text="Upgrade" />
+                                                <Button fx:id="utilityUpgrade" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#upgradeMeadow" text="Upgrade" />
                                              </children>
                                           </VBox>
                                        </children>
@@ -184,7 +184,7 @@
                                                       <Font name="System Bold" size="16.0" />
                                                    </font>
                                                 </Label>
-                                                <Button fx:id="utilityUpgrade1" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#upgradeAlloy" prefHeight="25.0" prefWidth="82.0" text="Upgrade" />
+                                                <Button fx:id="utilityUpgrade1" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#upgradeAlloy" text="Upgrade" />
                                              </children>
                                           </VBox>
                                        </children>
@@ -254,7 +254,7 @@
                                                       <Font name="System Bold" size="16.0" />
                                                    </font>
                                                 </Label>
-                                                <Button fx:id="utilityUpgrade2" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#upgradeGold" prefHeight="25.0" prefWidth="82.0" text="Upgrade" />
+                                                <Button fx:id="utilityUpgrade2" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#upgradeGold" text="Upgrade" />
                                              </children>
                                           </VBox>
                                        </children>
@@ -321,7 +321,7 @@
                                                       <Font name="System Bold" size="16.0" />
                                                    </font>
                                                 </Label>
-                                                <Button fx:id="utilityUpgrade3" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#upgradeSlaveFacility" prefHeight="25.0" prefWidth="82.0" text="Upgrade" />
+                                                <Button fx:id="utilityUpgrade3" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#upgradeSlaveFacility" text="Upgrade" />
                                              </children>
                                           </VBox>
                                        </children>
@@ -388,7 +388,7 @@
                                                       <Font name="System Bold" size="16.0" />
                                                    </font>
                                                 </Label>
-                                                <Button fx:id="utilityUpgrade4" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#upgradeMysticMine" prefHeight="25.0" prefWidth="82.0" text="Upgrade" />
+                                                <Button fx:id="utilityUpgrade4" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#upgradeMysticMine" text="Upgrade" />
                                              </children>
                                           </VBox>
                                        </children>

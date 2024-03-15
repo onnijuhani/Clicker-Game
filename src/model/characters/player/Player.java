@@ -29,7 +29,9 @@ public class Player extends Character {
     public Player(Quarter spawn){
         this.personalDetails = new PersonalDetails(false);
 
-        getWallet().setGold(10000);
+        getWallet().setGold(1000000000);
+        getWallet().setFood(1000000000);
+        getWallet().setAlloy(1000000000);
 
 
         this.workWallet = new WorkWallet(getWallet());

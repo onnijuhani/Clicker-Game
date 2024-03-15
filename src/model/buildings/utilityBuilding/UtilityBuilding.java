@@ -1,9 +1,10 @@
 package model.buildings.utilityBuilding;
 
+import model.Settings;
 import model.characters.Character;
-import model.stateSystem.EventTracker;
 import model.resourceManagement.TransferPackage;
 import model.shop.UpgradeSystem;
+import model.stateSystem.EventTracker;
 import model.time.UtilityManager;
 import model.time.UtilityObserver;
 
@@ -12,6 +13,7 @@ public class UtilityBuilding extends UpgradeSystem implements UtilityObserver {
     protected UtilityBuildings name;
 
     protected Character owner;
+    protected int MAX_LEVEL = Settings.get("utilityMaxLevel");
 
     @Override
     public void utilityUpdate() {

@@ -169,12 +169,17 @@ public class PropertyController extends BaseController {
             ui.infoView.setVisible(true);
             ui.infoLabel.setText(property.getUtilitySlot().getUtilityBuilding(building).getInfo());
             ui.utilityPlayerView.setVisible(true);
+            if (property.getUtilitySlot().getUtilityBuilding(building).getUpgradeLevel() == Settings.get("utilityMaxLevel")) {
+                ui.upgradeButton.setDisable(true);
+                ui.upgradeButton.setText("Maxed");
+            }
         } else {
             ui.priceButton.setVisible(true);
             ui.utilityPlayerView.setVisible(true);
             ui.buyView.setVisible(true);
             ui.infoView.setVisible(false);
         }
+
     }
 
     private void updateNPCUIForBuilding(UtilityBuildings building) {
@@ -221,6 +226,7 @@ public class PropertyController extends BaseController {
         updateConstructInfo();
 
     }
+
 
     void updateConstructionTimeLeft() {
         GameEvent constructionEvent = character.getOngoingEvents().stream()
@@ -434,7 +440,7 @@ public class PropertyController extends BaseController {
         public Button upgradeButton;
         public VBox infoView;
         public VBox buyView;
-        private VBox utilityPlayerView;
+        private final VBox utilityPlayerView;
         public UtilityBuildingUI(Label infoLabel, Button priceButton, Button upgradeButton, VBox infoView, VBox buyView, VBox utilityPlayerView) {
             this.infoLabel = infoLabel;
             this.priceButton = priceButton;

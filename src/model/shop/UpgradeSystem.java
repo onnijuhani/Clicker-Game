@@ -3,27 +3,29 @@ package model.shop;
 public class UpgradeSystem {
     protected int level;
     protected int basePrice;
-
+    protected final int MAX_LEVEL = 10;
     public UpgradeSystem(int basePrice) {
         this.level = 1;
         this.basePrice = basePrice;
     }
-
     public int getUpgradeLevel() {
         return level;
     }
-
     public int getUpgradePrice() {
         return basePrice * (int) Math.pow(4, level -1 );
     }
-
-    public void upgradeLevel() {
-        level++;
+    public boolean upgradeLevel() {
+        if (level < MAX_LEVEL) {
+            level++;
+            return true;
+        } else {
+            return false;
+        }
     }
+
     public void decreaseLevel() {
         if (level > 1) {
             level--;
         }
     }
-
 }
