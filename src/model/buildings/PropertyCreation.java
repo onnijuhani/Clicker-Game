@@ -1,5 +1,6 @@
 package model.buildings;
 
+import model.buildings.properties.*;
 import model.characters.Character;
 import model.characters.npc.*;
 

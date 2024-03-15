@@ -6,7 +6,6 @@ import model.buildings.Property;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.authority.Authority;
 import model.characters.combat.CombatStats;
-import model.characters.npc.Slave;
 import model.characters.player.Player;
 import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Wallet;
@@ -23,15 +22,13 @@ import model.worldCreation.Details;
 import model.worldCreation.Nation;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Character implements TaxObserver, NpcObserver, Details {
 
     @Override
-    public void taxUpdate(int day, int month, int year) {
+    public void taxUpdate(int day, int month, int year) { //implemented at subclasses
     }
-
     @Override
     public void npcUpdate(int day, int month, int year) {
         if (day == foodUpdateDay) {
@@ -49,43 +46,33 @@ public class Character implements TaxObserver, NpcObserver, Details {
         }
     }
 
-    @Override
-    public String getDetails() {
-        return (this.getClass().getSimpleName()+" "+ getName());
-    }
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() +" "+ name;
-    }
-    protected Authority authority;
-    protected static int totalAmount;
-    protected LinkedList<Slave> slaves;
-    protected Nation nation;
-    protected String name;
-    protected Wallet wallet;
-    protected WorkWallet workWallet;
-    protected Property property;
-
-    protected RelationshipManager relationshipManager;
-
-    protected EventTracker eventTracker;
-    protected int[] foodConsumption = {5,0};
-    protected Status status;
-    protected int foodUpdateDay;
-    protected CombatStats combatStats;
-
-    protected State state = State.NONE;
-    protected List<GameEvent> ongoingEvents = new ArrayList<>();
-
+    protected Authority authority;  // bound to class
+    protected static int totalAmount; // tracks total amount of instances created
+    protected Nation nation; // bound to class
+    protected String name; //personal
+    protected Wallet wallet; //personal
+    protected WorkWallet workWallet; //personal
+    protected Property property;  //personal
+    protected RelationshipManager relationshipManager; //personal
+    protected EventTracker eventTracker; //personal
+    protected int[] foodConsumption = {5,0}; //bound to class
+    protected Status status; // bound to class
+    protected int foodUpdateDay; //bound to class
+    protected CombatStats combatStats; //personal
+    protected State state = State.NONE;  //personal
+    protected List<GameEvent> ongoingEvents = new ArrayList<>(); //personal
+    protected PaymentCalendar paymentCalendar; //personal
+    protected StrikesTracker strikesTracker; //personal
 
     public Character() {
         this.wallet = new Wallet();
-        this.slaves = new LinkedList<>();
         this.relationshipManager = new RelationshipManager();
         this.foodUpdateDay = Settings.get("foodConsumption");
         this.name = NameCreation.generateCharacterName();
         this.eventTracker = new EventTracker();
         this.combatStats = new CombatStats(10,5, this);
+        this.paymentCalendar = new PaymentCalendar();
+        this.strikesTracker = new StrikesTracker(10);
         if (shouldSubscribeToTaxEvent()) {
             TaxEventManager.subscribe(this);
         }
@@ -110,11 +97,8 @@ public class Character implements TaxObserver, NpcObserver, Details {
         return true;
     }
 
-
     public void foodConsumption(Character character) {
-
         Wallet wallet = character.getWallet();
-
         //food consumption goes up every year by 5
         int foodNeeded = foodConsumption[0];
         foodConsumption[1] += 1;
@@ -123,8 +107,6 @@ public class Character implements TaxObserver, NpcObserver, Details {
             foodConsumption[1] = 0;
         }
         Exchange exchange = nation.getShop().getExchange();
-
-
 
         try {
             if (wallet.hasEnoughResource(Resource.Food, foodNeeded)) {
@@ -160,8 +142,14 @@ public class Character implements TaxObserver, NpcObserver, Details {
             e.printStackTrace();
         }
     }
-
-
+    @Override
+    public String getDetails() {
+        return (this.getClass().getSimpleName()+" "+ getName());
+    }
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() +" "+ name;
+    }
     public String getName() {
         return name;
     }
@@ -188,7 +176,6 @@ public class Character implements TaxObserver, NpcObserver, Details {
     public void setWallet(Wallet wallet) {
         this.wallet = wallet;
     }
-
 
     public EventTracker getEventTracker() {
         return eventTracker;
@@ -217,27 +204,18 @@ public class Character implements TaxObserver, NpcObserver, Details {
     public void setLoyaltyManager(RelationshipManager relationshipManager) {
         this.relationshipManager = relationshipManager;
     }
-
     public State getState() {
         return state;
     }
-
     public void setState(State state) {
         this.state = state;
     }
-
-
-
     public void addEvent(GameEvent gameEvent) {
         ongoingEvents.add(gameEvent);
     }
-
     public List<GameEvent> getOngoingEvents() {
         return ongoingEvents;
     }
-
-
-
 }
 
 

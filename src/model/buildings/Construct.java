@@ -1,6 +1,7 @@
 package model.buildings;
 
 import model.Settings;
+import model.buildings.properties.*;
 import model.buildings.utilityBuilding.UtilitySlot;
 import model.characters.Character;
 import model.resourceManagement.TransferPackage;

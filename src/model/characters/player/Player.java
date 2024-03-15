@@ -3,7 +3,7 @@ package model.characters.player;
 
 import model.NameCreation;
 import model.buildings.Property;
-import model.buildings.Shack;
+import model.buildings.properties.Shack;
 import model.characters.Character;
 import model.characters.Status;
 import model.characters.authority.Authority;

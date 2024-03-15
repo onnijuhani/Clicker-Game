@@ -23,10 +23,11 @@ public class Authority implements TaxObserver {
             imposeTax();
             paySupporters();
         }
-
     }
+
+
     protected Property property;
-    protected AuthorityCharacter character;
+    protected AuthorityCharacter character; //the character who is in this position
     protected ArrayList<Authority> subordinate;
     protected Authority supervisor;
     protected ArrayList<Support> supporters;
