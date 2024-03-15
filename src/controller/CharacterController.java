@@ -74,6 +74,7 @@ public class CharacterController extends BaseController  {
         differentiatePlayer();
         updateCombatStats();
         checkUpgradeLevels();
+
     }
 
     public void checkUpgradeLevels(){

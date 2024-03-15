@@ -15,8 +15,8 @@ import java.util.*;
 
 public class Quarter extends ControlledArea implements Details {
 
-    private HashMap<Status, LinkedList<Character>> populationMap;
-    private PropertyTracker allProperties;
+    private final HashMap<Status, LinkedList<Character>> populationMap;
+    private final PropertyTracker allProperties;
 
     private City city;
     private int numOfPeasants;
@@ -33,10 +33,26 @@ public class Quarter extends ControlledArea implements Details {
         this.populationMap = new HashMap<>();
         initializePopulationMap();
         populateQuarter();
+        createQuarterAlliances();
     }
 
     public LinkedList<Character> getCharacterList(Status status) {
         return populationMap.getOrDefault(status, new LinkedList<>());
+    }
+
+    public void createQuarterAlliances() {
+
+        List<Character> allCharacters = populationMap.values().stream()
+                .flatMap(Collection::stream)
+                .toList();
+
+        for (Character character : allCharacters) {
+            for (Character potentialAlly : allCharacters) {
+                if (!character.equals(potentialAlly)) {
+                    character.getRelationshipManager().addAlly(potentialAlly);
+                }
+            }
+        }
     }
 
     @Override
@@ -102,11 +118,6 @@ public class Quarter extends ControlledArea implements Details {
         return citizens;
     }
 
-
-
-
-
-
     @Override
     public ArrayList<Quarter> getContents() {
         return new ArrayList<>();
@@ -134,7 +145,7 @@ public class Quarter extends ControlledArea implements Details {
         LinkedList<Character> vanguardList = new LinkedList<>();
         LinkedList<Character> governorList = new LinkedList<>();
         LinkedList<Character> captainList = new LinkedList<>();
-        LinkedList<Character> slaveList = new LinkedList<>();
+        LinkedList<Character> peasantList = new LinkedList<>();
 
         populationMap.put(Status.Farmer, farmerList);
         populationMap.put(Status.Miner, minerList);
@@ -146,8 +157,7 @@ public class Quarter extends ControlledArea implements Details {
         populationMap.put(Status.Vanguard, vanguardList);
         populationMap.put(Status.Governor, governorList);
         populationMap.put(Status.Captain, captainList);
-        populationMap.put(Status.Slave, slaveList);
-
+        populationMap.put(Status.Peasant, peasantList);
 
     }
 
@@ -162,7 +172,6 @@ public class Quarter extends ControlledArea implements Details {
 
         peasantFactory(quarterCaptain, farmerList, minerList, merchantList);
     }
-
 
     private void setUpCaptainAttributes(QuarterAuthority quarterCaptain) {
         quarterCaptain.getCharacter().setNation(this.city.getProvince().getNation());

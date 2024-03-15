@@ -9,9 +9,12 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import model.Model;
 
+import java.net.URL;
 import java.util.Objects;
 
 public class UserInterface extends Application {
@@ -36,6 +39,14 @@ public class UserInterface extends Application {
 
             primaryStage.setResizable(false);
 
+            URL resource = getClass().getResource("/test.mp3");
+            String musicFile = resource.toString();
+            Media sound = new Media(musicFile);
+            MediaPlayer mediaPlayer = new MediaPlayer(sound);
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop indefinitely
+            mediaPlayer.play();
+            mediaPlayer.setMute(true);
+
 
             // Key event ENTER  for CLICKER
             scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -45,7 +56,7 @@ public class UserInterface extends Application {
                 }
             });
 
-            // Key event SPACE to stop time
+            // Key event SPACE to stop/start time
             scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
                 if (event.getCode() == KeyCode.SPACE) {
                     mainController.toggleSimulation();

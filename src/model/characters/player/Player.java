@@ -40,6 +40,9 @@ public class Player extends Character {
         setNation(spawn.getAuthority().getCharacter().getNation());
         setProperty(new Shack("Your Own", this));
         getProperty().setLocation(spawn);
+
+        spawn.addCharacter(getStatus(),this);
+        spawn.createQuarterAlliances();
     }
 
 
