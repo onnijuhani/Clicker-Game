@@ -111,8 +111,7 @@ public class City extends ControlledArea implements Details {
         Captain captain = new Captain();
         captain.setNation(nation);
         captain.setAuthority(getAuthority());
-        Property property = PropertyCreation.createProperty(quarterName, "Quarter");
-        property.setOwner(captain);
+        Property property = PropertyCreation.createProperty(quarterName, "Quarter", captain);
         propertyTracker.addProperty(property);
         return captain;
     }

@@ -1,5 +1,6 @@
 package model.stateSystem;
 
+import model.Settings;
 import model.characters.player.PlayerPreferences;
 import model.time.Time;
 
@@ -18,23 +19,42 @@ public class EventTracker {
         String time = (Time.getDay()<10 ? Time.getClock()+"" : Time.getClock());
         return String.format("%s %s %s", now.format(formatter), type, time+":  "+message);
     }
-    private int maxErrorEvents = 5;
-    private int maxMajorEvents = 50;
-    private int maxResourceEvents = 20;
-    private int maxMinorEvents = 10;
-    private int maxShopEvents = 25;
-    private int maxUtilityEvents = 25;
 
     private final LinkedList<String> majorEvents = new LinkedList<>();
-    private final LinkedList<String> resourceEvents = new LinkedList<>();
+    private final LinkedList<String> clickerEvents = new LinkedList<>();
     private final LinkedList<String> errorEvents = new LinkedList<>();
     private final LinkedList<String> minorEvents = new LinkedList<>();
     private final LinkedList<String> shopEvents = new LinkedList<>();
     private final LinkedList<String> utilityEvents = new LinkedList<>();
     private final PlayerPreferences preferences;
 
-    public EventTracker() {
+
+    private final int maxErrorEvents;
+    private final int maxMajorEvents;
+    private final int maxClickerEvents;
+    private final int maxMinorEvents;
+    private final int maxShopEvents;
+    private final int maxUtilityEvents;
+
+    public EventTracker(boolean isNpc) {
         preferences = new PlayerPreferences();
+
+        if (isNpc) {
+            // NPC's have lower amounts stored
+            maxErrorEvents = 3;
+            maxMajorEvents = 50;
+            maxClickerEvents = 0;
+            maxMinorEvents = 10;
+            maxShopEvents = 3;
+            maxUtilityEvents = 3;
+        } else {
+            maxErrorEvents = Settings.get("maxErrorEvents");
+            maxMajorEvents = Settings.get("maxMajorEvents");
+            maxClickerEvents = Settings.get("maxClickerEvents");
+            maxMinorEvents = Settings.get("maxMinorEvents");
+            maxShopEvents = Settings.get("maxShopEvents");
+            maxUtilityEvents = Settings.get("maxUtilityEvents");
+        }
     }
     public List<String> getCombinedEvents() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -42,7 +62,7 @@ public class EventTracker {
         return Stream.of(
                         getPreferences().isShowMajorEvents() ? majorEvents.stream() : Stream.<String>empty(),
                         getPreferences().isShowErrorEvents() ? errorEvents.stream() : Stream.<String>empty(),
-                        getPreferences().isShowResourceEvents() ? resourceEvents.stream() : Stream.<String>empty(),
+                        getPreferences().isShowClickerEvents() ? clickerEvents.stream() : Stream.<String>empty(),
                         getPreferences().isShowMinorEvents() ? minorEvents.stream() : Stream.<String>empty(),
                         getPreferences().isShowShopEvents() ? shopEvents.stream() : Stream.<String>empty(),
                         getPreferences().isShowShopEvents() ? utilityEvents.stream() : Stream.<String>empty()
@@ -67,8 +87,8 @@ public class EventTracker {
     public LinkedList<String> getMajorEvents() {
         return majorEvents;
     }
-    public LinkedList<String> getResourceEvents() {
-        return resourceEvents;
+    public LinkedList<String> getClickerEvents() {
+        return clickerEvents;
     }
     public LinkedList<String> getMinorEvents() {
         return minorEvents;
@@ -82,6 +102,13 @@ public class EventTracker {
     public void addEvent(String message) {
         String type = extractTypeFromMessage(message);
 
+        int maxErrorEvents = Settings.get("maxErrorEvents");
+        int maxMajorEvents = Settings.get("maxMajorEvents");
+        int maxClickerEvents = Settings.get("maxClickerEvents");
+        int maxMinorEvents = Settings.get("maxMinorEvents");
+        int maxShopEvents = Settings.get("maxShopEvents");
+        int maxUtilityEvents = Settings.get("maxUtilityEvents");
+
         switch (type) {
             case "Error":
                 addEventToCategory(errorEvents, message, maxErrorEvents);
@@ -89,8 +116,8 @@ public class EventTracker {
             case "Major":
                 addEventToCategory(majorEvents, message, maxMajorEvents);
                 break;
-            case "Resource":
-                addEventToCategory(resourceEvents, message, maxResourceEvents);
+            case "Clicker":
+                addEventToCategory(clickerEvents, message, maxClickerEvents);
                 break;
             case "Minor":
                 addEventToCategory(minorEvents, message, maxMinorEvents);
@@ -106,34 +133,16 @@ public class EventTracker {
                 break;
         }
     }
-
     private String extractTypeFromMessage(String message) {
         String[] parts = message.split(" ", 4);  // Splitting into four parts
         String extractedType = parts.length > 2 ? parts[2] : "Unknown";
         return extractedType;
     }
-
     private void addEventToCategory(LinkedList<String> eventList, String event, int maxSize) {
-        if (eventList.size() >= maxSize) {
-            eventList.removeFirst(); // Remove the oldest event to maintain the size
+        if (eventList.size() >= maxSize && !eventList.isEmpty()) { // Ensure list is not empty before attempting to remove
+            eventList.removeFirst();
         }
         eventList.add(event);
-    }
-
-    public void setMaxErrorEvents(int size) {
-        this.maxErrorEvents = size;
-    }
-    public void setMaxMajorEvents(int size) {
-        this.maxMajorEvents = size;
-    }
-    public void setMaxResourceEvents(int size) {
-        this.maxResourceEvents = size;
-    }
-    public void setMaxMinorEvents(int size) {
-        this.maxMinorEvents = size;
-    }
-    public void setMaxShopEvents(int size) {
-        this.maxShopEvents = size;
     }
 }
 

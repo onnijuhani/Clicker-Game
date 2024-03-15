@@ -11,7 +11,7 @@ public class Mercenary extends Support {
     public Mercenary(Authority authority) {
         super(authority);
         this.salary = new Salary(150, 75, 25);
-        this.totalAmount += 1;
-        this.status = Status.Mercenary;
+        totalAmount += 1;
+        setStatus(Status.Mercenary);
     }
 }

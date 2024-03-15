@@ -7,7 +7,7 @@ public class Governor extends AuthorityCharacter {
     public static int totalAmount;
 
     public Governor() {
-        this.totalAmount += 1;
-        this.status = Status.Governor;
+        totalAmount += 1;
+        setStatus(Status.Governor);
     }
 }

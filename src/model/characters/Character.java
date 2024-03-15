@@ -1,7 +1,6 @@
 package model.characters;
 
-import model.NameCreation;
-import model.Settings;
+import model.GameManager;
 import model.buildings.Property;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.authority.Authority;
@@ -9,7 +8,6 @@ import model.characters.combat.CombatStats;
 import model.characters.player.Player;
 import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Wallet;
-import model.resourceManagement.wallets.WorkWallet;
 import model.shop.Exchange;
 import model.stateSystem.EventTracker;
 import model.stateSystem.GameEvent;
@@ -21,7 +19,6 @@ import model.time.TaxObserver;
 import model.worldCreation.Details;
 import model.worldCreation.Nation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Character implements TaxObserver, NpcObserver, Details {
@@ -31,48 +28,28 @@ public class Character implements TaxObserver, NpcObserver, Details {
     }
     @Override
     public void npcUpdate(int day, int month, int year) {
-        if (day == foodUpdateDay) {
+        if (day == GameManager.getFoodConsumptionDay()) {
             foodConsumption(this);
             if (this instanceof Player) {
-                this.getEventTracker().addEvent(EventTracker.Message("Minor", foodConsumption[0] + " Food Consumed."));
+                this.getEventTracker().addEvent(EventTracker.Message("Minor", GameManager.getFoodConsumptionDay() + " Food Consumed."));
                 return;
             }
-            if (!property.getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
+            if (!personalDetails.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
                 buyMeadowLandsTEST();
             }
-            if (property.getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
+            if (personalDetails.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
                 upgrade();
             }
         }
     }
 
-    protected Authority authority;  // bound to class
-    protected static int totalAmount; // tracks total amount of instances created
-    protected Nation nation; // bound to class
-    protected String name; //personal
-    protected Wallet wallet; //personal
-    protected WorkWallet workWallet; //personal
-    protected Property property;  //personal
-    protected RelationshipManager relationshipManager; //personal
-    protected EventTracker eventTracker; //personal
-    protected int[] foodConsumption = {5,0}; //bound to class
-    protected Status status; // bound to class
-    protected int foodUpdateDay; //bound to class
-    protected CombatStats combatStats; //personal
-    protected State state = State.NONE;  //personal
-    protected List<GameEvent> ongoingEvents = new ArrayList<>(); //personal
-    protected PaymentCalendar paymentCalendar; //personal
-    protected StrikesTracker strikesTracker; //personal
+    private PersonalDetails personalDetails;
+    private RoleDetails roleDetails;
+
 
     public Character() {
-        this.wallet = new Wallet();
-        this.relationshipManager = new RelationshipManager();
-        this.foodUpdateDay = Settings.get("foodConsumption");
-        this.name = NameCreation.generateCharacterName();
-        this.eventTracker = new EventTracker();
-        this.combatStats = new CombatStats(10,5, this);
-        this.paymentCalendar = new PaymentCalendar();
-        this.strikesTracker = new StrikesTracker(10);
+        this.personalDetails = new PersonalDetails(true);
+        this.roleDetails = new RoleDetails();
         if (shouldSubscribeToTaxEvent()) {
             TaxEventManager.subscribe(this);
         }
@@ -82,11 +59,11 @@ public class Character implements TaxObserver, NpcObserver, Details {
     }
 
     protected void buyMeadowLandsTEST(){
-        nation.getShop().getUtilityShop().buyBuilding(UtilityBuildings.MeadowLands,this);
+        roleDetails.getNation().getShop().getUtilityShop().buyBuilding(UtilityBuildings.MeadowLands,this);
     }
     protected void upgrade(){
-        if(property.getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
-            nation.getShop().getUtilityShop().upgradeBuilding(UtilityBuildings.MeadowLands, this);
+        if(personalDetails.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
+            roleDetails.getNation().getShop().getUtilityShop().upgradeBuilding(UtilityBuildings.MeadowLands, this);
         }
     }
 
@@ -99,14 +76,10 @@ public class Character implements TaxObserver, NpcObserver, Details {
 
     public void foodConsumption(Character character) {
         Wallet wallet = character.getWallet();
-        //food consumption goes up every year by 5
-        int foodNeeded = foodConsumption[0];
-        foodConsumption[1] += 1;
-        if(foodConsumption[1] == 11) {
-            foodConsumption[0]+=5;
-            foodConsumption[1] = 0;
-        }
-        Exchange exchange = nation.getShop().getExchange();
+
+        int foodNeeded = GameManager.getFoodConsumptionRate();
+
+        Exchange exchange = roleDetails.getNation().getShop().getExchange();
 
         try {
             if (wallet.hasEnoughResource(Resource.Food, foodNeeded)) {
@@ -139,6 +112,7 @@ public class Character implements TaxObserver, NpcObserver, Details {
 
             }
         } catch (Exception e) {
+            System.out.println("Something went wrong with food consumption");
             e.printStackTrace();
         }
     }
@@ -148,74 +122,84 @@ public class Character implements TaxObserver, NpcObserver, Details {
     }
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() +" "+ name;
+        return this.getClass().getSimpleName() +" "+ personalDetails.getName();
     }
     public String getName() {
-        return name;
+        return personalDetails.getName();
     }
     public Nation getNation() {
-        return nation;
+        return roleDetails.getNation();
     }
     public void setNation(Nation nation) {
-        this.nation = nation;
+        roleDetails.setNation(nation);
     }
     public Status getStatus(){
-        return status;
+        return roleDetails.getStatus();
+    }
+    public void setStatus(Status status) {
+        roleDetails.setStatus(status);
     }
     public void setProperty(Property property){
-        this.property = property;
+        personalDetails.setProperty(property);
     }
     public Property getProperty(){
-        return property;
+        return personalDetails.getProperty();
     }
 
     public Wallet getWallet() {
-        return wallet;
+        return personalDetails.getWallet();
     }
-
     public void setWallet(Wallet wallet) {
-        this.wallet = wallet;
+        personalDetails.setWallet(wallet);
+    }
+    public EventTracker getEventTracker() {
+        return personalDetails.getEventTracker();
     }
 
-    public EventTracker getEventTracker() {
-        return eventTracker;
-    }
-    public void setEventTracker(EventTracker eventTracker) {
-        this.eventTracker = eventTracker;
-    }
     public Authority getAuthority() {
-        return authority;
+        return roleDetails.getAuthority();
     }
     public void setAuthority(Authority authority) {
-        this.authority = authority;
+        roleDetails.setAuthority(authority);
     }
     public CombatStats getCombatStats() {
-        return combatStats;
+        return personalDetails.getCombatStats();
     }
-
     public void setCombatStats(CombatStats combatStats) {
-        this.combatStats = combatStats;
+        personalDetails.setCombatStats(combatStats);
     }
-
-    public RelationshipManager getLoyaltyManager() {
-        return relationshipManager;
-    }
-
-    public void setLoyaltyManager(RelationshipManager relationshipManager) {
-        this.relationshipManager = relationshipManager;
+    public RelationshipManager getRelationshipManager() {
+        return personalDetails.getRelationshipManager();
     }
     public State getState() {
-        return state;
+        return personalDetails.getState();
     }
     public void setState(State state) {
-        this.state = state;
+        personalDetails.setState(state);
     }
     public void addEvent(GameEvent gameEvent) {
-        ongoingEvents.add(gameEvent);
+        personalDetails.addEvent(gameEvent);
     }
     public List<GameEvent> getOngoingEvents() {
-        return ongoingEvents;
+        return personalDetails.getOngoingEvents();
     }
+
+    public PersonalDetails getPersonalDetails() {
+        return personalDetails;
+    }
+
+    public void setPersonalDetails(PersonalDetails personalDetails) {
+        this.personalDetails = personalDetails;
+    }
+
+    public RoleDetails getRoleDetails() {
+        return roleDetails;
+    }
+
+    public void setRoleDetails(RoleDetails roleDetails) {
+        this.roleDetails = roleDetails;
+    }
+
 }
 
 

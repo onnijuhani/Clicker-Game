@@ -30,19 +30,19 @@ public class RelationshipManager {
     }
 
     public void addEnemiesAlliesAsEnemies(Character character) {
-        for (Character enemy : character.getLoyaltyManager().getEnemies()) {
+        for (Character enemy : character.getRelationshipManager().getEnemies()) {
             addAlly(enemy);
         }
-        for (Character ally : character.getLoyaltyManager().getAllies()) {
+        for (Character ally : character.getRelationshipManager().getAllies()) {
             addEnemy(ally);
         }
     }
 
     public void addEnemiesEnemiesAsAllies(Character character) {
-        for (Character enemy : character.getLoyaltyManager().getEnemies()) {
+        for (Character enemy : character.getRelationshipManager().getEnemies()) {
             addEnemy(enemy);
         }
-        for (Character ally : character.getLoyaltyManager().getAllies()) {
+        for (Character ally : character.getRelationshipManager().getAllies()) {
             addAlly(ally);
         }
     }

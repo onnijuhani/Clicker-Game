@@ -55,13 +55,16 @@ public class Property implements PropertyObserver, Details {
     protected UtilitySlot utilitySlot;
     private State state = State.NONE;
 
-    public Property(PropertyConfig.PropertyValues propertyValues, String name) {
+    public Property(PropertyConfig.PropertyValues propertyValues, String name, Character owner) {
         this.defense = new UpgradeSystem(propertyValues.getPower());
         this.vault = new Vault();
+
+        owner.setProperty(this);
 
         depositStartingBalance(propertyValues);
 
         this.name = name;
+        this.owner = owner;
         this.maintenance = new Maintenance(propertyValues);
         PropertyManager.subscribe(this);
         this.utilitySlot = new UtilitySlot(5);

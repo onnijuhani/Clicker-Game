@@ -6,12 +6,12 @@ import model.worldCreation.Nation;
 public interface RoleBasedAttributes {
     Nation getNation();
     Authority getAuthority();
-    int getFoodUpdateDay();
-
+    Status getStatus();
 
     void setNation(Nation nation);
     void setAuthority(Authority authority);
-    void setFoodUpdateDay(int foodUpdateDay);
+
+    void setStatus(Status status);
 
 }
 

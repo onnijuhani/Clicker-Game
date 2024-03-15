@@ -254,7 +254,7 @@ public class MainController extends BaseController {
     @FXML
     void hideGenerateMessages(ActionEvent event) {
         boolean isChecked = generateMessages.isSelected();
-        model.accessPlayer().getEventTracker().getPreferences().setShowResourceEvents(!isChecked);
+        model.accessPlayer().getEventTracker().getPreferences().setShowClickerEvents(!isChecked);
         updateEventList();
     }
     public Button getClickMeButton() {

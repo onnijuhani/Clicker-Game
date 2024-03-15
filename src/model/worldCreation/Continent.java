@@ -73,8 +73,7 @@ public class Continent extends Area implements Details {
 
     private King kingFactory() {
         King king = new King();
-        Property property = PropertyCreation.createProperty(name, "Nation");
-        property.setOwner(king);
+        Property property = PropertyCreation.createProperty(name, "Nation", king);
         propertyTracker.addProperty(property);
         return king;
     }

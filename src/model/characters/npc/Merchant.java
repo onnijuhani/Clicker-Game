@@ -13,6 +13,6 @@ public class Merchant extends Peasant {
         this.quarterAuthority = quarterAuthority;
         super.employment = new Employment(0, 0, Settings.get("merchantGenerate"), workWallet);
         this.totalAmount += 1;
-        this.status = Status.Merchant;
+        setStatus(Status.Merchant);
     }
 }

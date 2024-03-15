@@ -1,5 +1,6 @@
 package model.time;
 
+import model.GameManager;
 import model.Settings;
 
 import java.util.concurrent.Executors;
@@ -48,6 +49,7 @@ public class Time {
         if (month > 12) {
             month = 1;
             year++;
+            GameManager.updateYearly(year);
         }
         if (day == quarterTax ||
                 day == cityTax ||

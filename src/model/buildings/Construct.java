@@ -20,7 +20,6 @@ public class Construct {
         Property oldHouse = character.getProperty();
         Quarter location = oldHouse.getLocation();
         UtilitySlot oldUtilitySlot = oldHouse.getUtilitySlot();
-        String oldName = oldHouse.getName();
 
         Wallet wallet = character.getWallet();
 
@@ -40,9 +39,7 @@ public class Construct {
 
             assert newType != null;
 
-            // THIS SHOULDN'T BE CREATED HERE SINCE IT SUBSCRIBES TO MAINTENANCE PAY WITHOUT OWNER
-            Property newHouse = initiateNewProperty(newType, oldName);
-            newHouse.setFirstTimeReached(false);
+
 
             GameEvent gameEvent = new GameEvent(Event.CONSTRUCTION, character);
             character.getEventTracker().addEvent(EventTracker.Message("Major", "Construction Started"));
@@ -50,7 +47,7 @@ public class Construct {
             int daysUntilEvent = getDaysUntilEvent(newType);
 
             EventManager.scheduleEvent(() -> {
-                Construct.finalizeConstruction(character, newHouse, location, oldHouse, oldUtilitySlot);
+                Construct.finalizeConstruction(character, newType, location, oldHouse, oldUtilitySlot);
             }, daysUntilEvent, gameEvent);
         } else {
             character.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough resources for construction"));
@@ -63,7 +60,9 @@ public class Construct {
         return (int) (baseConstructionTime * constructionTimeMultiplier);
     }
 
-    private static void finalizeConstruction(Character character, Property newHouse, Quarter location, Property oldHouse, UtilitySlot oldUtilitySlot) {
+    private static void finalizeConstruction(Character character, Properties newType, Quarter location, Property oldHouse, UtilitySlot oldUtilitySlot) {
+        Property newHouse = initiateNewProperty(newType, oldHouse.getName(), character);
+        newHouse.setFirstTimeReached(false);
         switchPropertyAttributes(character, newHouse, location, oldHouse, oldUtilitySlot);
         character.getEventTracker().addEvent(EventTracker.Message("Major", "New property constructed"));
     }
@@ -72,7 +71,6 @@ public class Construct {
         newHouse.setLocation(location);
         newHouse.setVault(oldHouse.getVault());
         newHouse.getUtilitySlot().setOwnedUtilityBuildings(oldUtilitySlot.getOwnedUtilityBuildings());
-        newHouse.setOwner(character);
         newHouse.setDefense(oldHouse.getDefense());
         PropertyManager.unsubscribe(oldHouse);
         character.setProperty(newHouse);
@@ -89,16 +87,16 @@ public class Construct {
         }
     }
 
-    private static Property initiateNewProperty(Properties type, String oldName) {
+    private static Property initiateNewProperty(Properties type, String oldName, Character owner) {
         return switch (type) {
-            case Shack -> new Shack(oldName);
-            case Cottage -> new Cottage(oldName);
-            case Villa -> new Villa(oldName);
-            case Mansion -> new Mansion(oldName);
-            case Manor -> new Manor(oldName);
-            case Castle -> new Castle(oldName);
-            case Citadel -> new Citadel(oldName);
-            case Fortress -> new Fortress(oldName);
+            case Shack -> new Shack(oldName, owner);
+            case Cottage -> new Cottage(oldName, owner);
+            case Villa -> new Villa(oldName, owner);
+            case Mansion -> new Mansion(oldName, owner);
+            case Manor -> new Manor(oldName, owner);
+            case Castle -> new Castle(oldName, owner);
+            case Citadel -> new Citadel(oldName, owner);
+            case Fortress -> new Fortress(oldName, owner);
         };
     }
 
@@ -116,7 +114,7 @@ public class Construct {
             int baseGold = Settings.get("constructBaseGold");
 
             assert newType != null;
-            int multiplier = (int) Math.pow(2, newType.ordinal()); // 2 to the power of the ordinal value
+            int multiplier = (int) Math.pow(3, newType.ordinal()); // 2 to the power of the ordinal value
 
             int foodCost = baseFood * multiplier;
             int alloyCost = baseAlloy * multiplier;

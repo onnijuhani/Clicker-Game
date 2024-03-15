@@ -11,7 +11,7 @@ public class Noble extends Support {
     public Noble(Authority authority) {
         super(authority);
         this.salary = new Salary(200, 75, 50);
-        this.totalAmount += 1;
-        this.status = Status.Noble;
+        totalAmount += 1;
+        setStatus(Status.Noble);
     }
 }

@@ -13,13 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Clicker {
-    private Map<Resource, ClickerTools> ownedClickerTools;
-    private EventTracker eventTracker;
+    private final Map<Resource, ClickerTools> ownedClickerTools;
+    private final EventTracker eventTracker;
     private int totalClicks = 0;
-    private Wallet wallet;
-    private WorkWallet workWallet;
-
-    private Status status;
+    private final Wallet wallet;
+    private final WorkWallet workWallet;
+    private final Status status;
     public Clicker(Player player) {
         this.eventTracker = player.getEventTracker();
         this.wallet = player.getWallet();
@@ -38,16 +37,16 @@ public class Clicker {
 
     public void generateResources() {
         TransferPackage resourcesGenerated = generate();
-        if (status == Status.Peasant) {
+        if (status != Status.King) {
             workWallet.addResources(resourcesGenerated);
             totalClicks++;
-            String message = "Into Worker Wallet "+transferMessage(resourcesGenerated);
-            eventTracker.addEvent(EventTracker.Message("Resource", message));
+            String message = "Into Worker Wallet "+ clickerTransferMessage(resourcesGenerated);
+            eventTracker.addEvent(EventTracker.Message("Clicker", message));
         } else {
             wallet.addResources(resourcesGenerated);
             totalClicks++;
-            String message = transferMessage(resourcesGenerated);
-            eventTracker.addEvent(EventTracker.Message("Resource", message));
+            String message = clickerTransferMessage(resourcesGenerated);
+            eventTracker.addEvent(EventTracker.Message("Clicker", message));
         }
     }
     private TransferPackage generate() {
@@ -73,7 +72,7 @@ public class Clicker {
         }
         return new TransferPackage(totalFood, totalAlloy, totalGold);
     }
-    private String transferMessage(TransferPackage resourcesGenerated) {
+    private String clickerTransferMessage(TransferPackage resourcesGenerated) {
         return "Generated " + resourcesGenerated.food() + " food, " +
                 resourcesGenerated.alloy() + " alloys, " +
                 resourcesGenerated.gold() + " gold!";

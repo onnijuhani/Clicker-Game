@@ -1,10 +1,7 @@
 package model.characters;
 
-import model.NameCreation;
 import model.buildings.PropertyCreation;
 import model.characters.authority.Authority;
-import model.stateSystem.EventTracker;
-import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.time.GenerateManager;
 import model.time.GenerateObserver;
@@ -23,11 +20,8 @@ public class Peasant extends Character implements GenerateObserver {
     protected WorkWallet workWallet;
 
     public Peasant() {
-        this.wallet = new Wallet();
-        this.name = NameCreation.generateCharacterName();
-        this.eventTracker = new EventTracker();
-        this.workWallet = new WorkWallet(wallet);
-        this.property = PropertyCreation.createPeasantProperty(this);
+        this.workWallet = new WorkWallet(getWallet());
+        setProperty(PropertyCreation.createPeasantProperty(this));
         GenerateManager.subscribe(this);
     }
     @Override

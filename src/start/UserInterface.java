@@ -37,17 +37,17 @@ public class UserInterface extends Application {
             primaryStage.setResizable(false);
 
 
-            // Key event SPACE for CLICKER
+            // Key event ENTER  for CLICKER
             scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-                if (event.getCode() == KeyCode.SPACE) {
+                if (event.getCode() == KeyCode.ENTER) {
                     mainController.generateResourcesAction();
                     event.consume();
                 }
             });
 
-            // Key event ENTER to stop time
+            // Key event SPACE to stop time
             scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-                if (event.getCode() == KeyCode.ENTER) {
+                if (event.getCode() == KeyCode.SPACE) {
                     mainController.toggleSimulation();
                     event.consume();
                 }

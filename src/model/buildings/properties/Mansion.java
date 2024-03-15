@@ -3,10 +3,11 @@ package model.buildings.properties;
 import model.buildings.Properties;
 import model.buildings.Property;
 import model.buildings.PropertyConfig;
+import model.characters.Character;
 
 public class Mansion extends Property {
-    public Mansion(String name) {
-        super(PropertyConfig.MANSION, name);
+    public Mansion(String name, Character owner) {
+        super(PropertyConfig.MANSION, name, owner);
         this.propertyEnum = Properties.Mansion;
     }
 }

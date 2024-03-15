@@ -7,7 +7,7 @@ public class Captain extends AuthorityCharacter {
     public static int totalAmount;
 
     public Captain() {
-        this.totalAmount += 1;
-        this.status = Status.Captain;
+        totalAmount += 1;
+        setStatus(Status.Captain);
     }
 }

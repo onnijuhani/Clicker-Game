@@ -1,43 +1,43 @@
 package model.characters.combat;
 
 
-import model.characters.Character;
-import model.stateSystem.EventTracker;
+import model.characters.PersonalDetails;
 import model.resourceManagement.Resource;
 import model.shop.UpgradeSystem;
+import model.stateSystem.EventTracker;
 
 public class CombatStats {
 
     /* Tried using Composition over Inheritance here to reduce code */
     private final UpgradeSystem offense;
     private final UpgradeSystem defense;
-    private final Character character;
+    private final PersonalDetails person;
 
-    public CombatStats(int offenseBasePrice, int defenseBasePrice, Character character) {
+    public CombatStats(int offenseBasePrice, int defenseBasePrice, PersonalDetails person) {
         this.offense = new UpgradeSystem(offenseBasePrice);
         this.defense = new UpgradeSystem(defenseBasePrice);
-        this.character = character;
+        this.person = person;
     }
 
     public void upgradeOffenseWithGold(){
         int price = getOffense().getUpgradePrice();
-        if(character.getWallet().hasEnoughResource(Resource.Gold,price)){
-            character.getWallet().subtractGold(price);
+        if(person.getWallet().hasEnoughResource(Resource.Gold,price)){
+            person.getWallet().subtractGold(price);
             getOffense().upgradeLevel();
-            character.getEventTracker().addEvent(EventTracker.Message("Utility",  "Offence was increased"));
+            person.getEventTracker().addEvent(EventTracker.Message("Utility",  "Offence was increased"));
         }else{
-            character.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough Gold to increase offence"));
+            person.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough Gold to increase offence"));
         }
     }
 
     public void upgradeDefenceWithGold(){
         int price = getDefense().getUpgradePrice();
-        if(character.getWallet().hasEnoughResource(Resource.Gold,price)){
-            character.getWallet().subtractGold(price);
+        if(person.getWallet().hasEnoughResource(Resource.Gold,price)){
+            person.getWallet().subtractGold(price);
             getDefense().upgradeLevel();
-            character.getEventTracker().addEvent(EventTracker.Message("Utility",  "Defence was increased"));
+            person.getEventTracker().addEvent(EventTracker.Message("Utility",  "Defence was increased"));
         }else{
-            character.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough Gold to increase defence"));
+            person.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough Gold to increase defence"));
         }
     }
 

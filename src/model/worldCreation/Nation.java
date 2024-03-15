@@ -76,8 +76,7 @@ public class Nation extends ControlledArea implements Details {
         Governor governor = new Governor();
         governor.setAuthority(getAuthority());
         governor.setNation(nation);
-        Property property = PropertyCreation.createProperty(provinceName, "Province");
-        property.setOwner(governor);
+        Property property = PropertyCreation.createProperty(provinceName, "Province", governor);
         propertyTracker.addProperty(property);
         return governor;
     }

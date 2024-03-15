@@ -1,5 +1,7 @@
 package model.characters;
 
+import model.NameCreation;
+import model.Settings;
 import model.buildings.Property;
 import model.characters.combat.CombatStats;
 import model.resourceManagement.wallets.Wallet;
@@ -23,6 +25,17 @@ public class PersonalDetails implements PersonalAttributes {
     private List<GameEvent> ongoingEvents = new ArrayList<>();
     private PaymentCalendar paymentCalendar;
     private StrikesTracker strikesTracker;
+
+
+    public PersonalDetails(Boolean isNpc) {
+        this.wallet = new Wallet();
+        this.relationshipManager = new RelationshipManager();
+        this.name = NameCreation.generateCharacterName();
+        this.eventTracker = new EventTracker(isNpc);
+        this.combatStats = new CombatStats(Settings.get("offenceBasePrice"),Settings.get("defenceBasePrice"), this);
+        this.paymentCalendar = new PaymentCalendar();
+        this.strikesTracker = new StrikesTracker(Settings.get("strikes"));
+    }
 
     public void addEvent(GameEvent gameEvent) {
         ongoingEvents.add(gameEvent);

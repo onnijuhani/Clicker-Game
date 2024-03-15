@@ -17,15 +17,14 @@ public class WorkWalletController extends BaseController {
 
     @FXML
     private AnchorPane workWalletWindow;
-    private Timeline updateTimeline;
 
     @FXML
-    void hideWorkWalletPermanently(MouseEvent event) {
+    void hideWorkWalletPermanently(MouseEvent event) { // in case the box needs to be hidden or replaced eventually
     }
 
     @FXML
     public void initialize() {
-        updateTimeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> updateWorkWallet()));
+        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> updateWorkWallet()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
     }
@@ -34,7 +33,7 @@ public class WorkWalletController extends BaseController {
         String values = model.accessPlayer().getWorkWallet().toStringValuesRows();
         workWallet.setText(values);
 
-        String rates = model.accessPlayer().getSupervisor().getTaxForm().toStringTaxRates();
+        String rates = model.accessPlayer().getAuthority().getTaxForm().toStringTaxRates();
         taxRates.setText(rates);
     }
 

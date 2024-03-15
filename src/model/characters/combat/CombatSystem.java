@@ -51,7 +51,7 @@ public class CombatSystem {
             return; // Can not enter battle
         }
 
-        if (attacker.getLoyaltyManager().isAlly(defender)) {
+        if (attacker.getRelationshipManager().isAlly(defender)) {
             System.out.println("Cannot attack allies!");
             attacker.getEventTracker().addEvent(EventTracker.Message(
                     "Error", "Attempted to rob " + defender.getProperty().getName() +
@@ -132,7 +132,7 @@ public class CombatSystem {
             return; // Can not enter battle
         }
 
-        if (attacker.getLoyaltyManager().isAlly(defender)) {
+        if (attacker.getRelationshipManager().isAlly(defender)) {
             attacker.getEventTracker().addEvent(EventTracker.Message(
                     "Error", "Attempted to duel " + defender +
                             " who is your ally " + ". Action not allowed."));
@@ -173,7 +173,7 @@ public class CombatSystem {
             attacker.getCombatStats().increaseOffence();
             defender.getCombatStats().decreaseDefence();
 
-            attacker.getLoyaltyManager().addDefeatedCharacter(defender);
+            attacker.getRelationshipManager().addDefeatedCharacter(defender);
 
 
         } else {
@@ -195,14 +195,14 @@ public class CombatSystem {
 
 
     private void executeLoyaltyChanges() {
-        attacker.getLoyaltyManager().addEnemy(defender);
-        defender.getLoyaltyManager().addEnemy(attacker);
+        attacker.getRelationshipManager().addEnemy(defender);
+        defender.getRelationshipManager().addEnemy(attacker);
 
-        attacker.getLoyaltyManager().addEnemiesEnemiesAsAllies(defender);
-        attacker.getLoyaltyManager().addEnemiesAlliesAsEnemies(defender);
+        attacker.getRelationshipManager().addEnemiesEnemiesAsAllies(defender);
+        attacker.getRelationshipManager().addEnemiesAlliesAsEnemies(defender);
 
-        attacker.getLoyaltyManager().addEnemiesEnemiesAsAllies(attacker);
-        attacker.getLoyaltyManager().addEnemiesAlliesAsEnemies(attacker);
+        attacker.getRelationshipManager().addEnemiesEnemiesAsAllies(attacker);
+        attacker.getRelationshipManager().addEnemiesAlliesAsEnemies(attacker);
     }
 
     private boolean battle(int effectiveAttackerOffense, int effectiveDefenderDefense) {

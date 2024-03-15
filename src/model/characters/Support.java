@@ -10,14 +10,14 @@ public class Support extends Character {
     public static int totalAmount;
 
     public Support(Authority authorityTo) {
-        this.authority = authorityTo;
-        this.totalAmount += 1;
+        setAuthority(authorityTo);
+        totalAmount += 1;
         createProperty();
     }
 
     public void createProperty() {
-        this.property = PropertyCreation.createSupportProperty(this);
-        this.property.setOwner(this);
+        setProperty(PropertyCreation.createSupportProperty(this));
+        getProperty().setOwner(this);
     }
 
     public Salary getSalary() {

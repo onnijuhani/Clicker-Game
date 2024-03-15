@@ -6,8 +6,10 @@ import model.worldCreation.Nation;
 public class RoleDetails implements RoleBasedAttributes {
     private Nation nation;
     private Authority authority;
-    private int foodUpdateDay;
+    private Status status;
 
+    public RoleDetails() {
+    }
 
     @Override
     public Nation getNation() {
@@ -28,16 +30,17 @@ public class RoleDetails implements RoleBasedAttributes {
     public void setAuthority(Authority authority) {
         this.authority = authority;
     }
-
     @Override
-    public int getFoodUpdateDay() {
-        return foodUpdateDay;
+    public Status getStatus() {
+        return status;
+    }
+    @Override
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
-    @Override
-    public void setFoodUpdateDay(int foodUpdateDay) {
-        this.foodUpdateDay = foodUpdateDay;
-    }
+
+
 
 
 }

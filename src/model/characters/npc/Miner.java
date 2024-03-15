@@ -12,8 +12,8 @@ public class Miner extends Peasant {
     public Miner(Authority quarterAuthority) {
         this.quarterAuthority = quarterAuthority;
         super.employment = new Employment(0, Settings.get("minerGenerate"), 0, workWallet);
-        this.totalAmount += 1;
-        this.status = Status.Miner;
+        totalAmount += 1;
+        setStatus(Status.Miner);
     }
 
 }
