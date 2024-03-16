@@ -6,13 +6,14 @@ import model.buildings.Property;
 import model.characters.combat.CombatStats;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
+import model.shop.Ownable;
 import model.stateSystem.EventTracker;
 import model.stateSystem.GameEvent;
 import model.stateSystem.State;
 
 import java.util.ArrayList;
 import java.util.List;
-public class PersonalDetails implements PersonalAttributes {
+public class PersonalDetails implements PersonalAttributes, Ownable {
 
     private String name;
     private Wallet wallet;
@@ -28,13 +29,13 @@ public class PersonalDetails implements PersonalAttributes {
 
 
     public PersonalDetails(Boolean isNpc) {
-        this.wallet = new Wallet();
+        this.wallet = new Wallet(this);
         this.relationshipManager = new RelationshipManager();
         this.name = NameCreation.generateCharacterName();
         this.eventTracker = new EventTracker(isNpc);
-        this.combatStats = new CombatStats(Settings.get("offenceBasePrice"),Settings.get("defenceBasePrice"), this);
+        this.combatStats = new CombatStats(Settings.getInt("offenceBasePrice"),Settings.getInt("defenceBasePrice"), this);
         this.paymentCalendar = new PaymentCalendar();
-        this.strikesTracker = new StrikesTracker(Settings.get("strikes"));
+        this.strikesTracker = new StrikesTracker(Settings.getInt("strikes"));
     }
 
     public void addEvent(GameEvent gameEvent) {

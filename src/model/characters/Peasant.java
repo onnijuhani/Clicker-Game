@@ -20,7 +20,7 @@ public class Peasant extends Character implements GenerateObserver {
     protected WorkWallet workWallet;
 
     public Peasant() {
-        this.workWallet = new WorkWallet(getWallet());
+        this.workWallet = new WorkWallet(this, getWallet());
         setProperty(PropertyCreation.createPeasantProperty(this));
         GenerateManager.subscribe(this);
     }

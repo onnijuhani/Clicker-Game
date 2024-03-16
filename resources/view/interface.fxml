@@ -162,7 +162,7 @@
                   <Insets bottom="5.0" left="2.0" />
                </padding>
             </TabPane>
-            <VBox fillWidth="false" layoutX="100.0" layoutY="372.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="350.0">
+            <VBox fillWidth="false" layoutX="100.0" layoutY="350.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="340.0">
                <children>
                   <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-color: linear-gradient(from 15% 100% to 100% 15%, #59033f, #4c023f, #3e023e, #30033c, #210339); -fx-border-radius: 25;">
                      <children>

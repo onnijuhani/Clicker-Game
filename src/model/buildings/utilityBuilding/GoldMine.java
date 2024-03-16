@@ -11,7 +11,7 @@ public class GoldMine extends UtilityBuilding {
 
     public GoldMine(int basePrice, Character owner) {
         super(basePrice, owner);
-        this.production = Settings.get("mineProduction");
+        this.production = Settings.getInt("mineProduction");
         this.name = UtilityBuildings.GoldMine;
     }
 

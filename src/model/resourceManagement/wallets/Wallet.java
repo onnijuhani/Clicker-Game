@@ -2,30 +2,27 @@ package model.resourceManagement.wallets;
 
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.Resource;
+import model.shop.Ownable;
 
 public class Wallet {
     private int food;
     private int alloy;
     private int gold;
 
+    private final Ownable owner;
 
-
-    public Wallet() {
+    public Wallet(final Ownable owner) {
+        this.owner = owner;
         this.food = 0;
         this.alloy = 0;
         this.gold = 0;
     }
     public boolean hasEnoughResource(Resource type, int amount) {
-        switch (type) {
-            case Food:
-                return food >= amount;
-            case Alloy:
-                return alloy >= amount;
-            case Gold:
-                return gold >= amount;
-            default:
-                throw new IllegalArgumentException("Unsupported resource type: " + type);
-        }
+        return switch (type) {
+            case Food -> food >= amount;
+            case Alloy -> alloy >= amount;
+            case Gold -> gold >= amount;
+        };
     }
 
     public int getResource(Resource type) {
@@ -36,14 +33,13 @@ public class Wallet {
             default -> throw new IllegalArgumentException("Unsupported resource type: " + type);
         };
     }
+    public Ownable getOwner() {
+        return owner;
+    }
 
     public boolean hasResources(int food, int alloy, int gold){
         TransferPackage test = new TransferPackage(food, alloy, gold);
-        if (this.hasEnoughResources(test)) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.hasEnoughResources(test);
     }
 
     public boolean hasEnoughResources(TransferPackage transfer) {

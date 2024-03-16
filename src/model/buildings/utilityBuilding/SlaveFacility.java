@@ -14,7 +14,7 @@ import java.util.Set;
 public class SlaveFacility extends UtilityBuilding {
     private int slaveAmount;
     private int slots;
-    private final int[] production = {10, 5 ,1};
+    private final int[] production = {20, 10 ,2};
 
     public SlaveFacility(int basePrice, Character owner) {
         super(basePrice, owner);
@@ -25,6 +25,7 @@ public class SlaveFacility extends UtilityBuilding {
     }
 
     private void delayConsequence() {
+        // this is delayed because of eventTracker
         javafx.animation.Timeline timeline = new javafx.animation.Timeline(new KeyFrame(
                 Duration.millis(1000), // Delay before executing the task
                 ae -> {
@@ -132,6 +133,5 @@ public class SlaveFacility extends UtilityBuilding {
     public void setSlots(int slots) {
         this.slots = slots;
     }
-
 
 }

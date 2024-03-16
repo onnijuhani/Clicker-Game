@@ -29,19 +29,19 @@ public class Player extends Character {
     public Player(Quarter spawn){
         this.personalDetails = new PersonalDetails(false);
 
-        getWallet().setGold(1000000000);
-        getWallet().setFood(1000000000);
-        getWallet().setAlloy(1000000000);
+//        getWallet().setGold(1000);
+//        getWallet().setFood(1000);
+//        getWallet().setAlloy(1000);
 
 
-        this.workWallet = new WorkWallet(getWallet());
+        this.workWallet = new WorkWallet(this, getWallet());
         this.clicker = new Clicker(this);
         setAuthority(spawn.getAuthority());
         setNation(spawn.getAuthority().getCharacter().getNation());
         setProperty(new Shack("Your Own", this));
         getProperty().setLocation(spawn);
 
-        spawn.addCharacter(getStatus(),this);
+        spawn.addCitizen(getStatus(),this);
         spawn.createQuarterAlliances();
     }
 

@@ -1,9 +1,12 @@
 package model.resourceManagement.wallets;
 
+import model.shop.Ownable;
+
 public class WorkWallet extends Wallet {
     private boolean taxedOrNot;
-    private Wallet mainWallet;
-    public WorkWallet(Wallet mainWallet) {
+    private final Wallet mainWallet;
+    public WorkWallet(final Ownable owner, Wallet mainWallet) {
+        super(owner);
         this.taxedOrNot = false;
         this.mainWallet = mainWallet;
     }

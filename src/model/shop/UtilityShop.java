@@ -9,10 +9,6 @@ import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Wallet;
 
 public class UtilityShop extends ShopComponents {
-
-
-
-
     public UtilityShop(Wallet wallet) {
         super(wallet);
     }
@@ -40,9 +36,17 @@ public class UtilityShop extends ShopComponents {
         }
     }
 
-
-
     public boolean buyBuilding(UtilityBuildings type, Character character) {
+
+        // Prevent purchasing both SlaveFacility and WorkerCenter
+        UtilitySlot slot = character.getProperty().getUtilitySlot();
+        if ((type == UtilityBuildings.SlaveFacility && slot.isUtilityBuildingOwned(UtilityBuildings.WorkerCenter)) ||
+                (type == UtilityBuildings.WorkerCenter && slot.isUtilityBuildingOwned(UtilityBuildings.SlaveFacility))) {
+            character.getEventTracker().addEvent(EventTracker.Message("Error", "Cannot own both " + UtilityBuildings.SlaveFacility + " and " + UtilityBuildings.WorkerCenter));
+            return false;
+        }
+
+
         if(character.getProperty().getUtilitySlot().getSlotAmount() == character.getProperty().getUtilitySlot().usedSlotAmount()){
             character.getEventTracker().addEvent(EventTracker.Message("Error", "No more available utility slots"));
             return false;
@@ -67,28 +71,26 @@ public class UtilityShop extends ShopComponents {
     }
 
     private int getBuildingPrice(UtilityBuildings type) {
-        switch (type) {
-            case MeadowLands: return Settings.get("meadowLandsCost");
-            case AlloyMine:   return Settings.get("alloyMineCost");
-            case GoldMine:    return Settings.get("goldMineCost");
-            case MysticMine:  return Settings.get("mysticMineCost");
-            case SlaveFacility:    return Settings.get("slaveFacilityCost");
-            default:          return Integer.MAX_VALUE; // Unknown type
-        }
+        return switch (type) {
+            case MeadowLands -> Settings.getInt("meadowLandsCost");
+            case AlloyMine -> Settings.getInt("alloyMineCost");
+            case GoldMine -> Settings.getInt("goldMineCost");
+            case MysticMine -> Settings.getInt("mysticMineCost");
+            case SlaveFacility -> Settings.getInt("slaveFacilityCost");
+            case WorkerCenter -> Settings.getInt("workerCenterCost");
+            default -> Integer.MAX_VALUE; // Unknown type
+        };
     }
 
     private UtilityBuilding createBuilding(UtilityBuildings type, int price, Character character) {
-        switch (type) {
-            case MeadowLands: return new Meadowlands(price, character);
-            case AlloyMine:   return new AlloyMine(price, character);
-            case GoldMine:    return new GoldMine(price, character);
-            case MysticMine:  return new MysticMine(price, character);
-            case SlaveFacility:    return new SlaveFacility(price, character);
-            default:          return null; // Unknown type
-        }
+        return switch (type) {
+            case MeadowLands -> new Meadowlands(price, character);
+            case AlloyMine -> new AlloyMine(price, character);
+            case GoldMine -> new GoldMine(price, character);
+            case MysticMine -> new MysticMine(price, character);
+            case SlaveFacility -> new SlaveFacility(price, character);
+            case WorkerCenter -> new WorkerCenter(price, character);
+            default -> null; // Unknown type
+        };
     }
-
-
-
-
 }

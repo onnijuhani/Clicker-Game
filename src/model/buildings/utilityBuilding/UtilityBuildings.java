@@ -6,4 +6,5 @@ public enum UtilityBuildings {
     MeadowLands,
     MysticMine,
     SlaveFacility,
+    WorkerCenter
 }

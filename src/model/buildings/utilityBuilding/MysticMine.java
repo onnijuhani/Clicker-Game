@@ -15,8 +15,8 @@ public class MysticMine extends UtilityBuilding {
 
     public MysticMine(int basePrice, Character owner) {
         super(basePrice, owner);
-        this.alloyProduction = Settings.get("mineProduction")*2;
-        this.goldProduction = Settings.get("mineProduction");
+        this.alloyProduction = Settings.getInt("mineProduction")*2;
+        this.goldProduction = Settings.getInt("mineProduction");
         this.name = UtilityBuildings.MysticMine;
     }
 

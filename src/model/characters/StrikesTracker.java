@@ -12,11 +12,6 @@ public class StrikesTracker {
     public void loseStrike() {
         if (strikes > 0) {
             strikes--;
-            System.out.println("Strike lost! Strikes remaining: " + strikes);
-            if (isGameOver()) {
-                System.out.println("Game Over!");
-                // game over here
-            }
         }
     }
 

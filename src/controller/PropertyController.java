@@ -5,8 +5,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import model.Settings;
 import model.buildings.Construct;
@@ -16,6 +18,7 @@ import model.characters.Character;
 import model.characters.decisions.CombatService;
 import model.characters.player.Player;
 import model.resourceManagement.TransferPackage;
+import model.resourceManagement.wallets.Wallet;
 import model.shop.Shop;
 import model.stateSystem.Event;
 import model.stateSystem.GameEvent;
@@ -141,6 +144,115 @@ public class PropertyController extends BaseController {
     @FXML
     private VBox utilityPlayerView4;
 
+    //WORKER CENTER
+    @FXML
+    private Label utilityInfo5;
+    @FXML
+    private Button utilityPrice5;
+    @FXML
+    private Button utilityUpgrade5;
+    @FXML
+    private VBox utilityInfoView5;
+    @FXML
+    private VBox utilityBuyView5;
+    @FXML
+    private VBox utilityPlayerView5;
+
+    // VAULT DEPOSIT WITHDRAWAL SLIDER
+    @FXML
+    private StackPane VaultStackPane;
+    @FXML
+    private Button vaultWithdrawBtn;
+    @FXML
+    private Button vaultDepositBtn;
+    @FXML
+    private Label playerVaultSliderAmount;
+
+    @FXML
+    private Slider vaultSlider;
+
+    @FXML
+    private VBox playerVaultBox;
+
+
+    public void updatePropertyTab(){
+        updatePropertyName();
+        updatePropertyType();
+        updatePropertyImage();
+        updateMaintenance();
+        updatePrices();
+        differentiatePlayer();
+        updateUtilitySlot();
+        updateVaultValue();
+        updateDefenceLevel();
+        updateConstructInfo();
+
+    }
+    @FXML
+    public void initialize() {
+        initializeUIMappings();
+        setUpSlider();
+    }
+
+    public void setUpSlider() {
+        vaultSlider.setMin(0);
+        vaultSlider.setMax(100);
+        vaultSlider.setValue(0);
+
+
+        vaultSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            int percentage = (int) vaultSlider.getValue();
+            playerVaultSliderAmount.setText(percentage + "%");
+        });
+
+        vaultDepositBtn.setOnAction(e -> vaultDeposit());
+        vaultWithdrawBtn.setOnAction(e -> vaultWithdraw());
+        resetSlider();
+    }
+
+    private void vaultDeposit() {
+        int percentage = (int) vaultSlider.getValue();
+        if (percentage == 0){
+            return;
+        }
+        int[] walletBalance = character.getWallet().getWalletValues();
+        executeVaultDeposit(percentage, walletBalance, character.getProperty().getVault(), character.getWallet());
+        updatePropertyTab();
+    }
+    private void resetSlider() {
+        vaultSlider.setValue(50);
+    }
+
+    private void vaultWithdraw() {
+        int percentage = (int) vaultSlider.getValue();
+        if (percentage == 0){
+            return;
+        }
+        int[] vaultBalance = character.getProperty().getVault().getWalletValues();
+        executeVaultWithdrawal(percentage, vaultBalance, character.getWallet(), character.getProperty().getVault());
+        updatePropertyTab();
+    }
+    private void executeVaultWithdrawal(int percentage, int[] vaultBalance, Wallet wallet, Wallet vault) {
+        int[] withdrawAmounts = new int[vaultBalance.length];
+        for (int i = 0; i < vaultBalance.length; i++) {
+            withdrawAmounts[i] = (vaultBalance[i] * percentage) / 100;
+        }
+        TransferPackage transfer = TransferPackage.fromArray(withdrawAmounts);
+        vault.withdrawal(wallet,transfer);
+        resetSlider();
+    }
+
+    private void executeVaultDeposit(int percentage, int[] vaultBalance, Wallet wallet, Wallet vault) {
+        int[] withdrawAmounts = new int[vaultBalance.length];
+        for (int i = 0; i < vaultBalance.length; i++) {
+            withdrawAmounts[i] = (vaultBalance[i] * percentage) / 100;
+        }
+        TransferPackage transfer = TransferPackage.fromArray(withdrawAmounts);
+        wallet.deposit(vault, transfer);
+        resetSlider();
+    }
+
+
     private final Map<UtilityBuildings, UtilityBuildingUI> buildingUIs = new HashMap<>();
 
     private void initializeUIMappings() {
@@ -149,14 +261,17 @@ public class PropertyController extends BaseController {
         buildingUIs.put(UtilityBuildings.GoldMine, new UtilityBuildingUI(utilityInfo2, utilityPrice2, utilityUpgrade2, utilityInfoView2, utilityBuyView2, utilityPlayerView2));
         buildingUIs.put(UtilityBuildings.SlaveFacility, new UtilityBuildingUI(utilityInfo3, utilityPrice3, utilityUpgrade3, utilityInfoView3, utilityBuyView3, utilityPlayerView3));
         buildingUIs.put(UtilityBuildings.MysticMine, new UtilityBuildingUI(utilityInfo4, utilityPrice4, utilityUpgrade4, utilityInfoView4, utilityBuyView4, utilityPlayerView4));
+        buildingUIs.put(UtilityBuildings.WorkerCenter, new UtilityBuildingUI(utilityInfo5, utilityPrice5, utilityUpgrade5, utilityInfoView5, utilityBuyView5, utilityPlayerView5));
     }
 
     void updatePrices() {
-        utilityPrice.setText(Settings.get("meadowLandsCost") + " Gold");
-        utilityPrice1.setText(Settings.get("alloyMineCost") + " Gold");
-        utilityPrice2.setText(Settings.get("goldMineCost") + " Gold");
-        utilityPrice3.setText(Settings.get("slaveFacilityCost") + " Gold");
-        utilityPrice4.setText(Settings.get("mysticMineCost") + " Gold");
+        utilityPrice.setText(Settings.getInt("meadowLandsCost") + " Gold");
+        utilityPrice1.setText(Settings.getInt("alloyMineCost") + " Gold");
+        utilityPrice2.setText(Settings.getInt("goldMineCost") + " Gold");
+        utilityPrice3.setText(Settings.getInt("slaveFacilityCost") + " Gold");
+        utilityPrice4.setText(Settings.getInt("mysticMineCost") + " Gold");
+        utilityPrice5.setText(Settings.getInt("workerCenterCost") + " Gold");
+
     }
 
 
@@ -169,7 +284,7 @@ public class PropertyController extends BaseController {
             ui.infoView.setVisible(true);
             ui.infoLabel.setText(property.getUtilitySlot().getUtilityBuilding(building).getInfo());
             ui.utilityPlayerView.setVisible(true);
-            if (property.getUtilitySlot().getUtilityBuilding(building).getUpgradeLevel() == Settings.get("utilityMaxLevel")) {
+            if (property.getUtilitySlot().getUtilityBuilding(building).getUpgradeLevel() == Settings.getInt("utilityMaxLevel")) {
                 ui.upgradeButton.setDisable(true);
                 ui.upgradeButton.setText("Maxed");
             }
@@ -213,19 +328,6 @@ public class PropertyController extends BaseController {
     }
 
 
-    public void updatePropertyTab(){
-        updatePropertyName();
-        updatePropertyType();
-        updatePropertyImage();
-        updateMaintenance();
-        updatePrices();
-        differentiatePlayer();
-        updateUtilitySlot();
-        updateVaultValue();
-        updateDefenceLevel();
-        updateConstructInfo();
-
-    }
 
 
     void updateConstructionTimeLeft() {
@@ -283,12 +385,14 @@ public class PropertyController extends BaseController {
     void playerVersionState(){
         if(model.accessPlayer().equals(character)) {
             robVaultBtn.setVisible(false);
+            playerVaultBox.setVisible(true);
             upgradeDefBtn.setVisible(true);
             upgradeDefBtn.setText(property.getDefense().getUpgradePrice()+" Alloys");
             upgradeDefLabel.setVisible(true);
 
         }else{
             robVaultBtn.setVisible(true);
+            playerVaultBox.setVisible(false);
             upgradeDefBtn.setVisible(false);
             upgradeDefLabel.setVisible(false);
         }
@@ -329,10 +433,7 @@ public class PropertyController extends BaseController {
     public void setMain(MainController main) {
         this.main = main;
     }
-    @FXML
-    public void initialize() {
-        initializeUIMappings();
-    }
+
 
     public controller.CharacterController getCharacterController() {
         return characterController;
@@ -372,6 +473,22 @@ public class PropertyController extends BaseController {
             differentiatePlayer();
         }
     }
+
+    @FXML
+    void buyWorkerCenter(ActionEvent event) {
+        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.WorkerCenter, character);
+        if (wasPurchaseSuccessful) {
+            differentiatePlayer();
+        }
+    }
+    @FXML
+    void upgradeWorkerCenter(ActionEvent event) {
+        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.WorkerCenter, character);
+        if (wasUpgradeSuccessful) {
+            differentiatePlayer();
+        }
+    }
+
     @FXML
     void buySlaveFacility(ActionEvent event) {
         boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.SlaveFacility, character);

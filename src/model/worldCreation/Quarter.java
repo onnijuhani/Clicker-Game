@@ -89,11 +89,11 @@ public class Quarter extends ControlledArea implements Details {
         return sb.toString();
     }
 
-
+    /**
+     Citizens are only calculated the first time they are needed
+     and whenever the character list changes. List is stored at citizenCache
+     **/
     public void updateCitizenCache() {
-
-        //Citizens are only calculated the first time they are needed
-        //and whenever the character list changes. List is stored at citizenCache
 
         if (isPopulationChanged || citizenCache == null) {
             citizenCache = calculateCitizens();
@@ -105,7 +105,7 @@ public class Quarter extends ControlledArea implements Details {
     }
 
 
-    private List<Character> calculateCitizens() {
+    public List<Character> calculateCitizens() {
         ArrayList<Character> citizens = new ArrayList<>();
         List<Status> statusOrder = getStatusRank();
 
@@ -168,7 +168,7 @@ public class Quarter extends ControlledArea implements Details {
 
         QuarterAuthority quarterCaptain = (QuarterAuthority) this.authority;
         setUpCaptainAttributes(quarterCaptain);
-        addCharacter(Status.Captain, quarterCaptain.getCharacter());
+        addCitizen(Status.Captain, quarterCaptain.getCharacter());
 
         peasantFactory(quarterCaptain, farmerList, minerList, merchantList);
     }
@@ -181,11 +181,11 @@ public class Quarter extends ControlledArea implements Details {
 
     private void peasantFactory(QuarterAuthority quarterCaptain, LinkedList<Character> farmers, LinkedList<Character> miners, LinkedList<Character> merchants) {
         Random random = new Random();
-        int numberOfFarmers = random.nextInt(Settings.get("farmerAmountMax")) + Settings.get("farmerAmountMin");
+        int numberOfFarmers = random.nextInt(Settings.getInt("farmerAmountMax")) + Settings.getInt("farmerAmountMin");
         numOfPeasants += numberOfFarmers;
-        int numberOfMiners = random.nextInt(Settings.get("minerAmountMax")) + Settings.get("minerAmountMin");
+        int numberOfMiners = random.nextInt(Settings.getInt("minerAmountMax")) + Settings.getInt("minerAmountMin");
         numOfPeasants += numberOfMiners;
-        int numberOfMerchants = random.nextInt(Settings.get("merchantAmountMax")) + Settings.get("merchantAmountMin");
+        int numberOfMerchants = random.nextInt(Settings.getInt("merchantAmountMax")) + Settings.getInt("merchantAmountMin");
         numOfPeasants += numberOfMerchants;
 
         for (int peasant = 0; peasant < numberOfFarmers; peasant++) {
@@ -214,9 +214,10 @@ public class Quarter extends ControlledArea implements Details {
         }
     }
 
-    public void addCharacter(Status status, Character character){
+    public void addCitizen(Status status, Character character){
         getPopulationMap().get(status).add(character);
         isPopulationChanged = true;
+        getNation().setGeneralsCacheValid(false);
     }
 
     public void removeCharacter(Status status, Character character) {

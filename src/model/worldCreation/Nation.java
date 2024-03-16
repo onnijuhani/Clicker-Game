@@ -19,9 +19,12 @@ import java.util.stream.Collectors;
 
 public class Nation extends ControlledArea implements Details {
     private Province[] provinces;
-    private Continent continent;
+    private final Continent continent;
     private final Shop shop;
     protected LinkedList<Quarter> allQuarters;
+    private List<Character> nationsGenerals = null;
+
+    private boolean isGeneralsCacheValid = false;
 
     public Nation(String name, Continent continent, Authority authority) {
         this.name = name;
@@ -36,15 +39,59 @@ public class Nation extends ControlledArea implements Details {
             authority.setSubordinate(province.authority);
         }
         authority.setSupervisor(authority);
+
     }
     @Override
     public String getDetails() {
-        return ("Nation: " + name + " Belongs to: " + continent.getName());
+
+        StringBuilder detailsBuilder = new StringBuilder();
+
+        if (!nationsGenerals.isEmpty()) {
+            detailsBuilder.append("Generals (").append(nationsGenerals.size()).append("):");
+            for (Character general : nationsGenerals) {
+                String generalDetails = String.format("\n- %s, Status: %s, Property: %s",
+                        general.getName(),
+                        general.getStatus(),
+                        general.getProperty().getClass().getSimpleName());
+                detailsBuilder.append(generalDetails);
+            }
+        } else {
+            detailsBuilder.append("\nNo generals found.");
+        }
+
+        return detailsBuilder.toString();
+    }
+
+
+    /**
+     Generals are some of the main authority characters and their supporters who also have property capable of having an army
+     **/
+    public void collectGenerals() {
+        if (isGeneralsCacheValid) {
+            return;
+        }
+        Set<Status> generalStatuses = EnumSet.of(Status.Governor, Status.Vanguard, Status.Mercenary, Status.King);
+
+        Set<String> validProperties = Set.of("Castle", "Citadel", "Fortress");
+
+        nationsGenerals = new ArrayList<>();
+        for (Quarter quarter : allQuarters) {
+            quarter.updateCitizenCache();
+
+            quarter.getPopulationMap().entrySet().stream()
+                    .filter(entry -> generalStatuses.contains(entry.getKey()))
+                    .flatMap(entry -> entry.getValue().stream())
+                    .filter(character -> validProperties.contains(character.getProperty().getClass().getSimpleName()))
+                    .forEach(character -> {
+                        nationsGenerals.add(character);
+                    });
+        }
+        isGeneralsCacheValid = true;
     }
 
     private void createProvinces() {
         Random random = new Random();
-        int numberOfProvinces = random.nextInt(Settings.get("provinceAmountMax")) + Settings.get("provinceAmountMin");
+        int numberOfProvinces = random.nextInt(Settings.getInt("provinceAmountMax")) + Settings.getInt("provinceAmountMin");
         provinces = new Province[numberOfProvinces];
 
         for (int i = 0; i < numberOfProvinces; i++) {
@@ -62,7 +109,7 @@ public class Nation extends ControlledArea implements Details {
             Province province = new Province(provinceName, this, authority);
             provinces[i] = province;
 
-            // set home for governor. Governor must live in his home province. Should be updated for more efficiency
+            // set home for governor. Governor must live in his home province.
             setGovernorHome(random, province, governor);
 
             // generate mercenaries for governor
@@ -86,13 +133,20 @@ public class Nation extends ControlledArea implements Details {
             int homeIndex = random.nextInt(nation.getAllQuarters().size());
             Quarter home = nation.getAllQuarters().get(homeIndex);
             if (home.getHigher().getHigher().equals(province)) {
-                home.addCharacter(Status.Governor, governor);
+                home.addCitizen(Status.Governor, governor);
                 NameCreation.generateMajorQuarterName(home);
                 governor.getProperty().setLocation(home);
                 break;
             }
         }
     }
+    public boolean isGeneralsCacheValid() {
+        return isGeneralsCacheValid;
+    }
+    public void setGeneralsCacheValid(boolean generalsCacheValid) {
+        isGeneralsCacheValid = generalsCacheValid;
+    }
+
 
     private void mercenaryFactory(Province province, Authority authority, Random random) {
         int amountOfCities = province.getContents().size();
@@ -108,7 +162,7 @@ public class Nation extends ControlledArea implements Details {
 
             mercenary.getProperty().setLocation(quarter);
             quarter.propertyTracker.addProperty(mercenary.getProperty());
-            quarter.addCharacter(Status.Mercenary,mercenary);
+            quarter.addCitizen(Status.Mercenary,mercenary);
             NameCreation.generateMajorQuarterName(quarter);
         }
     }
@@ -133,14 +187,20 @@ public class Nation extends ControlledArea implements Details {
 
     @Override
     public List<Status> getImportantStatusRank() {
-        List<Status> statusOrder = List.of(
+        return List.of(
                 Status.King,
                 Status.Vanguard,
                 Status.Noble
         );
-        return statusOrder;
     }
 
+    public List<Character> getNationsGenerals() {
+        return nationsGenerals;
+    }
+
+    public void setNationsGenerals(List<Character> nationsGenerals) {
+        this.nationsGenerals = nationsGenerals;
+    }
 
     public Shop getShop() {
         return shop;

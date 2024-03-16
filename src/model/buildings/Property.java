@@ -7,6 +7,7 @@ import model.buildings.utilityBuilding.UtilitySlot;
 import model.characters.Character;
 import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Vault;
+import model.shop.Ownable;
 import model.shop.UpgradeSystem;
 import model.stateSystem.EventTracker;
 import model.stateSystem.State;
@@ -14,7 +15,7 @@ import model.time.PropertyManager;
 import model.time.PropertyObserver;
 import model.worldCreation.Details;
 import model.worldCreation.Quarter;
-public class Property implements PropertyObserver, Details {
+public class Property implements PropertyObserver, Details, Ownable {
 
     @Override
     public void propertyUpdate() {
@@ -57,7 +58,7 @@ public class Property implements PropertyObserver, Details {
 
     public Property(PropertyConfig.PropertyValues propertyValues, String name, Character owner) {
         this.defense = new UpgradeSystem(propertyValues.getPower());
-        this.vault = new Vault();
+        this.vault = new Vault(this);
 
         owner.setProperty(this);
 
@@ -145,5 +146,10 @@ public class Property implements PropertyObserver, Details {
     }
     public void setState(State state) {
         this.state = state;
+    }
+
+    @Override
+    public EventTracker getEventTracker(){
+        return owner.getEventTracker();
     }
 }

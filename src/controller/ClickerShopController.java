@@ -82,7 +82,7 @@ public class ClickerShopController extends BaseController {
     }
 
     private void updateClickerPrice(Resource resource, Button buyButton, Button upgradeButton) {
-        int basePrice = Settings.get(resource.name().toLowerCase() + "Clicker");
+        int basePrice = Settings.getInt(resource.name().toLowerCase() + "Clicker");
         buyButton.setText(basePrice + " Gold");
 
         ClickerTools tool = model.accessPlayer().getClicker().getClickerTool(resource);

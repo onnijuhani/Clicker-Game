@@ -4,50 +4,50 @@ import model.Settings;
 
 public class PropertyConfig {
     public static final PropertyValues FORTRESS = new PropertyValues(
-            Settings.get("fortressFood"),
-            Settings.get("fortressAlloy"),
-            Settings.get("fortressGold"),
-            Settings.get("fortressPower"));;
+            Settings.getInt("fortressFood"),
+            Settings.getInt("fortressAlloy"),
+            Settings.getInt("fortressGold"),
+            Settings.getInt("fortressPower"));;
     public static final PropertyValues CITADEL = new PropertyValues(
-            Settings.get("citadelFood"),
-            Settings.get("citadelAlloy"),
-            Settings.get("citadelGold"),
-            Settings.get("citadelPower"));
+            Settings.getInt("citadelFood"),
+            Settings.getInt("citadelAlloy"),
+            Settings.getInt("citadelGold"),
+            Settings.getInt("citadelPower"));
     public static final PropertyValues CASTLE = new PropertyValues(
-            Settings.get("castleFood"),
-            Settings.get("castleAlloy"),
-            Settings.get("castleGold"),
-            Settings.get("castlePower"));
+            Settings.getInt("castleFood"),
+            Settings.getInt("castleAlloy"),
+            Settings.getInt("castleGold"),
+            Settings.getInt("castlePower"));
 
     public static final PropertyValues MANOR = new PropertyValues(
-            Settings.get("manorFood"),
-            Settings.get("manorAlloy"),
-            Settings.get("manorGold"),
-            Settings.get("manorPower"));
+            Settings.getInt("manorFood"),
+            Settings.getInt("manorAlloy"),
+            Settings.getInt("manorGold"),
+            Settings.getInt("manorPower"));
 
     public static final PropertyValues MANSION = new PropertyValues(
-            Settings.get("mansionFood"),
-            Settings.get("mansionAlloy"),
-            Settings.get("mansionGold"),
-            Settings.get("mansionPower"));
+            Settings.getInt("mansionFood"),
+            Settings.getInt("mansionAlloy"),
+            Settings.getInt("mansionGold"),
+            Settings.getInt("mansionPower"));
 
     public static final PropertyValues VILLA = new PropertyValues(
-            Settings.get("villaFood"),
-            Settings.get("villaAlloy"),
-            Settings.get("villaGold"),
-            Settings.get("villaPower"));
+            Settings.getInt("villaFood"),
+            Settings.getInt("villaAlloy"),
+            Settings.getInt("villaGold"),
+            Settings.getInt("villaPower"));
 
     public static final PropertyValues COTTAGE = new PropertyValues(
-            Settings.get("cottageFood"),
-            Settings.get("cottageAlloy"),
-            Settings.get("cottageGold"),
-            Settings.get("cottagePower"));
+            Settings.getInt("cottageFood"),
+            Settings.getInt("cottageAlloy"),
+            Settings.getInt("cottageGold"),
+            Settings.getInt("cottagePower"));
 
     public static final PropertyValues SHACK = new PropertyValues(
-            Settings.get("shackFood"),
-            Settings.get("shackAlloy"),
-            Settings.get("shackGold"),
-            Settings.get("shackPower"));
+            Settings.getInt("shackFood"),
+            Settings.getInt("shackAlloy"),
+            Settings.getInt("shackGold"),
+            Settings.getInt("shackPower"));
     public static class PropertyValues {
         int food;
         int alloy;

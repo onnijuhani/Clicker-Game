@@ -9,19 +9,17 @@ import model.characters.player.Player;
 import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Wallet;
 import model.shop.Exchange;
+import model.shop.Ownable;
 import model.stateSystem.EventTracker;
 import model.stateSystem.GameEvent;
 import model.stateSystem.State;
-import model.time.NpcManager;
-import model.time.NpcObserver;
-import model.time.TaxEventManager;
-import model.time.TaxObserver;
+import model.time.*;
 import model.worldCreation.Details;
 import model.worldCreation.Nation;
 
 import java.util.List;
 
-public class Character implements TaxObserver, NpcObserver, Details {
+public class Character implements TaxObserver, NpcObserver, Details, Ownable {
 
     @Override
     public void taxUpdate(int day, int month, int year) { //implemented at subclasses
@@ -152,6 +150,7 @@ public class Character implements TaxObserver, NpcObserver, Details {
     public void setWallet(Wallet wallet) {
         personalDetails.setWallet(wallet);
     }
+    @Override
     public EventTracker getEventTracker() {
         return personalDetails.getEventTracker();
     }
@@ -198,6 +197,25 @@ public class Character implements TaxObserver, NpcObserver, Details {
 
     public void setRoleDetails(RoleDetails roleDetails) {
         this.roleDetails = roleDetails;
+    }
+
+    public void loseStrike(){
+        personalDetails.getStrikesTracker().loseStrike();
+        int strikesLeft = personalDetails.getStrikesTracker().getStrikes();
+
+        if (strikesLeft < 1) {
+            triggerGameOver();
+            getEventTracker().addEvent(EventTracker.Message("Major","GAME OVER. No Strikes left."));
+
+        }else {
+            getEventTracker().addEvent(EventTracker.Message("Major", "Lost a Strike! Strikes left: " + strikesLeft));
+        }
+    }
+
+    private void triggerGameOver(){
+        if (this instanceof Player){
+            Time.setGameOver(true);
+        }
     }
 
 }

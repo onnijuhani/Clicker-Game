@@ -48,24 +48,24 @@ public class EventTracker {
             maxShopEvents = 3;
             maxUtilityEvents = 3;
         } else {
-            maxErrorEvents = Settings.get("maxErrorEvents");
-            maxMajorEvents = Settings.get("maxMajorEvents");
-            maxClickerEvents = Settings.get("maxClickerEvents");
-            maxMinorEvents = Settings.get("maxMinorEvents");
-            maxShopEvents = Settings.get("maxShopEvents");
-            maxUtilityEvents = Settings.get("maxUtilityEvents");
+            maxErrorEvents = Settings.getInt("maxErrorEvents");
+            maxMajorEvents = Settings.getInt("maxMajorEvents");
+            maxClickerEvents = Settings.getInt("maxClickerEvents");
+            maxMinorEvents = Settings.getInt("maxMinorEvents");
+            maxShopEvents = Settings.getInt("maxShopEvents");
+            maxUtilityEvents = Settings.getInt("maxUtilityEvents");
         }
     }
     public List<String> getCombinedEvents() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         return Stream.of(
-                        getPreferences().isShowMajorEvents() ? majorEvents.stream() : Stream.<String>empty(),
                         getPreferences().isShowErrorEvents() ? errorEvents.stream() : Stream.<String>empty(),
                         getPreferences().isShowClickerEvents() ? clickerEvents.stream() : Stream.<String>empty(),
                         getPreferences().isShowMinorEvents() ? minorEvents.stream() : Stream.<String>empty(),
                         getPreferences().isShowShopEvents() ? shopEvents.stream() : Stream.<String>empty(),
-                        getPreferences().isShowShopEvents() ? utilityEvents.stream() : Stream.<String>empty()
+                        getPreferences().isShowShopEvents() ? utilityEvents.stream() : Stream.<String>empty(),
+                        getPreferences().isShowMajorEvents() ? majorEvents.stream() : Stream.<String>empty()
                 )
                 .flatMap(s -> s)
                 .sorted(Comparator.comparing((String message) -> LocalDateTime.parse(message.split(" ")[0] + " " + message.split(" ")[1], formatter)))
@@ -102,19 +102,19 @@ public class EventTracker {
     public void addEvent(String message) {
         String type = extractTypeFromMessage(message);
 
-        int maxErrorEvents = Settings.get("maxErrorEvents");
-        int maxMajorEvents = Settings.get("maxMajorEvents");
-        int maxClickerEvents = Settings.get("maxClickerEvents");
-        int maxMinorEvents = Settings.get("maxMinorEvents");
-        int maxShopEvents = Settings.get("maxShopEvents");
-        int maxUtilityEvents = Settings.get("maxUtilityEvents");
+        int maxMajorEvents = Settings.getInt("maxMajorEvents");
+        int maxErrorEvents = Settings.getInt("maxErrorEvents");
+        int maxClickerEvents = Settings.getInt("maxClickerEvents");
+        int maxMinorEvents = Settings.getInt("maxMinorEvents");
+        int maxShopEvents = Settings.getInt("maxShopEvents");
+        int maxUtilityEvents = Settings.getInt("maxUtilityEvents");
 
         switch (type) {
-            case "Error":
-                addEventToCategory(errorEvents, message, maxErrorEvents);
-                break;
             case "Major":
                 addEventToCategory(majorEvents, message, maxMajorEvents);
+                break;
+            case "Error":
+                addEventToCategory(errorEvents, message, maxErrorEvents);
                 break;
             case "Clicker":
                 addEventToCategory(clickerEvents, message, maxClickerEvents);

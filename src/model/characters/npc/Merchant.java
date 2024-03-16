@@ -11,7 +11,7 @@ public class Merchant extends Peasant {
 
     public Merchant(Authority quarterAuthority) {
         this.quarterAuthority = quarterAuthority;
-        super.employment = new Employment(0, 0, Settings.get("merchantGenerate"), workWallet);
+        super.employment = new Employment(0, 0, Settings.getInt("merchantGenerate"), workWallet);
         this.totalAmount += 1;
         setStatus(Status.Merchant);
     }

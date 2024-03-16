@@ -109,9 +109,9 @@ public class Construct {
             return null;
         } else {
             Properties newType = getNextProperty(character);
-            int baseFood = Settings.get("constructBaseFood");
-            int baseAlloy = Settings.get("constructBaseAlloy");
-            int baseGold = Settings.get("constructBaseGold");
+            int baseFood = Settings.getInt("constructBaseFood");
+            int baseAlloy = Settings.getInt("constructBaseAlloy");
+            int baseGold = Settings.getInt("constructBaseGold");
 
             assert newType != null;
             int multiplier = (int) Math.pow(3, newType.ordinal()); // 2 to the power of the ordinal value

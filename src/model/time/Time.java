@@ -11,18 +11,20 @@ public class Time {
     public static int year = 0;
     public static int month = 0;
     public static int day = 0;
-    private ScheduledExecutorService executorService;
-    private boolean isSimulationRunning = false;
-    private boolean isManualSimulation = false;
-    private boolean isFirstDay = true;
-    private final int generate = Settings.get("generate");
-    private final int maintenance = Settings.get("maintenance");
-    public static final int quarterTax = Settings.get("quarterTax");
-    public static final int cityTax = Settings.get("cityTax");
-    public static final int provinceTax = Settings.get("provinceTax");
-    public static final int nationTax = Settings.get("nationTax");
-    public static final int utilitySlots = Settings.get("utilitySlots");
-    private int milliseconds = 1000;
+    private static ScheduledExecutorService executorService;
+    private static boolean isSimulationRunning = false;
+    private static boolean isManualSimulation = false;
+    private static boolean isFirstDay = true;
+    private static final int generate = Settings.getInt("generate");
+    private static final int maintenance = Settings.getInt("maintenance");
+    public static final int quarterTax = Settings.getInt("quarterTax");
+    public static final int cityTax = Settings.getInt("cityTax");
+    public static final int provinceTax = Settings.getInt("provinceTax");
+    public static final int nationTax = Settings.getInt("nationTax");
+    public static final int utilitySlots = Settings.getInt("utilitySlots");
+    private static int milliseconds = 1000;
+
+    public static boolean gameOver = false;
 
 
     public static Speed getSpeed() {
@@ -40,7 +42,7 @@ public class Time {
         executorService = Executors.newSingleThreadScheduledExecutor();
     }
 
-    public void incrementDay() {
+    public static void incrementDay() {
         day++;
         if (day > 30) {
             day = 1;
@@ -74,24 +76,24 @@ public class Time {
         EventManager.processScheduledEvents(); // All scheduled events require information every day
     }
 
-    public void incrementByClick(){
+    public static void incrementByClick(){
         if (!isSimulationRunning) {
             incrementDay();
         }
     }
 
-    public void setManualSimulation(boolean manualSimulation) {
+    public static void setManualSimulation(boolean manualSimulation) {
         isManualSimulation = manualSimulation;
         if (isSimulationRunning) {
             isSimulationRunning = !manualSimulation;
         }
     }
 
-    public int getYear() {
+    public static int getYear() {
         return year;
     }
 
-    public int getMonth() {
+    public static int getMonth() {
         return month;
     }
 
@@ -105,7 +107,7 @@ public class Time {
                 year, month, day);
     }
 
-    private void speedToMilliseconds(){
+    private static void speedToMilliseconds(){
         if (speed.equals(Speed.Normal)) {
             milliseconds = 1000;
         }
@@ -117,22 +119,31 @@ public class Time {
         }
     }
 
-    public void startSimulation() {
+    public static void startSimulation() {
+        if (Time.gameOver){
+            System.out.println("Game Over");
+            return;
+        }
         if (executorService == null || executorService.isShutdown()) {
             executorService = Executors.newSingleThreadScheduledExecutor();
         }
         isSimulationRunning = true;
-        executorService.scheduleAtFixedRate(this::incrementDay, 0, milliseconds, TimeUnit.MILLISECONDS);
-
+        executorService.scheduleAtFixedRate(Time::incrementDay, 0, milliseconds, TimeUnit.MILLISECONDS);
     }
 
-    public void stopSimulation() {
+    public static void stopSimulation() {
         isSimulationRunning = false;
         if (executorService != null && !executorService.isShutdown()) {
             executorService.shutdownNow();
             executorService = null;
         }
     }
+
+    public static void setGameOver(boolean gameOver) {
+        stopSimulation();
+        Time.gameOver = gameOver;
+    }
+
 
     public boolean isSimulationRunning() {
         return isSimulationRunning;
@@ -184,6 +195,6 @@ public class Time {
             executorService.shutdownNow();
         }
         executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.scheduleAtFixedRate(this::incrementDay, 0, milliseconds, TimeUnit.MILLISECONDS);
+        executorService.scheduleAtFixedRate(Time::incrementDay, 0, milliseconds, TimeUnit.MILLISECONDS);
     }
 }

@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class Continent extends Area implements Details {
-    private World world;
+    private final World world;
     private Nation[] nations;
 
     public Continent(String name, World world) {
@@ -26,12 +26,13 @@ public class Continent extends Area implements Details {
         this.name = name;
         this.world = world;
         this.createNations();
+
     }
 
     private void createNations() {
 
         Random random = new Random();
-        int numberOfNations = random.nextInt(Settings.get("nationAmountMax")) + Settings.get("nationAmountMin");
+        int numberOfNations = random.nextInt(Settings.getInt("nationAmountMax")) + Settings.getInt("nationAmountMin");
         nations = new Nation[numberOfNations];
 
         for (int i = 0; i < numberOfNations; i++) {
@@ -57,6 +58,8 @@ public class Continent extends Area implements Details {
             //quarter where important characters live should have special name
             NameCreation.generateMajorQuarterName(home);
 
+            nation.collectGenerals();
+
         }
     }
 
@@ -65,7 +68,7 @@ public class Continent extends Area implements Details {
         int homeIndex = random.nextInt(nation.getAllQuarters().size());
         Quarter home = nation.getAllQuarters().get(homeIndex);
         king.getProperty().setLocation(home);
-        home.addCharacter(Status.King, king);
+        home.addCitizen(Status.King, king);
         changeKingAreaNames(home);
         return home;
     }
@@ -96,7 +99,7 @@ public class Continent extends Area implements Details {
 
             noble.getProperty().setLocation(home);
             home.propertyTracker.addProperty(noble.getProperty());
-            home.addCharacter(Status.Noble,noble);
+            home.addCitizen(Status.Noble,noble);
 
         }
 
@@ -115,7 +118,7 @@ public class Continent extends Area implements Details {
 
             vanguard.getProperty().setLocation(quarter);
             quarter.propertyTracker.addProperty(vanguard.getProperty());
-            quarter.addCharacter(Status.Vanguard, vanguard);
+            quarter.addCitizen(Status.Vanguard, vanguard);
             NameCreation.generateMajorQuarterName(quarter);
         }
 
@@ -127,7 +130,7 @@ public class Continent extends Area implements Details {
 
         vanguard.getProperty().setLocation(home);
         home.propertyTracker.addProperty(vanguard.getProperty());
-        home.addCharacter(Status.Vanguard, vanguard);
+        home.addCitizen(Status.Vanguard, vanguard);
 
     }
 

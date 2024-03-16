@@ -15,11 +15,13 @@ public class Settings {
 
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle the exception, e.g., by logging or re-throwing a runtime exception
         }
     }
 
-    public static int get(String key) {
+    public static int getInt(String key) {
         return Integer.parseInt(settings.getProperty(key, "0")); // Default value if key not found
+    }
+    public static double getDouble(String key) {
+        return Double.parseDouble(settings.getProperty(key, "0")); // Default value if key not found
     }
 }

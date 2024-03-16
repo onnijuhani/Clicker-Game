@@ -42,7 +42,7 @@ public class Province extends ControlledArea implements Details {
 
     private void createCities() {
         Random random = new Random();
-        int numberOfCities = random.nextInt(Settings.get("cityAmountMax")) + Settings.get("cityAmountMin");
+        int numberOfCities = random.nextInt(Settings.getInt("cityAmountMax")) + Settings.getInt("cityAmountMin");
         cities = new City[numberOfCities];
 
         for (int i = 0; i < numberOfCities; i++) {
@@ -74,7 +74,7 @@ public class Province extends ControlledArea implements Details {
     private static void setMayorHome(Random random, City city, Mayor mayor) {
         int homeIndex = random.nextInt(city.getContents().size());
         Quarter home = city.getContents().get(homeIndex);
-        home.addCharacter(Status.Mayor, mayor);
+        home.addCitizen(Status.Mayor, mayor);
         mayor.getProperty().setLocation(home);
         NameCreation.generateMajorQuarterName(home);
     }

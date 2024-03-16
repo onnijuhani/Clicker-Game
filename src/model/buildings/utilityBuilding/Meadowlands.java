@@ -10,7 +10,7 @@ public class Meadowlands extends UtilityBuilding {
 
     public Meadowlands(int basePrice, Character owner) {
         super(basePrice, owner);
-        this.production = Settings.get("meadowLandsProduction");
+        this.production = Settings.getInt("meadowLandsProduction");
         this.name = UtilityBuildings.MeadowLands;
     }
     @Override

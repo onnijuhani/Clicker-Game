@@ -2,12 +2,13 @@ package model.shop;
 
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
+import model.stateSystem.EventTracker;
 
-public class Shop {
+public class Shop implements Ownable {
     private Wallet wallet;
-    private Exchange exchange;
-    private ClickerShop clickerShop;
-    private UtilityShop utilityShop;
+    private final Exchange exchange;
+    private final ClickerShop clickerShop;
+    private final UtilityShop utilityShop;
     public Shop(){
         initializeWallet();
         this.exchange = new Exchange(wallet);
@@ -16,8 +17,8 @@ public class Shop {
     }
 
     private void initializeWallet(){
-        this.wallet = new Wallet();
-        TransferPackage startingBalance = new TransferPackage(10000,5000,1000);
+        this.wallet = new Wallet(this);
+        TransferPackage startingBalance = new TransferPackage(100,50,10);
         wallet.addResources(startingBalance);
     }
 
@@ -36,6 +37,12 @@ public class Shop {
     public void setWallet(Wallet wallet) {
         this.wallet = wallet;
     }
+
+    @Override // maybe add event Tracker later
+    public EventTracker getEventTracker() {
+        return null;
+    }
+
 
 }
 

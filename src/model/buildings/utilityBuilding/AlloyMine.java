@@ -11,7 +11,7 @@ public class AlloyMine extends UtilityBuilding {
 
     public AlloyMine(int basePrice, Character owner) {
         super(basePrice, owner);
-        this.production = Settings.get("mineProduction");
+        this.production = Settings.getInt("mineProduction");
         this.name = UtilityBuildings.AlloyMine;
     }
 

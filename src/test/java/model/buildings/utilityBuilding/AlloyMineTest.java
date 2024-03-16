@@ -41,8 +41,9 @@ class AlloyMineTest {
 
     @Test
     void testGenerateActionAddsResources() {
-        Wallet wallet = new Wallet();
+
         Character owner = Mockito.mock(Character.class);
+        Wallet wallet = new Wallet(owner);
         EventTracker eventTracker = Mockito.mock(EventTracker.class);
 
         when(owner.getWallet()).thenReturn(wallet);

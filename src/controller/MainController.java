@@ -5,9 +5,7 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 import model.Model;
@@ -131,11 +129,6 @@ public class MainController extends BaseController {
     }
 
 
-    private TopSectionController getTopSectionController() {
-        return topSectionController;
-    }
-
-    // New method without MouseEvent parameter
     public void generateResourcesAction() {
         if (!model.accessTime().isSimulationRunning()) {
             if (model.accessTime().isManualSimulation()) {
@@ -177,31 +170,42 @@ public class MainController extends BaseController {
     }
     private String cleanName(String name) {
         String pattern = " \\(.*?\\)"; //regular expressions that should remove (Home) or (King) or both to display just the name
-        String cleanName = name.replaceAll(pattern, "");
-        return cleanName;
+        return name.replaceAll(pattern, "");
     }
+
 
     public void updateEventList() {
         updatePauseBtnText();
         List<String> events = model.accessPlayer().getEventTracker().getCombinedEvents();
 
+        // custom cell factory to enable text wrapping if messages are too long
+        eventList.setCellFactory(param -> new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    // label with wrapped text
+                    Label label = new Label(item);
+                    label.setWrapText(true);
+                    label.setMaxWidth(param.getPrefWidth() - 10);
+                    setGraphic(label);
+                }
+            }
+        });
+
         boolean newMessagesAdded = eventList.getItems().size() != events.size();
-
-        // How many messages should be shown
-        int start = Math.max(0, events.size() - 500);
-
-
         eventList.getItems().clear();
-        for (int i = start; i < events.size(); i++) {
-            eventList.getItems().add(events.get(i));
-        }
+        eventList.getItems().addAll(events);
 
         // Auto-scroll to the last message only if new messages have been added
         if (newMessagesAdded) {
             eventList.scrollTo(eventList.getItems().size() - 1);
         }
-
     }
+
 
     @FXML
     void updateExchange(){

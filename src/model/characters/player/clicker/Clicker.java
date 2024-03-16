@@ -25,7 +25,7 @@ public class Clicker {
         this.workWallet = player.getWorkWallet();
         this.status = player.getStatus();
         this.ownedClickerTools = new HashMap<>();
-        this.ownedClickerTools.put(Resource.Food, new FoodClicker(Settings.get("foodClicker"), Resource.Food));
+        this.ownedClickerTools.put(Resource.Food, new FoodClicker(Settings.getInt("foodClicker"), Resource.Food));
     }
     public void addClickerTool(Resource type, ClickerTools tool) {
         ownedClickerTools.put(type, tool);

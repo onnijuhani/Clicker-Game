@@ -32,14 +32,12 @@ public abstract class ControlledArea extends Area implements Details {
 
 
     public List<Status> getImportantStatusRank() {
-        List<Status> statusOrder = List.of(
+        return List.of(
                 Status.King, Status.Noble, Status.Vanguard,
                 Status.Governor, Status.Mercenary,
                 Status.Mayor,
                 Status.Captain, Status.Merchant, Status.Miner, Status.Farmer
-
         );
-        return statusOrder;
     }
 
 

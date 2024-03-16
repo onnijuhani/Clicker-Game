@@ -54,18 +54,30 @@
             </VBox>
          </children>
       </VBox>
-      <VBox alignment="CENTER" layoutX="66.0" layoutY="14.0">
+      <VBox alignment="CENTER" layoutX="66.0" layoutY="14.0" prefWidth="700.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="250.0" AnchorPane.topAnchor="10.0">
          <children>
-            <Label fx:id="areaType" alignment="CENTER" prefHeight="17.0" prefWidth="253.0" text="Area Type" textAlignment="CENTER" textFill="WHITE" />
-            <Label fx:id="currentViewLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="39.0" prefWidth="392.0" text="Area Name" textAlignment="CENTER" textFill="WHITE" underline="true">
+            <Label fx:id="areaType" alignment="CENTER" text="Area Type" textAlignment="CENTER" textFill="WHITE">
+               <VBox.margin>
+                  <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+               </VBox.margin></Label>
+            <Label fx:id="currentViewLabel" alignment="CENTER" contentDisplay="CENTER" text="Area Name" textAlignment="CENTER" textFill="WHITE" underline="true">
                <font>
                   <Font name="System Bold" size="19.0" />
                </font>
+               <VBox.margin>
+                  <Insets bottom="5.0" left="3.0" right="3.0" top="3.0" />
+               </VBox.margin>
             </Label>
-            <Hyperlink fx:id="authorityLink" alignment="CENTER" contentDisplay="CENTER" onAction="#authorityLinkClick" prefHeight="26.0" prefWidth="280.0" text="Authority Name" textAlignment="CENTER">
+            <Hyperlink fx:id="authorityLink" alignment="CENTER" contentDisplay="CENTER" onAction="#authorityLinkClick" styleClass="walletBox" text="Authority Name" textAlignment="CENTER">
                <font>
                   <Font size="14.0" />
                </font>
+               <VBox.margin>
+                  <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets left="6.0" right="6.0" />
+               </padding>
             </Hyperlink>
          </children>
       </VBox>

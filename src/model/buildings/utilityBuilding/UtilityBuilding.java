@@ -13,7 +13,7 @@ public class UtilityBuilding extends UpgradeSystem implements UtilityObserver {
     protected UtilityBuildings name;
 
     protected Character owner;
-    protected int MAX_LEVEL = Settings.get("utilityMaxLevel");
+    protected int MAX_LEVEL = Settings.getInt("utilityMaxLevel");
 
     @Override
     public void utilityUpdate() {

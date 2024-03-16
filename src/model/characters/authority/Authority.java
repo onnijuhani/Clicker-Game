@@ -4,6 +4,7 @@ import model.buildings.Property;
 import model.characters.AuthorityCharacter;
 import model.characters.Character;
 import model.characters.Support;
+import model.shop.Ownable;
 import model.stateSystem.EventTracker;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.payments.Salary;
@@ -14,7 +15,7 @@ import model.time.TaxObserver;
 
 import java.util.ArrayList;
 
-public class Authority implements TaxObserver {
+public class Authority implements TaxObserver, Ownable {
 
     @Override
     public void taxUpdate(int day, int month, int year) {
@@ -24,7 +25,6 @@ public class Authority implements TaxObserver {
             paySupporters();
         }
     }
-
 
     protected Property property;
     protected AuthorityCharacter character; //the character who is in this position
@@ -42,7 +42,7 @@ public class Authority implements TaxObserver {
     public Authority(Character character) {
         this.character = (AuthorityCharacter) character;
         this.taxForm = new Tax();
-        this.workWallet = new WorkWallet(character.getWallet());
+        this.workWallet = new WorkWallet(this, character.getWallet());
         this.subordinate = new ArrayList<>();
         this.supporters = new ArrayList<>();
         this.property = character.getProperty();
@@ -113,6 +113,11 @@ public class Authority implements TaxObserver {
 
     public void setWorkWallet(WorkWallet workWallet) {
         this.workWallet = workWallet;
+    }
+
+    @Override
+    public EventTracker getEventTracker() {
+        return character.getEventTracker();
     }
 }
 
