@@ -28,12 +28,12 @@ public class Province extends ControlledArea implements Details {
         this.name = name;
         this.nation = nation;
         this.propertyTracker = new PropertyTracker();
-        this.authority = authority;
+        this.authorityHere = authority;
         this.createCities();
         for (City city : cities) {
-            authority.setSubordinate(city.authority);
+            authority.setSubordinate(city.authorityHere);
         }
-        authority.setSupervisor(nation.getAuthority());
+        authority.setSupervisor(nation.getAuthorityHere());
     }
     @Override
     public String getDetails() {
@@ -65,7 +65,7 @@ public class Province extends ControlledArea implements Details {
     private Mayor mayorFactory(String cityName) {
         Mayor mayor = new Mayor();
         mayor.setNation(nation);
-        mayor.setAuthority(getAuthority());
+        mayor.setAuthority(getAuthorityHere());
         Property property = PropertyCreation.createProperty(cityName, "City", mayor);
         propertyTracker.addProperty(property);
         return mayor;
@@ -74,7 +74,7 @@ public class Province extends ControlledArea implements Details {
     private static void setMayorHome(Random random, City city, Mayor mayor) {
         int homeIndex = random.nextInt(city.getContents().size());
         Quarter home = city.getContents().get(homeIndex);
-        home.addCitizen(Status.Mayor, mayor);
+        home.addCitizen(Status.Mayor, mayor.getPerson());
         mayor.getProperty().setLocation(home);
         NameCreation.generateMajorQuarterName(home);
     }

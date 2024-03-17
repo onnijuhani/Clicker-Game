@@ -9,11 +9,11 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 import model.Model;
+import model.characters.player.clicker.Clicker;
 import model.stateSystem.EventTracker;
 import model.time.Time;
 import model.worldCreation.Quarter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainController extends BaseController {
@@ -38,7 +38,6 @@ public class MainController extends BaseController {
     protected Button clickMeButton;
     @FXML
     private ListView<String> eventList;
-    private Timeline updateTimeline;
 
     @FXML
     private CheckBox generateMessages;
@@ -47,7 +46,7 @@ public class MainController extends BaseController {
     @FXML
     protected Button pauseBtn;
 
-    private List<String> lastEvents = new ArrayList<>();
+
 
     public MainController() {
         super();
@@ -74,7 +73,6 @@ public class MainController extends BaseController {
         }
         if (workWalletController != null) {
             workWalletController.setModel(model);
-            workWalletController.updateWorkWallet();
         } else {
             System.out.println("WorkWalletController is null");
         }
@@ -96,10 +94,6 @@ public class MainController extends BaseController {
             propertyController.setModel(model);
             propertyController.setMain(this);
             propertyController.setCharacterController(characterController);
-            characterController.setCurrentCharacter(model.accessPlayer());
-            characterController.updateCharacterTab();
-            propertyController.updatePropertyTab();
-            clickerShopController.setShop(model.accessPlayer().getNation().getShop());
         } else {
             System.out.println("CharacterController is null");
         }
@@ -110,19 +104,23 @@ public class MainController extends BaseController {
     @Override
     public void initialize() {
         Platform.runLater(() -> clickMeButton.requestFocus());
-        Platform.runLater(() -> generateStartingMessage());
-        Platform.runLater(() -> updateEventList());
+        Platform.runLater(this::generateStartingMessage);
 
         Platform.runLater(() -> exploreMapController.updateExploreTab());
         Platform.runLater(() -> clickerShopController.updateClickerShopPrices());
-        updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateEventList()));
+        Platform.runLater(() -> characterController.setCurrentCharacter(model.accessCharacter()));
+        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> updateEventList()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
     }
 
     @FXML
     void getPlayer(ActionEvent event) {
-        characterController.setCurrentCharacter(model.accessPlayer());
+        Reset();
+    }
+
+    public void Reset() {
+        characterController.setCurrentCharacter(model.accessCharacter());
         characterController.updateCharacterTab();
         model.accessCurrentView().setCurrentView(model.accessWorld().getSpawnQuarter());
         exploreMapController.updateExploreTab();
@@ -132,20 +130,18 @@ public class MainController extends BaseController {
     public void generateResourcesAction() {
         if (!model.accessTime().isSimulationRunning()) {
             if (model.accessTime().isManualSimulation()) {
-                model.accessTime().incrementByClick();
-                model.accessPlayer().getClicker().generateResources();
+                Time.incrementByClick();
+                Clicker.getInstance().generateResources();
                 topSectionController.updateWallet();
                 topSectionController.updateTopSection();
                 workWalletController.updateWorkWallet();
             } else {
-                model.accessPlayer().getEventTracker().addEvent(EventTracker.Message("Error", "Simulation is paused. Cannot generate resources."));
-                updateEventList();
+                model.accessCharacter().getEventTracker().addEvent(EventTracker.Message("Error", "Simulation is paused. Cannot generate resources."));
                 workWalletController.updateWorkWallet();
             }
         } else {
-            model.accessPlayer().getClicker().generateResources();
+            Clicker.getInstance().generateResources();
             topSectionController.updateWallet();
-            updateEventList();
             workWalletController.updateWorkWallet();
         }
     }
@@ -157,7 +153,7 @@ public class MainController extends BaseController {
 
 
    void generateStartingMessage(){
-        EventTracker tracker = model.accessPlayer().getEventTracker();
+        EventTracker tracker = model.accessCharacter().getEventTracker();
         tracker.addEvent(EventTracker.Message("Major","New Game Started"));
 
         Quarter spawn = model.accessWorld().getSpawnQuarter();
@@ -176,7 +172,7 @@ public class MainController extends BaseController {
 
     public void updateEventList() {
         updatePauseBtnText();
-        List<String> events = model.accessPlayer().getEventTracker().getCombinedEvents();
+        List<String> events = model.accessCharacter().getEventTracker().getCombinedEvents();
 
         // custom cell factory to enable text wrapping if messages are too long
         eventList.setCellFactory(param -> new ListCell<String>() {
@@ -187,10 +183,9 @@ public class MainController extends BaseController {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    // label with wrapped text
                     Label label = new Label(item);
                     label.setWrapText(true);
-                    label.setMaxWidth(param.getPrefWidth() - 10);
+                    label.setMaxWidth(param.getPrefWidth() - 20);
                     setGraphic(label);
                 }
             }
@@ -215,9 +210,8 @@ public class MainController extends BaseController {
     @FXML
     void incrementByClick(ActionEvent event) {
         boolean isChecked = incrementClicker.isSelected();
-        model.accessTime().setManualSimulation(isChecked);
-        model.accessTime().incrementByClick();
-        model.accessTime().stopSimulation();
+        Time.setManualSimulation(isChecked);
+        Time.stopSimulation();
 
         topSectionController.stopTimeBtn.setDisable(true); // Disable the stop button
         topSectionController.startTimeBtn.setDisable(false); // Enable the start button
@@ -226,20 +220,20 @@ public class MainController extends BaseController {
     }
     public void toggleSimulation() {
         if(getModel().accessTime().isSimulationRunning()) {
-            model.accessTime().stopSimulation();
+            Time.stopSimulation();
             topSectionController.startTimeBtn.setDisable(false);
             topSectionController.stopTimeBtn.setDisable(true);
             incrementClicker.setDisable(false);
             incrementClicker.setSelected(false);
         } else {
-            model.accessTime().startSimulation();
+            Time.startSimulation();
             topSectionController.startTimeBtn.setDisable(true);
             topSectionController.stopTimeBtn.setDisable(false);
             incrementClicker.setDisable(true);
             incrementClicker.setSelected(false);
         }
         clickMeButton.requestFocus();
-        model.accessTime().setManualSimulation(false);
+        Time.setManualSimulation(false);
     }
 
     @FXML
@@ -258,8 +252,7 @@ public class MainController extends BaseController {
     @FXML
     void hideGenerateMessages(ActionEvent event) {
         boolean isChecked = generateMessages.isSelected();
-        model.accessPlayer().getEventTracker().getPreferences().setShowClickerEvents(!isChecked);
-        updateEventList();
+        model.accessCharacter().getEventTracker().getPreferences().setShowClickerEvents(!isChecked);
     }
     public Button getClickMeButton() {
         return clickMeButton;

@@ -10,9 +10,9 @@ public class Merchant extends Peasant {
     public static int totalAmount;
 
     public Merchant(Authority quarterAuthority) {
-        this.quarterAuthority = quarterAuthority;
-        super.employment = new Employment(0, 0, Settings.getInt("merchantGenerate"), workWallet);
-        this.totalAmount += 1;
+        setAuthority(quarterAuthority);
+        super.employment = new Employment(0, 0, Settings.getInt("merchantGenerate"), getWorkWallet());
+        totalAmount += 1;
         setStatus(Status.Merchant);
     }
 }

@@ -27,6 +27,19 @@ public class Continent extends Area implements Details {
         this.world = world;
         this.createNations();
 
+        updateEverything();
+
+    }
+
+    private void updateEverything(){
+
+        for (Nation nation : nations){
+            nation.collectGenerals();
+
+            for (Quarter quarter : nation.getAllQuarters()){
+                quarter.calculateQuarterWealth();
+            }
+        }
     }
 
     private void createNations() {
@@ -58,7 +71,6 @@ public class Continent extends Area implements Details {
             //quarter where important characters live should have special name
             NameCreation.generateMajorQuarterName(home);
 
-            nation.collectGenerals();
 
         }
     }
@@ -68,7 +80,7 @@ public class Continent extends Area implements Details {
         int homeIndex = random.nextInt(nation.getAllQuarters().size());
         Quarter home = nation.getAllQuarters().get(homeIndex);
         king.getProperty().setLocation(home);
-        home.addCitizen(Status.King, king);
+        home.addCitizen(Status.King, king.getPerson());
         changeKingAreaNames(home);
         return home;
     }
@@ -99,7 +111,7 @@ public class Continent extends Area implements Details {
 
             noble.getProperty().setLocation(home);
             home.propertyTracker.addProperty(noble.getProperty());
-            home.addCitizen(Status.Noble,noble);
+            home.addCitizen(Status.Noble,noble.getPerson());
 
         }
 
@@ -118,7 +130,7 @@ public class Continent extends Area implements Details {
 
             vanguard.getProperty().setLocation(quarter);
             quarter.propertyTracker.addProperty(vanguard.getProperty());
-            quarter.addCitizen(Status.Vanguard, vanguard);
+            quarter.addCitizen(Status.Vanguard, vanguard.getPerson());
             NameCreation.generateMajorQuarterName(quarter);
         }
 
@@ -130,7 +142,7 @@ public class Continent extends Area implements Details {
 
         vanguard.getProperty().setLocation(home);
         home.propertyTracker.addProperty(vanguard.getProperty());
-        home.addCitizen(Status.Vanguard, vanguard);
+        home.addCitizen(Status.Vanguard, vanguard.getPerson());
 
     }
 

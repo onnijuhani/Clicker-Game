@@ -19,6 +19,11 @@ public class TaxEventManager {
             observers.add(observer);
         }
     }
+    public static void unSubscribe(TaxObserver observer) {
+        synchronized (observers) {
+            observers.remove(observer);
+        }
+    }
 
     public static void notifyTimeUpdate(int day, int month, int year) {
         // Create a snapshot of the observer list to ensure thread-safe iteration

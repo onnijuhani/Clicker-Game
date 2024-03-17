@@ -35,10 +35,8 @@ public class TopSectionController extends BaseController {
     private Button slowerBtn;
     private MainController main;
 
-    private Timeline updateTimeline;
-
     public void initialize() {
-        updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateTopSection()));
+        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateTopSection()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         stopTimeBtn.setDisable(true);
         updateTimeline.play();
@@ -57,7 +55,7 @@ public class TopSectionController extends BaseController {
     }
 
     void updateWallet() {
-        int[] values = model.accessPlayer().getWallet().getWalletValues();
+        int[] values = model.accessCharacter().getWallet().getWalletValues();
         foodLabel.setText(String.valueOf(values[0]));
         alloysLabel.setText(String.format(String.valueOf(values[1])));
         goldLabel.setText(String.format(String.valueOf(values[2])));
@@ -106,7 +104,7 @@ public class TopSectionController extends BaseController {
 
         main.clickMeButton.setDisable(Time.getSpeed().equals(Speed.Slow));
         if (Time.getSpeed().equals(Speed.Slow)){
-            model.accessPlayer().getEventTracker().addEvent(EventTracker.Message("Major","Clicker is disabled"));
+            model.accessCharacter().getEventTracker().addEvent(EventTracker.Message("Major","Clicker is disabled"));
         }
         main.updatePauseBtnText();
     }

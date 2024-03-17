@@ -102,13 +102,6 @@ public class EventTracker {
     public void addEvent(String message) {
         String type = extractTypeFromMessage(message);
 
-        int maxMajorEvents = Settings.getInt("maxMajorEvents");
-        int maxErrorEvents = Settings.getInt("maxErrorEvents");
-        int maxClickerEvents = Settings.getInt("maxClickerEvents");
-        int maxMinorEvents = Settings.getInt("maxMinorEvents");
-        int maxShopEvents = Settings.getInt("maxShopEvents");
-        int maxUtilityEvents = Settings.getInt("maxUtilityEvents");
-
         switch (type) {
             case "Major":
                 addEventToCategory(majorEvents, message, maxMajorEvents);
@@ -135,12 +128,27 @@ public class EventTracker {
     }
     private String extractTypeFromMessage(String message) {
         String[] parts = message.split(" ", 4);  // Splitting into four parts
-        String extractedType = parts.length > 2 ? parts[2] : "Unknown";
-        return extractedType;
+        return parts.length > 2 ? parts[2] : "Unknown";
     }
     private void addEventToCategory(LinkedList<String> eventList, String event, int maxSize) {
-        if (eventList.size() >= maxSize && !eventList.isEmpty()) { // Ensure list is not empty before attempting to remove
-            eventList.removeFirst();
+        // the core message from the new event
+        String[] newMessageParts = event.split(" ", 5); // Split into parts, expecting at least 5
+        String newCoreMessage = newMessageParts.length > 4 ? newMessageParts[4] : "";
+
+        // Check for duplicate message only if the list is not empty
+        if (!eventList.isEmpty()) {
+            String lastEvent = eventList.getLast();
+            String[] lastMessageParts = lastEvent.split(" ", 5);
+            String lastCoreMessage = lastMessageParts.length > 4 ? lastMessageParts[4] : "";
+
+            // If the core message is identical, do not add the new event
+            if (newCoreMessage.equals(lastCoreMessage)) {
+                return;
+            }
+        }
+
+        if (eventList.size() >= maxSize && !eventList.isEmpty()) {
+            eventList.removeFirst(); // Remove the oldest event to maintain the size
         }
         eventList.add(event);
     }

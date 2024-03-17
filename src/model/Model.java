@@ -1,6 +1,10 @@
 package model;
 
-import model.characters.player.Player;
+import model.characters.Character;
+import model.characters.Person;
+import model.characters.player.PlayerAuthorityCharacter;
+import model.characters.player.PlayerPeasant;
+import model.characters.player.clicker.Clicker;
 import model.map.CurrentPosition;
 import model.map.CurrentView;
 import model.time.Time;
@@ -8,23 +12,42 @@ import model.worldCreation.CreateWorld;
 
 public class Model {
 
-    private final CreateWorld world;
-    private CurrentPosition currentPosition;
-    private CurrentView currentView;
-    private Player player;
+    private static final CreateWorld world = new CreateWorld();
+    private static CurrentPosition currentPosition = new CurrentPosition();
+    private static CurrentView currentView = new CurrentView();
+    private static final Time time = new Time();
 
-    private Time time;
+    private static Person playerPerson = new Person(false);
+    private static PlayerPeasant initialCharacter = new PlayerPeasant(world.getSpawnQuarter(), playerPerson);
+    private static PlayerAuthorityCharacter authorityCharacter = null;
 
 
 
     public Model(){
-        this.world = new CreateWorld();
-        this.currentPosition = new CurrentPosition();
+
+
         currentPosition.updateCurrentQuarter(world.getSpawnQuarter());
-        this.currentView = new CurrentView();
+
         currentView.setCurrentView(world.getSpawnQuarter().getHigher());
-        this.player = new Player(world.getSpawnQuarter());
-        this.time = new Time();
+
+        Clicker.initializeClicker(playerPerson);
+    }
+
+
+    public Person getPlayerPerson() {
+        return playerPerson;
+    }
+
+    public static void setInitialCharacter(PlayerPeasant initialCharacter) {
+        Model.initialCharacter = initialCharacter;
+    }
+    public static void setAuthorityCharacter(PlayerAuthorityCharacter authorityCharacter) {
+        setInitialCharacter(null);
+        Model.authorityCharacter = authorityCharacter;
+    }
+
+    public void setPlayer(Person player) {
+        Model.playerPerson = player;
     }
 
 
@@ -41,8 +64,25 @@ public class Model {
     public CurrentView accessCurrentView() {
         return currentView;
     }
-    public Player accessPlayer() {
-        return player;
+    public Character accessCharacter() {
+        if (initialCharacter != null) {
+            return initialCharacter;
+        } else {
+            return authorityCharacter;
+        }
+    }
+
+
+    public Person accessPerson(){
+        return playerPerson;
+    }
+
+    public static PlayerPeasant getInitialCharacter() {
+        return initialCharacter;
+    }
+
+    public static PlayerAuthorityCharacter getAuthorityCharacter() {
+        return authorityCharacter;
     }
 
 

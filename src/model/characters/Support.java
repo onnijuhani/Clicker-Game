@@ -17,7 +17,7 @@ public class Support extends Character {
 
     public void createProperty() {
         setProperty(PropertyCreation.createSupportProperty(this));
-        getProperty().setOwner(this);
+        getProperty().setOwner(this.getPerson());
     }
 
     public Salary getSalary() {

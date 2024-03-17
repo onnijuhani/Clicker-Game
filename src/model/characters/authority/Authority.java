@@ -27,7 +27,7 @@ public class Authority implements TaxObserver, Ownable {
     }
 
     protected Property property;
-    protected AuthorityCharacter character; //the character who is in this position
+    protected Character characterPositionedHere; //the character who is in this position
     protected ArrayList<Authority> subordinate;
     protected Authority supervisor;
     protected ArrayList<Support> supporters;
@@ -39,23 +39,37 @@ public class Authority implements TaxObserver, Ownable {
         TaxEventManager.subscribe(this);
     }
 
-    public Authority(Character character) {
-        this.character = (AuthorityCharacter) character;
+    public Authority(Character characterPositionedHere) {
+        this.characterPositionedHere = characterPositionedHere;
         this.taxForm = new Tax();
-        this.workWallet = new WorkWallet(this, character.getWallet());
+        this.workWallet = characterPositionedHere.getPerson().getWorkWallet();
         this.subordinate = new ArrayList<>();
         this.supporters = new ArrayList<>();
-        this.property = character.getProperty();
+        this.property = characterPositionedHere.getProperty();
+
+        setInitialCharacterToThisPosition();
+
         subscribeToTimeEvents();
     }
+
+    /**
+     Initial character to this role must be AuthorityCharacter, later anyone can become one.
+     */
+    private void setInitialCharacterToThisPosition(){
+        ((AuthorityCharacter) characterPositionedHere).setAuthorityPosition(this);
+    }
+
     public void imposeTax(){
         for (Authority authority : subordinate){
             WorkWallet walletUnderTaxation = authority.getWorkWallet();
-            EventTracker tracker = authority.getCharacter().getEventTracker();
-            taxForm.collectTax(walletUnderTaxation,tracker,workWallet,this.getCharacter().getEventTracker());
+            EventTracker tracker = authority.getCharacterInThisPosition().getEventTracker();
+            taxForm.collectTax(walletUnderTaxation,tracker,workWallet,this.getCharacterInThisPosition().getEventTracker());
         }
     }
 
+    private WorkWallet getWorkWallet() {
+        return characterPositionedHere.getPerson().getWorkWallet();
+    }
 
 
     public void paySupporters(){
@@ -67,8 +81,8 @@ public class Authority implements TaxObserver, Ownable {
     }
     @Override
     public String toString(){
-        String characterName = this.character.getName();
-        String characterClass = this.character.getClass().getSimpleName();
+        String characterName = this.characterPositionedHere.getName();
+        String characterClass = this.characterPositionedHere.getRole().getStatus().toString();
         return characterClass+" "+characterName;
     }
     public Property getProperty() {
@@ -77,15 +91,26 @@ public class Authority implements TaxObserver, Ownable {
     public void setProperty(Property property) {
         this.property = property;
     }
-    public Character getCharacter() {
-        return character;
+    public Character getCharacterInThisPosition() {
+        return characterPositionedHere;
     }
-    public void setCharacter(AuthorityCharacter character) {
-        this.character = character;
+
+    public void setCharacterToThisPosition(Character character) {
+        this.characterPositionedHere = character;
     }
     public ArrayList<Authority> getSubordinate() {
         return subordinate;
     }
+
+    public void removeSubordinate(Authority authority) {
+        subordinate.remove(authority);
+    }
+
+    public void addSubordinate(Authority authority) {
+        subordinate.add(authority);
+    }
+
+
     public void setSubordinate(Authority authority) {
         subordinate.add(authority);
     }
@@ -107,17 +132,10 @@ public class Authority implements TaxObserver, Ownable {
     public void setTaxForm(Tax taxForm) {
         this.taxForm = taxForm;
     }
-    public WorkWallet getWorkWallet() {
-        return workWallet;
-    }
-
-    public void setWorkWallet(WorkWallet workWallet) {
-        this.workWallet = workWallet;
-    }
 
     @Override
     public EventTracker getEventTracker() {
-        return character.getEventTracker();
+        return characterPositionedHere.getEventTracker();
     }
 }
 

@@ -13,7 +13,6 @@ import model.characters.npc.Governor;
 import model.characters.npc.Mercenary;
 import model.shop.Shop;
 
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,7 +22,6 @@ public class Nation extends ControlledArea implements Details {
     private final Shop shop;
     protected LinkedList<Quarter> allQuarters;
     private List<Character> nationsGenerals = null;
-
     private boolean isGeneralsCacheValid = false;
 
     public Nation(String name, Continent continent, Authority authority) {
@@ -32,11 +30,11 @@ public class Nation extends ControlledArea implements Details {
         this.propertyTracker = new PropertyTracker();
         this.allQuarters = new LinkedList<>();
         this.nation = this;
-        this.authority = authority;
+        this.authorityHere = authority;
         this.createProvinces();
         this.shop = new Shop();
         for (Province province : provinces) {
-            authority.setSubordinate(province.authority);
+            authority.setSubordinate(province.authorityHere);
         }
         authority.setSupervisor(authority);
 
@@ -82,8 +80,8 @@ public class Nation extends ControlledArea implements Details {
                     .filter(entry -> generalStatuses.contains(entry.getKey()))
                     .flatMap(entry -> entry.getValue().stream())
                     .filter(character -> validProperties.contains(character.getProperty().getClass().getSimpleName()))
-                    .forEach(character -> {
-                        nationsGenerals.add(character);
+                    .forEach(person -> {
+                        nationsGenerals.add(person.getCharacter());
                     });
         }
         isGeneralsCacheValid = true;
@@ -121,7 +119,7 @@ public class Nation extends ControlledArea implements Details {
 
     private Governor governorFactory(String provinceName) {
         Governor governor = new Governor();
-        governor.setAuthority(getAuthority());
+        governor.setAuthority(getAuthorityHere());
         governor.setNation(nation);
         Property property = PropertyCreation.createProperty(provinceName, "Province", governor);
         propertyTracker.addProperty(property);
@@ -133,7 +131,7 @@ public class Nation extends ControlledArea implements Details {
             int homeIndex = random.nextInt(nation.getAllQuarters().size());
             Quarter home = nation.getAllQuarters().get(homeIndex);
             if (home.getHigher().getHigher().equals(province)) {
-                home.addCitizen(Status.Governor, governor);
+                home.addCitizen(Status.Governor, governor.getPerson());
                 NameCreation.generateMajorQuarterName(home);
                 governor.getProperty().setLocation(home);
                 break;
@@ -155,14 +153,14 @@ public class Nation extends ControlledArea implements Details {
             Mercenary mercenary = new Mercenary(authority);
             mercenary.setNation(nation);
             authority.addSupporter(mercenary);
-            mercenary.setAuthority(getAuthority());
+            mercenary.setAuthority(getAuthorityHere());
 
             City city = province.getContents().get(random.nextInt(province.getContents().size()));
             Quarter quarter = city.getContents().get(random.nextInt(city.getContents().size()));
 
             mercenary.getProperty().setLocation(quarter);
             quarter.propertyTracker.addProperty(mercenary.getProperty());
-            quarter.addCitizen(Status.Mercenary,mercenary);
+            quarter.addCitizen(Status.Mercenary,mercenary.getPerson());
             NameCreation.generateMajorQuarterName(quarter);
         }
     }

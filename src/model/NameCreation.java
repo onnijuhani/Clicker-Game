@@ -218,7 +218,7 @@ public class NameCreation {
 
 
     public static void generateMajorQuarterName(Quarter quarter) {
-        HashMap<Status, java.util.LinkedList<model.characters.Character>> populationList = quarter.getPopulationMap();
+        HashMap<Status, java.util.LinkedList<model.characters.Person>> populationList = quarter.getPopulationMap();
 
         String[] kingPrefixes = {"Royal"};
         String[] vanguardPrefixes = {"Vanguard's", "Guardian's", "Sentinel"};

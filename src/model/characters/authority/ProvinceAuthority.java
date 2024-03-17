@@ -9,7 +9,6 @@ public class ProvinceAuthority extends Authority {
         if (day == Time.provinceTax) {
             imposeTax();
             paySupporters();
-
         }
 
     }

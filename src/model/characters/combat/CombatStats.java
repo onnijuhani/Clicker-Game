@@ -1,7 +1,7 @@
 package model.characters.combat;
 
 
-import model.characters.PersonalDetails;
+import model.characters.Person;
 import model.resourceManagement.Resource;
 import model.shop.UpgradeSystem;
 import model.stateSystem.EventTracker;
@@ -11,9 +11,9 @@ public class CombatStats {
     /* Tried using Composition over Inheritance here to reduce code */
     private final UpgradeSystem offense;
     private final UpgradeSystem defense;
-    private final PersonalDetails person;
+    private final Person person;
 
-    public CombatStats(int offenseBasePrice, int defenseBasePrice, PersonalDetails person) {
+    public CombatStats(int offenseBasePrice, int defenseBasePrice, Person person) {
         this.offense = new UpgradeSystem(offenseBasePrice);
         this.defense = new UpgradeSystem(defenseBasePrice);
         this.person = person;

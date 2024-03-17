@@ -9,6 +9,8 @@ import model.characters.player.clicker.*;
 import model.resourceManagement.Resource;
 import model.shop.Shop;
 
+import model.characters.player.clicker.Clicker;
+
 public class ClickerShopController extends BaseController {
     @FXML private Button buyAlloyClickerButton;
     @FXML private Button buyGoldClickerButton;
@@ -54,7 +56,7 @@ public class ClickerShopController extends BaseController {
     }
 
     void setInfoTexts(){
-        Clicker clicker = model.accessPlayer().getClicker();
+        Clicker clicker = Clicker.getInstance();
         FoodClicker foodClicker = (FoodClicker) clicker.getClickerTool(Resource.Food);
         foodLevel.setText("Level: "+foodClicker.getUpgradeLevel());
         foodInfo.setText("Produces: " + foodClicker.getResourceAmount() + " Food");
@@ -85,7 +87,7 @@ public class ClickerShopController extends BaseController {
         int basePrice = Settings.getInt(resource.name().toLowerCase() + "Clicker");
         buyButton.setText(basePrice + " Gold");
 
-        ClickerTools tool = model.accessPlayer().getClicker().getClickerTool(resource);
+        ClickerTools tool = Clicker.getInstance().getClickerTool(resource);
         if (tool != null) {
             int upgradePrice = tool.getUpgradePrice();
             upgradeButton.setText(upgradePrice + " Gold");
@@ -94,7 +96,7 @@ public class ClickerShopController extends BaseController {
 
     @FXML
     void buyAlloyClicker() {
-        boolean purchaseSuccessful = shop.getClickerShop().buyClicker(Resource.Alloy, model.accessPlayer());
+        boolean purchaseSuccessful = shop.getClickerShop().buyClicker(Resource.Alloy, model.accessPerson());
         buyAlloyClickerButton.setVisible(!purchaseSuccessful);
         alloyUpgradeBtn.setVisible(purchaseSuccessful);
         alloyBox.setVisible(purchaseSuccessful);
@@ -103,7 +105,7 @@ public class ClickerShopController extends BaseController {
 
     @FXML
     void buyGoldClicker() {
-        boolean purchaseSuccessful = shop.getClickerShop().buyClicker(Resource.Gold, model.accessPlayer());
+        boolean purchaseSuccessful = shop.getClickerShop().buyClicker(Resource.Gold, model.accessPerson());
         buyGoldClickerButton.setVisible(!purchaseSuccessful);
         goldUpgradeBtn.setVisible(purchaseSuccessful);
         goldBox.setVisible(purchaseSuccessful);
@@ -128,10 +130,10 @@ public class ClickerShopController extends BaseController {
     }
 
     private void handleUpgradeClicker(Resource resource, Button upgradeButton) {
-        Clicker clicker = model.accessPlayer().getClicker();
+        Clicker clicker = Clicker.getInstance();
         ClickerTools tool = clicker.getClickerTool(resource);
         if (tool != null) {
-            boolean upgradeSuccessful = shop.getClickerShop().buyUpgrade(resource, model.accessPlayer());
+            boolean upgradeSuccessful = shop.getClickerShop().buyUpgrade(resource, model.accessPerson());
             if (upgradeSuccessful) {
                 upgradeButton.setText("Upgrade to Level " + (tool.getUpgradeLevel() + 1) + " (" + tool.getUpgradePrice() + " Gold)");
             }

@@ -10,8 +10,8 @@ public class Farmer extends Peasant {
     public static int totalAmount;
 
     public Farmer(Authority quarterAuthority) {
-        this.quarterAuthority = quarterAuthority;
-        this.employment = new Employment(Settings.getInt("farmerGenerate"), 0, 0, workWallet);
+        setAuthority(quarterAuthority);
+        this.employment = new Employment(Settings.getInt("farmerGenerate"), 0, 0, getWorkWallet());
         totalAmount += 1;
         setStatus(Status.Farmer);
     }

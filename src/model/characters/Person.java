@@ -4,32 +4,44 @@ import model.NameCreation;
 import model.Settings;
 import model.buildings.Property;
 import model.characters.combat.CombatStats;
+import model.characters.player.PlayerPeasant;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.shop.Ownable;
 import model.stateSystem.EventTracker;
 import model.stateSystem.GameEvent;
 import model.stateSystem.State;
+import model.time.Time;
+import model.worldCreation.Nation;
 
 import java.util.ArrayList;
 import java.util.List;
-public class PersonalDetails implements PersonalAttributes, Ownable {
+public class Person implements PersonalAttributes, Ownable {
 
-    private String name;
+    private final String name;
     private Wallet wallet;
     private WorkWallet workWallet;
     private Property property;
-    private RelationshipManager relationshipManager;
-    private EventTracker eventTracker;
-    private CombatStats combatStats;
+    private final RelationshipManager relationshipManager;
+    private final EventTracker eventTracker;
+    private final CombatStats combatStats;
     private State state;
     private List<GameEvent> ongoingEvents = new ArrayList<>();
     private PaymentCalendar paymentCalendar;
     private StrikesTracker strikesTracker;
+    private Character character;
 
 
-    public PersonalDetails(Boolean isNpc) {
+
+    private Role role;
+
+
+    private boolean isPlayer = false;
+
+
+    public Person(Boolean isNpc) {
         this.wallet = new Wallet(this);
+        this.workWallet = new WorkWallet(this, wallet);
         this.relationshipManager = new RelationshipManager();
         this.name = NameCreation.generateCharacterName();
         this.eventTracker = new EventTracker(isNpc);
@@ -38,6 +50,17 @@ public class PersonalDetails implements PersonalAttributes, Ownable {
         this.strikesTracker = new StrikesTracker(Settings.getInt("strikes"));
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
+
+    public boolean isPlayer() {
+        return isPlayer;
+    }
+    public void setPlayer(boolean player) {
+        isPlayer = player;
+    }
     public void addEvent(GameEvent gameEvent) {
         ongoingEvents.add(gameEvent);
     }
@@ -46,10 +69,7 @@ public class PersonalDetails implements PersonalAttributes, Ownable {
         return name;
     }
 
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
+
 
     @Override
     public Wallet getWallet() {
@@ -87,28 +107,13 @@ public class PersonalDetails implements PersonalAttributes, Ownable {
     }
 
     @Override
-    public void setRelationshipManager(RelationshipManager relationshipManager) {
-        this.relationshipManager = relationshipManager;
-    }
-
-    @Override
     public EventTracker getEventTracker() {
         return eventTracker;
     }
 
     @Override
-    public void setEventTracker(EventTracker eventTracker) {
-        this.eventTracker = eventTracker;
-    }
-
-    @Override
     public CombatStats getCombatStats() {
         return combatStats;
-    }
-
-    @Override
-    public void setCombatStats(CombatStats combatStats) {
-        this.combatStats = combatStats;
     }
 
     @Override
@@ -126,25 +131,53 @@ public class PersonalDetails implements PersonalAttributes, Ownable {
         return ongoingEvents;
     }
 
-    public void setOngoingEvents(List<GameEvent> ongoingEvents) {
-        this.ongoingEvents = ongoingEvents;
-    }
 
     @Override
     public PaymentCalendar getPaymentCalendar() {
         return paymentCalendar;
     }
 
-    public void setPaymentCalendar(PaymentCalendar paymentCalendar) {
-        this.paymentCalendar = paymentCalendar;
-    }
 
     @Override
     public StrikesTracker getStrikesTracker() {
         return strikesTracker;
     }
-    public void setStrikesTracker(StrikesTracker strikesTracker) {
-        this.strikesTracker = strikesTracker;
+
+    public Status getStatus() {
+        return role.getStatus();
+    }
+    public Character getCharacter() {
+        return character;
+    }
+    public void setCharacter(Character character) {
+        this.character = character;
+    }
+    public Role getRole() {
+        return role;
+    }
+    public void setRole(Role role) {
+        this.role = role;
+    }
+    public Nation getNation() {
+        return role.getNation();
+    }
+
+    public void loseStrike(){
+        int strikesLeft = getStrikesTracker().getStrikes();
+
+        if (strikesLeft < 1) {
+            triggerGameOver();
+            getEventTracker().addEvent(EventTracker.Message("Major","GAME OVER. No Strikes left."));
+
+        }else {
+            getEventTracker().addEvent(EventTracker.Message("Major", "Lost a Strike! Strikes left: " + strikesLeft));
+        }
+    }
+
+    private void triggerGameOver(){
+        if (getCharacter() instanceof PlayerPeasant){
+            Time.setGameOver(true);
+        }
     }
 }
 

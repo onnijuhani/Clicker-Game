@@ -5,9 +5,11 @@ import model.buildings.Property;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.authority.Authority;
 import model.characters.combat.CombatStats;
-import model.characters.player.Player;
+import model.characters.player.PlayerPeasant;
 import model.resourceManagement.Resource;
+import model.resourceManagement.wallets.Vault;
 import model.resourceManagement.wallets.Wallet;
+import model.resourceManagement.wallets.WorkWallet;
 import model.shop.Exchange;
 import model.shop.Ownable;
 import model.stateSystem.EventTracker;
@@ -28,26 +30,30 @@ public class Character implements TaxObserver, NpcObserver, Details, Ownable {
     public void npcUpdate(int day, int month, int year) {
         if (day == GameManager.getFoodConsumptionDay()) {
             foodConsumption(this);
-            if (this instanceof Player) {
+            if (this instanceof PlayerPeasant) {
                 this.getEventTracker().addEvent(EventTracker.Message("Minor", GameManager.getFoodConsumptionDay() + " Food Consumed."));
                 return;
             }
-            if (!personalDetails.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
+            if (!person.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
                 buyMeadowLandsTEST();
             }
-            if (personalDetails.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
+            if (person.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
                 upgrade();
             }
         }
     }
 
-    private PersonalDetails personalDetails;
-    private RoleDetails roleDetails;
+    protected Person person;
+    protected Role role;
 
 
     public Character() {
-        this.personalDetails = new PersonalDetails(true);
-        this.roleDetails = new RoleDetails();
+        this.person = new Person(true);
+        this.role = new Role();
+
+        makeConnections();
+
+
         if (shouldSubscribeToTaxEvent()) {
             TaxEventManager.subscribe(this);
         }
@@ -56,12 +62,20 @@ public class Character implements TaxObserver, NpcObserver, Details, Ownable {
         }
     }
 
+    protected void makeConnections() {
+        person.setRole(role);
+        person.setCharacter(this);
+
+        role.setPerson(person);
+        role.setCharacter(this);
+    }
+
     protected void buyMeadowLandsTEST(){
-        roleDetails.getNation().getShop().getUtilityShop().buyBuilding(UtilityBuildings.MeadowLands,this);
+        role.getNation().getShop().getUtilityShop().buyBuilding(UtilityBuildings.MeadowLands,this);
     }
     protected void upgrade(){
-        if(personalDetails.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
-            roleDetails.getNation().getShop().getUtilityShop().upgradeBuilding(UtilityBuildings.MeadowLands, this);
+        if(person.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
+            role.getNation().getShop().getUtilityShop().upgradeBuilding(UtilityBuildings.MeadowLands, this);
         }
     }
 
@@ -77,7 +91,7 @@ public class Character implements TaxObserver, NpcObserver, Details, Ownable {
 
         int foodNeeded = GameManager.getFoodConsumptionRate();
 
-        Exchange exchange = roleDetails.getNation().getShop().getExchange();
+        Exchange exchange = role.getNation().getShop().getExchange();
 
         try {
             if (wallet.hasEnoughResource(Resource.Food, foodNeeded)) {
@@ -120,88 +134,93 @@ public class Character implements TaxObserver, NpcObserver, Details, Ownable {
     }
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() +" "+ personalDetails.getName();
+        return getStatus() +" "+ person.getName();
     }
     public String getName() {
-        return personalDetails.getName();
+        return person.getName();
     }
     public Nation getNation() {
-        return roleDetails.getNation();
+        return role.getNation();
     }
     public void setNation(Nation nation) {
-        roleDetails.setNation(nation);
+        role.setNation(nation);
     }
     public Status getStatus(){
-        return roleDetails.getStatus();
+        return role.getStatus();
     }
     public void setStatus(Status status) {
-        roleDetails.setStatus(status);
+        role.setStatus(status);
     }
     public void setProperty(Property property){
-        personalDetails.setProperty(property);
+        person.setProperty(property);
     }
     public Property getProperty(){
-        return personalDetails.getProperty();
+        return person.getProperty();
     }
 
     public Wallet getWallet() {
-        return personalDetails.getWallet();
+        return person.getWallet();
     }
     public void setWallet(Wallet wallet) {
-        personalDetails.setWallet(wallet);
+        person.setWallet(wallet);
     }
     @Override
     public EventTracker getEventTracker() {
-        return personalDetails.getEventTracker();
+        return person.getEventTracker();
     }
 
     public Authority getAuthority() {
-        return roleDetails.getAuthority();
+        return role.getAuthority();
     }
     public void setAuthority(Authority authority) {
-        roleDetails.setAuthority(authority);
+        role.setAuthority(authority);
     }
     public CombatStats getCombatStats() {
-        return personalDetails.getCombatStats();
+        return person.getCombatStats();
     }
-    public void setCombatStats(CombatStats combatStats) {
-        personalDetails.setCombatStats(combatStats);
-    }
+
     public RelationshipManager getRelationshipManager() {
-        return personalDetails.getRelationshipManager();
+        return person.getRelationshipManager();
     }
     public State getState() {
-        return personalDetails.getState();
+        return person.getState();
     }
     public void setState(State state) {
-        personalDetails.setState(state);
+        person.setState(state);
     }
     public void addEvent(GameEvent gameEvent) {
-        personalDetails.addEvent(gameEvent);
+        person.addEvent(gameEvent);
     }
     public List<GameEvent> getOngoingEvents() {
-        return personalDetails.getOngoingEvents();
+        return person.getOngoingEvents();
     }
 
-    public PersonalDetails getPersonalDetails() {
-        return personalDetails;
+    public Person getPerson() {
+        return person;
     }
 
-    public void setPersonalDetails(PersonalDetails personalDetails) {
-        this.personalDetails = personalDetails;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
-    public RoleDetails getRoleDetails() {
-        return roleDetails;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoleDetails(RoleDetails roleDetails) {
-        this.roleDetails = roleDetails;
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public WorkWallet getWorkWallet(){
+        return person.getWorkWallet();
+    }
+    public Vault getVault(){
+        return person.getProperty().getVault();
     }
 
     public void loseStrike(){
-        personalDetails.getStrikesTracker().loseStrike();
-        int strikesLeft = personalDetails.getStrikesTracker().getStrikes();
+        person.getStrikesTracker().loseStrike();
+        int strikesLeft = person.getStrikesTracker().getStrikes();
 
         if (strikesLeft < 1) {
             triggerGameOver();
@@ -213,11 +232,16 @@ public class Character implements TaxObserver, NpcObserver, Details, Ownable {
     }
 
     private void triggerGameOver(){
-        if (this instanceof Player){
+        if (this instanceof PlayerPeasant){
             Time.setGameOver(true);
         }
     }
 
+    public void decreaseOffense(int amountLevels) {
+        for(int i = 0; i < amountLevels; i++) {
+            getCombatStats().decreaseOffense();
+        }
+    }
 }
 
 

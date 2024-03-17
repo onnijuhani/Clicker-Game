@@ -4,7 +4,7 @@ package model.buildings;
 import javafx.scene.image.Image;
 import model.Images;
 import model.buildings.utilityBuilding.UtilitySlot;
-import model.characters.Character;
+import model.characters.Person;
 import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Vault;
 import model.shop.Ownable;
@@ -48,7 +48,7 @@ public class Property implements PropertyObserver, Details, Ownable {
     private UpgradeSystem defense;
     protected Vault vault;
     protected Quarter location;
-    protected Character owner;
+    protected Person owner;
     protected Maintenance maintenance;
     protected String name;
     protected Properties propertyEnum;
@@ -56,7 +56,7 @@ public class Property implements PropertyObserver, Details, Ownable {
     protected UtilitySlot utilitySlot;
     private State state = State.NONE;
 
-    public Property(PropertyConfig.PropertyValues propertyValues, String name, Character owner) {
+    public Property(PropertyConfig.PropertyValues propertyValues, String name, Person owner) {
         this.defense = new UpgradeSystem(propertyValues.getPower());
         this.vault = new Vault(this);
 
@@ -81,11 +81,11 @@ public class Property implements PropertyObserver, Details, Ownable {
         return Images.PropertyImg.getImage(propertyEnum);
     }
 
-    public Character getOwner() {
+    public Person getOwner() {
         return owner;
     }
 
-    public void setOwner(Character owner) {
+    public void setOwner(Person owner) {
         this.owner = owner;
         owner.setProperty(this);
     }

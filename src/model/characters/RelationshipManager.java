@@ -4,64 +4,61 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class RelationshipManager {
-    private final Set<Character> allies = new HashSet<>();
-    private final Set<Character> enemies = new HashSet<>();
-    private final Set<Character> listOfDefeatedCharacters = new HashSet<>();
-    public void addDefeatedCharacter(Character character) {
-        listOfDefeatedCharacters.add(character);
+    private final Set<Person> allies = new HashSet<>();
+    private final Set<Person> enemies = new HashSet<>();
+    private final Set<Person> listOfDefeatedPersons = new HashSet<>();
+    public void addDefeatedPerson(Person person) {
+        listOfDefeatedPersons.add(person);
     }
-    public void addAlly(Character character) {
-        if (enemies.contains(character)) {
-            enemies.remove(character);
+    public void addAlly(Person person) {
+        if (enemies.contains(person)) {
+            enemies.remove(person);
         } else {
-            allies.add(character);
+            allies.add(person);
         }
     }
-    public void addEnemy(Character character) {
-        if (allies.contains(character)) {
-            allies.remove(character);
+    public void addEnemy(Person person) {
+        if (allies.contains(person)) {
+            allies.remove(person);
         } else {
-            enemies.add(character);
+            enemies.add(person);
         }
     }
-    public void addEnemiesAlliesAsEnemies(Character character) {
-        for (Character enemy : character.getRelationshipManager().getEnemies()) {
+    public void addEnemiesAlliesAsEnemies(Person person) {
+        for (Person enemy : person.getRelationshipManager().getEnemies()) {
             addAlly(enemy);
         }
-        for (Character ally : character.getRelationshipManager().getAllies()) {
+        for (Person ally : person.getRelationshipManager().getAllies()) {
             addEnemy(ally);
         }
     }
-    public void addEnemiesEnemiesAsAllies(Character character) {
-        for (Character enemy : character.getRelationshipManager().getEnemies()) {
+    public void addEnemiesEnemiesAsAllies(Person person) {
+        for (Person enemy : person.getRelationshipManager().getEnemies()) {
             addEnemy(enemy);
         }
-        for (Character ally : character.getRelationshipManager().getAllies()) {
+        for (Person ally : person.getRelationshipManager().getAllies()) {
             addAlly(ally);
         }
     }
 
 
-    public void removeAlly(Character character) {
-        allies.remove(character);
+    public void removeAlly(Person person) {
+        allies.remove(person);
     }
-    public void removeEnemy(Character character) {
-        enemies.remove(character);
+    public void removeEnemy(Person person) {
+        enemies.remove(person);
     }
-    public boolean isAlly(Character character) {
-        return allies.contains(character);
+    public boolean isAlly(Person person) {
+        return allies.contains(person);
     }
-    public boolean isEnemy(Character character) {
-        return enemies.contains(character);
-    }
-    public Set<Character> getAllies() {
+    public Set<Person> getAllies() {
         return new HashSet<>(allies); // Return a copy to prevent external modifications
     }
-    public Set<Character> getEnemies() {
+    public Set<Person> getEnemies() {
         return new HashSet<>(enemies); // Same here
     }
 
-    public Set<Character> getListOfDefeatedCharacters() {
-        return listOfDefeatedCharacters;
+    public Set<Person> getListOfDefeatedPersons() {
+        return listOfDefeatedPersons;
     }
 }

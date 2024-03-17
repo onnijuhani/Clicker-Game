@@ -42,15 +42,14 @@ public class ExploreMapController extends BaseController {
     void updateAuthorityLink(){
         if (model.accessCurrentView().getCurrentView() instanceof ControlledArea) {
             ControlledArea currentView = (ControlledArea) model.accessCurrentView().getCurrentView();
-            authorityLink.setText(currentView.getAuthority().toString());
+            authorityLink.setText(currentView.getAuthorityHere().toString());
         }
     }
 
     @FXML
     void authorityLinkClick(ActionEvent event) {
-        if (model.accessCurrentView().getCurrentView() instanceof ControlledArea) {
-            ControlledArea currentView = (ControlledArea) model.accessCurrentView().getCurrentView();
-            openCharacterProfile(currentView.getAuthority().getCharacter());
+        if (model.accessCurrentView().getCurrentView() instanceof ControlledArea currentView) {
+            openCharacterProfile(currentView.getAuthorityHere().getCharacterInThisPosition());
         }
 
     }
@@ -58,10 +57,9 @@ public class ExploreMapController extends BaseController {
 
     public void updateLivesHereListView() {
 
-        if (model.accessCurrentView().getCurrentView() instanceof ControlledArea) {
+        if (model.accessCurrentView().getCurrentView() instanceof ControlledArea currentView) {
 
-            ControlledArea currentView = (ControlledArea) model.accessCurrentView().getCurrentView();
-            List list = currentView.getImportantCharacters();
+            List<Character> list = currentView.getImportantCharacters();
             ObservableList<Character> characters = FXCollections.observableArrayList(list);
             livesHereListView.setItems(characters);
 
@@ -74,7 +72,7 @@ public class ExploreMapController extends BaseController {
                     if (empty || character == null) {
                         setGraphic(null);
                     } else {
-                        link.setText(character.toString()); // Assuming Character has a getName() method
+                        link.setText(character.toString());
                         link.setOnAction(e -> openCharacterProfile(character));
                         setGraphic(link);
                     }
@@ -150,7 +148,7 @@ public class ExploreMapController extends BaseController {
     }
 
 
-    void updateExploreTab(){
+    public void updateExploreTab(){
         updateAreasList();
         updateCurrentViewLabel();
         updateHigherButtonText();

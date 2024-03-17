@@ -23,13 +23,11 @@ public interface PersonalAttributes {
     PaymentCalendar getPaymentCalendar();
     StrikesTracker getStrikesTracker();
 
-    void setName(String name);
+
     void setWallet(Wallet wallet);
     void setWorkWallet(WorkWallet workWallet);
     void setProperty(Property property);
-    void setRelationshipManager(RelationshipManager relationshipManager);
-    void setEventTracker(EventTracker eventTracker);
-    void setCombatStats(CombatStats combatStats);
+
     void setState(State state);
     void addEvent(GameEvent gameEvent);
 

@@ -4,18 +4,23 @@ import model.characters.Character;
 import model.characters.Status;
 import model.characters.authority.Authority;
 
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class ControlledArea extends Area implements Details {
-    public Authority getAuthority() {
-        return authority;
+    public Authority getAuthorityHere() {
+        return authorityHere;
     }
     protected Nation nation;
-    protected Authority authority;
+
+    public void setAuthorityHere(Authority authorityHere, Character character) {
+        this.authorityHere = authorityHere;
+        authorityHere.setCharacterToThisPosition(character);
+    }
+
+    protected Authority authorityHere;
     protected List<Character> citizenCache = null;
     public Nation getNation(){
         return nation;
@@ -36,22 +41,10 @@ public abstract class ControlledArea extends Area implements Details {
                 Status.King, Status.Noble, Status.Vanguard,
                 Status.Governor, Status.Mercenary,
                 Status.Mayor,
-                Status.Captain, Status.Merchant, Status.Miner, Status.Farmer
-        );
-    }
-
-
-
-    public List<Status> getStatusRank() {
-        List<Status> statusOrder = List.of(
-                Status.King, Status.Noble, Status.Vanguard,
-                Status.Governor, Status.Mercenary, Status.Mayor,
                 Status.Captain, Status.Merchant, Status.Miner,
-                Status.Farmer, Status.Slave
+                Status.Farmer, Status.Peasant
         );
-        return statusOrder;
     }
-
 
     public List<Character> getImportantCharacters() {
         if (citizenCache == null) {

@@ -4,6 +4,7 @@ import javafx.animation.KeyFrame;
 import javafx.application.Platform;
 import javafx.util.Duration;
 import model.characters.Character;
+import model.characters.Person;
 import model.resourceManagement.TransferPackage;
 import model.stateSystem.EventTracker;
 
@@ -67,21 +68,21 @@ public class SlaveFacility extends UtilityBuilding {
 
     private void payConsequence() {
         synchronized (this) { // ensuring Thread safety
-            Set<Character> alliesCopy = new HashSet<>(owner.getRelationshipManager().getAllies());
-            for (Character ally : alliesCopy) {
+            Set<Person> alliesCopy = new HashSet<>(owner.getRelationshipManager().getAllies());
+            for (Person ally : alliesCopy) {
                 if (!ally.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.SlaveFacility)) {
                     owner.getRelationshipManager().removeAlly(ally);
-                    ally.getRelationshipManager().removeAlly(owner);
+                    ally.getRelationshipManager().removeAlly(owner.getPerson());
                     owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Relationship with " + ally + " cooled due to Slave Facility construction."));
                 }
             }
         }
 
-        Set<Character> enemiesCopy = new HashSet<>(owner.getRelationshipManager().getEnemies());
-        for (Character enemy : enemiesCopy) {
+        Set<Person> enemiesCopy = new HashSet<>(owner.getRelationshipManager().getEnemies());
+        for (Person enemy : enemiesCopy) {
             if (enemy.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.SlaveFacility)) {
                 owner.getRelationshipManager().removeEnemy(enemy);
-                enemy.getRelationshipManager().removeEnemy(owner);
+                enemy.getRelationshipManager().removeEnemy(owner.getPerson());
                 owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Common interests in Slave Facilities have improved your standing with " + enemy + "."));
             }
         }

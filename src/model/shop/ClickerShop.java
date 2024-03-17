@@ -1,8 +1,7 @@
 package model.shop;
 
 import model.Settings;
-import model.stateSystem.EventTracker;
-import model.characters.player.Player;
+import model.characters.Person;
 import model.characters.player.clicker.AlloyClicker;
 import model.characters.player.clicker.Clicker;
 import model.characters.player.clicker.ClickerTools;
@@ -10,6 +9,7 @@ import model.characters.player.clicker.GoldClicker;
 import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
+import model.stateSystem.EventTracker;
 
 public class ClickerShop extends ShopComponents {
 
@@ -17,18 +17,18 @@ public class ClickerShop extends ShopComponents {
     public ClickerShop(Wallet wallet) {
         super(wallet);
     }
-    public boolean buyClicker(Resource type, Player player) {
+    public boolean buyClicker(Resource type, Person person) {
         ClickerTools newTool = createClickerTool(type);
         int price = newTool.getUpgradePrice();  // Get the base price from the newTool
         TransferPackage transfer = new TransferPackage(0 ,0, price);
 
-        if (player.getWallet().hasEnoughResource(Resource.Gold, price)) {
-            this.wallet.deposit(player.getWallet(), transfer);
-            player.getClicker().addClickerTool(type, newTool);
-            player.getEventTracker().addEvent(EventTracker.Message("Shop", "Successfully purchased " + type + " Clicker!"));
+        if (person.getWallet().hasEnoughResource(Resource.Gold, price)) {
+            this.wallet.deposit(person.getWallet(), transfer);
+            Clicker.getInstance().addClickerTool(type, newTool);
+            person.getEventTracker().addEvent(EventTracker.Message("Shop", "Successfully purchased " + type + " Clicker!"));
             return true; // Purchase was successful
         } else {
-            player.getEventTracker().addEvent(EventTracker.Message("Error", "Insufficient gold to buy " + type + " clicker."));
+            person.getEventTracker().addEvent(EventTracker.Message("Error", "Insufficient gold to buy " + type + " clicker."));
             return false; // Purchase failed
         }
     }
@@ -48,8 +48,8 @@ public class ClickerShop extends ShopComponents {
         }
     }
 
-    public boolean buyUpgrade(Resource type, Player player) {
-        Clicker clicker = player.getClicker();
+    public boolean buyUpgrade(Resource type, Person player) {
+        Clicker clicker = Clicker.getInstance();
         UpgradeSystem item = clicker.getClickerTool(type);
         int upgradePrice = item.getUpgradePrice();
         TransferPackage transfer = new TransferPackage(0 ,0, upgradePrice);

@@ -15,8 +15,9 @@ import model.buildings.Construct;
 import model.buildings.Property;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.Character;
-import model.characters.decisions.CombatService;
-import model.characters.player.Player;
+import model.characters.combat.CombatService;
+import model.characters.player.PlayerAuthorityCharacter;
+import model.characters.player.PlayerPeasant;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.shop.Shop;
@@ -62,10 +63,7 @@ public class PropertyController extends BaseController {
     private Label upgradeDefLabel;
     @FXML
     private Label upgradeCost;
-    @FXML
-    void upgradeProperty(){
-        Construct.constructProperty(character);
-    }
+
     @FXML
     private VBox upgradeBox;
 
@@ -274,6 +272,11 @@ public class PropertyController extends BaseController {
 
     }
 
+    @FXML
+    void upgradeProperty(){
+        Construct.constructProperty(character);
+    }
+
 
     private void updateUIForBuilding(UtilityBuildings building) {
         UtilityBuildingUI ui = buildingUIs.get(building);
@@ -314,12 +317,12 @@ public class PropertyController extends BaseController {
 
     @FXML
     void robVault(){
-        CombatService.executeRobbery(model.accessPlayer(), character);
+        CombatService.executeRobbery(model.accessCharacter(), character);
     }
 
 
     private void differentiatePlayer() {
-        if(character instanceof Player) {
+        if(character instanceof PlayerPeasant || character instanceof PlayerAuthorityCharacter) {
             buildingUIs.keySet().forEach(this::updateUIForBuilding);
         } else {
             buildingUIs.keySet().forEach(this::updateNPCUIForBuilding);
@@ -352,7 +355,7 @@ public class PropertyController extends BaseController {
     }
 
     void updateConstructInfo(){
-        upgradeBox.setVisible(character instanceof Player);
+        upgradeBox.setVisible(character instanceof PlayerPeasant);
         TransferPackage cost = Construct.getCost(character);
         constructBtn.setText("Construct "+ Construct.getNextProperty(character));
         if (cost != null) {
@@ -383,13 +386,12 @@ public class PropertyController extends BaseController {
 
 
     void playerVersionState(){
-        if(model.accessPlayer().equals(character)) {
+        if(character instanceof PlayerPeasant || character instanceof PlayerAuthorityCharacter) {
             robVaultBtn.setVisible(false);
             playerVaultBox.setVisible(true);
             upgradeDefBtn.setVisible(true);
             upgradeDefBtn.setText(property.getDefense().getUpgradePrice()+" Alloys");
             upgradeDefLabel.setVisible(true);
-
         }else{
             robVaultBtn.setVisible(true);
             playerVaultBox.setVisible(false);
@@ -445,18 +447,11 @@ public class PropertyController extends BaseController {
 
     public void setCurrentProperty(Property property) {
         this.property = property;
-        setCharacter();
-        setShop();
+        this.character = CharacterController.currentCharacter;
+        this.shop = character.getNation().getShop();
         updatePropertyTab();
     }
 
-    public void setCharacter() {
-        this.character = property.getOwner();
-    }
-
-    public void setShop() {
-        this.shop = character.getNation().getShop();
-    }
 
 
     @FXML

@@ -25,12 +25,12 @@ public class City extends ControlledArea implements Details {
         this.province = province;
         this.nation = province.getNation();
         this.propertyTracker = new PropertyTracker();
-        this.authority = authority;
+        this.authorityHere = authority;
         this.createQuarters();
         for (Quarter quarter : quarters) {
-            authority.setSubordinate(quarter.authority);
+            authority.setSubordinate(quarter.authorityHere);
         }
-        authority.setSupervisor(province.getAuthority());
+        authority.setSupervisor(province.getAuthorityHere());
     }
     @Override
     public String getDetails() {
@@ -38,8 +38,8 @@ public class City extends ControlledArea implements Details {
         int population = getCityPopulation();
 
 
-        return ("Authority here is: " + this.getAuthority() + "\n"+
-                "Living in a: " + this.getAuthority().getProperty() + "\n"+
+        return ("Authority here is: " + this.getAuthorityHere() + "\n"+
+                "Living in a: " + this.getAuthorityHere().getProperty() + "\n"+
                 "Population: " + population + "\n"+
                 "Comprised of "+quarterAmount+" districts"
 
@@ -48,7 +48,7 @@ public class City extends ControlledArea implements Details {
 
 
 
-
+    @Override
     protected void updateCitizenCache() {
 
         List<Character> characters = new ArrayList<>();
@@ -67,13 +67,12 @@ public class City extends ControlledArea implements Details {
 
     @Override
     public List<Status> getImportantStatusRank() {
-        List<Status> statusOrder = List.of(
+        return List.of(
                 Status.King,
                 Status.Mayor,
                 Status.Governor,
                 Status.Mercenary
         );
-        return statusOrder;
     }
 
 
@@ -110,7 +109,7 @@ public class City extends ControlledArea implements Details {
     private Captain captainFactory(String quarterName) {
         Captain captain = new Captain();
         captain.setNation(nation);
-        captain.setAuthority(getAuthority());
+        captain.setAuthority(getAuthorityHere());
         Property property = PropertyCreation.createProperty(quarterName, "Quarter", captain);
         propertyTracker.addProperty(property);
         return captain;

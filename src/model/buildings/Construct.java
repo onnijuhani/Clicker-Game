@@ -87,16 +87,16 @@ public class Construct {
         }
     }
 
-    private static Property initiateNewProperty(Properties type, String oldName, Character owner) {
+    private static Property initiateNewProperty(Properties type, String oldName, Character character) {
         return switch (type) {
-            case Shack -> new Shack(oldName, owner);
-            case Cottage -> new Cottage(oldName, owner);
-            case Villa -> new Villa(oldName, owner);
-            case Mansion -> new Mansion(oldName, owner);
-            case Manor -> new Manor(oldName, owner);
-            case Castle -> new Castle(oldName, owner);
-            case Citadel -> new Citadel(oldName, owner);
-            case Fortress -> new Fortress(oldName, owner);
+            case Shack -> new Shack(oldName, character.getPerson());
+            case Cottage -> new Cottage(oldName, character.getPerson());
+            case Villa -> new Villa(oldName, character.getPerson());
+            case Mansion -> new Mansion(oldName, character.getPerson());
+            case Manor -> new Manor(oldName, character.getPerson());
+            case Castle -> new Castle(oldName, character.getPerson());
+            case Citadel -> new Citadel(oldName, character.getPerson());
+            case Fortress -> new Fortress(oldName, character.getPerson());
         };
     }
 

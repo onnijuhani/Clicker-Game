@@ -18,7 +18,15 @@
          <children>
             <HBox fx:id="CombatBox" alignment="CENTER" prefHeight="52.0" prefWidth="174.0" styleClass="charbox">
                <children>
-                  <Button mnemonicParsing="false" onAction="#executeDuel" text="Duel" />
+                  <Button mnemonicParsing="false" onAction="#executeDuel" text="Duel">
+                     <HBox.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </HBox.margin></Button>
+                  <Button mnemonicParsing="false" onAction="#executeAuthorityBattle" text="Challenge">
+                     <HBox.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </HBox.margin>
+                  </Button>
                </children>
                <VBox.margin>
                   <Insets left="15.0" right="15.0" />
@@ -89,7 +97,7 @@
                               <Insets left="25.0" />
                            </VBox.margin>
                         </Label>
-                        <Hyperlink fx:id="authority" onAction="#changeCurrent" text="Under" textFill="WHITE">
+                        <Hyperlink fx:id="authority" onAction="#changeCurrentToAuth" text="Under" textFill="WHITE">
                            <font>
                               <Font size="19.0" />
                            </font>
@@ -104,7 +112,7 @@
                   </VBox>
                   <HBox alignment="CENTER_LEFT">
                      <children>
-                        <Label alignment="CENTER" contentDisplay="CENTER" text="Home:" textAlignment="CENTER" textFill="WHITE">
+                        <Label alignment="CENTER" contentDisplay="CENTER" text="Location:" textAlignment="CENTER" textFill="WHITE">
                            <font>
                               <Font size="14.0" />
                            </font>

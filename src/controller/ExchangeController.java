@@ -75,7 +75,7 @@ public class ExchangeController extends BaseController {
     }
 
     private Exchange getExchange(){
-        return model.accessPlayer().getNation().getShop().getExchange();
+        return model.accessCharacter().getNation().getShop().getExchange();
     }
     void updateExchangePrices(){
         int defaultGold = getExchange().getDefaultGold();
@@ -102,27 +102,27 @@ public class ExchangeController extends BaseController {
     @FXML
     void buyGoldFoodBtn(MouseEvent event) {
         int amountToBuy = getExchange().getDefaultGold();
-        getExchange().exchangeResources(amountToBuy, Resource.Gold,Resource.Food,model.accessPlayer());
+        getExchange().exchangeResources(amountToBuy, Resource.Gold,Resource.Food,model.accessCharacter());
         updateExchange();
     }
     @FXML
     void buyGoldAlloysBtn(MouseEvent event) {
         int amountToBuy = getExchange().getDefaultGold();
-        getExchange().exchangeResources(amountToBuy,Resource.Gold,Resource.Alloy,model.accessPlayer());
+        getExchange().exchangeResources(amountToBuy,Resource.Gold,Resource.Alloy,model.accessCharacter());
         updateExchange();
     }
 
     @FXML
     void buyAlloysGoldBtn(MouseEvent event) {
        int amountToBuy = getExchange().getDefaultAlloys();
-        getExchange().exchangeResources(amountToBuy,Resource.Alloy,Resource.Gold,model.accessPlayer());
+        getExchange().exchangeResources(amountToBuy,Resource.Alloy,Resource.Gold,model.accessCharacter());
         updateExchange();
     }
 
     @FXML
     void buyFoodGoldBtn(MouseEvent event) {
         int amountToBuy = getExchange().getDefaultFood();
-        getExchange().exchangeResources(amountToBuy,Resource.Food,Resource.Gold,model.accessPlayer());
+        getExchange().exchangeResources(amountToBuy,Resource.Food,Resource.Gold,model.accessCharacter());
         updateExchange();
     }
 

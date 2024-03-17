@@ -174,7 +174,7 @@
                         </CheckBox>
                      </children>
                      <VBox.margin>
-                        <Insets bottom="5.0" top="5.0" />
+                        <Insets bottom="2.0" top="2.0" />
                      </VBox.margin>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-color: linear-gradient(from 15% 100% to 100% 15%, #59033f, #4c023f, #3e023e, #30033c, #210339); -fx-border-radius: 25;">
@@ -190,13 +190,16 @@
                         </CheckBox>
                      </children>
                      <VBox.margin>
-                        <Insets bottom="5.0" top="5.0" />
+                        <Insets bottom="2.0" top="2.0" />
                      </VBox.margin>
                   </HBox>
                   <Button fx:id="pauseBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#pauseTime" prefWidth="120.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #232526, #414345); -fx-background-radius: 15;" text="Pause" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="System Italic" size="15.0" />
                      </font>
+                     <VBox.margin>
+                        <Insets bottom="2.0" top="2.0" />
+                     </VBox.margin>
                   </Button>
                </children>
             </VBox>

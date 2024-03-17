@@ -30,10 +30,10 @@ public class WorkWalletController extends BaseController {
     }
 
     void updateWorkWallet(){
-        String values = model.accessPlayer().getWorkWallet().toStringValuesRows();
+        String values = model.accessCharacter().getWorkWallet().toStringValuesRows();
         workWallet.setText(values);
 
-        String rates = model.accessPlayer().getAuthority().getTaxForm().toStringTaxRates();
+        String rates = model.accessCharacter().getAuthority().getTaxForm().toStringTaxRates();
         taxRates.setText(rates);
     }
 

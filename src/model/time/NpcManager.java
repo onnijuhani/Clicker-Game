@@ -19,6 +19,11 @@ public class NpcManager {
             observers.add(observer);
         }
     }
+    public static void unSubscribe(NpcObserver observer) {
+        synchronized (observers) {
+            observers.remove(observer);
+        }
+    }
 
     public static void notifyTimeUpdate(int day, int month, int year) {
         // Create a copy of the observer list to avoid ConcurrentModificationException

@@ -6,10 +6,10 @@ import model.characters.Peasant;
 import model.characters.npc.Farmer;
 import model.characters.npc.Merchant;
 import model.characters.npc.Miner;
-import model.stateSystem.EventTracker;
-import model.resourceManagement.payments.Tax;
 import model.resourceManagement.Resource;
+import model.resourceManagement.payments.Tax;
 import model.resourceManagement.wallets.WorkWallet;
+import model.stateSystem.EventTracker;
 import model.time.Time;
 
 import java.util.LinkedList;
@@ -22,13 +22,12 @@ public class QuarterAuthority extends Authority {
             imposeTax();
             paySupporters();
         }
-
     }
 
-    private LinkedList<Peasant> peasants;
-    private Tax taxFormFarmers;
-    private Tax taxFormMiners;
-    private Tax taxFormMerchants;
+    private final LinkedList<Peasant> peasants;
+    private final Tax taxFormFarmers;
+    private final Tax taxFormMiners;
+    private final Tax taxFormMerchants;
 
     public QuarterAuthority(Character character) {
         super(character);
@@ -53,13 +52,14 @@ public class QuarterAuthority extends Authority {
                     : getTaxForm();
             WorkWallet taxedWallet = peasant.getWorkWallet();
             EventTracker tracker = peasant.getEventTracker();
-            taxForm.collectTax(taxedWallet,tracker,workWallet,this.getCharacter().getEventTracker());
+            taxForm.collectTax(taxedWallet,tracker,workWallet,this.getCharacterInThisPosition().getEventTracker());
         }
     }
     public void addPeasant(Peasant peasant){
         peasants.add(peasant);
     }
-    public void removePeasant(Peasant peasant){
+    public void removePeasant(Character character){
+        Peasant peasant = (Peasant) character;
         peasants.remove(peasant);
     }
     public LinkedList<Peasant> getPeasants() {

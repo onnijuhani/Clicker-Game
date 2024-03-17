@@ -3,7 +3,7 @@ package model.stateSystem;
 public enum Event {
     ROBBERY,
     DUEL,
-    CONSTRUCTION,
+    CONSTRUCTION, AuthorityBattle, SupportBattle,
 
 
 }

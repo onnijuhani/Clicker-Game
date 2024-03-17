@@ -11,7 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 import model.characters.Character;
-import model.characters.decisions.CombatService;
+import model.characters.combat.CombatService;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -49,7 +49,7 @@ public class CharacterController extends BaseController  {
     private MainController main;
     private PropertyController propertyController;
 
-    private Character currentCharacter;
+    public static Character currentCharacter;
 
     private final Deque<Character> characterHistory = new ArrayDeque<>();
     private boolean isNavigatingBack = false;
@@ -129,18 +129,23 @@ public class CharacterController extends BaseController  {
 
     @FXML
     void executeDuel(){
-        CombatService.executeDuel(model.accessPlayer(), currentCharacter);
+        CombatService.executeDuel(model.accessCharacter(), currentCharacter);
+    }
+
+    @FXML
+    void executeAuthorityBattle(){
+        CombatService.executeAuthorityBattle(model.accessCharacter(), currentCharacter);
     }
 
     @FXML
     void attackUpgrade(){
-        model.accessPlayer().getCombatStats().upgradeOffenseWithGold();
+        model.accessCharacter().getCombatStats().upgradeOffenseWithGold();
         updateCombatStats();
         checkUpgradeLevels();
     }
     @FXML
     void defenseUpgrade(){
-        model.accessPlayer().getCombatStats().upgradeDefenceWithGold();
+        model.accessCharacter().getCombatStats().upgradeDefenceWithGold();
         updateCombatStats();
         checkUpgradeLevels();
     }
@@ -148,7 +153,7 @@ public class CharacterController extends BaseController  {
 
 
     void differentiatePlayer(){
-        if (currentCharacter.equals(model.accessPlayer())){
+        if (currentCharacter.getPerson().equals(model.getPlayerPerson())){
             attackBox.setVisible(true);
             defenseBox.setVisible(true);
             CombatBox.setVisible(false);
@@ -160,9 +165,7 @@ public class CharacterController extends BaseController  {
     }
 
 
-    public PropertyController getPropertyController() {
-        return propertyController;
-    }
+
 
     public void setPropertyController(PropertyController propertyController) {
         this.propertyController = propertyController;
@@ -182,17 +185,16 @@ public class CharacterController extends BaseController  {
     }
 
     void updateAuthority(){
-        if (currentCharacter.getAuthority().getCharacter().equals(currentCharacter)){
+        if (currentCharacter.getAuthority().getCharacterInThisPosition().equals(currentCharacter)){
             authority.setText("No one but himself");
-
         }else {
-            authority.setText(currentCharacter.getAuthority().toString());
+            authority.setText(currentCharacter.getRole().getAuthority().toString());
         }
     }
 
     @FXML
-    void changeCurrent(ActionEvent event) {
-        openCharacterProfile(currentCharacter.getAuthority().getCharacter());
+    void changeCurrentToAuth(ActionEvent event) {
+        openCharacterProfile(currentCharacter.getRole().getAuthority().getCharacterInThisPosition());
     }
 
     void updateHomeQuarter(){

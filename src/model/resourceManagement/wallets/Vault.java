@@ -55,13 +55,8 @@ public class Vault extends Wallet implements Ownable {
 
     public void robbery(Character attacker, Character defender) {
         Wallet toWallet = attacker.getWallet();
-        int[] values = this.getWalletValues();
 
-
-        int[] halfValues = new int[values.length];
-        for (int i = 0; i < values.length; i++) {
-            halfValues[i] = values[i] / 2;
-        }
+        int[] halfValues = getHalfValues();
 
         TransferPackage transfer = TransferPackage.fromArray(halfValues);
         this.subtractResources(transfer);
@@ -71,6 +66,15 @@ public class Vault extends Wallet implements Ownable {
         attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Robbery successful. Gained: " + transfer + " from vault."));
         defender.getEventTracker().addEvent(EventTracker.Message("Major", "Vault robbed. Lost: " + transfer + "."));
 
+    }
+
+    public int[] getHalfValues() {
+        int[] values = this.getWalletValues();
+        int[] halfValues = new int[values.length];
+        for (int i = 0; i < values.length; i++) {
+            halfValues[i] = values[i] / 2;
+        }
+        return halfValues;
     }
 
     @Override
