@@ -1,9 +1,9 @@
 package model.buildings.utilityBuilding;
 
 import model.Settings;
-import model.characters.Character;
-import model.stateSystem.EventTracker;
+import model.characters.Person;
 import model.resourceManagement.TransferPackage;
+import model.stateSystem.EventTracker;
 
 import java.util.Random;
 
@@ -11,9 +11,9 @@ public class MysticMine extends UtilityBuilding {
 
     private int alloyProduction;
     private int goldProduction;
-    private Random random = new Random();
+    private final Random random = new Random();
 
-    public MysticMine(int basePrice, Character owner) {
+    public MysticMine(int basePrice, Person owner) {
         super(basePrice, owner);
         this.alloyProduction = Settings.getInt("mineProduction")*2;
         this.goldProduction = Settings.getInt("mineProduction");
@@ -64,7 +64,7 @@ public class MysticMine extends UtilityBuilding {
     @Override
     protected void generateAction() {
         TransferPackage transfer = new TransferPackage(0, calculateRandomAlloyProduction(),calculateRandomGoldProduction());
-        owner.getPerson().getWallet().addResources(transfer);
+        owner.getWallet().addResources(transfer);
         owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
     }
 

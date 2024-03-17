@@ -141,5 +141,8 @@ public class Person implements PersonalAttributes, Ownable {
             combatStats.decreaseOffense();
         }
     }
+    public Person getPerson(){
+        return this;
+    }
 }
 

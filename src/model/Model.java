@@ -30,6 +30,11 @@ public class Model {
         playerRole = playerCharacter.getRole();
     }
 
+    public static void updatePlayer(){
+        setPlayerCharacter(playerPerson.getCharacter());
+        setPlayerRole(playerPerson.getRole());
+    }
+
     public static Role getPlayerRole() {
         return playerRole;
     }

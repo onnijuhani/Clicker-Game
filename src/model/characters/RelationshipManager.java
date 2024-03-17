@@ -40,8 +40,6 @@ public class RelationshipManager {
             addAlly(ally);
         }
     }
-
-
     public void removeAlly(Person person) {
         allies.remove(person);
     }

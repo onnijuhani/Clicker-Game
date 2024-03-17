@@ -8,7 +8,6 @@ public class Wallet {
     private int food;
     private int alloy;
     private int gold;
-
     private final Ownable owner;
 
     public Wallet(final Ownable owner) {

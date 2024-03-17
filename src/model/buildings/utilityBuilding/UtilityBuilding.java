@@ -1,7 +1,7 @@
 package model.buildings.utilityBuilding;
 
 import model.Settings;
-import model.characters.Character;
+import model.characters.Person;
 import model.resourceManagement.TransferPackage;
 import model.shop.UpgradeSystem;
 import model.stateSystem.EventTracker;
@@ -12,7 +12,7 @@ public class UtilityBuilding extends UpgradeSystem implements UtilityObserver {
 
     protected UtilityBuildings name;
 
-    protected Character owner;
+    protected Person owner;
     protected int MAX_LEVEL = Settings.getInt("utilityMaxLevel");
 
     @Override
@@ -28,7 +28,7 @@ public class UtilityBuilding extends UpgradeSystem implements UtilityObserver {
         return "empty";
     }
 
-    public UtilityBuilding(int basePrice, Character owner) {
+    public UtilityBuilding(int basePrice, Person owner) {
         super(basePrice);
         this.owner = owner;
         UtilityManager.subscribe(this);
@@ -36,7 +36,7 @@ public class UtilityBuilding extends UpgradeSystem implements UtilityObserver {
 
     protected void generateAction() {
         TransferPackage transfer = new TransferPackage(0,0,0);
-        owner.getPerson().getWallet().addResources(transfer);
+        owner.getWallet().addResources(transfer);
         owner.getEventTracker().addEvent(EventTracker.Message("Generate", this.getClass().getSimpleName() + "generated" + transfer));
     }
 

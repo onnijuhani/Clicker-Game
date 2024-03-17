@@ -18,10 +18,13 @@ public class Authority implements TaxObserver, Ownable {
 
     @Override
     public void taxUpdate(int day, int month, int year) {
-        System.out.println("Kuka tätä kutsui??"+this);
+        System.out.println("Who called this ??  "+this+"  "+this.characterPositionedHere+"  "+characterPositionedHere.getPerson());
         if (day == 0) {
             imposeTax();
             paySupporters();
+        }
+        if (getCharacterInThisPosition().getPerson().isPlayer()){
+            return;
         }
     }
 
@@ -31,7 +34,6 @@ public class Authority implements TaxObserver, Ownable {
     protected Authority supervisor;
     protected ArrayList<Support> supporters;
     protected Tax taxForm;
-
     protected WorkWallet workWallet;
 
     public void subscribeToTimeEvents() {
@@ -68,6 +70,9 @@ public class Authority implements TaxObserver, Ownable {
     private WorkWallet getWorkWallet() {
         return characterPositionedHere.getPerson().getWorkWallet();
     }
+    public void setWorkWallet(WorkWallet workWallet) {
+        this.workWallet = workWallet;
+    }
 
 
     public void paySupporters(){
@@ -102,7 +107,6 @@ public class Authority implements TaxObserver, Ownable {
     public void addSubordinate(Authority authority) {
         subordinate.add(authority);
     }
-
 
     public void setSubordinate(Authority authority) {
         subordinate.add(authority);

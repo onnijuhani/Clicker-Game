@@ -110,7 +110,7 @@ public class City extends ControlledArea implements Details {
         Captain captain = new Captain(authorityHere);
         captain.getRole().setNation(nation);
         captain.getRole().setAuthority(getAuthorityHere());
-        Property property = PropertyCreation.createProperty(quarterName, "Quarter", captain); //owner is set in the method
+        Property property = PropertyCreation.createProperty(quarterName, "Quarter", captain.getPerson()); //owner is set in the method
         propertyTracker.addProperty(property);
         return captain;
     }

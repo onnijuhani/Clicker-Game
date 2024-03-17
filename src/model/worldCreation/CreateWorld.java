@@ -6,8 +6,6 @@ import model.characters.Status;
 import model.characters.authority.Authority;
 import model.resourceManagement.TransferPackage;
 import model.time.GenerateManager;
-import model.time.NpcManager;
-import model.time.TaxEventManager;
 
 import java.util.List;
 import java.util.Random;
@@ -66,7 +64,6 @@ public class CreateWorld {
         Quarter homeLocation = initialPlayer.getPerson().getProperty().getLocation();
 
         if(homeLocation == null) {
-            System.out.println("homelocation");
             initialPlayer.getPerson().getProperty().setLocation(spawnQuarter);
             homeLocation = spawnQuarter;
         }
@@ -74,7 +71,6 @@ public class CreateWorld {
         Authority authority = initialPlayer.getRole().getAuthority();
 
         if(authority == null){
-            System.out.println("authority");
             initialPlayer.getRole().setAuthority(homeLocation.getAuthorityHere());
         }
 
@@ -88,10 +84,7 @@ public class CreateWorld {
 
         this.initialPlayer = initialPlayer;
 
-        TaxEventManager.subscribe(initialPlayer);
         GenerateManager.unSubscribe(initialPlayer);
-        System.out.println(NpcManager.isSubscriped(initialPlayer));
-        System.out.println(TaxEventManager.isSubscriped(initialPlayer));
 
 
         TransferPackage cheatPackage = new TransferPackage(100000,100000,100000);

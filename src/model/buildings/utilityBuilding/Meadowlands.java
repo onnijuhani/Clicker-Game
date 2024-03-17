@@ -1,14 +1,14 @@
 package model.buildings.utilityBuilding;
 
 import model.Settings;
-import model.characters.Character;
-import model.stateSystem.EventTracker;
+import model.characters.Person;
 import model.resourceManagement.TransferPackage;
+import model.stateSystem.EventTracker;
 
 public class Meadowlands extends UtilityBuilding {
     private int production;
 
-    public Meadowlands(int basePrice, Character owner) {
+    public Meadowlands(int basePrice, Person owner) {
         super(basePrice, owner);
         this.production = Settings.getInt("meadowLandsProduction");
         this.name = UtilityBuildings.MeadowLands;

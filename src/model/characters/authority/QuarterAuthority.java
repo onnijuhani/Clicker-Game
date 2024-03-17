@@ -22,6 +22,9 @@ public class QuarterAuthority extends Authority {
             imposeTax();
             paySupporters();
         }
+        if (getCharacterInThisPosition().getPerson().isPlayer()){
+            return;
+        }
     }
 
     private final LinkedList<Peasant> peasants;

@@ -85,12 +85,12 @@ public class UtilityShop extends ShopComponents {
 
     private UtilityBuilding createBuilding(UtilityBuildings type, int price, Character character) {
         return switch (type) {
-            case MeadowLands -> new Meadowlands(price, character);
-            case AlloyMine -> new AlloyMine(price, character);
-            case GoldMine -> new GoldMine(price, character);
-            case MysticMine -> new MysticMine(price, character);
-            case SlaveFacility -> new SlaveFacility(price, character);
-            case WorkerCenter -> new WorkerCenter(price, character);
+            case MeadowLands -> new Meadowlands(price, character.getPerson());
+            case AlloyMine -> new AlloyMine(price, character.getPerson());
+            case GoldMine -> new GoldMine(price, character.getPerson());
+            case MysticMine -> new MysticMine(price, character.getPerson());
+            case SlaveFacility -> new SlaveFacility(price, character.getPerson());
+            case WorkerCenter -> new WorkerCenter(price, character.getPerson());
             default -> null; // Unknown type
         };
     }

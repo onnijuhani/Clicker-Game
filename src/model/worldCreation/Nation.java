@@ -60,6 +60,10 @@ public class Nation extends ControlledArea implements Details {
         return detailsBuilder.toString();
     }
 
+    public void updateGenerals(){
+        setGeneralsCacheValid(false);
+        collectGenerals();
+    }
 
     /**
      Generals are some of the main authority characters and their supporters who also have property capable of having an army
@@ -121,7 +125,7 @@ public class Nation extends ControlledArea implements Details {
         Governor governor = new Governor(authorityHere);
         governor.getRole().setAuthority(getAuthorityHere());
         governor.getRole().setNation(nation);
-        Property property = PropertyCreation.createProperty(provinceName, "Province", governor);
+        Property property = PropertyCreation.createProperty(provinceName, "Province", governor.getPerson());
         propertyTracker.addProperty(property);
         return governor;
     }

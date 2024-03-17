@@ -9,23 +9,23 @@ import model.shop.Ownable;
 import model.stateSystem.EventTracker;
 import model.time.NpcManager;
 import model.time.NpcObserver;
-import model.time.TaxEventManager;
-import model.time.TaxObserver;
 import model.worldCreation.Details;
 
-public class Character implements TaxObserver, NpcObserver, Details, Ownable {
+public class Character implements NpcObserver, Details, Ownable {
+
 
     @Override
-    public void taxUpdate(int day, int month, int year) { //implemented at subclasses
-    }
-    @Override
     public void npcUpdate(int day, int month, int year) {
+
         if (day == GameManager.getFoodConsumptionDay()) {
             foodConsumption(this);
-//            if (person.isPlayer()) {
-//                this.getEventTracker().addEvent(EventTracker.Message("Minor", GameManager.getFoodConsumptionDay() + " Food Consumed."));
-//                return;
-//            }
+
+            if (person.isPlayer()) {
+                this.getEventTracker().addEvent(EventTracker.Message("Minor", GameManager.getFoodConsumptionDay() + " Food Consumed."));
+                return;
+            }
+
+
             if (!person.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
                 buyMeadowLandsTEST();
             }
@@ -49,9 +49,7 @@ public class Character implements TaxObserver, NpcObserver, Details, Ownable {
 
         makeConnections();
 
-        if (shouldSubscribeToTaxEvent()) {
-            TaxEventManager.subscribe(this);
-        }
+
         if (shouldSubscribeToNpcEvent()) {
             NpcManager.subscribe(this);
         }

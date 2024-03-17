@@ -10,6 +10,9 @@ public class CityAuthority extends Authority {
             imposeTax();
             paySupporters();
         }
+        if (getCharacterInThisPosition().getPerson().isPlayer()){
+            return;
+        }
     }
 
     public CityAuthority(Character character) {

@@ -10,6 +10,9 @@ public class PlayerPreferences {
     private boolean showShopEvents = true;
 
 
+    private boolean showUtilityEvents = true;
+
+
     public boolean isShowMajorEvents() {
         return showMajorEvents;
     }
@@ -27,6 +30,14 @@ public class PlayerPreferences {
 
     public boolean isShowShopEvents() {
         return showShopEvents;
+    }
+
+    public boolean isShowUtilityEvents() {
+        return showUtilityEvents;
+    }
+
+    public void setShowUtilityEvents(boolean showUtilityEvents) {
+        this.showUtilityEvents = showUtilityEvents;
     }
 
 

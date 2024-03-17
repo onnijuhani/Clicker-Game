@@ -1,15 +1,15 @@
 package model.buildings.utilityBuilding;
 
 import model.Settings;
-import model.characters.Character;
-import model.stateSystem.EventTracker;
+import model.characters.Person;
 import model.resourceManagement.TransferPackage;
+import model.stateSystem.EventTracker;
 
 public class AlloyMine extends UtilityBuilding {
 
     private int production; //production is always per month
 
-    public AlloyMine(int basePrice, Character owner) {
+    public AlloyMine(int basePrice, Person owner) {
         super(basePrice, owner);
         this.production = Settings.getInt("mineProduction");
         this.name = UtilityBuildings.AlloyMine;

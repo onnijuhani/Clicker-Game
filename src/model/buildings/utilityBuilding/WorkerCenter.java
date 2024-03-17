@@ -1,6 +1,6 @@
 package model.buildings.utilityBuilding;
 
-import model.characters.Character;
+import model.characters.Person;
 import model.resourceManagement.TransferPackage;
 import model.stateSystem.EventTracker;
 
@@ -11,7 +11,7 @@ public class WorkerCenter extends UtilityBuilding {
     private int slots;
     private final int[] production = {10, 5 ,1};
 
-    public WorkerCenter(int basePrice, Character owner) {
+    public WorkerCenter(int basePrice, Person owner) {
         super(basePrice, owner);
         this.slots = 1;
         this.workerAmount = 1;

@@ -10,6 +10,9 @@ public class ProvinceAuthority extends Authority {
             imposeTax();
             paySupporters();
         }
+        if (getCharacterInThisPosition().getPerson().isPlayer()){
+            return;
+        }
 
     }
     public ProvinceAuthority(Character character) {

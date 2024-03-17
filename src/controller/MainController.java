@@ -109,7 +109,7 @@ public class MainController extends BaseController {
         Platform.runLater(() -> exploreMapController.updateExploreTab());
         Platform.runLater(() -> clickerShopController.updateClickerShopPrices());
         Platform.runLater(() -> characterController.setCurrentCharacter(model.getPlayerCharacter()));
-        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> updateEventList()));
+        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateEventList()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
     }
@@ -144,6 +144,7 @@ public class MainController extends BaseController {
             topSectionController.updateWallet();
             workWalletController.updateWorkWallet();
         }
+        updateEventList();
     }
 
     @FXML
@@ -171,32 +172,10 @@ public class MainController extends BaseController {
 
 
     public void updateEventList() {
-        updatePauseBtnText();
-        List<String> events = model.getPlayerCharacter().getEventTracker().getCombinedEvents();
-
-        // custom cell factory to enable text wrapping if messages are too long
-        eventList.setCellFactory(param -> new ListCell<String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    Label label = new Label(item);
-                    label.setWrapText(true);
-                    label.setMaxWidth(param.getPrefWidth() - 25);
-                    setGraphic(label);
-                }
-            }
-        });
-
-        boolean newMessagesAdded = eventList.getItems().size() != events.size();
-        eventList.getItems().clear();
-        eventList.getItems().addAll(events);
-
-        // Auto-scroll to the last message only if new messages have been added
-        if (newMessagesAdded) {
+        List<String> newEvents = model.getPlayerCharacter().getEventTracker().getCombinedEvents();
+        // Only add new events that are not already in the list
+        if (!eventList.getItems().equals(newEvents)) {
+            eventList.getItems().setAll(newEvents);
             eventList.scrollTo(eventList.getItems().size() - 1);
         }
     }

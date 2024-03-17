@@ -16,7 +16,7 @@ public class Support extends Character {
     }
 
     public void createProperty() {
-        person.setProperty(PropertyCreation.createSupportProperty(this));
+        person.setProperty(PropertyCreation.createSupportProperty(person));
         person.getProperty().setOwner(this.getPerson());
     }
 

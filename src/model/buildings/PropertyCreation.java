@@ -1,15 +1,17 @@
 package model.buildings;
 
 import model.buildings.properties.*;
-import model.characters.Character;
 import model.characters.Peasant;
-import model.characters.npc.*;
+import model.characters.Person;
+import model.characters.npc.Merchant;
+import model.characters.npc.Noble;
+import model.characters.npc.Vanguard;
 
 import java.util.Random;
 
 public class PropertyCreation {
 
-    public static Property createProperty(String name, String area, Character owner) {
+    public static Property createProperty(String name, String area, Person owner) {
 
         Random random = new Random();
         double randomValue = random.nextDouble();
@@ -23,11 +25,11 @@ public class PropertyCreation {
         };
     }
 
-    private static Property createNationProperty(String name, double randomValue, Character owner) {
+    private static Property createNationProperty(String name, double randomValue, Person owner) {
         return (randomValue < 0.75) ? new Fortress(name, owner.getPerson()) : new Citadel(name, owner.getPerson());
     }
 
-    private static Property createProvinceProperty(String name, double randomValue, Character owner) {
+    private static Property createProvinceProperty(String name, double randomValue, Person owner) {
         if (randomValue < 0.4) {
             return new Citadel(name, owner.getPerson());
         } else if (randomValue < 0.8) {
@@ -37,7 +39,7 @@ public class PropertyCreation {
         }
     }
 
-    private static Property createCityProperty(String name, double randomValue, Character owner) {
+    private static Property createCityProperty(String name, double randomValue, Person owner) {
         if (randomValue < 0.2) {
             return new Castle(name, owner.getPerson());
         } else if (randomValue < 0.5) {
@@ -49,7 +51,7 @@ public class PropertyCreation {
         }
     }
 
-    private static Property createQuarterProperty(String name, double randomValue, Character owner) {
+    private static Property createQuarterProperty(String name, double randomValue, Person owner) {
         if (randomValue < 0.05) {
             return new Mansion(name, owner.getPerson());
         } else if (randomValue < 0.3) {
@@ -59,14 +61,14 @@ public class PropertyCreation {
         }
     }
 
-    public static Property createSupportProperty(Character support){
+    public static Property createSupportProperty(Person support){
 
         Random random = new Random();
         double randomValue = random.nextDouble();
 
-        if (support instanceof Noble){
+        if (support.getCharacter() instanceof Noble){
             return new Manor("Noble's", support.getPerson());
-        } else if (support instanceof Vanguard) {
+        } else if (support.getCharacter() instanceof Vanguard) {
             if (randomValue < 0.15) {
                 return new Fortress("Vanguard's", support.getPerson());
             } else if (randomValue < 0.5){
@@ -84,31 +86,31 @@ public class PropertyCreation {
             }
         }
 
-    public static Property createPeasantProperty(Character character) {
+    public static Property createPeasantProperty(Person person) {
 
-        if (character instanceof Merchant) {
+        if (person.getCharacter() instanceof Merchant) {
             Random random = new Random();
             double randomValue = random.nextDouble();
             if (randomValue < 0.05) {
-                Mansion mansion = new Mansion(character.getName(), character.getPerson());
-                mansion.setOwner(character.getPerson());
+                Mansion mansion = new Mansion(person.getName(), person.getPerson());
+                mansion.setOwner(person.getPerson());
                 return mansion;
             } else if (randomValue < 0.25) {
-                Villa villa = new Villa(character.getName(), character.getPerson());
-                villa.setOwner(character.getPerson());
+                Villa villa = new Villa(person.getName(), person.getPerson());
+                villa.setOwner(person.getPerson());
                 return villa;
             } else if (randomValue < 0.6) {
-                Cottage cottage = new Cottage(character.getName(), character.getPerson());
-                cottage.setOwner(character.getPerson());
+                Cottage cottage = new Cottage(person.getName(), person.getPerson());
+                cottage.setOwner(person.getPerson());
                 return cottage;
             } else {
-                Shack shack = new Shack(character.getName(), character.getPerson());
-                shack.setOwner(character.getPerson());
+                Shack shack = new Shack(person.getName(), person.getPerson());
+                shack.setOwner(person.getPerson());
                 return shack;
             }
-        } else if (character instanceof Peasant) {
-            Shack shack = new Shack(character.getName(), character.getPerson());
-            shack.setOwner(character.getPerson());
+        } else if (person.getCharacter() instanceof Peasant) {
+            Shack shack = new Shack(person.getName(), person.getPerson());
+            shack.setOwner(person.getPerson());
             return shack;
 
         }

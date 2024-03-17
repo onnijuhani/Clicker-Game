@@ -14,6 +14,9 @@ public class NationAuthority extends Authority {
                 workWallet.cashOutSalary();
             }
         }
+        if (getCharacterInThisPosition().getPerson().isPlayer()){
+            return;
+        }
     }
     public NationAuthority(Character character) {
         super(character);

@@ -318,4 +318,10 @@ public class Quarter extends ControlledArea implements Details {
         isPopulationChanged = populationChanged;
     }
 
+    public void updateEverything() {
+        setPopulationChanged(true);
+        onCitizenUpdate();
+        calculateCitizens();
+        calculateQuarterWealth();
+    }
 }

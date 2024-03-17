@@ -66,7 +66,7 @@ public class Province extends ControlledArea implements Details {
         Mayor mayor = new Mayor(authorityHere);
         mayor.getRole().setNation(nation);
         mayor.getRole().setAuthority(getAuthorityHere());
-        Property property = PropertyCreation.createProperty(cityName, "City", mayor);
+        Property property = PropertyCreation.createProperty(cityName, "City", mayor.getPerson());
         propertyTracker.addProperty(property);
         return mayor;
     }
