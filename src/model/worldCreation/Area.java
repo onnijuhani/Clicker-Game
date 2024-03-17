@@ -18,7 +18,6 @@ public abstract class Area implements Details, HasContents {
         this.name = name;
     }
 
-
     public abstract Area getHigher();
 
     @Override
@@ -29,9 +28,6 @@ public abstract class Area implements Details, HasContents {
     public void addHomeToName() {
         this.name += " (Home)";
     }
-
-
-
 
 
 }

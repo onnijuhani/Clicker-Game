@@ -10,7 +10,7 @@ public class MarketActions {
 
 
     public static void decideMarketActions(Character npc){
-        Exchange exchange = npc.getNation().getShop().getExchange();
+        Exchange exchange = npc.getRole().getNation().getShop().getExchange();
         double foodRatio = exchange.getRatioBalance()[0];
         double alloyRatio = exchange.getRatioBalance()[1];
         System.out.println(foodRatio);
@@ -24,7 +24,7 @@ public class MarketActions {
     }
 
     private static void sellFood(Character npc, Exchange exchange) {
-        int amountToSell = calculateAmount(npc.getWallet(), Resource.Food);
+        int amountToSell = calculateAmount(npc.getPerson().getWallet(), Resource.Food);
         exchange.sellResource(amountToSell,Resource.Food,npc);
     }
 

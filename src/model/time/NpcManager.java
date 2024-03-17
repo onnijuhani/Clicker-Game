@@ -25,6 +25,12 @@ public class NpcManager {
         }
     }
 
+    public static boolean isSubscriped(NpcObserver observer) {
+        synchronized (observers) {
+            return observers.contains(observer);
+        }
+    }
+
     public static void notifyTimeUpdate(int day, int month, int year) {
         // Create a copy of the observer list to avoid ConcurrentModificationException
         // if subscribe/unsubscribe operations happen during notification.

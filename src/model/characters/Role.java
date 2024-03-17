@@ -7,44 +7,42 @@ public class Role implements RoleBasedAttributes {
     private Nation nation;
     private Authority authority;
     private Status status;
-
-    public Character getCharacter() {
-        return character;
-    }
-
-    public void setCharacter(Character character) {
-        this.character = character;
-    }
-
+    protected Authority position;
     private Person person;
     private Character character;
 
-
-    protected Authority authorityPosition;
-
-    public Role() {
+    public Role(Status status) {
+        this.status = status;
+    }
+    public Character getCharacter() {
+        return character;
+    }
+    public void setCharacter(Character character) {
+        this.character = character;
+    }
+    public Person getPerson() {
+        return person;
+    }
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
     @Override
     public String toString() {
         return getStatus().toString();
     }
-
     @Override
     public Nation getNation() {
         return nation;
     }
-
     @Override
     public void setNation(Nation nation) {
         this.nation = nation;
     }
-
     @Override
     public Authority getAuthority() {
         return authority;
     }
-
     @Override
     public void setAuthority(Authority authority) {
         this.authority = authority;
@@ -57,24 +55,12 @@ public class Role implements RoleBasedAttributes {
     public void setStatus(Status status) {
         this.status = status;
     }
-    public Authority getAuthorityPosition() {
-        return authorityPosition;
+    @Override
+    public void setPosition(Authority authority) {
+        this.position = authority;
     }
-
-    public void setAuthorityPosition(Authority authorityPosition) {
-        this.authorityPosition = authorityPosition;
+    public Authority getPosition() {
+        return position;
     }
-
-    public Person getPerson() {
-        return person;
-    }
-    public void setPerson(Person person) {
-        this.person = person;
-    }
-
-
-
-
-
 
 }

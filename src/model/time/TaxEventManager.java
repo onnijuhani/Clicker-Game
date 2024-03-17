@@ -24,6 +24,11 @@ public class TaxEventManager {
             observers.remove(observer);
         }
     }
+    public static boolean isSubscriped(TaxObserver observer) {
+        synchronized (observers) {
+            return observers.contains(observer);
+        }
+    }
 
     public static void notifyTimeUpdate(int day, int month, int year) {
         // Create a snapshot of the observer list to ensure thread-safe iteration

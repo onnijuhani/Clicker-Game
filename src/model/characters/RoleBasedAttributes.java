@@ -7,11 +7,12 @@ public interface RoleBasedAttributes {
     Nation getNation();
     Authority getAuthority();
     Status getStatus();
+    Authority getPosition();
 
     void setNation(Nation nation);
     void setAuthority(Authority authority);
-
     void setStatus(Status status);
+    void setPosition(Authority authority);
 
 }
 

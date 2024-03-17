@@ -45,7 +45,7 @@ public class Clicker {
     }
     public void generateResources() {
         TransferPackage resourcesGenerated = generate();
-        if (person.getStatus() != Status.King) {
+        if (person.getRole().getStatus() != Status.King) {
             workWallet.addResources(resourcesGenerated);
             totalClicks++;
             String message = "Clicker generated "+ clickerTransferMessage(resourcesGenerated);
@@ -66,13 +66,13 @@ public class Clicker {
             double amount = entry.getValue().getResourceAmount();
             switch (entry.getKey()) {
                 case Food:
-                    totalFood += amount;
+                    totalFood += (int) amount;
                     break;
                 case Alloy:
-                    totalAlloy += amount;
+                    totalAlloy += (int) amount;
                     break;
                 case Gold:
-                    totalGold += amount;
+                    totalGold += (int) amount;
                     break;
                 default:
                     throw new IllegalArgumentException("Unsupported resource type: " + entry.getKey());

@@ -2,12 +2,13 @@ package model.characters.npc;
 
 import model.characters.AuthorityCharacter;
 import model.characters.Status;
+import model.characters.authority.Authority;
 
 public class Captain extends AuthorityCharacter {
     public static int totalAmount;
 
-    public Captain() {
+    public Captain(Authority cityAuthority) {
         totalAmount += 1;
-        setStatus(Status.Captain);
+        role.setStatus(Status.Captain);
     }
 }

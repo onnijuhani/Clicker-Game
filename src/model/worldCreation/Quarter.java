@@ -4,6 +4,7 @@ import model.Settings;
 import model.buildings.Property;
 import model.buildings.PropertyTracker;
 import model.characters.Character;
+import model.characters.Peasant;
 import model.characters.Person;
 import model.characters.Status;
 import model.characters.authority.Authority;
@@ -93,7 +94,7 @@ public class Quarter extends ControlledArea implements Details {
                 "Base economy is: " + baseEconomy + "\n" +
 
                 "Authority here is: " + this.getAuthorityHere() + "\n"+
-                "Living in a: " + this.getAuthorityHere().getProperty() + "\n"+
+                "Living in a: " + this.getAuthorityHere().getCharacterInThisPosition().getPerson().getProperty() + "\n"+
                 "Population: " + population + "\n"+
                 "Comprised of "+contents+" properties"+ "\n"+
                 (popList.isBlank() ? "" : "Here Lives: "+ "\n")+
@@ -205,9 +206,9 @@ public class Quarter extends ControlledArea implements Details {
     }
 
     private void setUpCaptainAttributes(QuarterAuthority quarterCaptain) {
-        quarterCaptain.getCharacterInThisPosition().setNation(this.city.getProvince().getNation());
+        quarterCaptain.getCharacterInThisPosition().getRole().setNation(this.city.getProvince().getNation());
         quarterCaptain.setSupervisor(city.getAuthorityHere());
-        quarterCaptain.getProperty().setLocation(this);
+        quarterCaptain.getCharacterInThisPosition().getPerson().getProperty().setLocation(this);
     }
 
     private void peasantFactory(QuarterAuthority quarterCaptain, LinkedList<Person> farmers, LinkedList<Person> miners, LinkedList<Person> merchants) {
@@ -226,25 +227,25 @@ public class Quarter extends ControlledArea implements Details {
 
         for (int peasant = 0; peasant < numberOfFarmers; peasant++) {
             Farmer farmer = new Farmer(quarterCaptain);
-            farmer.setNation(nation);
-            farmer.getProperty().setLocation(this);
-            farmer.setAuthority(quarterCaptain);
+            farmer.getRole().setNation(nation);
+            farmer.getPerson().getProperty().setLocation(this);
+            farmer.getRole().setAuthority(quarterCaptain);
             quarterCaptain.addPeasant(farmer);
             farmers.add(farmer.getPerson());
         }
         for (int peasant = 0; peasant < numberOfMiners; peasant++) {
             Miner miner = new Miner(quarterCaptain);
-            miner.setNation(nation);
-            miner.getProperty().setLocation(this);
-            miner.setAuthority(quarterCaptain);
+            miner.getRole().setNation(nation);
+            miner.getPerson().getProperty().setLocation(this);
+            miner.getRole().setAuthority(quarterCaptain);
             quarterCaptain.addPeasant(miner);
             miners.add(miner.getPerson());
         }
         for (int peasant = 0; peasant < numberOfMerchants; peasant++) {
             Merchant merch = new Merchant(quarterCaptain);
-            merch.setNation(nation);
-            merch.getProperty().setLocation(this);
-            merch.setAuthority(quarterCaptain);
+            merch.getRole().setNation(nation);
+            merch.getPerson().getProperty().setLocation(this);
+            merch.getRole().setAuthority(quarterCaptain);
             quarterCaptain.addPeasant(merch);
             merchants.add(merch.getPerson());
         }
@@ -257,6 +258,17 @@ public class Quarter extends ControlledArea implements Details {
         getPopulationMap().get(status).add(person);
         isPopulationChanged = true;
         getNation().setGeneralsCacheValid(false);
+
+        if (person.getCharacter() instanceof Peasant) {
+            addPeasantToBeTaxed(person);
+        }
+    }
+
+    private void addPeasantToBeTaxed(Person person) {
+        QuarterAuthority quarterCaptain = (QuarterAuthority) this.authorityHere;
+        Peasant peasant = (Peasant) person.getCharacter();
+
+        quarterCaptain.addPeasant(peasant);
     }
 
     public void removeCitizen(Status status, Person person) {
@@ -265,7 +277,7 @@ public class Quarter extends ControlledArea implements Details {
     }
 
     public void forceAddAnyCitizen(Person person) {
-        addCitizen(person.getStatus(),person);
+        addCitizen(person.getRole().getStatus(),person);
     }
 
     public void changeCitizenPosition(Person person, Status oldStatus){

@@ -46,7 +46,7 @@ public class GoldMine extends UtilityBuilding {
     @Override
     protected void generateAction() {
         TransferPackage transfer = new TransferPackage(0,0, production);
-        owner.getWallet().addResources(transfer);
+        owner.getPerson().getWallet().addResources(transfer);
         owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
     }
 

@@ -108,7 +108,7 @@ public class MainController extends BaseController {
 
         Platform.runLater(() -> exploreMapController.updateExploreTab());
         Platform.runLater(() -> clickerShopController.updateClickerShopPrices());
-        Platform.runLater(() -> characterController.setCurrentCharacter(model.accessCharacter()));
+        Platform.runLater(() -> characterController.setCurrentCharacter(model.getPlayerCharacter()));
         Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> updateEventList()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
@@ -120,7 +120,7 @@ public class MainController extends BaseController {
     }
 
     public void Reset() {
-        characterController.setCurrentCharacter(model.accessCharacter());
+        characterController.setCurrentCharacter(model.getPlayerCharacter());
         characterController.updateCharacterTab();
         model.accessCurrentView().setCurrentView(model.accessWorld().getSpawnQuarter());
         exploreMapController.updateExploreTab();
@@ -136,7 +136,7 @@ public class MainController extends BaseController {
                 topSectionController.updateTopSection();
                 workWalletController.updateWorkWallet();
             } else {
-                model.accessCharacter().getEventTracker().addEvent(EventTracker.Message("Error", "Simulation is paused. Cannot generate resources."));
+                model.getPlayerCharacter().getEventTracker().addEvent(EventTracker.Message("Error", "Simulation is paused. Cannot generate resources."));
                 workWalletController.updateWorkWallet();
             }
         } else {
@@ -153,7 +153,7 @@ public class MainController extends BaseController {
 
 
    void generateStartingMessage(){
-        EventTracker tracker = model.accessCharacter().getEventTracker();
+        EventTracker tracker = model.getPlayerCharacter().getEventTracker();
         tracker.addEvent(EventTracker.Message("Major","New Game Started"));
 
         Quarter spawn = model.accessWorld().getSpawnQuarter();
@@ -172,7 +172,7 @@ public class MainController extends BaseController {
 
     public void updateEventList() {
         updatePauseBtnText();
-        List<String> events = model.accessCharacter().getEventTracker().getCombinedEvents();
+        List<String> events = model.getPlayerCharacter().getEventTracker().getCombinedEvents();
 
         // custom cell factory to enable text wrapping if messages are too long
         eventList.setCellFactory(param -> new ListCell<String>() {
@@ -185,7 +185,7 @@ public class MainController extends BaseController {
                 } else {
                     Label label = new Label(item);
                     label.setWrapText(true);
-                    label.setMaxWidth(param.getPrefWidth() - 20);
+                    label.setMaxWidth(param.getPrefWidth() - 25);
                     setGraphic(label);
                 }
             }
@@ -252,7 +252,7 @@ public class MainController extends BaseController {
     @FXML
     void hideGenerateMessages(ActionEvent event) {
         boolean isChecked = generateMessages.isSelected();
-        model.accessCharacter().getEventTracker().getPreferences().setShowClickerEvents(!isChecked);
+        model.getPlayerCharacter().getEventTracker().getPreferences().setShowClickerEvents(!isChecked);
     }
     public Button getClickMeButton() {
         return clickMeButton;

@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GameEvent {
-
     private Event event;
     private int executionDay;
     private int executionMonth;
@@ -18,7 +17,7 @@ public class GameEvent {
         this.event = event;
         this.participants = Arrays.asList(participants);
         for (Character participant : participants) {
-            participant.addEvent(this);
+            participant.getPerson().addEvent(this);
         }
     }
 
@@ -50,13 +49,13 @@ public class GameEvent {
 
 
     private void startEvent(Character initiator, Character target) {
-        initiator.addEvent(this);
-        target.addEvent(this);
+        initiator.getPerson().addEvent(this);
+        target.getPerson().addEvent(this);
     }
 
     public void endEvent() {
         for (Character participant : participants) {
-            participant.getOngoingEvents().remove(this);
+            participant.getPerson().getOngoingEvents().remove(this);
         }
     }
 

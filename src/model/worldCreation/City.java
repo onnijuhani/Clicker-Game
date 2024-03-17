@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class City extends ControlledArea implements Details {
 
     private Quarter[] quarters;
-    private Province province;
+    private final Province province;
 
     public City(String name, Province province, Authority authority) {
         this.name = name;
@@ -39,7 +39,7 @@ public class City extends ControlledArea implements Details {
 
 
         return ("Authority here is: " + this.getAuthorityHere() + "\n"+
-                "Living in a: " + this.getAuthorityHere().getProperty() + "\n"+
+                "Living in a: " + this.getAuthorityHere().getCharacterInThisPosition().getPerson().getProperty() + "\n"+
                 "Population: " + population + "\n"+
                 "Comprised of "+quarterAmount+" districts"
 
@@ -59,8 +59,8 @@ public class City extends ControlledArea implements Details {
 
         List<Status> statusOrder = getImportantStatusRank();
         citizenCache = characters.stream()
-                .filter(character -> statusOrder.contains(character.getStatus()))
-                .sorted(Comparator.comparingInt(character -> statusOrder.indexOf(character.getStatus())))
+                .filter(character -> statusOrder.contains(character.getRole().getStatus()))
+                .sorted(Comparator.comparingInt(character -> statusOrder.indexOf(character.getRole().getStatus())))
                 .collect(Collectors.toList());
     }
 
@@ -87,7 +87,7 @@ public class City extends ControlledArea implements Details {
     private void createQuarters() {
         Random random = new Random();
         int numberOfQuarters = random.nextInt(Settings.getInt("quarterAmountMax")) + Settings.getInt("quarterAmountMin");
-        ArrayList<String> names = NameCreation.generateQuarterNames(numberOfQuarters);
+        List<String> names = NameCreation.generateQuarterNames(numberOfQuarters);
         quarters = new Quarter[numberOfQuarters];
 
         for (int i = 0; i < numberOfQuarters; i++) {
@@ -107,10 +107,10 @@ public class City extends ControlledArea implements Details {
 
 
     private Captain captainFactory(String quarterName) {
-        Captain captain = new Captain();
-        captain.setNation(nation);
-        captain.setAuthority(getAuthorityHere());
-        Property property = PropertyCreation.createProperty(quarterName, "Quarter", captain);
+        Captain captain = new Captain(authorityHere);
+        captain.getRole().setNation(nation);
+        captain.getRole().setAuthority(getAuthorityHere());
+        Property property = PropertyCreation.createProperty(quarterName, "Quarter", captain); //owner is set in the method
         propertyTracker.addProperty(property);
         return captain;
     }
@@ -131,9 +131,7 @@ public class City extends ControlledArea implements Details {
         return quarters;
     }
 
-    public void setQuarters(Quarter[] quarters) {
-        this.quarters = quarters;
-    }
+
 }
 
 

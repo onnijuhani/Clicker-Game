@@ -1,7 +1,7 @@
 package model.resourceManagement.wallets;
 
 import model.GameManager;
-import model.characters.Character;
+import model.characters.Person;
 import model.resourceManagement.TransferPackage;
 import model.shop.Ownable;
 import model.stateSystem.EventTracker;
@@ -25,7 +25,7 @@ public class Vault extends Wallet implements Ownable {
         lockedResources.addResources(transfer);
         depositFromWallet.subtractResources(transfer);
         TransferPackage lockedAmount = TransferPackage.fromArray(lockedResources.getWalletValues());
-        getOwner().getEventTracker().addEvent(EventTracker.Message("Minor", "Deposited resources "+lockedAmount.toShortString()+" are locked and will be available after the year ends. Interest will not be applied."));
+        getOwner().getEventTracker().addEvent(EventTracker.Message("Minor", "Deposited resources "+lockedAmount.toShortString()+" are locked and will be available after the year ends. Interest will not be applied during this time."));
 
     }
 
@@ -53,7 +53,7 @@ public class Vault extends Wallet implements Ownable {
     }
 
 
-    public void robbery(Character attacker, Character defender) {
+    public void robbery(Person attacker, Person defender) {
         Wallet toWallet = attacker.getWallet();
 
         int[] halfValues = getHalfValues();

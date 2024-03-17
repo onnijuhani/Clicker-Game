@@ -50,7 +50,7 @@ public class QuarterAuthority extends Authority {
                     : peasant instanceof Miner ? taxFormMiners
                     : peasant instanceof Merchant ? taxFormMerchants
                     : getTaxForm();
-            WorkWallet taxedWallet = peasant.getWorkWallet();
+            WorkWallet taxedWallet = peasant.getPerson().getWorkWallet();
             EventTracker tracker = peasant.getEventTracker();
             taxForm.collectTax(taxedWallet,tracker,workWallet,this.getCharacterInThisPosition().getEventTracker());
         }

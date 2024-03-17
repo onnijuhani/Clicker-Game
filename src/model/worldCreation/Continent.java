@@ -55,13 +55,13 @@ public class Continent extends Area implements Details {
             King king = kingFactory();
 
             Authority authority = new NationAuthority(king);
-            king.setAuthority(authority);
+            king.getRole().setAuthority(authority);
 
 
             Nation nation = new Nation(nationName, this, authority);
             nations[i] = nation;
 
-            king.setNation(nation);
+            king.getRole().setNation(nation);
 
             // set home for king
             Quarter home = setKingHome(random, nation, king);
@@ -79,7 +79,7 @@ public class Continent extends Area implements Details {
     private Quarter setKingHome(Random random, Nation nation, King king) {
         int homeIndex = random.nextInt(nation.getAllQuarters().size());
         Quarter home = nation.getAllQuarters().get(homeIndex);
-        king.getProperty().setLocation(home);
+        king.getPerson().getProperty().setLocation(home);
         home.addCitizen(Status.King, king.getPerson());
         changeKingAreaNames(home);
         return home;
@@ -105,20 +105,19 @@ public class Continent extends Area implements Details {
 
         for (int nob = 0; nob < nationAmount; nob++) {
             Noble noble = new Noble(authority);
-            noble.setNation(nation);
-            noble.setAuthority(authority);
+            noble.getRole().setNation(nation);
+
             authority.addSupporter(noble);
 
-            noble.getProperty().setLocation(home);
-            home.propertyTracker.addProperty(noble.getProperty());
+            noble.getPerson().getProperty().setLocation(home);
+            home.propertyTracker.addProperty(noble.getPerson().getProperty());
             home.addCitizen(Status.Noble,noble.getPerson());
 
         }
 
         for (int vang = 0; vang < provinceAmount; vang++) {
             Vanguard vanguard = new Vanguard(authority);
-            vanguard.setNation(nation);
-            vanguard.setAuthority(authority);
+            vanguard.getRole().setNation(nation);
             authority.addSupporter(vanguard);
 
             //  random province from the nation
@@ -128,8 +127,8 @@ public class Continent extends Area implements Details {
             // random quarter from the city
             Quarter quarter = city.getContents().get(random.nextInt(city.getContents().size()));
 
-            vanguard.getProperty().setLocation(quarter);
-            quarter.propertyTracker.addProperty(vanguard.getProperty());
+            vanguard.getPerson().getProperty().setLocation(quarter);
+            quarter.propertyTracker.addProperty(vanguard.getPerson().getProperty());
             quarter.addCitizen(Status.Vanguard, vanguard.getPerson());
             NameCreation.generateMajorQuarterName(quarter);
         }
@@ -137,11 +136,11 @@ public class Continent extends Area implements Details {
 
         //King gets 1 extra vanguard to live with him in his home quarter
         Vanguard vanguard = new Vanguard(authority);
-        vanguard.setNation(nation);
+        vanguard.getRole().setNation(nation);
         authority.addSupporter(vanguard);
 
-        vanguard.getProperty().setLocation(home);
-        home.propertyTracker.addProperty(vanguard.getProperty());
+        vanguard.getPerson().getProperty().setLocation(home);
+        home.propertyTracker.addProperty(vanguard.getPerson().getProperty());
         home.addCitizen(Status.Vanguard, vanguard.getPerson());
 
     }

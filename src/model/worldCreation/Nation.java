@@ -49,8 +49,8 @@ public class Nation extends ControlledArea implements Details {
             for (Character general : nationsGenerals) {
                 String generalDetails = String.format("\n- %s, Status: %s, Property: %s",
                         general.getName(),
-                        general.getStatus(),
-                        general.getProperty().getClass().getSimpleName());
+                        general.getRole().getStatus(),
+                        general.getPerson().getProperty().getClass().getSimpleName());
                 detailsBuilder.append(generalDetails);
             }
         } else {
@@ -118,9 +118,9 @@ public class Nation extends ControlledArea implements Details {
 
 
     private Governor governorFactory(String provinceName) {
-        Governor governor = new Governor();
-        governor.setAuthority(getAuthorityHere());
-        governor.setNation(nation);
+        Governor governor = new Governor(authorityHere);
+        governor.getRole().setAuthority(getAuthorityHere());
+        governor.getRole().setNation(nation);
         Property property = PropertyCreation.createProperty(provinceName, "Province", governor);
         propertyTracker.addProperty(property);
         return governor;
@@ -133,7 +133,7 @@ public class Nation extends ControlledArea implements Details {
             if (home.getHigher().getHigher().equals(province)) {
                 home.addCitizen(Status.Governor, governor.getPerson());
                 NameCreation.generateMajorQuarterName(home);
-                governor.getProperty().setLocation(home);
+                governor.getPerson().getProperty().setLocation(home);
                 break;
             }
         }
@@ -151,15 +151,15 @@ public class Nation extends ControlledArea implements Details {
 
         for (int merc = 0; merc < amountOfCities; merc++) {
             Mercenary mercenary = new Mercenary(authority);
-            mercenary.setNation(nation);
+            mercenary.getRole().setNation(nation);
             authority.addSupporter(mercenary);
-            mercenary.setAuthority(getAuthorityHere());
+
 
             City city = province.getContents().get(random.nextInt(province.getContents().size()));
             Quarter quarter = city.getContents().get(random.nextInt(city.getContents().size()));
 
-            mercenary.getProperty().setLocation(quarter);
-            quarter.propertyTracker.addProperty(mercenary.getProperty());
+            mercenary.getPerson().getProperty().setLocation(quarter);
+            quarter.propertyTracker.addProperty(mercenary.getPerson().getProperty());
             quarter.addCitizen(Status.Mercenary,mercenary.getPerson());
             NameCreation.generateMajorQuarterName(quarter);
         }
@@ -177,8 +177,8 @@ public class Nation extends ControlledArea implements Details {
         }
         List<Status> statusOrder = getImportantStatusRank();
         citizenCache = characters.stream()
-                .filter(character -> statusOrder.contains(character.getStatus()))
-                .sorted(Comparator.comparingInt(character -> statusOrder.indexOf(character.getStatus())))
+                .filter(character -> statusOrder.contains(character.getRole().getStatus()))
+                .sorted(Comparator.comparingInt(character -> statusOrder.indexOf(character.getRole().getStatus())))
                 .collect(Collectors.toList());
     }
 

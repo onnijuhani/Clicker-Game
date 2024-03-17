@@ -1,15 +1,14 @@
 package model.characters.authority;
 
-import model.buildings.Property;
 import model.characters.AuthorityCharacter;
 import model.characters.Character;
 import model.characters.Support;
-import model.shop.Ownable;
-import model.stateSystem.EventTracker;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.payments.Salary;
 import model.resourceManagement.payments.Tax;
 import model.resourceManagement.wallets.WorkWallet;
+import model.shop.Ownable;
+import model.stateSystem.EventTracker;
 import model.time.TaxEventManager;
 import model.time.TaxObserver;
 
@@ -26,7 +25,7 @@ public class Authority implements TaxObserver, Ownable {
         }
     }
 
-    protected Property property;
+
     protected Character characterPositionedHere; //the character who is in this position
     protected ArrayList<Authority> subordinate;
     protected Authority supervisor;
@@ -45,7 +44,6 @@ public class Authority implements TaxObserver, Ownable {
         this.workWallet = characterPositionedHere.getPerson().getWorkWallet();
         this.subordinate = new ArrayList<>();
         this.supporters = new ArrayList<>();
-        this.property = characterPositionedHere.getProperty();
 
         setInitialCharacterToThisPosition();
 
@@ -76,7 +74,7 @@ public class Authority implements TaxObserver, Ownable {
         for (Support support : getSupporters()) {
             Salary salary = support.getSalary();
             TransferPackage transfer = TransferPackage.fromArray(salary.getAll());
-            support.getWallet().deposit(workWallet, transfer);
+            support.getPerson().getWallet().deposit(workWallet, transfer);
         }
     }
     @Override
@@ -85,12 +83,7 @@ public class Authority implements TaxObserver, Ownable {
         String characterClass = this.characterPositionedHere.getRole().getStatus().toString();
         return characterClass+" "+characterName;
     }
-    public Property getProperty() {
-        return property;
-    }
-    public void setProperty(Property property) {
-        this.property = property;
-    }
+
     public Character getCharacterInThisPosition() {
         return characterPositionedHere;
     }

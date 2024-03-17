@@ -64,7 +64,7 @@ public class MysticMine extends UtilityBuilding {
     @Override
     protected void generateAction() {
         TransferPackage transfer = new TransferPackage(0, calculateRandomAlloyProduction(),calculateRandomGoldProduction());
-        owner.getWallet().addResources(transfer);
+        owner.getPerson().getWallet().addResources(transfer);
         owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
     }
 

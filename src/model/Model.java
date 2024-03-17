@@ -2,10 +2,8 @@ package model;
 
 import model.characters.Character;
 import model.characters.Person;
-import model.characters.player.PlayerAuthorityCharacter;
-import model.characters.player.PlayerPeasant;
+import model.characters.Role;
 import model.characters.player.clicker.Clicker;
-import model.map.CurrentPosition;
 import model.map.CurrentView;
 import model.time.Time;
 import model.worldCreation.CreateWorld;
@@ -13,77 +11,56 @@ import model.worldCreation.CreateWorld;
 public class Model {
 
     private static final CreateWorld world = new CreateWorld();
-    private static CurrentPosition currentPosition = new CurrentPosition();
-    private static CurrentView currentView = new CurrentView();
+    private static final CurrentView currentView = new CurrentView();
     private static final Time time = new Time();
 
-    private static Person playerPerson = new Person(false);
-    private static PlayerPeasant initialCharacter = new PlayerPeasant(world.getSpawnQuarter(), playerPerson);
-    private static PlayerAuthorityCharacter authorityCharacter = null;
-
-
+    private static Person playerPerson;
+    private static Role playerRole;
+    private static Character playerCharacter;
 
     public Model(){
-
-
-        currentPosition.updateCurrentQuarter(world.getSpawnQuarter());
-
         currentView.setCurrentView(world.getSpawnQuarter().getHigher());
-
+        setUpPlayer();
         Clicker.initializeClicker(playerPerson);
     }
 
+    private void setUpPlayer() {
+        playerCharacter = world.getInitialPlayer();
+        playerPerson = playerCharacter.getPerson();
+        playerRole = playerCharacter.getRole();
+    }
 
-    public Person getPlayerPerson() {
+    public static Role getPlayerRole() {
+        return playerRole;
+    }
+    public static void setPlayerRole(Role playerRole) {
+        Model.playerRole = playerRole;
+    }
+
+    public Person getPlayerPerson(){
         return playerPerson;
     }
-
-    public static void setInitialCharacter(PlayerPeasant initialCharacter) {
-        Model.initialCharacter = initialCharacter;
-    }
-    public static void setAuthorityCharacter(PlayerAuthorityCharacter authorityCharacter) {
-        setInitialCharacter(null);
-        Model.authorityCharacter = authorityCharacter;
-    }
-
-    public void setPlayer(Person player) {
+    public void setPlayerPerson(Person player) {
         Model.playerPerson = player;
     }
-
-
+    public static void setPlayerCharacter(Character playerCharacter) {
+        Model.playerCharacter = playerCharacter;
+    }
+    public Character getPlayerCharacter() {
+        return playerCharacter;
+    }
     public Time accessTime() {
         return time;
     }
-
     public CreateWorld accessWorld() {
         return world;
-    }
-    public CurrentPosition accessCurrentPosition() {
-        return currentPosition;
     }
     public CurrentView accessCurrentView() {
         return currentView;
     }
-    public Character accessCharacter() {
-        if (initialCharacter != null) {
-            return initialCharacter;
-        } else {
-            return authorityCharacter;
-        }
-    }
 
 
-    public Person accessPerson(){
-        return playerPerson;
-    }
 
-    public static PlayerPeasant getInitialCharacter() {
-        return initialCharacter;
-    }
-
-    public static PlayerAuthorityCharacter getAuthorityCharacter() {
-        return authorityCharacter;
-    }
 
 
 

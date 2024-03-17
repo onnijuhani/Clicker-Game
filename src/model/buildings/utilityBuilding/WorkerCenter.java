@@ -58,7 +58,7 @@ public class WorkerCenter extends UtilityBuilding {
     @Override
     protected void generateAction() {
         TransferPackage transfer = new TransferPackage(production[0],production[1], production[2]);
-        owner.getWallet().addResources(transfer);
+        owner.getPerson().getWallet().addResources(transfer);
         owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
     }
 

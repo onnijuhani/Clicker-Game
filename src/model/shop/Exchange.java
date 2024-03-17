@@ -33,8 +33,8 @@ public class Exchange extends ShopComponents {
         TransferPackage costPackage = TransferPackage.fromEnum(sellType, (int) amountAfterFee);
         TransferPackage purchasePackage = TransferPackage.fromEnum(Resource.Gold, amountGold);
 
-        this.wallet.deposit(character.getWallet(), costPackage);
-        character.getWallet().addResources(purchasePackage);
+        this.wallet.deposit(character.getPerson().getWallet(), costPackage);
+        character.getPerson().getWallet().addResources(purchasePackage);
 
         String message = EventTracker.Message("Shop","Exchanged " + sellType + " for " + amountGold);
         character.getEventTracker().addEvent(message);
@@ -51,7 +51,7 @@ public class Exchange extends ShopComponents {
 
 
 
-        if (!character.getWallet().hasEnoughResource(sellType, totalCost)) {
+        if (!character.getPerson().getWallet().hasEnoughResource(sellType, totalCost)) {
             String errorMessage = EventTracker.Message( "Error","Insufficient resources for the exchange.");
             character.getEventTracker().addEvent(errorMessage);
             return;
@@ -60,8 +60,8 @@ public class Exchange extends ShopComponents {
         TransferPackage costPackage = TransferPackage.fromEnum(sellType, totalCost);
         TransferPackage purchasePackage = TransferPackage.fromEnum(buyType, amountToBuy);
 
-        this.wallet.deposit(character.getWallet(), costPackage);
-        character.getWallet().addResources(purchasePackage);
+        this.wallet.deposit(character.getPerson().getWallet(), costPackage);
+        character.getPerson().getWallet().addResources(purchasePackage);
 
         String message = EventTracker.Message("Shop","Exchanged " + sellType + " for " + buyType);
         character.getEventTracker().addEvent(message);
@@ -78,8 +78,8 @@ public class Exchange extends ShopComponents {
 
     public double[] getRatioBalance() {
         int[] amounts = wallet.getWalletValues();
-        double foodRatio = amounts[2] != 0 ? amounts[0] / amounts[2] : 0;
-        double alloyRatio = amounts[2] != 0 ? amounts[1] / amounts[2] : 0;
+        double foodRatio = amounts[2] != 0 ? (double) amounts[0] / amounts[2] : 0;
+        double alloyRatio = amounts[2] != 0 ? (double) amounts[1] / amounts[2] : 0;
         // Correct syntax to return an array
         return new double[]{foodRatio, alloyRatio};
     }
@@ -168,9 +168,6 @@ public class Exchange extends ShopComponents {
         private double goldToFood = 10; // 1 gold buys 10 food
         private double goldToAlloy = 5; // 1 gold buys 5 alloys
 
-        // Desired ratios
-        private final double desiredFoodRatio = 10.0;
-        private final double desiredAlloy = 5.0;
         public ExchangeRates() {}
 
 
@@ -178,9 +175,12 @@ public class Exchange extends ShopComponents {
 
 
             // max and min to limit the market
+            // Desired ratios
+            double desiredFoodRatio = 10.0;
             double minFoodToGoldRatio = desiredFoodRatio * 0.3;
             double maxFoodToGoldRatio = desiredFoodRatio * 10;
 
+            double desiredAlloy = 5.0;
             double minAlloyToGoldRatio = desiredAlloy * 0.3;
             double maxAlloyToGoldRatio = desiredAlloy * 10;
 

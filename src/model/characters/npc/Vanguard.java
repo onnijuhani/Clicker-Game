@@ -12,6 +12,6 @@ public class Vanguard extends Support {
         super(authority);
         this.salary = new Salary(200, 100, 30);
         totalAmount += 1;
-        setStatus(Status.Vanguard);
+        role.setStatus(Status.Vanguard);
     }
 }

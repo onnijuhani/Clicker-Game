@@ -14,7 +14,7 @@ public class Peasant extends Character implements GenerateObserver {
     protected Employment employment;
 
     public Peasant() {
-        setProperty(PropertyCreation.createPeasantProperty(this));
+        person.setProperty(PropertyCreation.createPeasantProperty(this));
         GenerateManager.subscribe(this);
     }
     @Override

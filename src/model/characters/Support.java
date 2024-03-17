@@ -10,21 +10,19 @@ public class Support extends Character {
     public static int totalAmount;
 
     public Support(Authority authorityTo) {
-        setAuthority(authorityTo);
+        role.setAuthority(authorityTo);
         totalAmount += 1;
         createProperty();
     }
 
     public void createProperty() {
-        setProperty(PropertyCreation.createSupportProperty(this));
-        getProperty().setOwner(this.getPerson());
+        person.setProperty(PropertyCreation.createSupportProperty(this));
+        person.getProperty().setOwner(this.getPerson());
     }
 
     public Salary getSalary() {
         return salary;
     }
 
-    public void setSalary(Salary salary) {
-        this.salary = salary;
-    }
+
 }

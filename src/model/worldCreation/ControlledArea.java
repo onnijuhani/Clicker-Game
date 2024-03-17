@@ -59,8 +59,8 @@ public abstract class ControlledArea extends Area implements Details {
 
         List<Status> statusOrder = getImportantStatusRank();
         citizenCache = characters.stream()
-                .filter(character -> statusOrder.contains(character.getStatus()))
-                .sorted(Comparator.comparingInt(character -> statusOrder.indexOf(character.getStatus())))
+                .filter(character -> statusOrder.contains(character.getRole().getStatus()))
+                .sorted(Comparator.comparingInt(character -> statusOrder.indexOf(character.getRole().getStatus())))
                 .collect(Collectors.toList());
     }
 

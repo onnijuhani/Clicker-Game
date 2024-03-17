@@ -2,6 +2,7 @@ package model.buildings;
 
 import model.buildings.properties.*;
 import model.characters.Character;
+import model.characters.Peasant;
 import model.characters.npc.*;
 
 import java.util.Random;
@@ -13,16 +14,13 @@ public class PropertyCreation {
         Random random = new Random();
         double randomValue = random.nextDouble();
 
-        if (area.equals("Nation")) {
-            return createNationProperty(name, randomValue, owner);
-        } else if (area.equals("Province")){
-            return createProvinceProperty(name, randomValue, owner);
-        } else if (area.equals("City")) {
-            return createCityProperty(name, randomValue, owner);
-        } else if (area.equals("Quarter")) {
-            return createQuarterProperty(name, randomValue, owner);
-        }
-        return new Shack("empty", owner.getPerson());
+        return switch (area) {
+            case "Nation" -> createNationProperty(name, randomValue, owner);
+            case "Province" -> createProvinceProperty(name, randomValue, owner);
+            case "City" -> createCityProperty(name, randomValue, owner);
+            case "Quarter" -> createQuarterProperty(name, randomValue, owner);
+            default -> new Shack("empty", owner.getPerson());
+        };
     }
 
     private static Property createNationProperty(String name, double randomValue, Character owner) {
@@ -86,40 +84,36 @@ public class PropertyCreation {
             }
         }
 
-    public static Property createPeasantProperty(Character character){
+    public static Property createPeasantProperty(Character character) {
 
-        if (character instanceof Farmer || character instanceof Miner) {
+        if (character instanceof Merchant) {
+            Random random = new Random();
+            double randomValue = random.nextDouble();
+            if (randomValue < 0.05) {
+                Mansion mansion = new Mansion(character.getName(), character.getPerson());
+                mansion.setOwner(character.getPerson());
+                return mansion;
+            } else if (randomValue < 0.25) {
+                Villa villa = new Villa(character.getName(), character.getPerson());
+                villa.setOwner(character.getPerson());
+                return villa;
+            } else if (randomValue < 0.6) {
+                Cottage cottage = new Cottage(character.getName(), character.getPerson());
+                cottage.setOwner(character.getPerson());
+                return cottage;
+            } else {
+                Shack shack = new Shack(character.getName(), character.getPerson());
+                shack.setOwner(character.getPerson());
+                return shack;
+            }
+        } else if (character instanceof Peasant) {
             Shack shack = new Shack(character.getName(), character.getPerson());
             shack.setOwner(character.getPerson());
             return shack;
-        } else if (character instanceof Merchant)  {
-                Random random = new Random();
-                double randomValue = random.nextDouble();
 
-                if (randomValue < 0.05) {
-                    Mansion mansion = new Mansion(character.getName(), character.getPerson());
-                    mansion.setOwner(character.getPerson());
-                    return mansion;
-                } else if (randomValue < 0.25){
-                    Villa villa = new Villa(character.getName(), character.getPerson());
-                    villa.setOwner(character.getPerson());
-                    return villa;
-                } else if (randomValue < 0.6){
-                    Cottage cottage = new Cottage(character.getName(), character.getPerson());
-                    cottage.setOwner(character.getPerson());
-                    return cottage;
-                } else {
-                    Shack shack = new Shack(character.getName(), character.getPerson());
-                    shack.setOwner(character.getPerson());
-                    return shack;
-                }
-            }
-
+        }
         return null;
     }
-
-
-
 
 
 }

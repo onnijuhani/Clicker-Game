@@ -16,8 +16,6 @@ import model.buildings.Property;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.Character;
 import model.characters.combat.CombatService;
-import model.characters.player.PlayerAuthorityCharacter;
-import model.characters.player.PlayerPeasant;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.shop.Shop;
@@ -213,8 +211,8 @@ public class PropertyController extends BaseController {
         if (percentage == 0){
             return;
         }
-        int[] walletBalance = character.getWallet().getWalletValues();
-        executeVaultDeposit(percentage, walletBalance, character.getProperty().getVault(), character.getWallet());
+        int[] walletBalance = character.getPerson().getWallet().getWalletValues();
+        executeVaultDeposit(percentage, walletBalance, character.getPerson().getProperty().getVault(), character.getPerson().getWallet());
         updatePropertyTab();
     }
     private void resetSlider() {
@@ -226,8 +224,8 @@ public class PropertyController extends BaseController {
         if (percentage == 0){
             return;
         }
-        int[] vaultBalance = character.getProperty().getVault().getWalletValues();
-        executeVaultWithdrawal(percentage, vaultBalance, character.getWallet(), character.getProperty().getVault());
+        int[] vaultBalance = character.getPerson().getProperty().getVault().getWalletValues();
+        executeVaultWithdrawal(percentage, vaultBalance, character.getPerson().getWallet(), character.getPerson().getProperty().getVault());
         updatePropertyTab();
     }
     private void executeVaultWithdrawal(int percentage, int[] vaultBalance, Wallet wallet, Wallet vault) {
@@ -317,12 +315,12 @@ public class PropertyController extends BaseController {
 
     @FXML
     void robVault(){
-        CombatService.executeRobbery(model.accessCharacter(), character);
+        CombatService.executeRobbery(model.getPlayerCharacter(), character);
     }
 
 
     private void differentiatePlayer() {
-        if(character instanceof PlayerPeasant || character instanceof PlayerAuthorityCharacter) {
+        if(character.getPerson().isPlayer()) {
             buildingUIs.keySet().forEach(this::updateUIForBuilding);
         } else {
             buildingUIs.keySet().forEach(this::updateNPCUIForBuilding);
@@ -334,7 +332,7 @@ public class PropertyController extends BaseController {
 
 
     void updateConstructionTimeLeft() {
-        GameEvent constructionEvent = character.getOngoingEvents().stream()
+        GameEvent constructionEvent = character.getPerson().getOngoingEvents().stream()
                 .filter(event -> event.getEvent() == Event.CONSTRUCTION)
                 .findFirst()
                 .orElse(null);
@@ -355,7 +353,7 @@ public class PropertyController extends BaseController {
     }
 
     void updateConstructInfo(){
-        upgradeBox.setVisible(character instanceof PlayerPeasant);
+        upgradeBox.setVisible(character.getPerson().isPlayer());
         TransferPackage cost = Construct.getCost(character);
         constructBtn.setText("Construct "+ Construct.getNextProperty(character));
         if (cost != null) {
@@ -386,7 +384,7 @@ public class PropertyController extends BaseController {
 
 
     void playerVersionState(){
-        if(character instanceof PlayerPeasant || character instanceof PlayerAuthorityCharacter) {
+        if(character.getPerson().isPlayer()) {
             robVaultBtn.setVisible(false);
             playerVaultBox.setVisible(true);
             upgradeDefBtn.setVisible(true);
@@ -448,7 +446,7 @@ public class PropertyController extends BaseController {
     public void setCurrentProperty(Property property) {
         this.property = property;
         this.character = CharacterController.currentCharacter;
-        this.shop = character.getNation().getShop();
+        this.shop = character.getRole().getNation().getShop();
         updatePropertyTab();
     }
 
@@ -456,14 +454,14 @@ public class PropertyController extends BaseController {
 
     @FXML
     void buyMysticMine(ActionEvent event) {
-        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.MysticMine, character);
+        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.MysticMine, character.getPerson());
         if (wasPurchaseSuccessful) {
             differentiatePlayer();
         }
     }
     @FXML
     void upgradeMysticMine(ActionEvent event) {
-        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.MysticMine, character);
+        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.MysticMine, character.getPerson());
         if (wasUpgradeSuccessful) {
             differentiatePlayer();
         }
@@ -471,14 +469,14 @@ public class PropertyController extends BaseController {
 
     @FXML
     void buyWorkerCenter(ActionEvent event) {
-        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.WorkerCenter, character);
+        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.WorkerCenter, character.getPerson());
         if (wasPurchaseSuccessful) {
             differentiatePlayer();
         }
     }
     @FXML
     void upgradeWorkerCenter(ActionEvent event) {
-        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.WorkerCenter, character);
+        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.WorkerCenter, character.getPerson());
         if (wasUpgradeSuccessful) {
             differentiatePlayer();
         }
@@ -486,21 +484,21 @@ public class PropertyController extends BaseController {
 
     @FXML
     void buySlaveFacility(ActionEvent event) {
-        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.SlaveFacility, character);
+        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.SlaveFacility, character.getPerson());
         if (wasPurchaseSuccessful) {
             differentiatePlayer();
         }
     }
     @FXML
     void upgradeSlaveFacility(ActionEvent event) {
-        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.SlaveFacility, character);
+        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.SlaveFacility, character.getPerson());
         if (wasUpgradeSuccessful) {
             differentiatePlayer();
         }
     }
     @FXML
     void buyGold(ActionEvent event) {
-        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.GoldMine, character);
+        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.GoldMine, character.getPerson());
         if (wasPurchaseSuccessful) {
             differentiatePlayer();
         }
@@ -508,14 +506,14 @@ public class PropertyController extends BaseController {
 
     @FXML
     void upgradeGold(ActionEvent event) {
-        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.GoldMine, character);
+        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.GoldMine, character.getPerson());
         if (wasUpgradeSuccessful) {
             differentiatePlayer();
         }
     }
     @FXML
     void buyAlloy(ActionEvent event) {
-        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.AlloyMine, character);
+        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.AlloyMine, character.getPerson());
         if (wasPurchaseSuccessful) {
             differentiatePlayer();
         }
@@ -523,7 +521,7 @@ public class PropertyController extends BaseController {
 
     @FXML
     void upgradeAlloy(ActionEvent event) {
-        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.AlloyMine, character);
+        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.AlloyMine, character.getPerson());
         if (wasUpgradeSuccessful) {
             differentiatePlayer();
         }
@@ -531,7 +529,7 @@ public class PropertyController extends BaseController {
 
     @FXML
     void buyMeadow(ActionEvent event) {
-        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.MeadowLands, character);
+        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.MeadowLands, character.getPerson());
         if (wasPurchaseSuccessful) {
             differentiatePlayer();
         }
@@ -539,7 +537,7 @@ public class PropertyController extends BaseController {
 
     @FXML
     void upgradeMeadow(ActionEvent event) {
-        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.MeadowLands, character);
+        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.MeadowLands, character.getPerson());
         if (wasUpgradeSuccessful) {
             differentiatePlayer();
         }

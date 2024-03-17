@@ -60,13 +60,13 @@ public class CharacterController extends BaseController  {
 
 
     private void updateWalletInfo(){
-        walletInfo.setText(currentCharacter.getWallet().toStringValuesRows());
+        walletInfo.setText(currentCharacter.getPerson().getWallet().toStringValuesRows());
     }
 
     public void updateCharacterTab(){
         updateCharacterName();
         updateCharacterStatus();
-        propertyController.setCurrentProperty(currentCharacter.getProperty());
+        propertyController.setCurrentProperty(currentCharacter.getPerson().getProperty());
         propertyController.updatePropertyTab();
         updateWalletInfo();
         updateAuthority();
@@ -78,11 +78,11 @@ public class CharacterController extends BaseController  {
     }
 
     public void checkUpgradeLevels(){
-        if (currentCharacter.getCombatStats().getOffenseLevel() == 10){
+        if (currentCharacter.getPerson().getCombatStats().getOffenseLevel() == 10){
             attackTrainBtn.setText("Maxed");
             attackTrainBtn.setDisable(true);
         }
-        if (currentCharacter.getCombatStats().getDefenseLevel() == 10){
+        if (currentCharacter.getPerson().getCombatStats().getDefenseLevel() == 10){
             defenseTrainBtn.setText("Maxed");
             defenseTrainBtn.setDisable(true);
         }
@@ -90,17 +90,17 @@ public class CharacterController extends BaseController  {
 
 
     void updateCombatStats(){
-        attackLevelLabel.setText("Level: "+currentCharacter.getCombatStats().getOffenseLevel());
-        defenseLevelLabel.setText("Level: "+currentCharacter.getCombatStats().getDefenseLevel());
+        attackLevelLabel.setText("Level: "+currentCharacter.getPerson().getCombatStats().getOffenseLevel());
+        defenseLevelLabel.setText("Level: "+currentCharacter.getPerson().getCombatStats().getDefenseLevel());
 
-        attackTrainBtn.setText(currentCharacter.getCombatStats().getOffense().getUpgradePrice()+" Gold");
-        defenseTrainBtn.setText(currentCharacter.getCombatStats().getDefense().getUpgradePrice()+" Gold");
+        attackTrainBtn.setText(currentCharacter.getPerson().getCombatStats().getOffense().getUpgradePrice()+" Gold");
+        defenseTrainBtn.setText(currentCharacter.getPerson().getCombatStats().getDefense().getUpgradePrice()+" Gold");
     }
     public void updateCharacterName(){
         characterName.setText(currentCharacter.getName());
     }
     public void updateCharacterStatus(){
-        characterStatus.setText(currentCharacter.getStatus().toString());
+        characterStatus.setText(currentCharacter.getRole().getStatus().toString());
     }
 
     public void setMain(MainController main) {
@@ -129,23 +129,23 @@ public class CharacterController extends BaseController  {
 
     @FXML
     void executeDuel(){
-        CombatService.executeDuel(model.accessCharacter(), currentCharacter);
+        CombatService.executeDuel(model.getPlayerCharacter(), currentCharacter);
     }
 
     @FXML
     void executeAuthorityBattle(){
-        CombatService.executeAuthorityBattle(model.accessCharacter(), currentCharacter);
+        CombatService.executeAuthorityBattle(model.getPlayerCharacter(), currentCharacter);
     }
 
     @FXML
     void attackUpgrade(){
-        model.accessCharacter().getCombatStats().upgradeOffenseWithGold();
+        model.getPlayerCharacter().getPerson().getCombatStats().upgradeOffenseWithGold();
         updateCombatStats();
         checkUpgradeLevels();
     }
     @FXML
     void defenseUpgrade(){
-        model.accessCharacter().getCombatStats().upgradeDefenceWithGold();
+        model.getPlayerCharacter().getPerson().getCombatStats().upgradeDefenceWithGold();
         updateCombatStats();
         checkUpgradeLevels();
     }
@@ -185,7 +185,7 @@ public class CharacterController extends BaseController  {
     }
 
     void updateAuthority(){
-        if (currentCharacter.getAuthority().getCharacterInThisPosition().equals(currentCharacter)){
+        if (currentCharacter.getRole().getAuthority().getCharacterInThisPosition().equals(currentCharacter)){
             authority.setText("No one but himself");
         }else {
             authority.setText(currentCharacter.getRole().getAuthority().toString());
@@ -198,11 +198,11 @@ public class CharacterController extends BaseController  {
     }
 
     void updateHomeQuarter(){
-        homeQuarter.setText(currentCharacter.getProperty().getLocation().toString());
+        homeQuarter.setText(currentCharacter.getPerson().getProperty().getLocation().toString());
     }
     @FXML
     void openHomeQuarter(ActionEvent event) {
-        model.accessCurrentView().setCurrentView(currentCharacter.getProperty().getLocation());
+        model.accessCurrentView().setCurrentView(currentCharacter.getPerson().getProperty().getLocation());
         main.exploreMapController.updateExploreTab();
     }
 

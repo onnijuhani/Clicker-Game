@@ -36,7 +36,7 @@ public class UtilityBuilding extends UpgradeSystem implements UtilityObserver {
 
     protected void generateAction() {
         TransferPackage transfer = new TransferPackage(0,0,0);
-        owner.getWallet().addResources(transfer);
+        owner.getPerson().getWallet().addResources(transfer);
         owner.getEventTracker().addEvent(EventTracker.Message("Generate", this.getClass().getSimpleName() + "generated" + transfer));
     }
 

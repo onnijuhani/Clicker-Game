@@ -8,6 +8,6 @@ public class King extends AuthorityCharacter {
 
     public King() {
         totalAmount += 1;
-        setStatus(Status.King);
+        role.setStatus(Status.King);
     }
 }

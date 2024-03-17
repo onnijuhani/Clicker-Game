@@ -9,17 +9,12 @@ public class CurrentView {
 
     public CurrentView() {
     }
-
     public Area getCurrentView() {
         return currentView;
     }
 
     public void setCurrentView(Area currentView) {
         this.currentView = currentView;
-    }
-
-    public void updateCurrentView(Area area) {
-        this.currentView = area;
     }
 
     public Area getHigher() {

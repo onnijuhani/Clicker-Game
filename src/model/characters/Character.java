@@ -1,25 +1,17 @@
 package model.characters;
 
 import model.GameManager;
-import model.buildings.Property;
 import model.buildings.utilityBuilding.UtilityBuildings;
-import model.characters.authority.Authority;
-import model.characters.combat.CombatStats;
-import model.characters.player.PlayerPeasant;
 import model.resourceManagement.Resource;
-import model.resourceManagement.wallets.Vault;
 import model.resourceManagement.wallets.Wallet;
-import model.resourceManagement.wallets.WorkWallet;
 import model.shop.Exchange;
 import model.shop.Ownable;
 import model.stateSystem.EventTracker;
-import model.stateSystem.GameEvent;
-import model.stateSystem.State;
-import model.time.*;
+import model.time.NpcManager;
+import model.time.NpcObserver;
+import model.time.TaxEventManager;
+import model.time.TaxObserver;
 import model.worldCreation.Details;
-import model.worldCreation.Nation;
-
-import java.util.List;
 
 public class Character implements TaxObserver, NpcObserver, Details, Ownable {
 
@@ -30,10 +22,10 @@ public class Character implements TaxObserver, NpcObserver, Details, Ownable {
     public void npcUpdate(int day, int month, int year) {
         if (day == GameManager.getFoodConsumptionDay()) {
             foodConsumption(this);
-            if (this instanceof PlayerPeasant) {
-                this.getEventTracker().addEvent(EventTracker.Message("Minor", GameManager.getFoodConsumptionDay() + " Food Consumed."));
-                return;
-            }
+//            if (person.isPlayer()) {
+//                this.getEventTracker().addEvent(EventTracker.Message("Minor", GameManager.getFoodConsumptionDay() + " Food Consumed."));
+//                return;
+//            }
             if (!person.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
                 buyMeadowLandsTEST();
             }
@@ -42,17 +34,20 @@ public class Character implements TaxObserver, NpcObserver, Details, Ownable {
             }
         }
     }
-
     protected Person person;
     protected Role role;
-
+    protected boolean shouldSubscribeToTaxEvent() {
+        return true;
+    }
+    protected boolean shouldSubscribeToNpcEvent() {
+        return true;
+    }
 
     public Character() {
         this.person = new Person(true);
-        this.role = new Role();
+        this.role = new Role(Status.Peasant);
 
         makeConnections();
-
 
         if (shouldSubscribeToTaxEvent()) {
             TaxEventManager.subscribe(this);
@@ -71,23 +66,17 @@ public class Character implements TaxObserver, NpcObserver, Details, Ownable {
     }
 
     protected void buyMeadowLandsTEST(){
-        role.getNation().getShop().getUtilityShop().buyBuilding(UtilityBuildings.MeadowLands,this);
+        role.getNation().getShop().getUtilityShop().buyBuilding(UtilityBuildings.MeadowLands,this.getPerson());
     }
     protected void upgrade(){
         if(person.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
-            role.getNation().getShop().getUtilityShop().upgradeBuilding(UtilityBuildings.MeadowLands, this);
+            role.getNation().getShop().getUtilityShop().upgradeBuilding(UtilityBuildings.MeadowLands, this.getPerson());
         }
     }
 
-    protected boolean shouldSubscribeToTaxEvent() {
-        return true;
-    }
-    protected boolean shouldSubscribeToNpcEvent() {
-        return true;
-    }
 
     public void foodConsumption(Character character) {
-        Wallet wallet = character.getWallet();
+        Wallet wallet = character.getPerson().getWallet();
 
         int foodNeeded = GameManager.getFoodConsumptionRate();
 
@@ -125,7 +114,6 @@ public class Character implements TaxObserver, NpcObserver, Details, Ownable {
             }
         } catch (Exception e) {
             System.out.println("Something went wrong with food consumption");
-            e.printStackTrace();
         }
     }
     @Override
@@ -134,67 +122,16 @@ public class Character implements TaxObserver, NpcObserver, Details, Ownable {
     }
     @Override
     public String toString() {
-        return getStatus() +" "+ person.getName();
+        return role.getStatus() +" "+ person.getName();
     }
     public String getName() {
         return person.getName();
     }
-    public Nation getNation() {
-        return role.getNation();
-    }
-    public void setNation(Nation nation) {
-        role.setNation(nation);
-    }
-    public Status getStatus(){
-        return role.getStatus();
-    }
-    public void setStatus(Status status) {
-        role.setStatus(status);
-    }
-    public void setProperty(Property property){
-        person.setProperty(property);
-    }
-    public Property getProperty(){
-        return person.getProperty();
-    }
 
-    public Wallet getWallet() {
-        return person.getWallet();
-    }
-    public void setWallet(Wallet wallet) {
-        person.setWallet(wallet);
-    }
     @Override
     public EventTracker getEventTracker() {
         return person.getEventTracker();
     }
-
-    public Authority getAuthority() {
-        return role.getAuthority();
-    }
-    public void setAuthority(Authority authority) {
-        role.setAuthority(authority);
-    }
-    public CombatStats getCombatStats() {
-        return person.getCombatStats();
-    }
-
-    public RelationshipManager getRelationshipManager() {
-        return person.getRelationshipManager();
-    }
-    public State getState() {
-        return person.getState();
-    }
-    public void setState(State state) {
-        person.setState(state);
-    }
-    public void addEvent(GameEvent gameEvent) {
-        person.addEvent(gameEvent);
-    }
-    public List<GameEvent> getOngoingEvents() {
-        return person.getOngoingEvents();
-    }
-
     public Person getPerson() {
         return person;
     }
@@ -211,37 +148,6 @@ public class Character implements TaxObserver, NpcObserver, Details, Ownable {
         this.role = role;
     }
 
-    public WorkWallet getWorkWallet(){
-        return person.getWorkWallet();
-    }
-    public Vault getVault(){
-        return person.getProperty().getVault();
-    }
-
-    public void loseStrike(){
-        person.getStrikesTracker().loseStrike();
-        int strikesLeft = person.getStrikesTracker().getStrikes();
-
-        if (strikesLeft < 1) {
-            triggerGameOver();
-            getEventTracker().addEvent(EventTracker.Message("Major","GAME OVER. No Strikes left."));
-
-        }else {
-            getEventTracker().addEvent(EventTracker.Message("Major", "Lost a Strike! Strikes left: " + strikesLeft));
-        }
-    }
-
-    private void triggerGameOver(){
-        if (this instanceof PlayerPeasant){
-            Time.setGameOver(true);
-        }
-    }
-
-    public void decreaseOffense(int amountLevels) {
-        for(int i = 0; i < amountLevels; i++) {
-            getCombatStats().decreaseOffense();
-        }
-    }
 }
 
 

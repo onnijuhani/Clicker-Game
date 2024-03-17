@@ -63,9 +63,9 @@ public class Province extends ControlledArea implements Details {
 
 
     private Mayor mayorFactory(String cityName) {
-        Mayor mayor = new Mayor();
-        mayor.setNation(nation);
-        mayor.setAuthority(getAuthorityHere());
+        Mayor mayor = new Mayor(authorityHere);
+        mayor.getRole().setNation(nation);
+        mayor.getRole().setAuthority(getAuthorityHere());
         Property property = PropertyCreation.createProperty(cityName, "City", mayor);
         propertyTracker.addProperty(property);
         return mayor;
@@ -75,7 +75,7 @@ public class Province extends ControlledArea implements Details {
         int homeIndex = random.nextInt(city.getContents().size());
         Quarter home = city.getContents().get(homeIndex);
         home.addCitizen(Status.Mayor, mayor.getPerson());
-        mayor.getProperty().setLocation(home);
+        mayor.getPerson().getProperty().setLocation(home);
         NameCreation.generateMajorQuarterName(home);
     }
 
@@ -96,20 +96,19 @@ public class Province extends ControlledArea implements Details {
 
         List<Status> statusOrder = getImportantStatusRank();
         citizenCache = characters.stream()
-                .filter(character -> statusOrder.contains(character.getStatus()))
-                .sorted(Comparator.comparingInt(character -> statusOrder.indexOf(character.getStatus())))
+                .filter(character -> statusOrder.contains(character.getRole().getStatus()))
+                .sorted(Comparator.comparingInt(character -> statusOrder.indexOf(character.getRole().getStatus())))
                 .collect(Collectors.toList());
     }
 
 
     @Override
     public List<Status> getImportantStatusRank() {
-        List<Status> statusOrder = List.of(
+        return List.of(
                 Status.King,
                 Status.Vanguard,
                 Status.Governor
         );
-        return statusOrder;
     }
 
     public City[] getCities() {

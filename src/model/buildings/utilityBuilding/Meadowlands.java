@@ -23,7 +23,7 @@ public class Meadowlands extends UtilityBuilding {
     @Override
     protected void generateAction() {
         TransferPackage transfer = new TransferPackage(production,0,0);
-        owner.getWallet().addResources(transfer);
+        owner.getPerson().getWallet().addResources(transfer);
         owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
     }
 

@@ -1,6 +1,7 @@
 package model.resourceManagement.wallets;
 
 import model.shop.Ownable;
+import model.stateSystem.EventTracker;
 
 public class WorkWallet extends Wallet {
     private boolean taxedOrNot;
@@ -14,6 +15,7 @@ public class WorkWallet extends Wallet {
     public void cashOutSalary() {
         if (isTaxed()) {
             mainWallet.depositAll(this);
+            getOwner().getEventTracker().addEvent(EventTracker.Message("Minor","Salary received"));
             setTaxedOrNot(false);
         }
     }

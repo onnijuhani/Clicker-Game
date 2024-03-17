@@ -12,6 +12,6 @@ public class Noble extends Support {
         super(authority);
         this.salary = new Salary(200, 75, 50);
         totalAmount += 1;
-        setStatus(Status.Noble);
+        role.setStatus(Status.Noble);
     }
 }

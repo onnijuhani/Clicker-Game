@@ -4,7 +4,6 @@ import model.NameCreation;
 import model.Settings;
 import model.buildings.Property;
 import model.characters.combat.CombatStats;
-import model.characters.player.PlayerPeasant;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.shop.Ownable;
@@ -12,30 +11,23 @@ import model.stateSystem.EventTracker;
 import model.stateSystem.GameEvent;
 import model.stateSystem.State;
 import model.time.Time;
-import model.worldCreation.Nation;
 
 import java.util.ArrayList;
 import java.util.List;
 public class Person implements PersonalAttributes, Ownable {
-
     private final String name;
-    private Wallet wallet;
-    private WorkWallet workWallet;
+    private final Wallet wallet;
+    private final WorkWallet workWallet;
     private Property property;
     private final RelationshipManager relationshipManager;
     private final EventTracker eventTracker;
     private final CombatStats combatStats;
     private State state;
-    private List<GameEvent> ongoingEvents = new ArrayList<>();
-    private PaymentCalendar paymentCalendar;
-    private StrikesTracker strikesTracker;
+    private final List<GameEvent> ongoingEvents = new ArrayList<>();
+    private final PaymentCalendar paymentCalendar;
+    private final StrikesTracker strikesTracker;
     private Character character;
-
-
-
     private Role role;
-
-
     private boolean isPlayer = false;
 
 
@@ -54,7 +46,6 @@ public class Person implements PersonalAttributes, Ownable {
     public String toString() {
         return getName();
     }
-
     public boolean isPlayer() {
         return isPlayer;
     }
@@ -68,83 +59,53 @@ public class Person implements PersonalAttributes, Ownable {
     public String getName() {
         return name;
     }
-
-
-
     @Override
     public Wallet getWallet() {
         return wallet;
     }
-
-    @Override
-    public void setWallet(Wallet wallet) {
-        this.wallet = wallet;
-    }
-
     @Override
     public WorkWallet getWorkWallet() {
         return workWallet;
     }
-
-    @Override
-    public void setWorkWallet(WorkWallet workWallet) {
-        this.workWallet = workWallet;
-    }
-
-    @Override
-    public Property getProperty() {
-        return property;
-    }
-
-    @Override
-    public void setProperty(Property property) {
-        this.property = property;
-    }
-
     @Override
     public RelationshipManager getRelationshipManager() {
         return relationshipManager;
     }
-
     @Override
     public EventTracker getEventTracker() {
         return eventTracker;
     }
-
     @Override
     public CombatStats getCombatStats() {
         return combatStats;
     }
-
     @Override
     public State getState() {
         return state;
     }
-
     @Override
     public void setState(State state) {
         this.state = state;
     }
-
     @Override
     public List<GameEvent> getOngoingEvents() {
         return ongoingEvents;
     }
-
-
     @Override
     public PaymentCalendar getPaymentCalendar() {
         return paymentCalendar;
     }
-
-
     @Override
     public StrikesTracker getStrikesTracker() {
         return strikesTracker;
     }
-
-    public Status getStatus() {
-        return role.getStatus();
+    @Override
+    public Property getProperty() {
+        return property;
+    }
+    @Override
+    public void setProperty(Property property) {
+        this.property = property;
     }
     public Character getCharacter() {
         return character;
@@ -158,10 +119,6 @@ public class Person implements PersonalAttributes, Ownable {
     public void setRole(Role role) {
         this.role = role;
     }
-    public Nation getNation() {
-        return role.getNation();
-    }
-
     public void loseStrike(){
         int strikesLeft = getStrikesTracker().getStrikes();
 
@@ -173,10 +130,15 @@ public class Person implements PersonalAttributes, Ownable {
             getEventTracker().addEvent(EventTracker.Message("Major", "Lost a Strike! Strikes left: " + strikesLeft));
         }
     }
-
     private void triggerGameOver(){
-        if (getCharacter() instanceof PlayerPeasant){
+        if(character.getPerson().isPlayer()) {
             Time.setGameOver(true);
+        }
+    }
+
+    public void decreaseOffense(int x) {
+        for(int i = 0; i < x; i++) {
+            combatStats.decreaseOffense();
         }
     }
 }

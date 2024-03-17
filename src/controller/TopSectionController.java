@@ -36,7 +36,7 @@ public class TopSectionController extends BaseController {
     private MainController main;
 
     public void initialize() {
-        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateTopSection()));
+        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> updateTopSection()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         stopTimeBtn.setDisable(true);
         updateTimeline.play();
@@ -55,7 +55,7 @@ public class TopSectionController extends BaseController {
     }
 
     void updateWallet() {
-        int[] values = model.accessCharacter().getWallet().getWalletValues();
+        int[] values = model.getPlayerCharacter().getPerson().getWallet().getWalletValues();
         foodLabel.setText(String.valueOf(values[0]));
         alloysLabel.setText(String.format(String.valueOf(values[1])));
         goldLabel.setText(String.format(String.valueOf(values[2])));
@@ -65,9 +65,9 @@ public class TopSectionController extends BaseController {
     void startTime(MouseEvent event) {
         main.incrementClicker.setDisable(true);
         main.incrementClicker.setSelected(false);
-        model.accessTime().setManualSimulation(false);
+        Time.setManualSimulation(false);
 
-        model.accessTime().startSimulation();
+        Time.startSimulation();
 
         startTimeBtn.setDisable(true); // Disable the start button
         stopTimeBtn.setDisable(false); // Enable the stop button
@@ -77,10 +77,10 @@ public class TopSectionController extends BaseController {
     void stopTime(MouseEvent event) {
         main.incrementClicker.setDisable(false);
         main.incrementClicker.setSelected(false);
-        model.accessTime().setManualSimulation(false);
+        Time.setManualSimulation(false);
 
 
-        model.accessTime().stopSimulation();
+        Time.stopSimulation();
 
         stopTimeBtn.setDisable(true); // Disable the stop button
         startTimeBtn.setDisable(false); // Enable the start button
@@ -104,7 +104,7 @@ public class TopSectionController extends BaseController {
 
         main.clickMeButton.setDisable(Time.getSpeed().equals(Speed.Slow));
         if (Time.getSpeed().equals(Speed.Slow)){
-            model.accessCharacter().getEventTracker().addEvent(EventTracker.Message("Major","Clicker is disabled"));
+            model.getPlayerCharacter().getEventTracker().addEvent(EventTracker.Message("Major","Clicker is disabled"));
         }
         main.updatePauseBtnText();
     }

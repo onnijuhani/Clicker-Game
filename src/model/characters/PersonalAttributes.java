@@ -24,12 +24,8 @@ public interface PersonalAttributes {
     StrikesTracker getStrikesTracker();
 
 
-    void setWallet(Wallet wallet);
-    void setWorkWallet(WorkWallet workWallet);
     void setProperty(Property property);
-
     void setState(State state);
     void addEvent(GameEvent gameEvent);
-
 }
 

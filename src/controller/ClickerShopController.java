@@ -15,8 +15,6 @@ public class ClickerShopController extends BaseController {
     @FXML private Button buyAlloyClickerButton;
     @FXML private Button buyGoldClickerButton;
     @FXML private Button buyFoodClickerButton;
-
-
     @FXML
     private Button alloyUpgradeBtn;
     @FXML
@@ -30,7 +28,6 @@ public class ClickerShopController extends BaseController {
     private VBox alloyBox;
     @FXML
     private VBox goldBox;
-
 
     @FXML
     private Label foodInfo;
@@ -96,7 +93,7 @@ public class ClickerShopController extends BaseController {
 
     @FXML
     void buyAlloyClicker() {
-        boolean purchaseSuccessful = shop.getClickerShop().buyClicker(Resource.Alloy, model.accessPerson());
+        boolean purchaseSuccessful = shop.getClickerShop().buyClicker(Resource.Alloy, model.getPlayerPerson());
         buyAlloyClickerButton.setVisible(!purchaseSuccessful);
         alloyUpgradeBtn.setVisible(purchaseSuccessful);
         alloyBox.setVisible(purchaseSuccessful);
@@ -105,7 +102,7 @@ public class ClickerShopController extends BaseController {
 
     @FXML
     void buyGoldClicker() {
-        boolean purchaseSuccessful = shop.getClickerShop().buyClicker(Resource.Gold, model.accessPerson());
+        boolean purchaseSuccessful = shop.getClickerShop().buyClicker(Resource.Gold, model.getPlayerPerson());
         buyGoldClickerButton.setVisible(!purchaseSuccessful);
         goldUpgradeBtn.setVisible(purchaseSuccessful);
         goldBox.setVisible(purchaseSuccessful);
@@ -133,7 +130,7 @@ public class ClickerShopController extends BaseController {
         Clicker clicker = Clicker.getInstance();
         ClickerTools tool = clicker.getClickerTool(resource);
         if (tool != null) {
-            boolean upgradeSuccessful = shop.getClickerShop().buyUpgrade(resource, model.accessPerson());
+            boolean upgradeSuccessful = shop.getClickerShop().buyUpgrade(resource, model.getPlayerPerson());
             if (upgradeSuccessful) {
                 upgradeButton.setText("Upgrade to Level " + (tool.getUpgradeLevel() + 1) + " (" + tool.getUpgradePrice() + " Gold)");
             }

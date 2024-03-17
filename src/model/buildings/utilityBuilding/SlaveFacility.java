@@ -68,20 +68,20 @@ public class SlaveFacility extends UtilityBuilding {
 
     private void payConsequence() {
         synchronized (this) { // ensuring Thread safety
-            Set<Person> alliesCopy = new HashSet<>(owner.getRelationshipManager().getAllies());
+            Set<Person> alliesCopy = new HashSet<>(owner.getPerson().getRelationshipManager().getAllies());
             for (Person ally : alliesCopy) {
                 if (!ally.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.SlaveFacility)) {
-                    owner.getRelationshipManager().removeAlly(ally);
+                    owner.getPerson().getRelationshipManager().removeAlly(ally);
                     ally.getRelationshipManager().removeAlly(owner.getPerson());
                     owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Relationship with " + ally + " cooled due to Slave Facility construction."));
                 }
             }
         }
 
-        Set<Person> enemiesCopy = new HashSet<>(owner.getRelationshipManager().getEnemies());
+        Set<Person> enemiesCopy = new HashSet<>(owner.getPerson().getRelationshipManager().getEnemies());
         for (Person enemy : enemiesCopy) {
             if (enemy.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.SlaveFacility)) {
-                owner.getRelationshipManager().removeEnemy(enemy);
+                owner.getPerson().getRelationshipManager().removeEnemy(enemy);
                 enemy.getRelationshipManager().removeEnemy(owner.getPerson());
                 owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Common interests in Slave Facilities have improved your standing with " + enemy + "."));
             }
@@ -98,7 +98,7 @@ public class SlaveFacility extends UtilityBuilding {
     @Override
     protected void generateAction() {
         TransferPackage transfer = new TransferPackage(production[0],production[1], production[2]);
-        owner.getWallet().addResources(transfer);
+        owner.getPerson().getWallet().addResources(transfer);
         owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
     }
 

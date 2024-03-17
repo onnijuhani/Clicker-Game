@@ -20,6 +20,12 @@ public class GenerateManager {
         }
     }
 
+    public static void unSubscribe(GenerateObserver observer) {
+        synchronized (observers) {
+            observers.remove(observer);
+        }
+    }
+
     public static void notifyTimeUpdate() {
         // Create a snapshot of observers list to avoid ConcurrentModificationException
         // and ensure thread-safe iteration

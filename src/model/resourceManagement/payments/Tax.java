@@ -39,12 +39,10 @@ public class Tax {
         fromWallet.setTaxedOrNot(true);
         fromWallet.cashOutSalary(); //after taxation salary is added to the main wallet of the owner. This wallet cannot be taxed.
 
-        String taxPaid = EventTracker.Message("Major","Tax paid "+transfer);
-        String taxCollected = EventTracker.Message("Major","Tax Collected"+transfer);
+        String taxPaid = EventTracker.Message("Minor","Tax paid "+transfer);
+        String taxCollected = EventTracker.Message("Minor","Tax Collected"+transfer);
         taxPayerTracker.addEvent(taxPaid);
         taxManTracker.addEvent(taxCollected);
-
-
     }
 
     private int getResourceAmount(Wallet wallet, Resource resource) {

@@ -17,11 +17,11 @@ public class Construct {
 
     public static void constructProperty(Character character) {
 
-        Property oldHouse = character.getProperty();
+        Property oldHouse = character.getPerson().getProperty();
         Quarter location = oldHouse.getLocation();
         UtilitySlot oldUtilitySlot = oldHouse.getUtilitySlot();
 
-        Wallet wallet = character.getWallet();
+        Wallet wallet = character.getPerson().getWallet();
 
         Properties currentType = Properties.valueOf(oldHouse.getClass().getSimpleName());
 
@@ -55,7 +55,7 @@ public class Construct {
     }
 
     private static int getDaysUntilEvent(Properties newType) {
-        int baseConstructionTime = 1;
+        int baseConstructionTime = Settings.getInt("baseConstructionTime");
         double constructionTimeMultiplier = Math.pow(1.6, newType.ordinal());
         return (int) (baseConstructionTime * constructionTimeMultiplier);
     }
@@ -73,11 +73,11 @@ public class Construct {
         newHouse.getUtilitySlot().setOwnedUtilityBuildings(oldUtilitySlot.getOwnedUtilityBuildings());
         newHouse.setDefense(oldHouse.getDefense());
         PropertyManager.unsubscribe(oldHouse);
-        character.setProperty(newHouse);
+        character.getPerson().setProperty(newHouse);
     }
 
     public static Properties getNextProperty(Character character) {
-        Property oldHouse = character.getProperty();
+        Property oldHouse = character.getPerson().getProperty();
         Properties currentType = Properties.valueOf(oldHouse.getClass().getSimpleName());
         Properties[] allProperties = Properties.values();
         if (currentType.ordinal() >= allProperties.length - 1){
@@ -102,7 +102,7 @@ public class Construct {
 
     public static TransferPackage getCost(Character character) {
 
-        Properties currentType = Properties.valueOf(character.getProperty().getClass().getSimpleName());
+        Properties currentType = Properties.valueOf(character.getPerson().getProperty().getClass().getSimpleName());
         Properties[] allProperties = Properties.values();
 
         if (currentType.ordinal() == allProperties.length - 1) {

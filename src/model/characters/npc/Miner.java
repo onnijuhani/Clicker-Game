@@ -10,10 +10,10 @@ public class Miner extends Peasant {
     public static int totalAmount;
 
     public Miner(Authority quarterAuthority) {
-        setAuthority(quarterAuthority);
-        super.employment = new Employment(0, Settings.getInt("minerGenerate"), 0, getWorkWallet());
+        role.setAuthority(quarterAuthority);
+        super.employment = new Employment(0, Settings.getInt("minerGenerate"), 0, person.getWorkWallet());
         totalAmount += 1;
-        setStatus(Status.Miner);
+        role.setStatus(Status.Miner);
     }
 
 }

@@ -9,11 +9,11 @@ public class AuthorityCharacter extends Character {
     }
 
     public Authority getAuthorityPosition() {
-        return getRole().getAuthorityPosition();
+        return getRole().getPosition();
     }
 
     public void setAuthorityPosition(Authority authorityPosition) {
-        getRole().setAuthorityPosition(authorityPosition);
+        getRole().setPosition(authorityPosition);
     }
 
 }
