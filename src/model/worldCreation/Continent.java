@@ -56,10 +56,13 @@ public class Continent extends Area implements Details {
             King king = kingFactory();
 
             Authority authority = new NationAuthority(king);
+
             king.getRole().setAuthority(authority);
 
-
             Nation nation = new Nation(nationName, this, authority);
+
+            authority.setAreaUnderAuthority(nation);
+
             nations[i] = nation;
 
             king.getRole().setNation(nation);

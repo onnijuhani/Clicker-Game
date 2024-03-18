@@ -65,7 +65,7 @@ public class CombatSystem {
                 Authority position = ((Governor) defender.getCharacter()).getAuthorityPosition(); // what position is challenged
 
                 ArrayList<Support> supporters = position.getSupporters(); // get governor's mercenaries
-                Set<Person> defeatedCharactersSet = attacker.getRelationshipManager().getListOfDefeatedPersons(); // characters that attacker has defeated
+                Set<Person> defeatedCharactersSet = attacker.getRelationsManager().getListOfDefeatedPersons(); // characters that attacker has defeated
 
                 eligibleSupporters = supporters.stream()
                         .map(Support::getPerson)
@@ -77,7 +77,7 @@ public class CombatSystem {
                 Authority position = ((King) defender.getCharacter()).getAuthorityPosition(); // what position is challenged
 
                 ArrayList<Support>  supporters = position.getSupporters(); // get king's Vanguards and Nobles
-                Set<Person> defeatedCharactersSet = attacker.getRelationshipManager().getListOfDefeatedPersons(); // characters that attacker has defeated
+                Set<Person> defeatedCharactersSet = attacker.getRelationsManager().getListOfDefeatedPersons(); // characters that attacker has defeated
 
                 eligibleSupporters = supporters.stream() //get the Vanguards and Nobles that can actually join
                         .map(Support::getPerson)
@@ -138,7 +138,7 @@ public class CombatSystem {
             defender.getEventTracker().addEvent(EventTracker.Message(
                     "Major", "Your Authority has been overtaken by " + attacker.getName()));
 
-            attacker.getRelationshipManager().addVictory(defender);
+            attacker.getRelationsManager().addVictory(defender);
 
             switchPositions();
 
@@ -190,28 +190,33 @@ public class CombatSystem {
             defender.getRole().getPosition().setWorkWallet(defender.getWorkWallet());
         }
 
-
-
-        // MODEL MUST BE UPDATED TO KNOW THE OBJECTS OF PLAYER. ONLY PERSON IS FINAL THERE.
+        // MODEL MUST BE UPDATED TO KNOW THE OBJECTS OF PLAYER.
         Model.updatePlayer();
 
 
-        //QUARTER NEEDS TO UPDATE TOO
+
+        //QUARTER MUST BE UPDATED
         attacker.getProperty().getLocation().updateEverything();
         defender.getProperty().getLocation().updateEverything();
 
-
-        //GENERALS NEED TO BE UPDATED
+        //GENERALS MUST BE UPDATED
         attacker.getRole().getNation().updateGenerals();
         defender.getRole().getNation().updateGenerals();
 
+        //RELATIONS MUST BE UPDATED
+        attacker.getPerson().getRelationsManager().updateSets();
+        defender.getPerson().getRelationsManager().updateSets();
+
         attacker.getEventTracker().addEvent(EventTracker.Message(
-                "Major", "You are now the " + attacker.getRole().getStatus() + " in the Region"
+                "Major", "You are now the " +
+                        attacker.getRole().getStatus() +
+                        " in the \n\t\t\t\t\t"+
+                        attacker.getRole().getPosition().getAreaUnderAuthority()+ " "+
+                        attacker.getRole().getPosition().getAreaUnderAuthority().getClass().getSimpleName()
                 ));
 
         // LOSING AUTHORITY POSITION COMPLETELY GRANTS MASSIVE EMPLOYMENT STATS
         LoseAuthorityPosition();
-
 
     }
 
@@ -275,7 +280,7 @@ public class CombatSystem {
             return; // Can not enter battle
         }
 
-        if (attacker.getRelationshipManager().isAlly(defender)) {
+        if (attacker.getRelationsManager().isAlly(defender)) {
             attacker.getEventTracker().addEvent(EventTracker.Message(
                     "Error", "Attempted to rob \n" + defender.getProperty().getName() +
                             " owned by ally " + defender.getName() + ". \nAction not allowed."));
@@ -337,7 +342,7 @@ public class CombatSystem {
             return; // Can not enter battle
         }
 
-        if (attacker.getRelationshipManager().isAlly(defender)) {
+        if (attacker.getRelationsManager().isAlly(defender)) {
             attacker.getEventTracker().addEvent(EventTracker.Message(
                     "Error", "Attempted to duel \n" + defender +
                             " who is your ally " + ". \nAction not allowed."));
@@ -360,9 +365,9 @@ public class CombatSystem {
     }
 
     private void decideDuel() {
-        int effectiveAttackerOffense = attackerStats.getOffenseLevel() + attackerStats.getDefenseLevel();
+        int effectiveAttackerOffense = attackerStats.getOffenseLevel() + attackerStats.getDefenseLevel() / 2;
 
-        int effectiveDefenderDefense = defenderStats.getOffenseLevel() + defenderStats.getDefenseLevel();
+        int effectiveDefenderDefense = defenderStats.getOffenseLevel() + defenderStats.getDefenseLevel() / 2;
 
 
         boolean attackerWins = battle(effectiveAttackerOffense, effectiveDefenderDefense);
@@ -388,7 +393,7 @@ public class CombatSystem {
                         "Minor", "Defence decreased for losing the Duel"
                 )));
             }
-            attacker.getRelationshipManager().addVictory(defender);
+            attacker.getRelationsManager().addVictory(defender);
         } else {
             attacker.getEventTracker().addEvent(EventTracker.Message(
                     "Major", "Duel Lost. \nOffense level decreased by 2 levels."));
@@ -418,14 +423,14 @@ public class CombatSystem {
 
 
     private void executeLoyaltyChanges() {
-        attacker.getRelationshipManager().addEnemy(defender);
-        defender.getRelationshipManager().addEnemy(attacker);
+        attacker.getRelationsManager().addEnemy(defender);
+        defender.getRelationsManager().addEnemy(attacker);
 
-        attacker.getRelationshipManager().addEnemiesEnemiesAsAllies(defender);
-        attacker.getRelationshipManager().addEnemiesAlliesAsEnemies(defender);
+        attacker.getRelationsManager().addEnemiesEnemiesAsAllies(defender);
+        attacker.getRelationsManager().addEnemiesAlliesAsEnemies(defender);
 
-        attacker.getRelationshipManager().addEnemiesEnemiesAsAllies(attacker);
-        attacker.getRelationshipManager().addEnemiesAlliesAsEnemies(attacker);
+        attacker.getRelationsManager().addEnemiesEnemiesAsAllies(attacker);
+        attacker.getRelationsManager().addEnemiesAlliesAsEnemies(attacker);
     }
 
     private boolean battle(int effectiveAttackerOffense, int effectiveDefenderDefense) {

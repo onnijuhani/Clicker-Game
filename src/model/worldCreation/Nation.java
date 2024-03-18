@@ -109,6 +109,11 @@ public class Nation extends ControlledArea implements Details {
 
             // new province is created
             Province province = new Province(provinceName, this, authority);
+
+
+            // authority position should know the area its controlling
+            authority.setAreaUnderAuthority(province);
+
             provinces[i] = province;
 
             // set home for governor. Governor must live in his home province.

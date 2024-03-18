@@ -96,9 +96,12 @@ public class City extends ControlledArea implements Details {
 
             Captain captain = captainFactory(quarterName);
 
-            Authority authority = new QuarterAuthority(captain);
+            Authority authority = new QuarterAuthority(captain );
 
             Quarter quarter = new Quarter(quarterName, this, authority);
+
+            authority.setAreaUnderAuthority(quarter);
+
             quarters[i] = quarter;
 
             this.nation.addQuarterToNation(quarter);

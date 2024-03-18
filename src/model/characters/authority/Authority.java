@@ -11,6 +11,7 @@ import model.shop.Ownable;
 import model.stateSystem.EventTracker;
 import model.time.TaxEventManager;
 import model.time.TaxObserver;
+import model.worldCreation.Area;
 
 import java.util.ArrayList;
 
@@ -36,6 +37,9 @@ public class Authority implements TaxObserver, Ownable {
     protected Tax taxForm;
     protected WorkWallet workWallet;
 
+
+    protected Area areaUnderAuthority;
+
     public void subscribeToTimeEvents() {
         TaxEventManager.subscribe(this);
     }
@@ -46,6 +50,7 @@ public class Authority implements TaxObserver, Ownable {
         this.workWallet = characterPositionedHere.getPerson().getWorkWallet();
         this.subordinate = new ArrayList<>();
         this.supporters = new ArrayList<>();
+
 
         setInitialCharacterToThisPosition();
 
@@ -134,6 +139,15 @@ public class Authority implements TaxObserver, Ownable {
     public EventTracker getEventTracker() {
         return characterPositionedHere.getEventTracker();
     }
+
+    public Area getAreaUnderAuthority() {
+        return areaUnderAuthority;
+    }
+
+    public void setAreaUnderAuthority(Area areaUnderAuthority) {
+        this.areaUnderAuthority = areaUnderAuthority;
+    }
+
 }
 
 

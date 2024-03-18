@@ -67,21 +67,21 @@ public class SlaveFacility extends UtilityBuilding {
 
     private void payConsequence() {
         synchronized (this) { // ensuring Thread safety
-            Set<Person> alliesCopy = new HashSet<>(owner.getRelationshipManager().getAllies());
+            Set<Person> alliesCopy = new HashSet<>(owner.getRelationsManager().getAllies());
             for (Person ally : alliesCopy) {
                 if (!ally.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.SlaveFacility)) {
-                    owner.getRelationshipManager().removeAlly(ally);
-                    ally.getRelationshipManager().removeAlly(owner);
+                    owner.getRelationsManager().removeAlly(ally);
+                    ally.getRelationsManager().removeAlly(owner);
                     owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Relationship with " + ally + " cooled due to Slave Facility construction."));
                 }
             }
         }
 
-        Set<Person> enemiesCopy = new HashSet<>(owner.getRelationshipManager().getEnemies());
+        Set<Person> enemiesCopy = new HashSet<>(owner.getRelationsManager().getEnemies());
         for (Person enemy : enemiesCopy) {
             if (enemy.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.SlaveFacility)) {
-                owner.getRelationshipManager().removeEnemy(enemy);
-                enemy.getRelationshipManager().removeEnemy(owner);
+                owner.getRelationsManager().removeEnemy(enemy);
+                enemy.getRelationsManager().removeEnemy(owner);
                 owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Common interests in Slave Facilities have improved your standing with " + enemy + "."));
             }
         }

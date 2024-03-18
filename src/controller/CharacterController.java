@@ -183,6 +183,7 @@ public class CharacterController extends BaseController  {
         currentCharacter = newCharacter;
         updateCharacterTab();
         updatePreviousButtonState();
+        main.getRelationsController().resetEverything();
     }
 
     void updateAuthority(){
@@ -196,9 +197,6 @@ public class CharacterController extends BaseController  {
     @FXML
     void changeCurrentToAuth(ActionEvent event) {
         openCharacterProfile(currentCharacter.getRole().getAuthority().getCharacterInThisPosition());
-        currentCharacter.getPerson().getRelationshipManager().updateSets();
-        System.out.println("Sentinels:\n"+currentCharacter.getPerson().getRelationshipManager().getListOfSentinels());
-        System.out.println("Subordinates:\n"+currentCharacter.getPerson().getRelationshipManager().getListOfSubordinates());
     }
 
     void updateHomeQuarter(){

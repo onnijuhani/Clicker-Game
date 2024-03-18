@@ -32,6 +32,11 @@ public class MainController extends BaseController {
     private CharacterController characterController;
     @FXML
     private PropertyController propertyController;
+
+    public RelationsController getRelationsController() {
+        return relationsController;
+    }
+
     @FXML
     private RelationsController relationsController;
     @FXML
@@ -133,6 +138,9 @@ public class MainController extends BaseController {
         characterController.setCurrentCharacter(model.getPlayerCharacter());
         characterController.updateCharacterTab();
         model.accessCurrentView().setCurrentView(model.accessWorld().getSpawnQuarter());
+        relationsController.resetEverything();
+        clickMeButton.requestFocus();
+        relationsController.setCurrentCharacter(Model.getPlayerAsCharacter());
     }
 
 
@@ -196,9 +204,9 @@ public class MainController extends BaseController {
     }
 
     @FXML
-    void setUpRelations() {
+    void setUpRelationsTab() {
+        Model.getPlayerAsPerson().getRelationsManager().updateSets();
         relationsController.setCurrentCharacter(characterController.getCurrentCharacter());
-        relationsController.setCurrentCharacterName();
     }
 
     @FXML

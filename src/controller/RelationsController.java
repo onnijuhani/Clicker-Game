@@ -10,12 +10,13 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import model.Model;
 import model.characters.Character;
 import model.characters.Person;
-import model.characters.RelationshipManager;
+import model.characters.RelationsManager;
+import model.characters.combat.CombatService;
 
 import java.util.Set;
 
@@ -26,13 +27,18 @@ public class RelationsController extends BaseController {
 
     public void setCurrentCharacter(Character currentCharacter) {
         this.currentCharacter = currentCharacter;
+        setUpCurrentCharacter();
     }
     private CharacterController characterController;
 
+    public Character getCurrentCharacter() {
+        return currentCharacter;
+    }
+
     private Character currentCharacter; // Character whose relations we are looking at
-    private Character current;  //Character that might be selected for inspection
+    protected Character current;  //Character that might be selected for inspection
     private Person currentPerson;
-    private RelationshipManager relations;
+    private RelationsManager relations;
 
     void setCharacters(Character character){
         this.current = character;
@@ -47,6 +53,8 @@ public class RelationsController extends BaseController {
     private Label attackLevelLabel;
 
     void updateLabels(){
+        currentlyViewing.setVisible(true);
+        compareToPlayer.setVisible(true);
         attackLevelLabel.setText("Level: "+currentPerson.getCombatStats().getOffense().getUpgradeLevel());
         defenseLevelLabel.setText("Level: "+currentPerson.getCombatStats().getDefense().getUpgradeLevel());
         characterStatus.setText(current.getRole().getStatus().toString());
@@ -56,9 +64,29 @@ public class RelationsController extends BaseController {
         walletInfo.setText(currentPerson.getWallet().toShortString());
     }
 
-    public void setCurrentCharacterName() {
+    public void setUpCurrentCharacter() {
         currentCharacterName.setText(currentCharacter.toString());
-        this.relations = currentCharacter.getPerson().getRelationshipManager();
+        this.relations = currentCharacter.getPerson().getRelationsManager();
+    }
+
+    void updatePlayersPerspective(){
+        if(Model.getPlayerAsPerson() == currentPerson){
+            compareToPlayer.setText("Currently viewing yourself");
+        }else {
+            compareToPlayer.setText(Model.getPlayerAsPerson().getRelationsManager().getRelationshipDescription(currentPerson));
+        }
+    }
+
+    public void resetEverything(){
+        currentlyViewing.setVisible(false);
+        compareToPlayer.setVisible(false);
+        current = null;
+        clearCharacterView();
+    }
+
+    void clearCharacterView() {
+        ObservableList<?> items = charactersList.getItems();
+        items.clear();
     }
 
     @FXML
@@ -79,19 +107,13 @@ public class RelationsController extends BaseController {
     @FXML
     private Label compareToPlayer;
 
-    void updatePlayersPerspective(){
-        if(Model.getPlayerAsPerson() == currentPerson){
-            compareToPlayer.setText("Currently viewing yourself");
-        }else {
-            compareToPlayer.setText(Model.getPlayerAsPerson().getRelationshipManager().getRelationshipDescription(currentPerson));
-        }
-    }
+
 
     @FXML
     private Label currentCharacterName;
 
     @FXML
-    private AnchorPane currentlyViewing;
+    private VBox currentlyViewing;
 
     @FXML
     private Label defenseLevelLabel;
@@ -121,16 +143,16 @@ public class RelationsController extends BaseController {
 
     @FXML
     void executeAuthorityBattle(ActionEvent event) {
-
+        CombatService.executeAuthorityBattle(Model.getPlayerAsCharacter(), current);
     }
 
     @FXML
     void executeDuel(ActionEvent event) {
-
+        CombatService.executeDuel(Model.getPlayerAsCharacter(), current);
 
     }
-    private void changeCurrent(Person ally) {
-        setCharacters(ally.getCharacter());
+    private void changeCurrent(Person person) {
+        setCharacters(person.getCharacter());
         updateLabels();
         updatePlayersPerspective();
     }
@@ -156,12 +178,14 @@ public class RelationsController extends BaseController {
     }
     @FXML
     void getSentinels(ActionEvent event) {
+        currentCharacter.getPerson().getRelationsManager().updateSets();
         Set<Person> persons = relations.getListOfSentinels();
         ObservableList<Node> items = FXCollections.observableArrayList();
         populateList(persons, items,"sentinels");
     }
     @FXML
     void getSubordinates(ActionEvent event) {
+        currentCharacter.getPerson().getRelationsManager().updateSets();
         Set<Person> persons = relations.getListOfSubordinates();
         ObservableList<Node> items = FXCollections.observableArrayList();
         populateList(persons, items, "subordinates");

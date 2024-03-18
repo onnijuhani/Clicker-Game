@@ -15,7 +15,7 @@ public interface PersonalAttributes {
     Wallet getWallet();
     WorkWallet getWorkWallet();
     Property getProperty();
-    RelationshipManager getRelationshipManager();
+    RelationsManager getRelationsManager();
     EventTracker getEventTracker();
     CombatStats getCombatStats();
     State getState();

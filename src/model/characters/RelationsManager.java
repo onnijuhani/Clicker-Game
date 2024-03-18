@@ -3,38 +3,77 @@ package model.characters;
 import model.characters.authority.Authority;
 import model.characters.authority.QuarterAuthority;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class RelationshipManager {
+public class RelationsManager {
     private final Set<Person> allies = new HashSet<>();
     private final Set<Person> enemies = new HashSet<>();
     private final Set<Person> listOfDefeatedPersons = new HashSet<>();
     private final Set<Person> listOfDefeats = new HashSet<>();
     private final Set<Person> listOfSentinels = new HashSet<>(); //SENTINELS ARE SUPPORTS
     private final Set<Person> listOfSubordinates = new HashSet<>();
-
     private final Person owner;
+    private final HashMap<Status, Person> authorities = new HashMap<>(); // Unique authorities
 
-    public RelationshipManager(Person owner) {
+    public RelationsManager(Person owner) {
         this.owner = owner;
     }
 
     public void updateSets(){
+        listOfSentinels.clear();
+        listOfSubordinates.clear();
+        authorities.clear();
+
         addSubordinates();
         addSentinels();
+        addAuthorities();
+    }
+
+    private void addAuthorities(){
+        Person captain = owner.getProperty().getLocation().getAuthorityHere().getCharacterInThisPosition().getPerson();
+        Person mayor = owner.getProperty().getLocation().getCity().getAuthorityHere().getCharacterInThisPosition().getPerson();
+        Person governor = owner.getProperty().getLocation().getCity().getProvince().getAuthorityHere().getCharacterInThisPosition().getPerson();
+        Person king = owner.getProperty().getLocation().getCity().getProvince().getNation().getAuthorityHere().getCharacterInThisPosition().getPerson();
+
+        if(captain!=owner){
+            authorities.put(Status.Captain, captain);
+        }
+        if(mayor!=owner){
+            authorities.put(Status.Mayor, mayor);
+        }
+        if(governor!=owner){
+            authorities.put(Status.Governor, governor);
+        }
+        if(king!=owner){
+            authorities.put(Status.King, king);
+        }
     }
 
     private void addSubordinates(){
+
         Authority position = owner.getRole().getPosition();
+
+        if(position == null){
+            return;
+        }
+
         if(position instanceof QuarterAuthority){
             ((QuarterAuthority) position).getPeasants().forEach(peasant -> listOfSubordinates.add(peasant.getPerson()));
         }
         position.getSubordinate().forEach(subordinate -> listOfSubordinates.add(subordinate.getCharacterInThisPosition().getPerson()));
     }
     private void addSentinels(){
+
+
+        Authority position = owner.getRole().getPosition();
+
+        if(position == null){
+            return;
+        }
+
+        if(owner.getRole().getPosition().getSupporters() == null){
+            return;
+        }
         owner.getRole().getPosition().getSupporters().forEach(support -> listOfSentinels.add(support.getPerson()));
     }
 
@@ -60,7 +99,7 @@ public class RelationshipManager {
      */
     public void addVictory(Person person) {
         listOfDefeatedPersons.add(person);
-        person.getRelationshipManager().addDefeat(person);
+        person.getRelationsManager().addDefeat(person);
     }
     private void addDefeat(Person person){
         listOfDefeats.add(person);
@@ -76,46 +115,68 @@ public class RelationshipManager {
 
 
     public void addEnemiesAlliesAsEnemies(Person person) {
-        for (Person enemy : person.getRelationshipManager().getEnemies()) {
+        for (Person enemy : person.getRelationsManager().getEnemies()) {
             addAlly(enemy);
         }
-        for (Person ally : person.getRelationshipManager().getAllies()) {
+        for (Person ally : person.getRelationsManager().getAllies()) {
             addEnemy(ally);
         }
     }
     public void addEnemiesEnemiesAsAllies(Person person) {
-        for (Person enemy : person.getRelationshipManager().getEnemies()) {
+        for (Person enemy : person.getRelationsManager().getEnemies()) {
             addEnemy(enemy);
         }
-        for (Person ally : person.getRelationshipManager().getAllies()) {
+        for (Person ally : person.getRelationsManager().getAllies()) {
             addAlly(ally);
         }
     }
 
     public String getRelationshipDescription(Person person) {
-        List<String> descriptions = new ArrayList<>();
+        List<String> relationshipDescriptions = new ArrayList<>();
+        List<String> roleDescriptions = new ArrayList<>();
 
+        // Relationships
         if (allies.contains(person)) {
-            descriptions.add("he is your ally");
+            relationshipDescriptions.add("ally");
         }
         if (listOfSentinels.contains(person)) {
-            descriptions.add("he is your sentinel");
+            relationshipDescriptions.add("sentinel");
         }
         if (listOfSubordinates.contains(person)) {
-            descriptions.add("he is your subordinate");
+            relationshipDescriptions.add("subordinate");
         }
         if (enemies.contains(person)) {
-            descriptions.add("he is your enemy");
+            relationshipDescriptions.add("enemy");
         }
         if (listOfDefeatedPersons.contains(person)) {
-            descriptions.add("you have defeated him");
+            relationshipDescriptions.add("one you have defeated");
         }
         if (listOfDefeats.contains(person)) {
-            descriptions.add("he has defeated you");
+            relationshipDescriptions.add("one who has defeated you");
         }
 
-        return descriptions.isEmpty() ? "No specific relationship found." : String.join(", ", descriptions) + ".";
+        // Authorities
+        for (Map.Entry<Status, Person> entry : authorities.entrySet()) {
+            if (entry.getValue().equals(person)) {
+                roleDescriptions.add(entry.getKey().toString().toLowerCase()); // Assuming toString() returns a readable format
+            }
+        }
+
+        StringBuilder description = new StringBuilder();
+        if (!relationshipDescriptions.isEmpty()) {
+            description.append("They are your\n");
+            description.append(String.join("\n‣", relationshipDescriptions));
+            if (!roleDescriptions.isEmpty()) {
+                description.append("‣\n");
+            }
+        }
+        if (!roleDescriptions.isEmpty()) {
+            description.append(String.join("\n‣", roleDescriptions));
+        }
+
+        return !description.isEmpty() ? description.toString() + "." : "No specific relationship found.";
     }
+
 
 
     public Set<Person> getListOfDefeats() {

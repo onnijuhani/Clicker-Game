@@ -70,7 +70,7 @@ public class Quarter extends ControlledArea implements Details {
         for (Person person : allPersons) {
             for (Person potentialAlly : allPersons) {
                 if (!person.equals(potentialAlly)) {
-                    person.getRelationshipManager().addAlly(potentialAlly);
+                    person.getRelationsManager().addAlly(potentialAlly);
                 }
             }
         }

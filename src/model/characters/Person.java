@@ -15,11 +15,11 @@ import model.time.Time;
 import java.util.ArrayList;
 import java.util.List;
 public class Person implements PersonalAttributes, Ownable {
-    private final String name;
+    private String name;
     private final Wallet wallet;
     private final WorkWallet workWallet;
     private Property property;
-    private final RelationshipManager relationshipManager;
+    private final RelationsManager relationsManager;
     private final EventTracker eventTracker;
     private final CombatStats combatStats;
     private State state;
@@ -32,11 +32,10 @@ public class Person implements PersonalAttributes, Ownable {
 
 
     public Person(Boolean isNpc) {
-        isPlayer = !isNpc;
         this.wallet = new Wallet(this);
         this.workWallet = new WorkWallet(this, wallet);
-        this.relationshipManager = new RelationshipManager(this);
-        this.name = NameCreation.generateCharacterName(isPlayer);
+        this.relationsManager = new RelationsManager(this);
+        this.name = NameCreation.generateCharacterName(isNpc);
         this.eventTracker = new EventTracker(isNpc);
         this.combatStats = new CombatStats(Settings.getInt("offenceBasePrice"),Settings.getInt("defenceBasePrice"), this);
         this.paymentCalendar = new PaymentCalendar();
@@ -69,8 +68,8 @@ public class Person implements PersonalAttributes, Ownable {
         return workWallet;
     }
     @Override
-    public RelationshipManager getRelationshipManager() {
-        return relationshipManager;
+    public RelationsManager getRelationsManager() {
+        return relationsManager;
     }
     @Override
     public EventTracker getEventTracker() {
@@ -144,6 +143,9 @@ public class Person implements PersonalAttributes, Ownable {
     }
     public Person getPerson(){
         return this;
+    }
+    public void setName(String name) {
+        this.name = name;
     }
 }
 

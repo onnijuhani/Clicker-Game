@@ -54,6 +54,9 @@ public class Province extends ControlledArea implements Details {
             Authority authority = new CityAuthority(mayor);
 
             City city = new City(cityName, this, authority);
+
+            authority.setAreaUnderAuthority(city);
+
             cities[i] = city;
 
             setMayorHome(random, city, mayor);
