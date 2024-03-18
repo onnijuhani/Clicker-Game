@@ -38,6 +38,9 @@ public class Model {
     public static Role getPlayerRole() {
         return playerRole;
     }
+    public static Person getPlayerAsPerson() {
+        return playerPerson;
+    }
     public static void setPlayerRole(Role playerRole) {
         Model.playerRole = playerRole;
     }

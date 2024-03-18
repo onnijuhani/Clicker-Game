@@ -12,7 +12,7 @@ public class UpgradeSystem {
         return level;
     }
     public int getUpgradePrice() {
-        return basePrice * (int) Math.pow(4, level -1 );
+        return basePrice * (int) Math.pow(3, level -1 );
     }
     public boolean upgradeLevel() {
         if (level < MAX_LEVEL) {

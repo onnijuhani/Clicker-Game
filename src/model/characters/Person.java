@@ -32,10 +32,11 @@ public class Person implements PersonalAttributes, Ownable {
 
 
     public Person(Boolean isNpc) {
+        isPlayer = !isNpc;
         this.wallet = new Wallet(this);
         this.workWallet = new WorkWallet(this, wallet);
-        this.relationshipManager = new RelationshipManager();
-        this.name = NameCreation.generateCharacterName();
+        this.relationshipManager = new RelationshipManager(this);
+        this.name = NameCreation.generateCharacterName(isPlayer);
         this.eventTracker = new EventTracker(isNpc);
         this.combatStats = new CombatStats(Settings.getInt("offenceBasePrice"),Settings.getInt("defenceBasePrice"), this);
         this.paymentCalendar = new PaymentCalendar();

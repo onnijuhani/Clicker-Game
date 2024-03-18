@@ -38,6 +38,7 @@ public class Continent extends Area implements Details {
 
             for (Quarter quarter : nation.getAllQuarters()){
                 quarter.calculateQuarterWealth();
+                quarter.createQuarterAlliances();
             }
         }
     }

@@ -32,6 +32,10 @@ public class MainController extends BaseController {
     private CharacterController characterController;
     @FXML
     private PropertyController propertyController;
+    @FXML
+    private RelationsController relationsController;
+    @FXML
+    public Button resetBtn;
 
 
     @FXML
@@ -95,7 +99,13 @@ public class MainController extends BaseController {
             propertyController.setMain(this);
             propertyController.setCharacterController(characterController);
         } else {
-            System.out.println("CharacterController is null");
+            System.out.println("PropertyController is null");
+        }
+        if (relationsController != null) {
+            relationsController.setMain(this);
+            relationsController.setCharacterController(characterController);
+        } else {
+            System.out.println("RelationsController is null");
         }
     }
 
@@ -123,7 +133,6 @@ public class MainController extends BaseController {
         characterController.setCurrentCharacter(model.getPlayerCharacter());
         characterController.updateCharacterTab();
         model.accessCurrentView().setCurrentView(model.accessWorld().getSpawnQuarter());
-        exploreMapController.updateExploreTab();
     }
 
 
@@ -184,6 +193,12 @@ public class MainController extends BaseController {
     @FXML
     void updateExchange(){
         exchangeController.updateExchange();
+    }
+
+    @FXML
+    void setUpRelations() {
+        relationsController.setCurrentCharacter(characterController.getCurrentCharacter());
+        relationsController.setCurrentCharacterName();
     }
 
     @FXML

@@ -13,4 +13,9 @@ public abstract class BaseController {
         return model;
     }
     public abstract void initialize();
+    private MainController main;
+
+    protected void setMain(MainController mainController) {
+        this.main = mainController;
+    }
 }

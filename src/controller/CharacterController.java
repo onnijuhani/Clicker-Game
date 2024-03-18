@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
+import model.Model;
 import model.characters.Character;
 import model.characters.combat.CombatService;
 
@@ -74,7 +75,7 @@ public class CharacterController extends BaseController  {
         differentiatePlayer();
         updateCombatStats();
         checkUpgradeLevels();
-
+        main.resetBtn.setDisable(currentCharacter.getPerson() == Model.getPlayerAsPerson());
     }
 
     public void checkUpgradeLevels(){
@@ -195,6 +196,9 @@ public class CharacterController extends BaseController  {
     @FXML
     void changeCurrentToAuth(ActionEvent event) {
         openCharacterProfile(currentCharacter.getRole().getAuthority().getCharacterInThisPosition());
+        currentCharacter.getPerson().getRelationshipManager().updateSets();
+        System.out.println("Sentinels:\n"+currentCharacter.getPerson().getRelationshipManager().getListOfSentinels());
+        System.out.println("Subordinates:\n"+currentCharacter.getPerson().getRelationshipManager().getListOfSubordinates());
     }
 
     void updateHomeQuarter(){

@@ -194,7 +194,7 @@ public class NameCreation {
         return names;
     }
 
-    public static String generateCharacterName(){
+    public static String generateCharacterName(Boolean isNpc){
 
         String[] prefixes = {"Al", "El", "Thor", "Le", "Ea", "Ma", "Ra", "Gla", "Zen",
                 "Xan", "Kyro", "Zephyr", "Astra", "Nyx", "Vortex", "Zara", "Jax"};
@@ -213,7 +213,12 @@ public class NameCreation {
         String firstName = prefixes[random.nextInt(prefixes.length)] + suffixes[random.nextInt(suffixes.length)];
         String lastName = lastPrefixes[random.nextInt(lastPrefixes.length)] + lastSuffixes[random.nextInt(lastSuffixes.length)];
 
-        return firstName + " " + lastName;
+        String player = "";
+        if(!isNpc){
+            player = " (you)";
+        }
+
+        return firstName + " " + lastName + player;
     }
 
 

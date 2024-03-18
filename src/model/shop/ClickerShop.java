@@ -36,16 +36,12 @@ public class ClickerShop extends ShopComponents {
 
 
     public ClickerTools createClickerTool(Resource type) {
-        switch (type) {
-            case Alloy:
-                return new AlloyClicker(Settings.getInt("alloyClicker"), Resource.Alloy);
-            case Gold:
-                return new GoldClicker(Settings.getInt("goldClicker"), Resource.Gold);
-            case Food:
-                return new GoldClicker(Settings.getInt("foodClicker"), Resource.Food);
-            default:
-                throw new IllegalArgumentException("Invalid clicker type.");
-        }
+        return switch (type) {
+            case Alloy -> new AlloyClicker(Settings.getInt("alloyClicker"), Resource.Alloy);
+            case Gold -> new GoldClicker(Settings.getInt("goldClicker"), Resource.Gold);
+            case Food -> new GoldClicker(Settings.getInt("foodClicker"), Resource.Food);
+            default -> throw new IllegalArgumentException("Invalid clicker type.");
+        };
     }
 
     public boolean buyUpgrade(Resource type, Person player) {

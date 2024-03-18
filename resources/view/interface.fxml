@@ -149,10 +149,11 @@
                         </AnchorPane>
                   </content>
                 </Tab>
-                  <Tab text="Untitled Tab">
+                  <Tab onSelectionChanged="#setUpRelations" text="Relations">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
+                              <fx:include fx:id="relations" source="relations.fxml" />
                            </children>
                         </AnchorPane>
                     </content>
@@ -203,7 +204,7 @@
                   </Button>
                </children>
             </VBox>
-            <Button layoutX="720.0" layoutY="560.0" mnemonicParsing="false" onAction="#getPlayer" prefHeight="24.0" prefWidth="80.0" text="Reset" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="615.0" />
+            <Button fx:id="resetBtn" layoutX="720.0" layoutY="560.0" mnemonicParsing="false" onAction="#getPlayer" prefHeight="24.0" prefWidth="80.0" text="Reset" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="615.0" />
          </children>
       </AnchorPane>
   </children>

@@ -4,12 +4,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import model.Model;
 import model.Settings;
 import model.characters.player.clicker.*;
 import model.resourceManagement.Resource;
 import model.shop.Shop;
-
-import model.characters.player.clicker.Clicker;
 
 public class ClickerShopController extends BaseController {
     @FXML private Button buyAlloyClickerButton;
@@ -50,6 +49,7 @@ public class ClickerShopController extends BaseController {
 
     @FXML
     public void initialize() {
+        setShop(Model.getPlayerRole().getNation().getShop());
     }
 
     void setInfoTexts(){
@@ -74,6 +74,7 @@ public class ClickerShopController extends BaseController {
 
 
     protected void updateClickerShopPrices() {
+        setShop(Model.getPlayerRole().getNation().getShop());
         updateClickerPrice(Resource.Alloy, buyAlloyClickerButton, alloyUpgradeBtn);
         updateClickerPrice(Resource.Gold, buyGoldClickerButton, goldUpgradeBtn);
         updateClickerPrice(Resource.Food, buyFoodClickerButton, foodUpgradeBtn);
@@ -81,6 +82,7 @@ public class ClickerShopController extends BaseController {
     }
 
     private void updateClickerPrice(Resource resource, Button buyButton, Button upgradeButton) {
+        setShop(Model.getPlayerRole().getNation().getShop());
         int basePrice = Settings.getInt(resource.name().toLowerCase() + "Clicker");
         buyButton.setText(basePrice + " Gold");
 
@@ -93,6 +95,7 @@ public class ClickerShopController extends BaseController {
 
     @FXML
     void buyAlloyClicker() {
+        setShop(Model.getPlayerRole().getNation().getShop());
         boolean purchaseSuccessful = shop.getClickerShop().buyClicker(Resource.Alloy, model.getPlayerPerson());
         buyAlloyClickerButton.setVisible(!purchaseSuccessful);
         alloyUpgradeBtn.setVisible(purchaseSuccessful);
@@ -102,6 +105,7 @@ public class ClickerShopController extends BaseController {
 
     @FXML
     void buyGoldClicker() {
+        setShop(Model.getPlayerRole().getNation().getShop());
         boolean purchaseSuccessful = shop.getClickerShop().buyClicker(Resource.Gold, model.getPlayerPerson());
         buyGoldClickerButton.setVisible(!purchaseSuccessful);
         goldUpgradeBtn.setVisible(purchaseSuccessful);
@@ -118,6 +122,7 @@ public class ClickerShopController extends BaseController {
 
     @FXML
     void upgradeFoodClicker() {
+        setShop(Model.getPlayerRole().getNation().getShop());
         handleUpgradeClicker(Resource.Food, foodUpgradeBtn);
     }
 

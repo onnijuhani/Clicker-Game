@@ -9,6 +9,7 @@ import model.characters.Support;
 import model.characters.authority.Authority;
 import model.characters.npc.Governor;
 import model.characters.npc.King;
+import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
 import model.shop.UpgradeSystem;
 import model.stateSystem.Event;
@@ -27,6 +28,7 @@ public class CombatSystem {
     private final CombatStats defenderStats;
     private final Property venue;
     private final UpgradeSystem venueStats;
+    static int myBreakpointCounter = 0;
 
     List<Person> eligibleSupporters = new ArrayList<>();
 
@@ -49,7 +51,7 @@ public class CombatSystem {
 
         if (attacker.getState() == State.IN_BATTLE || defender.getState() == State.IN_BATTLE || venue.getState() == State.IN_BATTLE) {
             attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Error", "Either attacker or property is already in a battle. Action not allowed."));
+                    "Error", "Either attacker or property is already in a battle. \nAction not allowed."));
             return; // Can not enter battle
         }
 
@@ -136,7 +138,7 @@ public class CombatSystem {
             defender.getEventTracker().addEvent(EventTracker.Message(
                     "Major", "Your Authority has been overtaken by " + attacker.getName()));
 
-            attacker.getRelationshipManager().addDefeatedPerson(defender);
+            attacker.getRelationshipManager().addVictory(defender);
 
             switchPositions();
 
@@ -147,9 +149,9 @@ public class CombatSystem {
             System.out.println("Defender wins!");
 
             attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Failed to challenge the Authority of \n\t\t\t\t\t" + defender.getName() + ". Your power has been decreased."));
+                    "Major", "Failed to challenge the Authority of \n" + defender.getName() + ". Your power has been decreased."));
             defender.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Successfully defended against\n\t\t\t\t\t the Authority challenge by " + attacker.getName() + ".\n\t\t\t\t\t Your power has increased."));
+                    "Major", "Successfully defended against\nthe Authority challenge by " + attacker.getName() + ".\nYour power has increased."));
 
 
             String compensationFromWallet = TransferPackage.fromArray(attacker.getWallet().getWalletValues()).toString();
@@ -161,9 +163,9 @@ public class CombatSystem {
 
             attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Paid entire wallet (" +
                     compensationFromWallet +
-                    ")\n\t\t and 50% from the vault ("
+                    ")\nand 50% from the vault ("
                     + halfVaultBalance +
-                    ")\n\t\tas compensation for disloyalty."
+                    ")\nas compensation for disloyalty."
             ));
 
             attacker.decreaseOffense(3);
@@ -179,27 +181,18 @@ public class CombatSystem {
         /*
         ALL THE CONNECTION NEED TO BE CHANGED. DO NOT CHANGE THE ORDER OF THESE SETTERS
          */
-        attacker.setCharacter(defender.getCharacter());
-        defender.setCharacter(attacker.getRole().getCharacter());
-
-        attacker.getRole().setCharacter(attacker.getCharacter());
-        defender.getRole().setCharacter(defender.getCharacter());
-
-        attacker.setRole(attacker.getCharacter().getRole());
-        defender.setRole(defender.getCharacter().getRole());
-
-        attacker.getCharacter().setRole(attacker.getRole());
-        attacker.getCharacter().setPerson(attacker);
-
-        defender.getCharacter().setRole(defender.getRole());
-        defender.getCharacter().setPerson(defender);
+        rearrangeConnections();
 
 
         // WORK WALLET MUST BE UPDATED.
         attacker.getRole().getPosition().setWorkWallet(attacker.getWorkWallet());
+        if(!(defender.getCharacter() instanceof Peasant)){
+            defender.getRole().getPosition().setWorkWallet(defender.getWorkWallet());
+        }
 
 
-        // MODEL MUST BE UPDATED TO KNOW THE OBJECTS OF PLAYER. ONLY PERSON IS FINAL.
+
+        // MODEL MUST BE UPDATED TO KNOW THE OBJECTS OF PLAYER. ONLY PERSON IS FINAL THERE.
         Model.updatePlayer();
 
 
@@ -216,21 +209,49 @@ public class CombatSystem {
                 "Major", "You are now the " + attacker.getRole().getStatus() + " in the Region"
                 ));
 
-        // LOSING AUTHORITY POSITION GRANTS MASSIVE EMPLOYMENT STATS
-        if (defender.getCharacter() instanceof Peasant)    {
-            ((Peasant) defender.getCharacter()).createEmployment(
-                    model.Settings.getInt("farmerGenerate")*2,
-                    model.Settings.getInt("minerGenerate")*2,
-                    model.Settings.getInt("merchantGenerate")*2,
-                    defender.getWorkWallet()
-            );
-            GenerateManager.subscribe((Peasant) defender.getCharacter());
-        }
-
+        // LOSING AUTHORITY POSITION COMPLETELY GRANTS MASSIVE EMPLOYMENT STATS
+        LoseAuthorityPosition();
 
 
     }
 
+    private void rearrangeConnections() {
+        attacker.setCharacter(defender.getCharacter());
+        defender.setCharacter(attacker.getRole().getCharacter());
+
+        attacker.setRole(attacker.getCharacter().getRole());
+        defender.setRole(defender.getCharacter().getRole());
+
+        attacker.getRole().setCharacter(attacker.getCharacter());
+        defender.getRole().setCharacter(defender.getCharacter());
+
+
+        attacker.getCharacter().setRole(attacker.getRole());
+        attacker.getCharacter().setPerson(attacker);
+
+        defender.getCharacter().setRole(defender.getRole());
+        defender.getCharacter().setPerson(defender);
+
+        attacker.getRole().setPerson(attacker);
+        defender.getRole().setPerson(defender);
+
+    }
+
+    private void LoseAuthorityPosition() {
+        if (defender.getCharacter() instanceof Peasant)    {
+            ((Peasant) defender.getCharacter()).createEmployment(
+                    model.Settings.getInt("farmerGenerate")*2,
+                    model.Settings.getInt("minerGenerate")*2,
+                    model.Settings.getInt("merchantGenerate")*4,
+                    defender.getWorkWallet()
+            );
+            GenerateManager.subscribe((Peasant) defender.getCharacter());
+            // TAX RATE WILL ALSO BE LOWER
+            attacker.getRole().getPosition().getTaxForm().setTaxInfo(Resource.Food,25);
+            attacker.getRole().getPosition().getTaxForm().setTaxInfo(Resource.Alloy,25);
+            attacker.getRole().getPosition().getTaxForm().setTaxInfo(Resource.Gold,15);
+        }
+    }
 
 
     private void resetBattleStates() {
@@ -250,14 +271,14 @@ public class CombatSystem {
 
         if (attacker.getState() == State.IN_BATTLE || venue.getState() == State.IN_BATTLE) {
             attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Error", "Either attacker or property is already in a battle. \n\t\t\t\t\tAction not allowed."));
+                    "Error", "Either attacker or property is already in a battle. \nAction not allowed."));
             return; // Can not enter battle
         }
 
         if (attacker.getRelationshipManager().isAlly(defender)) {
             attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Error", "Attempted to rob \n\t\t\t\t\t" + defender.getProperty().getName() +
-                            " owned by ally " + defender.getName() + ". \n\t\t\t\t\tAction not allowed."));
+                    "Error", "Attempted to rob \n" + defender.getProperty().getName() +
+                            " owned by ally " + defender.getName() + ". \nAction not allowed."));
             return; // Abort the robbery because the defender is an ally
         }
 
@@ -290,9 +311,9 @@ public class CombatSystem {
             venueStats.upgradeLevel();
             attackerStats.getOffense().decreaseLevel();
             attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Robbery failed. \n\t\t\t\t\tOffense level decreased."));
+                    "Major", "Robbery failed. \nOffense level decreased."));
             defender.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Successfully defended a robbery. \n\t\t\t\t\tProperty defense increased."));
+                    "Major", "Successfully defended a robbery. \nProperty defense increased."));
         }
         executeLoyaltyChanges();
         attacker.setState(State.NONE);
@@ -312,14 +333,14 @@ public class CombatSystem {
 
         if (attacker.getState() == State.IN_BATTLE || defender.getState() == State.IN_BATTLE) {
             attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Error", "Either attacker or defender is already in a battle. \n\t\t\t\t\tAction not allowed."));
+                    "Error", "Either attacker or defender is already in a battle. \nAction not allowed."));
             return; // Can not enter battle
         }
 
         if (attacker.getRelationshipManager().isAlly(defender)) {
             attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Error", "Attempted to duel \n\t\t\t\t\t" + defender +
-                            " who is your ally " + ". \n\t\t\t\t\tAction not allowed."));
+                    "Error", "Attempted to duel \n" + defender +
+                            " who is your ally " + ". \nAction not allowed."));
             return; // Abort the duel because the defender is an ally
         }
 
@@ -333,7 +354,7 @@ public class CombatSystem {
 
 
         attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Duel Started"));
-        defender.getEventTracker().addEvent(EventTracker.Message("Major", "You are being attacked (duel) by \n\t\t\t\t\t"+ attacker));
+        defender.getEventTracker().addEvent(EventTracker.Message("Major", "You are being attacked (duel) by \n"+ attacker));
 
         EventManager.scheduleEvent(this::decideDuel, daysUntilEvent, gameEvent);
     }
@@ -367,12 +388,12 @@ public class CombatSystem {
                         "Minor", "Defence decreased for losing the Duel"
                 )));
             }
-            attacker.getRelationshipManager().addDefeatedPerson(defender);
+            attacker.getRelationshipManager().addVictory(defender);
         } else {
             attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Duel Lost. \n\t\t\t\t\tOffense level decreased by 2 levels."));
+                    "Major", "Duel Lost. \nOffense level decreased by 2 levels."));
             defender.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Duel won. \n\t\t\t\t\tDefense level increased."));
+                    "Major", "Duel won. \nDefense level increased."));
 
             if (random.nextInt(100) < 10) {
                 attacker.getCombatStats().decreaseOffense();

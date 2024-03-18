@@ -6,11 +6,9 @@ import model.resourceManagement.Resource;
 
 public class ClickerTools extends UpgradeSystem {
     protected int resourceAmount = 1;
-    private final Resource type;
 
     public ClickerTools(int basePrice, Resource type){
         super(basePrice);
-        this.type = type;
     }
     public int getResourceAmount(){
         return resourceAmount;

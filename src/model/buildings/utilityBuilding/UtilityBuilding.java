@@ -19,10 +19,7 @@ public class UtilityBuilding extends UpgradeSystem implements UtilityObserver {
     public void utilityUpdate() {
         generateAction();
     }
-    @Override
-    public int getUpgradePrice() {
-        return basePrice * (int) Math.pow(2, level );
-    }
+
 
     public String getInfo(){
         return "empty";

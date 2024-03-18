@@ -609,7 +609,7 @@
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <Label fx:id="propertyName" alignment="CENTER" prefHeight="52.0" prefWidth="288.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" text="Property Name" textFill="WHITE">
+                  <Label fx:id="propertyName" alignment="CENTER" maxWidth="340.0" minWidth="288.0" prefHeight="52.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" text="Property Name" textFill="WHITE">
                      <font>
                         <Font size="26.0" />
                      </font>

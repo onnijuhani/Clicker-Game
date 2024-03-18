@@ -8,7 +8,7 @@ import model.resourceManagement.wallets.Wallet;
 
 public class Exchange extends ShopComponents {
 
-    private ExchangeRates rates;
+    private final ExchangeRates rates;
     private int defaultFood = 100;  //these defaults exist mostly for the exchange view. They reflect the desired ratio 10-5-1
     private int defaultAlloys = 50;
     private int defaultGold = 10;
@@ -80,7 +80,6 @@ public class Exchange extends ShopComponents {
         int[] amounts = wallet.getWalletValues();
         double foodRatio = amounts[2] != 0 ? (double) amounts[0] / amounts[2] : 0;
         double alloyRatio = amounts[2] != 0 ? (double) amounts[1] / amounts[2] : 0;
-        // Correct syntax to return an array
         return new double[]{foodRatio, alloyRatio};
     }
 
@@ -177,11 +176,11 @@ public class Exchange extends ShopComponents {
             // max and min to limit the market
             // Desired ratios
             double desiredFoodRatio = 10.0;
-            double minFoodToGoldRatio = desiredFoodRatio * 0.3;
+            double minFoodToGoldRatio = desiredFoodRatio * 0.45;
             double maxFoodToGoldRatio = desiredFoodRatio * 10;
 
             double desiredAlloy = 5.0;
-            double minAlloyToGoldRatio = desiredAlloy * 0.3;
+            double minAlloyToGoldRatio = desiredAlloy * 0.45;
             double maxAlloyToGoldRatio = desiredAlloy * 10;
 
             // current ratios
