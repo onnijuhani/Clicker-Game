@@ -62,6 +62,9 @@ public class RelationsController extends BaseController {
         propertyDefenceLevel.setText("Defence: "+currentPerson.getProperty().getDefense().getUpgradeLevel());
         vaultValue.setText(currentPerson.getProperty().getVault().toShortString());
         walletInfo.setText(currentPerson.getWallet().toShortString());
+        homeQuarter.setText(currentPerson.getProperty().toString());
+        changeCurrentToThisHyper.setText(current.toString());
+        compareToCharacter.setText(currentCharacter.getPerson().getRelationsManager().getRelationshipDescription(currentPerson));
     }
 
     public void setUpCurrentCharacter() {
@@ -73,7 +76,7 @@ public class RelationsController extends BaseController {
         if(Model.getPlayerAsPerson() == currentPerson){
             compareToPlayer.setText("Currently viewing yourself");
         }else {
-            compareToPlayer.setText(Model.getPlayerAsPerson().getRelationsManager().getRelationshipDescription(currentPerson));
+            compareToPlayer.setText("For you they are:\n"+Model.getPlayerAsPerson().getRelationsManager().getRelationshipDescription(currentPerson));
         }
     }
 
@@ -88,12 +91,13 @@ public class RelationsController extends BaseController {
         ObservableList<?> items = charactersList.getItems();
         items.clear();
     }
-
+    @FXML
+    private Label compareToCharacter;
     @FXML
     private Hyperlink authority;
 
     @FXML
-    private Hyperlink changeCurrentToThis;
+    private Hyperlink changeCurrentToThisHyper;
 
     @FXML
     private ImageView characterPicture;
@@ -215,12 +219,18 @@ public class RelationsController extends BaseController {
 
     @FXML
     void openHomeQuarter(ActionEvent event) {
-
+        model.accessCurrentView().setCurrentView(currentCharacter.getPerson().getProperty().getLocation());
+        main.exploreMapController.updateExploreTab();
+    }
+    @FXML // CHANGES CHARACTER IN CHARACTER CONTROLLER TO THE CHARACTER CURRENTLY IN VIEW
+    void changeCharacter(ActionEvent event) {
+        characterController.setCurrentCharacter(current);
+        main.mainTabPane.getSelectionModel().select(main.characterTab);
     }
 
     @FXML
     void robVault(ActionEvent event) {
-
+        CombatService.executeRobbery(Model.getPlayerAsCharacter(), current);
     }
 
     public void setCharacterController(CharacterController characterController) {

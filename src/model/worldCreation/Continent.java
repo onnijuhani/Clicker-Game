@@ -5,6 +5,7 @@ import model.Settings;
 import model.buildings.Property;
 import model.buildings.PropertyCreation;
 import model.buildings.PropertyTracker;
+import model.characters.RelationsManager;
 import model.characters.Status;
 import model.characters.authority.Authority;
 import model.characters.authority.NationAuthority;
@@ -75,6 +76,10 @@ public class Continent extends Area implements Details {
             //quarter where important characters live should have special name
             NameCreation.generateMajorQuarterName(home);
 
+
+            // add sentinels as allies at the beginning
+            RelationsManager relations = king.getPerson().getRelationsManager();
+            relations.getListOfSentinels().forEach(relations::addAlly);
 
         }
     }

@@ -217,4 +217,7 @@ public class CharacterController extends BaseController  {
         previousBtn.setDisable(characterHistory.isEmpty());
     }
 
+    public MainController getMain() {
+        return main;
+    }
 }

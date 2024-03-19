@@ -55,6 +55,11 @@ public class MainController extends BaseController {
     @FXML
     protected Button pauseBtn;
 
+    @FXML
+    protected TabPane mainTabPane;
+    @FXML
+    protected Tab characterTab;
+
 
 
     public MainController() {
@@ -109,6 +114,8 @@ public class MainController extends BaseController {
         if (relationsController != null) {
             relationsController.setMain(this);
             relationsController.setCharacterController(characterController);
+            relationsController.setModel(model);
+            relationsController.resetEverything();
         } else {
             System.out.println("RelationsController is null");
         }

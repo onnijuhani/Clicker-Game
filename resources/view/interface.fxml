@@ -129,9 +129,9 @@
                   </HBox>
                </children>
             </VBox>
-            <TabPane layoutX="795.0" layoutY="3.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="700.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+            <TabPane fx:id="mainTabPane" layoutX="795.0" layoutY="3.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="700.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
               <tabs>
-                <Tab text="Character">
+                <Tab fx:id="characterTab" text="Character">
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" style="-fx-border-radius: 15; -fx-border-color: black;">
                            <children>

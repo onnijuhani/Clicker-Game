@@ -164,17 +164,17 @@ public class RelationsManager {
 
         StringBuilder description = new StringBuilder();
         if (!relationshipDescriptions.isEmpty()) {
-            description.append("They are your\n");
-            description.append(String.join("\n‣", relationshipDescriptions));
+
+            description.append(String.join("\n", relationshipDescriptions));
             if (!roleDescriptions.isEmpty()) {
-                description.append("‣\n");
+                description.append("\n");
             }
         }
         if (!roleDescriptions.isEmpty()) {
-            description.append(String.join("\n‣", roleDescriptions));
+            description.append(String.join("\n", roleDescriptions));
         }
 
-        return !description.isEmpty() ? description.toString() + "." : "No specific relationship found.";
+        return !description.isEmpty() ? description.toString() + "" : "No specific relationship found.";
     }
 
 

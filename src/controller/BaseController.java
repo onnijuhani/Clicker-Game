@@ -4,6 +4,7 @@ import model.Model;
 
 public abstract class BaseController {
     protected Model model;
+    protected MainController main;
     public BaseController() {
     }
     public void setModel(Model model) {
@@ -13,7 +14,6 @@ public abstract class BaseController {
         return model;
     }
     public abstract void initialize();
-    private MainController main;
 
     protected void setMain(MainController mainController) {
         this.main = mainController;

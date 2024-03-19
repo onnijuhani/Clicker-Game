@@ -6,6 +6,7 @@ import model.buildings.Property;
 import model.buildings.PropertyCreation;
 import model.buildings.PropertyTracker;
 import model.characters.Character;
+import model.characters.RelationsManager;
 import model.characters.Status;
 import model.characters.authority.Authority;
 import model.characters.authority.ProvinceAuthority;
@@ -121,6 +122,11 @@ public class Nation extends ControlledArea implements Details {
 
             // generate mercenaries for governor
             mercenaryFactory(province, authority, random);
+
+            // add sentinels as allies at the beginning
+            // for now, sentinels remain sentinels for the authorityPosition, even if the person positioned there changes.
+            RelationsManager relations = governor.getPerson().getRelationsManager();
+            relations.getListOfSentinels().forEach(relations::addAlly);
 
         }
     }
