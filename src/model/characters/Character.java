@@ -43,17 +43,20 @@ public class Character implements NpcObserver, Details, Ownable {
         return true;
     }
 
+    // Constructor for NPC (default)
     public Character() {
-        this.person = new Person(true);
+        this(false);
+    }
+    // Constructor with a flag for player or NPC
+    public Character(boolean isPlayer) {
+        this.person = new Person(!isPlayer); //person takes isNpc instead
         this.role = new Role(Status.Peasant);
-
         makeConnections();
-
-
-        if (shouldSubscribeToNpcEvent()) {
+        if (!isPlayer && shouldSubscribeToNpcEvent()) {
             NpcManager.subscribe(this);
         }
     }
+
 
     protected void makeConnections() {
         person.setRole(role);

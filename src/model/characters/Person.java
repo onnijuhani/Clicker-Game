@@ -13,16 +13,17 @@ import model.stateSystem.State;
 import model.time.Time;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 public class Person implements PersonalAttributes, Ownable {
-    private String name;
+    private final String name;
     private final Wallet wallet;
     private final WorkWallet workWallet;
     private Property property;
     private final RelationsManager relationsManager;
     private final EventTracker eventTracker;
     private final CombatStats combatStats;
-    private State state;
+    private final EnumSet<State> states;
     private final List<GameEvent> ongoingEvents = new ArrayList<>();
     private final PaymentCalendar paymentCalendar;
     private final StrikesTracker strikesTracker;
@@ -40,6 +41,7 @@ public class Person implements PersonalAttributes, Ownable {
         this.combatStats = new CombatStats(Settings.getInt("offenceBasePrice"),Settings.getInt("defenceBasePrice"), this);
         this.paymentCalendar = new PaymentCalendar();
         this.strikesTracker = new StrikesTracker(Settings.getInt("strikes"));
+        states = EnumSet.noneOf(State.class);
     }
 
     @Override
@@ -80,12 +82,21 @@ public class Person implements PersonalAttributes, Ownable {
         return combatStats;
     }
     @Override
-    public State getState() {
-        return state;
+    public EnumSet<State> getStates() {
+        return states.clone();
     }
     @Override
-    public void setState(State state) {
-        this.state = state;
+    public void addState(State state) {
+        states.add(state);
+    }
+    public void removeState(State state) {
+        states.remove(state);
+    }
+    public boolean hasState(State state) {
+        return states.contains(state);
+    }
+    public void clearStates() {
+        states.clear();
     }
     @Override
     public List<GameEvent> getOngoingEvents() {
@@ -144,8 +155,6 @@ public class Person implements PersonalAttributes, Ownable {
     public Person getPerson(){
         return this;
     }
-    public void setName(String name) {
-        this.name = name;
-    }
+
 }
 

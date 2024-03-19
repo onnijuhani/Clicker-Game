@@ -58,9 +58,8 @@ public class CreateWorld {
     }
 
     private void createPlayer(){
-        Peasant initialPlayer = new Peasant();
+        Peasant initialPlayer = new Peasant(true);
         initialPlayer.getPerson().setPlayer(true);
-        initialPlayer.getPerson().setName( initialPlayer.getPerson()+" (you)");
 
         Quarter homeLocation = initialPlayer.getPerson().getProperty().getLocation();
 

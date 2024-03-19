@@ -14,10 +14,23 @@ public class Peasant extends Character implements GenerateObserver {
 
     protected Employment employment;
 
+    // Default constructor for NPC
     public Peasant() {
+        super();
+        initializePeasant();
+    }
+    // Constructor for player or NPC based on the passed flag
+    public Peasant(boolean isPlayer) {
+        super(isPlayer);
+        initializePeasant();
+    }
+
+    private void initializePeasant() {
         person.setProperty(PropertyCreation.createPeasantProperty(person));
         GenerateManager.subscribe(this);
     }
+
+
 
     public Employment getEmployment() {
         return employment;

@@ -15,6 +15,9 @@ import model.time.PropertyManager;
 import model.time.PropertyObserver;
 import model.worldCreation.Details;
 import model.worldCreation.Quarter;
+
+import java.util.EnumSet;
+
 public class Property implements PropertyObserver, Details, Ownable {
 
     @Override
@@ -54,7 +57,7 @@ public class Property implements PropertyObserver, Details, Ownable {
     protected Properties propertyEnum;
 
     protected UtilitySlot utilitySlot;
-    private State state = State.NONE;
+    private final EnumSet<State> states;
 
     public Property(PropertyConfig.PropertyValues propertyValues, String name, Person owner) {
         this.defense = new UpgradeSystem(propertyValues.getPower());
@@ -69,6 +72,7 @@ public class Property implements PropertyObserver, Details, Ownable {
         this.maintenance = new Maintenance(propertyValues);
         PropertyManager.subscribe(this);
         this.utilitySlot = new UtilitySlot(5);
+        states = EnumSet.noneOf(State.class);
     }
 
     private void depositStartingBalance(PropertyConfig.PropertyValues propertyValues) {
@@ -141,11 +145,22 @@ public class Property implements PropertyObserver, Details, Ownable {
     public void setDefense(UpgradeSystem defense) {
         this.defense = defense;
     }
-    public State getState() {
-        return state;
+
+    public EnumSet<State> getStates() {
+        return states.clone();
     }
-    public void setState(State state) {
-        this.state = state;
+
+    public void addState(State state) {
+        states.add(state);
+    }
+    public void removeState(State state) {
+        states.remove(state);
+    }
+    public boolean hasState(State state) {
+        return states.contains(state);
+    }
+    public void clearStates() {
+        states.clear();
     }
 
     @Override

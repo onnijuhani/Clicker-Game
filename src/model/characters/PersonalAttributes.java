@@ -8,6 +8,7 @@ import model.stateSystem.EventTracker;
 import model.stateSystem.GameEvent;
 import model.stateSystem.State;
 
+import java.util.EnumSet;
 import java.util.List;
 
 public interface PersonalAttributes {
@@ -18,14 +19,14 @@ public interface PersonalAttributes {
     RelationsManager getRelationsManager();
     EventTracker getEventTracker();
     CombatStats getCombatStats();
-    State getState();
+    EnumSet<State> getStates();
     List<GameEvent> getOngoingEvents();
     PaymentCalendar getPaymentCalendar();
     StrikesTracker getStrikesTracker();
 
 
     void setProperty(Property property);
-    void setState(State state);
+    void addState(State state);
     void addEvent(GameEvent gameEvent);
 }
 

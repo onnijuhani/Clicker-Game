@@ -49,7 +49,7 @@ public class CombatSystem {
 
         if (IsLevelHighEnough(4)) return; // Must be at least level 4 attack
 
-        if (attacker.getState() == State.IN_BATTLE || defender.getState() == State.IN_BATTLE || venue.getState() == State.IN_BATTLE) {
+        if (attacker.hasState(State.IN_BATTLE) || defender.hasState(State.IN_BATTLE) || venue.hasState(State.IN_BATTLE)) {
             attacker.getEventTracker().addEvent(EventTracker.Message(
                     "Error", "Either attacker or property is already in a battle. \nAction not allowed."));
             return; // Can not enter battle
@@ -86,10 +86,10 @@ public class CombatSystem {
                         .toList();
             }
 
-            attacker.setState(State.IN_BATTLE);
-            defender.setState(State.IN_BATTLE);
-            venue.setState(State.IN_BATTLE);
-            eligibleSupporters.forEach(support -> support.setState(State.IN_BATTLE));
+            attacker.addState(State.IN_BATTLE);
+            defender.addState(State.IN_BATTLE);
+            venue.addState(State.IN_BATTLE);
+            eligibleSupporters.forEach(support -> support.addState(State.IN_BATTLE));
 
             int daysUntilEvent = 1;
 
@@ -260,10 +260,10 @@ public class CombatSystem {
 
 
     private void resetBattleStates() {
-        attacker.setState(State.NONE);
-        defender.setState(State.NONE);
-        venue.setState(State.NONE);
-        eligibleSupporters.forEach(support -> support.setState(State.NONE));
+        attacker.addState(State.NONE);
+        defender.addState(State.NONE);
+        venue.addState(State.NONE);
+        eligibleSupporters.forEach(support -> support.addState(State.NONE));
     }
 
 
@@ -274,7 +274,7 @@ public class CombatSystem {
 
         if (IsLevelHighEnough(2)) return; // Must be at least level 2 attack
 
-        if (attacker.getState() == State.IN_BATTLE || venue.getState() == State.IN_BATTLE) {
+        if (attacker.hasState(State.IN_BATTLE) || venue.hasState(State.IN_BATTLE)) {
             attacker.getEventTracker().addEvent(EventTracker.Message(
                     "Error", "Either attacker or property is already in a battle. \nAction not allowed."));
             return; // Can not enter battle
@@ -287,8 +287,8 @@ public class CombatSystem {
             return; // Abort the robbery because the defender is an ally
         }
 
-        attacker.setState(State.IN_BATTLE);
-        venue.setState(State.IN_BATTLE);
+        attacker.addState(State.IN_BATTLE);
+        venue.addState(State.IN_BATTLE);
 
         int daysUntilEvent = 30;
 
@@ -321,8 +321,8 @@ public class CombatSystem {
                     "Major", "Successfully defended a robbery. \nProperty defense increased."));
         }
         executeLoyaltyChanges();
-        attacker.setState(State.NONE);
-        venue.setState(State.NONE);
+        attacker.addState(State.NONE);
+        venue.addState(State.NONE);
     }
 
 
@@ -336,7 +336,7 @@ public class CombatSystem {
 
         if (IsLevelHighEnough(3)) return; // Must be at least level 3 attack
 
-        if (attacker.getState() == State.IN_BATTLE || defender.getState() == State.IN_BATTLE) {
+        if (attacker.hasState(State.IN_BATTLE) || defender.hasState(State.IN_BATTLE)) {
             attacker.getEventTracker().addEvent(EventTracker.Message(
                     "Error", "Either attacker or defender is already in a battle. \nAction not allowed."));
             return; // Can not enter battle
@@ -349,8 +349,8 @@ public class CombatSystem {
             return; // Abort the duel because the defender is an ally
         }
 
-        attacker.setState(State.IN_BATTLE);
-        defender.setState(State.IN_BATTLE);
+        attacker.addState(State.IN_BATTLE);
+        defender.addState(State.IN_BATTLE);
 
         int daysUntilEvent = 15;
 
@@ -417,8 +417,8 @@ public class CombatSystem {
             }
         }
         executeLoyaltyChanges();
-        attacker.setState(State.NONE);
-        defender.setState(State.NONE);
+        attacker.addState(State.NONE);
+        defender.addState(State.NONE);
     }
 
 
