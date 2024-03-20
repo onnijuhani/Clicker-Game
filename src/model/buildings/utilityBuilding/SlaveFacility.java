@@ -13,12 +13,12 @@ import java.util.Set;
 
 public class SlaveFacility extends UtilityBuilding {
     private int slaveAmount;
-    private int slots;
     private final int[] production = {20, 10 ,2};
+
+    private final int[] finalProduction = {};
 
     public SlaveFacility(int basePrice, Person owner) {
         super(basePrice, owner);
-        this.slots = 1;
         this.slaveAmount = 1;
         this.name = UtilityBuildings.SlaveFacility;
         delayConsequence();
@@ -40,11 +40,6 @@ public class SlaveFacility extends UtilityBuilding {
     }
 
 
-    public void increaseSlotAmount() {
-        this.slots *= 2;
-        addSlave();
-        increaseProduction();
-    }
 
 
     public void increaseProduction() {
@@ -53,26 +48,35 @@ public class SlaveFacility extends UtilityBuilding {
         production[2] *= 2;
     }
 
+
     @Override
     public boolean upgradeLevel() {
-        if (level < MAX_LEVEL) {
-            level++;
-            increaseSlotAmount();
-            return true;
+        level++;
+        if (level <= MAX_LEVEL+5) {
+            increaseProduction();
         } else {
-            owner.getEventTracker().addEvent(EventTracker.Message("Error", "Max level reached"));
-            return false;
+            increaseProductionAfterMaxReached();
+            increaseDivider *=2;
         }
+        return true;
+    }
+
+    public void increaseProductionAfterMaxReached() {
+        production[0] = production[0]+Math.max(production[0]/increaseDivider, 1);
+        production[1] = production[1]+Math.max(production[1]/increaseDivider, 1);
+        production[2] = production[2]+Math.max(production[2]/increaseDivider, 1);
     }
 
     private void payConsequence() {
-        synchronized (this) { // ensuring Thread safety
+        synchronized (this) {
             Set<Person> alliesCopy = new HashSet<>(owner.getRelationsManager().getAllies());
             for (Person ally : alliesCopy) {
                 if (!ally.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.SlaveFacility)) {
                     owner.getRelationsManager().removeAlly(ally);
                     ally.getRelationsManager().removeAlly(owner);
-                    owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Relationship with " + ally + " cooled due to Slave Facility construction."));
+                    if(owner.isPlayer()) {
+                        owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Relationship with " + ally + " cooled due to Slave Facility construction."));
+                    }
                 }
             }
         }
@@ -96,42 +100,27 @@ public class SlaveFacility extends UtilityBuilding {
     }
     @Override
     protected void generateAction() {
-        TransferPackage transfer = new TransferPackage(production[0],production[1], production[2]);
+        TransferPackage transfer;
+        if(level < MAX_LEVEL) {
+            transfer = new TransferPackage(production[0], production[1], production[2]);
+        }else{
+            transfer = new TransferPackage(finalProduction[0], finalProduction[1], finalProduction[2]);
+        }
         owner.getWallet().addResources(transfer);
-        owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
+        if(owner.isPlayer()) {
+            owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
+        }
     }
 
     public void addSlave() {
-        if (slots == slaveAmount) {
-            return;
-        }
         slaveAmount *= 2;
     }
 
-    public void removeSlave(){
-        if (slaveAmount > 0) {
-            slaveAmount--;
-        }
-    }
 
-    public int getSlaveAmount() {
-        return slaveAmount;
-    }
 
-    public void setSlaveAmount(int slaveAmount) {
-        this.slaveAmount = slaveAmount;
-    }
 
-    public int[] getProduction() {
-        return production;
-    }
 
-    public int getSlots() {
-        return slots;
-    }
 
-    public void setSlots(int slots) {
-        this.slots = slots;
-    }
+
 
 }

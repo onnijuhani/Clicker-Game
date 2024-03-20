@@ -36,7 +36,7 @@ public class TopSectionController extends BaseController {
     private MainController main;
 
     public void initialize() {
-        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> updateTopSection()));
+        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.25), e -> updateTopSection()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         stopTimeBtn.setDisable(true);
         updateTimeline.play();

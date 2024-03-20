@@ -285,10 +285,6 @@ public class PropertyController extends BaseController {
             ui.infoView.setVisible(true);
             ui.infoLabel.setText(property.getUtilitySlot().getUtilityBuilding(building).getInfo());
             ui.utilityPlayerView.setVisible(true);
-            if (property.getUtilitySlot().getUtilityBuilding(building).getUpgradeLevel() == Settings.getInt("utilityMaxLevel")) {
-                ui.upgradeButton.setDisable(true);
-                ui.upgradeButton.setText("Maxed");
-            }
         } else {
             ui.priceButton.setVisible(true);
             ui.utilityPlayerView.setVisible(true);

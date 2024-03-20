@@ -63,8 +63,9 @@ public class RelationsController extends BaseController {
         vaultValue.setText(currentPerson.getProperty().getVault().toShortString());
         walletInfo.setText(currentPerson.getWallet().toShortString());
         homeQuarter.setText(currentPerson.getProperty().toString());
-        changeCurrentToThisHyper.setText(current.toString());
+        changeCurrentToThisHyper.setText(currentPerson.toString());
         compareToCharacter.setText(currentCharacter.getPerson().getRelationsManager().getRelationshipDescription(currentPerson));
+        authority.setText(currentCharacter.getRole().getAuthority().toString());
     }
 
     public void setUpCurrentCharacter() {
@@ -93,6 +94,7 @@ public class RelationsController extends BaseController {
     }
     @FXML
     private Label compareToCharacter;
+
     @FXML
     private Hyperlink authority;
 
@@ -142,7 +144,8 @@ public class RelationsController extends BaseController {
 
     @FXML
     void changeCurrentToAuth(ActionEvent event) {
-
+        characterController.setCurrentCharacter(current.getRole().getAuthority().getCharacterInThisPosition());
+        main.mainTabPane.getSelectionModel().select(main.characterTab);
     }
 
     @FXML

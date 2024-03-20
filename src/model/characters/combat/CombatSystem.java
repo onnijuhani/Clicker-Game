@@ -260,10 +260,10 @@ public class CombatSystem {
 
 
     private void resetBattleStates() {
-        attacker.addState(State.NONE);
-        defender.addState(State.NONE);
-        venue.addState(State.NONE);
-        eligibleSupporters.forEach(support -> support.addState(State.NONE));
+        attacker.removeState(State.IN_BATTLE);
+        defender.removeState(State.IN_BATTLE);
+        venue.removeState(State.IN_BATTLE);
+        eligibleSupporters.forEach(support -> support.removeState(State.IN_BATTLE));
     }
 
 
@@ -356,8 +356,6 @@ public class CombatSystem {
 
         GameEvent gameEvent = new GameEvent(Event.DUEL,attacker.getCharacter(),defender.getCharacter());
 
-
-
         attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Duel Started"));
         defender.getEventTracker().addEvent(EventTracker.Message("Major", "You are being attacked (duel) by \n"+ attacker));
 
@@ -417,8 +415,8 @@ public class CombatSystem {
             }
         }
         executeLoyaltyChanges();
-        attacker.addState(State.NONE);
-        defender.addState(State.NONE);
+        attacker.removeState(State.IN_BATTLE);
+        defender.addState(State.IN_BATTLE);
     }
 
 

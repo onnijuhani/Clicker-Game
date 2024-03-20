@@ -68,6 +68,10 @@ public class Time {
         if (day == utilitySlots) {
             UtilityManager.notifyTimeUpdate();
         }
+
+        /**
+         * TODO OPTIMIZE THIS
+         */
         if (!isFirstDay) {
             NpcManager.notifyTimeUpdate(day, month, year);
         }
@@ -112,7 +116,7 @@ public class Time {
             milliseconds = 1000;
         }
         if (speed.equals(Speed.Fast)) {
-            milliseconds = 300;
+            milliseconds = 250;
         }
         if (speed.equals(Speed.Slow)) {
             milliseconds = 2000;

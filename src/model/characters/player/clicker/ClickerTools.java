@@ -19,6 +19,7 @@ public class ClickerTools extends UpgradeSystem {
         return resourceAmount;
     }
 
+    @Override
     public int getUpgradePrice() {
         if(level < MAX_LEVEL){
             return basePrice * (int) Math.pow(2, level -1 );

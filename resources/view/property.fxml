@@ -57,7 +57,7 @@
                            <children>
                               <StackPane>
                                  <children>
-                                    <VBox fx:id="utilityBuyView" alignment="CENTER" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+                                    <VBox fx:id="utilityBuyView" alignment="CENTER" styleClass="property">
                                        <children>
                                           <Label alignment="CENTER" text="Meadowlands" textAlignment="CENTER" textFill="WHITE" underline="true">
                                              <font>
@@ -127,7 +127,7 @@
                               </StackPane>
                               <StackPane GridPane.columnIndex="1">
                                  <children>
-                                    <VBox fx:id="utilityBuyView1" alignment="CENTER" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+                                    <VBox fx:id="utilityBuyView1" alignment="CENTER" styleClass="property">
                                        <children>
                                           <Label alignment="CENTER" text="Alloy Mine" textAlignment="CENTER" textFill="WHITE" underline="true">
                                              <font>
@@ -197,7 +197,7 @@
                               </StackPane>
                               <StackPane GridPane.rowIndex="1">
                                  <children>
-                                    <VBox fx:id="utilityBuyView2" alignment="CENTER" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+                                    <VBox fx:id="utilityBuyView2" alignment="CENTER" styleClass="property">
                                        <children>
                                           <Label alignment="CENTER" text="Gold Mine" textAlignment="CENTER" textFill="WHITE" underline="true">
                                              <font>
@@ -267,7 +267,7 @@
                               </StackPane>
                               <StackPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <children>
-                                    <VBox fx:id="utilityBuyView3" alignment="CENTER" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+                                    <VBox fx:id="utilityBuyView3" alignment="CENTER" styleClass="property">
                                        <children>
                                           <Label alignment="CENTER" text="Slave Facility" textAlignment="CENTER" textFill="WHITE" underline="true">
                                              <font>
@@ -337,7 +337,7 @@
                               </StackPane>
                               <StackPane GridPane.rowIndex="2">
                                  <children>
-                                    <VBox fx:id="utilityBuyView4" alignment="CENTER" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+                                    <VBox fx:id="utilityBuyView4" alignment="CENTER" styleClass="property">
                                        <children>
                                           <Label alignment="CENTER" text="Mystic Mine" textAlignment="CENTER" textFill="WHITE" underline="true">
                                              <font>
@@ -407,7 +407,7 @@
                               </StackPane>
                               <StackPane GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <children>
-                                    <VBox fx:id="utilityBuyView5" alignment="CENTER" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+                                    <VBox fx:id="utilityBuyView5" alignment="CENTER" styleClass="property">
                                        <children>
                                           <Label alignment="CENTER" text="Worker Center" textAlignment="CENTER" textFill="WHITE" underline="true">
                                              <font>
@@ -481,7 +481,7 @@
                   </StackPane>
                </children>
             </VBox>
-            <VBox fx:id="utilityBuyView5" alignment="CENTER" layoutY="129.0" prefHeight="119.0" prefWidth="134.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+            <VBox fx:id="utilityBuyView5" alignment="CENTER" layoutY="129.0" prefHeight="119.0" prefWidth="134.0" styleClass="property">
                <children>
                   <Label alignment="CENTER" text="Maintenance" textFill="WHITE">
                      <font>
@@ -501,7 +501,7 @@
                   </Label>
                </children>
             </VBox>
-            <VBox fx:id="utilityBuyView51" alignment="CENTER" layoutX="12.0" layoutY="392.0" prefHeight="119.0" prefWidth="288.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+            <VBox fx:id="utilityBuyView51" alignment="CENTER" layoutX="12.0" layoutY="392.0" prefHeight="119.0" prefWidth="288.0" styleClass="property">
                <children>
                   <Label alignment="CENTER" text="Vault" textFill="WHITE">
                      <font>
@@ -566,7 +566,7 @@
                   </StackPane>
                </children>
             </VBox>
-            <VBox fx:id="utilityBuyView52" alignment="CENTER" layoutY="254.0" prefHeight="130.0" prefWidth="134.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+            <VBox fx:id="utilityBuyView52" alignment="CENTER" layoutY="254.0" prefHeight="130.0" prefWidth="134.0" styleClass="property">
                <children>
                   <Label alignment="CENTER" text="Defence" textFill="WHITE">
                      <font>
@@ -609,14 +609,14 @@
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <Label fx:id="propertyName" alignment="CENTER" maxWidth="340.0" minWidth="288.0" prefHeight="52.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" text="Property Name" textFill="WHITE">
+                  <Label fx:id="propertyName" alignment="CENTER" maxWidth="340.0" minWidth="288.0" prefHeight="52.0" styleClass="property" text="Property Name" textFill="WHITE">
                      <font>
                         <Font size="26.0" />
                      </font>
                   </Label>
                </children>
             </VBox>
-            <VBox fx:id="upgradeBox" alignment="CENTER" layoutX="140.0" layoutY="129.0" prefHeight="119.0" prefWidth="217.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
+            <VBox fx:id="upgradeBox" alignment="CENTER" layoutX="140.0" layoutY="129.0" prefHeight="119.0" prefWidth="217.0" styleClass="property">
                <children>
                   <Label alignment="CENTER" text="Upgrade" textFill="WHITE">
                      <font>

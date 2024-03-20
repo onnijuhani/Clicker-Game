@@ -38,15 +38,14 @@ public class ExchangeController extends BaseController {
     @FXML
     private Label marketFee;
     @FXML
-    private Label shopWallet;
+    private Label shopWalletBalance;
 
     private MainController main;
-    private Timeline updateTimeline;
 
 
     @FXML
     public void initialize() {
-        updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateExchange()));
+        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateExchange()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
     }
@@ -130,7 +129,7 @@ public class ExchangeController extends BaseController {
         marketFee.setText("Fee: "+getExchange().getMarketFee()*100+"%");
     }
     public void updateShopWallet(){
-        shopWallet.setText(getExchange().getWallet().toString());
+        shopWalletBalance.setText(getExchange().getWallet().getRatioString());
     }
 
     public void setMain(MainController main) {

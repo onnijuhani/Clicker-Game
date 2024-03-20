@@ -20,14 +20,22 @@ public class UtilityShop extends ShopComponents {
         UtilityBuilding building = slot.getUtilityBuilding(type);
 
         if (building != null) {
-            int upgradePrice = building.getUpgradePrice();
+            int upgradePrice = building.getUpgrade();
+            System.out.println("getUpgrade "+upgradePrice);
+            System.out.println("getUpgradePrice "+building.getUpgradePrice());
             if (person.getWallet().hasEnoughResource(Resource.Gold, upgradePrice)) {
                 person.getWallet().subtractGold(upgradePrice);
                 building.upgradeLevel();
-                person.getEventTracker().addEvent(EventTracker.Message("Shop", "Successfully upgraded " + type + " to level " + building.getUpgradeLevel() + "!"));
+                if(person.isPlayer()) {
+                    person.getEventTracker().addEvent(EventTracker.Message("Shop",
+                            "Successfully upgraded " + type + " to level " +
+                                    building.getUpgradeLevel() + "!"));
+                }
                 return true; // Upgrade was successful
             } else {
-                person.getEventTracker().addEvent(EventTracker.Message("Error", "Insufficient gold to upgrade " + type));
+                if(person.isPlayer()) {
+                    person.getEventTracker().addEvent(EventTracker.Message("Error", "Insufficient gold to upgrade " + type));
+                }
                 return false; // Upgrade failed
 
             }

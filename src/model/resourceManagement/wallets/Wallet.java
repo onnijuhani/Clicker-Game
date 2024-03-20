@@ -1,7 +1,7 @@
 package model.resourceManagement.wallets;
 
-import model.resourceManagement.TransferPackage;
 import model.resourceManagement.Resource;
+import model.resourceManagement.TransferPackage;
 import model.shop.Ownable;
 
 public class Wallet {
@@ -95,6 +95,33 @@ public class Wallet {
         return "Food: " + food +
                 "\nAlloys: " + alloy +
                 "\nGold: " + gold;
+    }
+
+
+    /**
+     * restricts the balance to grow high in certain situations where only the percentage matters
+     */
+    public void cutBalanceInHalf(){
+        if(food > 10) {
+            food = food / 2;
+        }
+        if(alloy > 10) {
+            alloy = alloy / 2;
+        }
+        if (gold > 10) {
+            gold = gold / 2;
+        }
+    }
+
+    public double[] getBalanceRatio() {
+        double total = food + alloy + gold;
+        if (total == 0) return new double[]{0, 0, 0};
+        return new double[]{(food / total) * 100, (alloy / total) * 100, (gold / total) * 100};
+    }
+
+    public String getRatioString() {
+        double[] ratios = getBalanceRatio();
+        return String.format("Food: %.0f%% Alloys: %.0f%% Gold: %.0f%%", ratios[0], ratios[1], ratios[2]);
     }
 
 

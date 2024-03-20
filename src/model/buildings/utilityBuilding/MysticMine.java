@@ -2,8 +2,6 @@ package model.buildings.utilityBuilding;
 
 import model.Settings;
 import model.characters.Person;
-import model.resourceManagement.TransferPackage;
-import model.stateSystem.EventTracker;
 
 import java.util.Random;
 
@@ -20,22 +18,27 @@ public class MysticMine extends UtilityBuilding {
         this.name = UtilityBuildings.MysticMine;
     }
 
+    @Override
+    public boolean upgradeLevel() {
+        level++;
+        if (level <= MAX_LEVEL) {
+            alloyProduction *= 2;
+            goldProduction *= 2;
+        } else {
+            int alloyIncreaseAmount = Math.max(alloyProduction / increaseDivider, 1);
+            int goldIncreaseAmount = Math.max(goldProduction / increaseDivider, 1);
+            alloyProduction += alloyIncreaseAmount;
+            goldProduction += goldIncreaseAmount;
+            increaseDivider *=2;
+        }
+        return true;
+    }
+
     public void upgradeProduction() {
         this.alloyProduction = alloyProduction * 2;
         this.goldProduction = goldProduction * 2;
     }
 
-    @Override
-    public boolean upgradeLevel() {
-        if (level < MAX_LEVEL) {
-            level++;
-            upgradeProduction();
-            return true;
-        } else {
-            owner.getEventTracker().addEvent(EventTracker.Message("Error", "Max level reached"));
-            return false;
-        }
-    }
 
     public int calculateRandomAlloyProduction() {
         return calculateNormalDistValue(alloyProduction);
@@ -61,13 +64,6 @@ public class MysticMine extends UtilityBuilding {
                         "Alloys and Gold"
         );
     }
-    @Override
-    protected void generateAction() {
-        TransferPackage transfer = new TransferPackage(0, calculateRandomAlloyProduction(),calculateRandomGoldProduction());
-        owner.getWallet().addResources(transfer);
-        owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
-    }
-
 
 
 }

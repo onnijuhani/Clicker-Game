@@ -74,19 +74,7 @@ public class CharacterController extends BaseController  {
         updateHomeQuarter();
         differentiatePlayer();
         updateCombatStats();
-        checkUpgradeLevels();
         main.resetBtn.setDisable(currentCharacter.getPerson() == Model.getPlayerAsPerson());
-    }
-
-    public void checkUpgradeLevels(){
-        if (currentCharacter.getPerson().getCombatStats().getOffenseLevel() == 10){
-            attackTrainBtn.setText("Maxed");
-            attackTrainBtn.setDisable(true);
-        }
-        if (currentCharacter.getPerson().getCombatStats().getDefenseLevel() == 10){
-            defenseTrainBtn.setText("Maxed");
-            defenseTrainBtn.setDisable(true);
-        }
     }
 
 
@@ -142,13 +130,11 @@ public class CharacterController extends BaseController  {
     void attackUpgrade(){
         model.getPlayerCharacter().getPerson().getCombatStats().upgradeOffenseWithGold();
         updateCombatStats();
-        checkUpgradeLevels();
     }
     @FXML
     void defenseUpgrade(){
         model.getPlayerCharacter().getPerson().getCombatStats().upgradeDefenceWithGold();
         updateCombatStats();
-        checkUpgradeLevels();
     }
 
 

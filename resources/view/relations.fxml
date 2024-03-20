@@ -64,7 +64,7 @@
             </ListView>
          </children>
       </VBox>
-      <HBox alignment="CENTER" layoutX="54.0" layoutY="27.0" styleClass="charbox" AnchorPane.leftAnchor="25.0">
+      <HBox alignment="CENTER" layoutX="54.0" layoutY="27.0" styleClass="property" AnchorPane.leftAnchor="25.0">
          <children>
             <Label text="Relations of " textFill="WHITE">
                <padding>
@@ -112,7 +112,7 @@
                                                 <Insets left="12.0" />
                                              </VBox.margin>
                                           </Label>
-                                          <Hyperlink fx:id="changeCurrentToThisHyper" onAction="#changeCharacter" text="Hyperlink">
+                                          <Hyperlink fx:id="changeCurrentToThisHyper" onAction="#changeCharacter" styleClass="walletBox" text="Hyperlink">
                                              <VBox.margin>
                                                 <Insets left="15.0" />
                                              </VBox.margin>
@@ -138,9 +138,9 @@
                                                 <Insets left="12.0" />
                                              </VBox.margin>
                                           </Label>
-                                          <Hyperlink fx:id="authority" onAction="#changeCurrentToAuth" text="Under" textFill="WHITE">
+                                          <Hyperlink fx:id="authority" onAction="#changeCurrentToAuth" styleClass="walletBox" text="Under">
                                              <font>
-                                                <Font size="15.0" />
+                                                <Font size="14.0" />
                                              </font>
                                              <VBox.margin>
                                                 <Insets left="15.0" />
@@ -246,7 +246,7 @@
                               <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
                            </VBox.margin>
                         </HBox>
-                        <VBox alignment="CENTER" styleClass="charbox">
+                        <VBox alignment="CENTER" styleClass="property">
                            <children>
                               <Label text="Property" textFill="WHITE" wrapText="true">
                                  <padding>

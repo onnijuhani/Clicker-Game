@@ -1,7 +1,7 @@
 .charbox {
     -fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F1221, #202741, #2E3E51);
-    -fx-background-radius: 35;
-    -fx-border-radius: 35;
+    -fx-background-radius: 25;
+    -fx-border-radius: 25;
     -fx-border-color: white;
 }
 .utilityBox {
@@ -21,4 +21,10 @@
     -fx-background-radius: 35;
     -fx-border-radius: 35;
     -fx-border-color: white;
+}
+.property {
+    -fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364), linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364);
+    -fx-background-radius: 20;
+    -fx-border-color: white;
+    -fx-border-radius: 20;
 }

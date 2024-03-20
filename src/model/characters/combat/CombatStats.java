@@ -20,7 +20,7 @@ public class CombatStats {
     }
 
     public void upgradeOffenseWithGold(){
-        int price = getOffense().getUpgradePrice();
+        int price = getOffense().getUpgrade();
         if(person.getWallet().hasEnoughResource(Resource.Gold,price)){
             person.getWallet().subtractGold(price);
             if(getOffense().upgradeLevel()) {
@@ -34,7 +34,7 @@ public class CombatStats {
     }
 
     public void upgradeDefenceWithGold(){
-        int price = getDefense().getUpgradePrice();
+        int price = getDefense().getUpgrade();
         if(person.getWallet().hasEnoughResource(Resource.Gold,price)){
             person.getWallet().subtractGold(price);
             getDefense().upgradeLevel();

@@ -21,13 +21,11 @@ public class Exchange extends ShopComponents {
 
     public void sellResource(int amountToSell, Resource sellType, Character character) {
         updateExchangeRates();
-        System.out.println(character);
 
         double amountAfterFee = amountToSell - amountToSell * marketFee;
 
         double rate = rates.getRate(Resource.Gold, sellType);
         int amountGold = (int) (amountAfterFee / rate);
-
 
 
         TransferPackage costPackage = TransferPackage.fromEnum(sellType, (int) amountAfterFee);
@@ -36,8 +34,12 @@ public class Exchange extends ShopComponents {
         this.wallet.deposit(character.getPerson().getWallet(), costPackage);
         character.getPerson().getWallet().addResources(purchasePackage);
 
-        String message = EventTracker.Message("Shop","Exchanged " + sellType + " for " + amountGold);
-        character.getEventTracker().addEvent(message);
+
+        if(character.getPerson().isPlayer()) {
+            String message = EventTracker.Message("Shop", "Exchanged " + sellType + " for " + amountGold);
+            character.getEventTracker().addEvent(message);
+        }
+
 
     }
 
@@ -50,10 +52,11 @@ public class Exchange extends ShopComponents {
         int totalCost = (int) (costWithoutFee * (1 + marketFee));
 
 
-
         if (!character.getPerson().getWallet().hasEnoughResource(sellType, totalCost)) {
-            String errorMessage = EventTracker.Message( "Error","Insufficient resources for the exchange.");
-            character.getEventTracker().addEvent(errorMessage);
+            if(character.getPerson().isPlayer()) {
+                String errorMessage = EventTracker.Message("Error", "Insufficient resources for the exchange.");
+                character.getEventTracker().addEvent(errorMessage);
+            }
             return;
         }
 
@@ -63,10 +66,16 @@ public class Exchange extends ShopComponents {
         this.wallet.deposit(character.getPerson().getWallet(), costPackage);
         character.getPerson().getWallet().addResources(purchasePackage);
 
-        String message = EventTracker.Message("Shop","Exchanged " + sellType + " for " + buyType);
-        character.getEventTracker().addEvent(message);
+        if(character.getPerson().isPlayer()) {
+            String message = EventTracker.Message("Shop", "Exchanged " + sellType + " for " + buyType);
+            character.getEventTracker().addEvent(message);
+        }
+
+        wallet.cutBalanceInHalf();
 
     }
+
+
 
     private void updateExchangeRates() {
         int foodAmount = wallet.getFood();

@@ -32,6 +32,11 @@ public class Continent extends Area implements Details {
 
     }
 
+
+    /**
+     * this method is extremely poorly optimized but only runs in the beginning so doesn't really matter
+     * should be updated for more efficiency if it needs to be called during gameplay
+     */
     private void updateEverything(){
 
         for (Nation nation : nations){
