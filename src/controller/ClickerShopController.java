@@ -56,17 +56,17 @@ public class ClickerShopController extends BaseController {
         Clicker clicker = Clicker.getInstance();
         FoodClicker foodClicker = (FoodClicker) clicker.getClickerTool(Resource.Food);
         foodLevel.setText("Level: "+foodClicker.getUpgradeLevel());
-        foodInfo.setText("Produces: " + foodClicker.getResourceAmount() + " Food");
+        foodInfo.setText("Produces: " + foodClicker.getValue() + " Food");
 
         if(clicker.getClickerTool(Resource.Alloy) != null) {
             AlloyClicker alloyClicker = (AlloyClicker) clicker.getClickerTool(Resource.Alloy);
             alloyLevel.setText("Level: " + alloyClicker.getUpgradeLevel());
-            alloyInfo.setText("Produces: " + alloyClicker.getResourceAmount() + " Alloys");
+            alloyInfo.setText("Produces: " + alloyClicker.getValue() + " Alloys");
         }
         if(clicker.getClickerTool(Resource.Gold) != null) {
             GoldClicker goldClicker = (GoldClicker) clicker.getClickerTool(Resource.Gold);
             goldLevel.setText("Level: "+goldClicker.getUpgradeLevel());
-            goldInfo.setText("Produces: " + goldClicker.getResourceAmount() + " Gold");
+            goldInfo.setText("Produces: " + goldClicker.getValue() + " Gold");
         }
 
 

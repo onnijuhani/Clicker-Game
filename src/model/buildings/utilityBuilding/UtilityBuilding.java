@@ -15,35 +15,15 @@ public class UtilityBuilding extends UpgradeSystem implements UtilityObserver {
     protected Person owner;
     protected int MAX_LEVEL = Settings.getInt("utilityMaxLevel");
     protected int increaseDivider = 2;
-    protected int production; //production is always per month
 
 
     @Override
     public void utilityUpdate() {
         generateAction();
     }
-
-    @Override
-    public boolean upgradeLevel() {
-        System.out.println(MAX_LEVEL);
-        level++;
-        if (level <= MAX_LEVEL+6) {
-            production *= 2;
-        }
-        else {
-            System.out.println("Lol"+production);
-            int increaseAmount = Math.max(production / increaseDivider, 1);
-            production += increaseAmount;
-            System.out.println("wtf"+production);
-            increaseDivider *=2;
-        }
-        return true;
-    }
-
     public String getInfo(){
         return "empty";
     }
-
     public UtilityBuilding(int basePrice, Person owner) {
         super(basePrice);
         this.owner = owner;

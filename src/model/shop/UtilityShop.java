@@ -20,12 +20,10 @@ public class UtilityShop extends ShopComponents {
         UtilityBuilding building = slot.getUtilityBuilding(type);
 
         if (building != null) {
-            int upgradePrice = building.getUpgrade();
-            System.out.println("getUpgrade "+upgradePrice);
-            System.out.println("getUpgradePrice "+building.getUpgradePrice());
+            int upgradePrice = building.getUpgradePrice();
             if (person.getWallet().hasEnoughResource(Resource.Gold, upgradePrice)) {
                 person.getWallet().subtractGold(upgradePrice);
-                building.upgradeLevel();
+                building.increaseLevel();
                 if(person.isPlayer()) {
                     person.getEventTracker().addEvent(EventTracker.Message("Shop",
                             "Successfully upgraded " + type + " to level " +

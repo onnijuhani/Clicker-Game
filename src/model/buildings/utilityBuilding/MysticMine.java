@@ -18,18 +18,15 @@ public class MysticMine extends UtilityBuilding {
         this.name = UtilityBuildings.MysticMine;
     }
 
-    @Override
-    public boolean upgradeLevel() {
+
+    public boolean increaseLevel() {
         level++;
         if (level <= MAX_LEVEL) {
             alloyProduction *= 2;
             goldProduction *= 2;
         } else {
-            int alloyIncreaseAmount = Math.max(alloyProduction / increaseDivider, 1);
-            int goldIncreaseAmount = Math.max(goldProduction / increaseDivider, 1);
-            alloyProduction += alloyIncreaseAmount;
-            goldProduction += goldIncreaseAmount;
-            increaseDivider *=2;
+            alloyProduction += Math.max(1, alloyProduction / (increaseDivider * (level - MAX_LEVEL)));
+            goldProduction += Math.max(1, goldProduction / (increaseDivider * (level - MAX_LEVEL)));
         }
         return true;
     }

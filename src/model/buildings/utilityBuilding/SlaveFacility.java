@@ -12,16 +12,24 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class SlaveFacility extends UtilityBuilding {
-    private int slaveAmount;
-    private final int[] production = {20, 10 ,2};
 
-    private final int[] finalProduction = {};
+    protected boolean isGuildMember;
+    protected final int[] production = {60, 30 ,6};
 
     public SlaveFacility(int basePrice, Person owner) {
         super(basePrice, owner);
-        this.slaveAmount = 1;
+        this.value = 1;
         this.name = UtilityBuildings.SlaveFacility;
         delayConsequence();
+    }
+
+    public void setAsGuildMember(boolean isGuildMember) {
+        this.isGuildMember = isGuildMember;
+        if (isGuildMember) {
+            addBonus("Guild bonus", 0.2);
+        } else {
+            removeBonus("Guild bonus");
+        }
     }
 
     private void delayConsequence() {
@@ -39,32 +47,39 @@ public class SlaveFacility extends UtilityBuilding {
         timeline.play();
     }
 
-
-
-
     public void increaseProduction() {
         production[0] *= 2;
         production[1] *= 2;
         production[2] *= 2;
     }
 
+    public int getUpgradePrice() {
+        if (level < MAX_LEVEL) {
+            return calculateUpgradePrice();
+        } else {
+            return Math.min(calculateUpgradePrice(), PRICE_CEILING);
+        }
+    }
 
-    @Override
-    public boolean upgradeLevel() {
+    private int calculateUpgradePrice() {
+        return Math.min((int) (basePrice * Math.pow(3, level - 1)), PRICE_CEILING);
+    }
+
+    public boolean increaseLevel() {
         level++;
-        if (level <= MAX_LEVEL+5) {
+        if (level <= MAX_LEVEL) {
+            value *= 2;
             increaseProduction();
         } else {
+            value += Math.max(1, value / (increaseDivider * (level - MAX_LEVEL)));
             increaseProductionAfterMaxReached();
-            increaseDivider *=2;
         }
         return true;
     }
-
     public void increaseProductionAfterMaxReached() {
-        production[0] = production[0]+Math.max(production[0]/increaseDivider, 1);
-        production[1] = production[1]+Math.max(production[1]/increaseDivider, 1);
-        production[2] = production[2]+Math.max(production[2]/increaseDivider, 1);
+        production[0] += Math.max(1, production[0] / (increaseDivider * (level - MAX_LEVEL)));
+        production[1] += Math.max(1, production[1] / (increaseDivider * (level - MAX_LEVEL)));
+        production[2] += Math.max(1, production[2] / (increaseDivider * (level - MAX_LEVEL)));
     }
 
     private void payConsequence() {
@@ -86,10 +101,13 @@ public class SlaveFacility extends UtilityBuilding {
             if (enemy.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.SlaveFacility)) {
                 owner.getRelationsManager().removeEnemy(enemy);
                 enemy.getRelationsManager().removeEnemy(owner);
-                owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Common interests in Slave Facilities have improved your standing with " + enemy + "."));
+                if(owner.isPlayer()) {
+                    owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Common interests in Slave Facilities have improved your standing with " + enemy + "."));
+                }
             }
         }
     }
+
 
     @Override
     public String getInfo(){
@@ -101,26 +119,12 @@ public class SlaveFacility extends UtilityBuilding {
     @Override
     protected void generateAction() {
         TransferPackage transfer;
-        if(level < MAX_LEVEL) {
-            transfer = new TransferPackage(production[0], production[1], production[2]);
-        }else{
-            transfer = new TransferPackage(finalProduction[0], finalProduction[1], finalProduction[2]);
-        }
+        transfer = new TransferPackage(production[0]*calculateBonus(), production[1]*calculateBonus(), production[2]*calculateBonus());
         owner.getWallet().addResources(transfer);
         if(owner.isPlayer()) {
             owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
         }
     }
-
-    public void addSlave() {
-        slaveAmount *= 2;
-    }
-
-
-
-
-
-
 
 
 }

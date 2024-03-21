@@ -63,7 +63,7 @@ public class Clicker {
         int totalGold = 0;
 
         for (Map.Entry<Resource, ClickerTools> entry : ownedClickerTools.entrySet()) {
-            double amount = entry.getValue().getResourceAmount();
+            double amount = entry.getValue().getValue();
             switch (entry.getKey()) {
                 case Food:
                     totalFood += (int) amount;

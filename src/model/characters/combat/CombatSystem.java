@@ -313,7 +313,7 @@ public class CombatSystem {
             )));
             venue.getVault().robbery(attacker, defender);
         } else {
-            venueStats.upgradeLevel();
+            venueStats.increaseLevel();
             attackerStats.getOffense().decreaseLevel();
             attacker.getEventTracker().addEvent(EventTracker.Message(
                     "Major", "Robbery failed. \nOffense level decreased."));

@@ -52,7 +52,7 @@ public class ClickerShop extends ShopComponents {
 
         if (player.getWallet().hasEnoughResource(Resource.Gold, upgradePrice)) {
             this.wallet.deposit(player.getWallet(), transfer);
-            item.upgradeLevel(); // Upgrade the item
+            item.increaseLevel(); // Upgrade the item
 
             player.getEventTracker().addEvent(EventTracker.Message("Shop", "Successfully upgraded " + type + " Clicker to level " + item.getUpgradeLevel() + "!"));
             return true;

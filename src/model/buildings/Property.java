@@ -98,7 +98,7 @@ public class Property implements PropertyObserver, Details, Ownable {
         int price = getDefense().getUpgradePrice();
         if(owner.getWallet().hasEnoughResource(Resource.Alloy,price)){
             owner.getWallet().subtractAlloy(price);
-            getDefense().upgradeLevel();
+            getDefense().increaseLevel();
             owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName()+"'s defence was increased"));
         }else{
             owner.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough alloys to increase property defence"));
