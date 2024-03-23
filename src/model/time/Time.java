@@ -81,6 +81,9 @@ public class Time {
     }
 
     public static void incrementByClick(){
+        if(Time.gameOver){
+            return;
+        }
         if (!isSimulationRunning) {
             incrementDay();
         }

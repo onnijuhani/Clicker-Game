@@ -10,6 +10,6 @@ public class Cottage extends Property {
     public Cottage(String name, Person owner) {
         super(PropertyConfig.COTTAGE, name, owner);
         this.propertyEnum = Properties.Cottage;
-        this.utilitySlot = new UtilitySlot(3);
+        this.utilitySlot = new UtilitySlot(2);
     }
 }

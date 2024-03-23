@@ -167,7 +167,7 @@
                <children>
                   <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-color: linear-gradient(from 15% 100% to 100% 15%, #59033f, #4c023f, #3e023e, #30033c, #210339); -fx-border-radius: 25;">
                      <children>
-                        <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Hide Generate Messages" textAlignment="CENTER" wrappingWidth="78.30859375" />
+                        <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Hide Clicker Messages" textAlignment="CENTER" wrappingWidth="78.30859375" />
                         <CheckBox fx:id="generateMessages" mnemonicParsing="false" onAction="#hideGenerateMessages">
                            <font>
                               <Font size="14.0" />
@@ -177,6 +177,16 @@
                      <VBox.margin>
                         <Insets bottom="2.0" top="2.0" />
                      </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-color: linear-gradient(from 15% 100% to 100% 15%, #59033f, #4c023f, #3e023e, #30033c, #210339); -fx-border-radius: 25;">
+                     <children>
+                        <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Hide Minor Messages" textAlignment="CENTER" wrappingWidth="78.30859375" />
+                        <CheckBox fx:id="minorMessages" mnemonicParsing="false" onAction="#hideMinorMessages">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </CheckBox>
+                     </children>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-color: linear-gradient(from 15% 100% to 100% 15%, #59033f, #4c023f, #3e023e, #30033c, #210339); -fx-border-radius: 25;">
                      <children>

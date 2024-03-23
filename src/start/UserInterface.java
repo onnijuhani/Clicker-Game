@@ -39,13 +39,13 @@ public class UserInterface extends Application {
 
             primaryStage.setResizable(false);
 
-            URL resource = getClass().getResource("/test.mp3");
-            String musicFile = resource.toString();
-            Media sound = new Media(musicFile);
-            MediaPlayer mediaPlayer = new MediaPlayer(sound);
-            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop indefinitely
-            mediaPlayer.play();
-            mediaPlayer.setMute(true);
+//            URL resource = getClass().getResource("/test.mp3");
+//            String musicFile = resource.toString();
+//            Media sound = new Media(musicFile);
+//            MediaPlayer mediaPlayer = new MediaPlayer(sound);
+//            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop indefinitely
+//            mediaPlayer.play();
+//            mediaPlayer.setMute(true);
 
 
             // Key event ENTER  for CLICKER

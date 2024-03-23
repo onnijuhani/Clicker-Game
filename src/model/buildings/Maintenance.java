@@ -22,15 +22,23 @@ public class Maintenance {
         Wallet ownerWallet = property.getOwner().getWallet();
         String message = "Maintenance paid. " + maintenanceCost.toString();
 
+        boolean isPlayer = property.getOwner().isPlayer();
+
         if (canPay(maintenanceCost, ownerWallet)) {
             ownerWallet.subtractResources(maintenanceCost);
-            property.getOwner().getEventTracker().addEvent(EventTracker.Message("Minor",message));
+            if(isPlayer) {
+                property.getOwner().getEventTracker().addEvent(EventTracker.Message("Minor", message));
+            }
         } else if (canPay(maintenanceCost, propertyVault)) {
             propertyVault.subtractResources(maintenanceCost);
-            property.getOwner().getEventTracker().addEvent(EventTracker.Message("Minor",message));
+            if(isPlayer) {
+                property.getOwner().getEventTracker().addEvent(EventTracker.Message("Minor", message));
+            }
         } else {
             String errorMessage = "Maintenance not paid" + maintenanceCost;
-            property.getOwner().getEventTracker().addEvent(EventTracker.Message("Error",errorMessage));
+            if(isPlayer) {
+                property.getOwner().getEventTracker().addEvent(EventTracker.Message("Error", errorMessage));
+            }
             property.getOwner().loseStrike();
         }
     }

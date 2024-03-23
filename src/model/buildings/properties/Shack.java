@@ -10,6 +10,6 @@ public class Shack extends Property {
     public Shack(String name, Person owner) {
         super(PropertyConfig.SHACK, name, owner);
         this.propertyEnum = Properties.Shack;
-        this.utilitySlot = new UtilitySlot(2);
+        this.utilitySlot = new UtilitySlot(1);
     }
 }

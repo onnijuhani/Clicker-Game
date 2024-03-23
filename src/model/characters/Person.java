@@ -131,15 +131,15 @@ public class Person implements PersonalAttributes, Ownable {
         this.role = role;
     }
     public void loseStrike(){
+        getStrikesTracker().loseStrike();
         int strikesLeft = getStrikesTracker().getStrikes();
-
         if (strikesLeft < 1) {
             triggerGameOver();
             getEventTracker().addEvent(EventTracker.Message("Major","GAME OVER. No Strikes left."));
-
         }else {
             getEventTracker().addEvent(EventTracker.Message("Major", "Lost a Strike! Strikes left: " + strikesLeft));
         }
+
     }
     private void triggerGameOver(){
         if(character.getPerson().isPlayer()) {

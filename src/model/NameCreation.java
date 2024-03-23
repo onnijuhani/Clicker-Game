@@ -10,6 +10,8 @@ public class NameCreation {
     // these sets exist to make sure same name doesn't exist 2 times.
     private static final Set<String> generatedNationNames = new HashSet<>();
     private static final Set<String> generatedContinentNames = new HashSet<>();
+    private static final Set<String> generatedCharacterNames = new HashSet<>();
+    private static final Set<String> generatedCityNames = new HashSet<>();
 
     public static String generateWorldName() {
         // Prefixes for the world names
@@ -109,26 +111,36 @@ public class NameCreation {
     }
 
     public static String generateCityName() {
-        // Combined prefix and suffix arrays
-        String[] prefix = {
-                "Iron", "Shadowed", "Obsidian", "Thunder", "Onyx", "Warbound", "Steel", "Blackstone", "Savage", "Dreadnought",
-                "Tonitru", "Aciros", "Dread", "Umbracampo", "Onyxum", "Noirpetra", "Feroberga", "Salvagehavus", "Obsidiamarcha",
-                "Ferropolis", "Tondor", "Stelburg", "Dreadhaven", "Umbraharbor", "Onyxville", "Noirhaven", "Feroberg", "Savagemere",
-                "Tranquil", "Serene", "Blossom", "Celestial", "Crystal", "Radiant", "Velvet", "Whispering", "Harmony", "Azure",
-                "Célestia", "Tranquilé", "Radiantia", "Cristalia", "Velvétia", "Harmonia", "Azurea", "Murmura", "Serenia", "Blossoma",
-                "Célestiaville", "Tranquilburg", "Radiantburg", "Cristalburg", "Velvetville", "Harmoniavale", "Azurehaven", "Murmuragrove", "Serenburg", "Blossomberg"
-        };
 
-        String[] suffix = {
-                "Outpost", "Bastion", "Stronghold", "Garrison", "Arsenal", "Bastille", "City", "Metropolis", "Cityscape", "Haven", "Center",
-                "Capital", "Deep", "Springside", "Sunshine", "Fallsburg", "Waterside"
-        };
+        String name;
+        while (true) {
+            String[] prefix = {
+                    "Iron", "Shadowed", "Obsidian", "Thunder", "Onyx", "Warbound", "Steel", "Blackstone", "Savage", "Dreadnought",
+                    "Tonitru", "Aciros", "Dread", "Umbracampo", "Onyxum", "Noirpetra", "Feroberga", "Salvagehavus", "Obsidiamarcha",
+                    "Ferropolis", "Tondor", "Stelburg", "Dreadhaven", "Umbraharbor", "Onyxville", "Noirhaven", "Feroberg", "Savagemere",
+                    "Tranquil", "Serene", "Blossom", "Celestial", "Crystal", "Radiant", "Velvet", "Whispering", "Harmony", "Azure",
+                    "Célestia", "Tranquilé", "Radiantia", "Cristalia", "Velvétia", "Harmonia", "Azurea", "Murmura", "Serenia", "Blossoma",
+                    "Célestiaville", "Tranquilburg", "Radiantburg", "Cristalburg", "Velvetville", "Harmoniavale", "Azurehaven", "Murmuragrove", "Serenburg", "Blossomberg"
+            };
 
-        Random random = new Random();
-        String first = prefix[random.nextInt(prefix.length)];
-        String second = suffix[random.nextInt(suffix.length)];
+            String[] suffix = {
+                    "Outpost", "Bastion", "Stronghold", "Garrison", "Arsenal", "Bastille", "City", "Metropolis", "Cityscape", "Haven", "Center",
+                    "Capital", "Deep", "Springside", "Sunshine", "Fallsburg", "Waterside"
+            };
 
-        return first + " " + second;
+            Random random = new Random();
+            String first = prefix[random.nextInt(prefix.length)];
+            String second = suffix[random.nextInt(suffix.length)];
+
+            name = first + " " + second;
+            if (!generatedCityNames.contains(name)) {
+                generatedCityNames.add(name);
+                break;
+            }
+        }
+
+
+        return name;
     }
 
     // Test method
@@ -196,29 +208,38 @@ public class NameCreation {
 
     public static String generateCharacterName(Boolean isNpc){
 
-        String[] prefixes = {"Al", "El", "Thor", "Le", "Ea", "Ma", "Ra", "Gla", "Zen",
-                "Xan", "Kyro", "Zephyr", "Astra", "Nyx", "Vortex", "Zara", "Jax"};
+        String name;
+        while (true) {
+            String[] prefixes = {"Al", "El", "Thor", "Le", "Ea", "Ma", "Ra", "Gla", "Zen",
+                    "Xan", "Kyro", "Zephyr", "Astra", "Nyx", "Vortex", "Zara", "Jax"};
 
-        String[] suffixes = {"on", "ius", "us", "us", "on", "ius", "ar", "zir", "reliux",
-                "lyn", "drin", "mira", "sian", "thos", "lex", "onyx", "tyx", "ria", "tara"};
+            String[] suffixes = {"on", "us", "ius", "ar", "zir", "reliux",
+                    "lyn", "drin", "mira", "sian", "thos", "lex", "onyx", "tyx", "ria", "tara"};
 
-        String[] lastPrefixes = {"Silver", "Black", "Raven", "Iron", "Storm", "Swift", "Fire",
-                "Thorn", "Frost", "Ember", "Shadow", "Moon", "Star", "Steel", "Thunder", "Stone", "Blaze"};
+            String[] lastPrefixes = {"Silver", "Black", "Raven", "Iron", "Storm", "Swift", "Fire",
+                    "Thorn", "Frost", "Ember", "Shadow", "Moon", "Star", "Steel", "Thunder", "Stone", "Blaze"};
 
-        String[] lastSuffixes = {"heart", "thorn", "shadow", "bane", "crest", "wind", "forge", "blade",
-                "breaker", "warden", "seeker", "striker", "reaver", "bane", "hunter", "shaper", "keeper", "bearer"};
+            String[] lastSuffixes = {"heart", "thorn", "shadow", "bane", "crest", "wind", "forge", "blade",
+                    "breaker", "warden", "seeker", "striker", "reaver", "bane", "hunter", "shaper", "keeper", "bearer"};
 
-        Random random = new Random();
+            Random random = new Random();
 
-        String firstName = prefixes[random.nextInt(prefixes.length)] + suffixes[random.nextInt(suffixes.length)];
-        String lastName = lastPrefixes[random.nextInt(lastPrefixes.length)] + lastSuffixes[random.nextInt(lastSuffixes.length)];
+            String firstName = prefixes[random.nextInt(prefixes.length)] + suffixes[random.nextInt(suffixes.length)];
+            String lastName = lastPrefixes[random.nextInt(lastPrefixes.length)] + lastSuffixes[random.nextInt(lastSuffixes.length)];
 
-        String player = "";
-        if(!isNpc){
-            player = " (you)";
+            String player = "";
+            if (!isNpc) {
+                player = " (you)";
+            }
+            name = firstName + " " + lastName + player;
+
+            if (!generatedCharacterNames.contains(name)) {
+                generatedCharacterNames.add(name);
+                break;
+            }
         }
 
-        return firstName + " " + lastName + player;
+        return name;
     }
 
 

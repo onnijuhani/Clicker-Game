@@ -21,10 +21,10 @@ public class Character implements NpcObserver, Details, Ownable {
             foodConsumption(this);
 
             if (person.isPlayer()) {
+                System.out.println("foood");
                 this.getEventTracker().addEvent(EventTracker.Message("Minor", GameManager.getFoodConsumptionDay() + " Food Consumed."));
                 return;
             }
-
 
             if (!person.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
                 buyMeadowLandsTEST();
@@ -34,14 +34,10 @@ public class Character implements NpcObserver, Details, Ownable {
             }
         }
     }
+
     protected Person person;
     protected Role role;
-    protected boolean shouldSubscribeToTaxEvent() {
-        return true;
-    }
-    protected boolean shouldSubscribeToNpcEvent() {
-        return true;
-    }
+
 
     // Constructor for NPC (default)
     public Character() {
@@ -52,9 +48,7 @@ public class Character implements NpcObserver, Details, Ownable {
         this.person = new Person(!isPlayer); //person takes isNpc instead
         this.role = new Role(Status.Peasant);
         makeConnections();
-        if (!isPlayer && shouldSubscribeToNpcEvent()) {
-            NpcManager.subscribe(this);
-        }
+        NpcManager.subscribe(this);
     }
 
 
@@ -77,6 +71,7 @@ public class Character implements NpcObserver, Details, Ownable {
 
 
     public void foodConsumption(Character character) {
+
         Wallet wallet = character.getPerson().getWallet();
 
         int foodNeeded = GameManager.getFoodConsumptionRate();
@@ -105,6 +100,7 @@ public class Character implements NpcObserver, Details, Ownable {
                         // Handle the case where neither gold nor alloys are sufficient
                         String errorMessage = EventTracker.Message("Error", "Not enough resources to cover food consumption.");
                         character.getEventTracker().addEvent(errorMessage);
+                        character.person.getStrikesTracker().loseStrike();
                         return;
                     }
                 }

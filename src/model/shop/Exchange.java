@@ -1,10 +1,13 @@
 package model.shop;
 
 import model.characters.Character;
-import model.stateSystem.EventTracker;
 import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
+import model.stateSystem.EventTracker;
+
+import java.util.Arrays;
+import java.util.OptionalInt;
 
 public class Exchange extends ShopComponents {
 
@@ -13,6 +16,7 @@ public class Exchange extends ShopComponents {
     private int defaultAlloys = 50;
     private int defaultGold = 10;
     private double marketFee = 0.35;
+
 
     public Exchange(Wallet wallet){
         super(wallet);
@@ -71,7 +75,13 @@ public class Exchange extends ShopComponents {
             character.getEventTracker().addEvent(message);
         }
 
-        wallet.cutBalanceInHalf();
+        // to prevent wallet growing too big it is cut in half
+        OptionalInt max = Arrays.stream(getWallet().getWalletValues()).max();
+
+        if (max.getAsInt() > 100_000_000) {
+            wallet.cutBalanceInHalf();
+        }
+
 
     }
 

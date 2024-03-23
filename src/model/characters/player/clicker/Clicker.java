@@ -8,6 +8,7 @@ import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.stateSystem.EventTracker;
+import model.time.Time;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +45,9 @@ public class Clicker {
         ownedClickerTools.put(type, tool);
     }
     public void generateResources() {
+        if(Time.gameOver){
+            return;
+        }
         TransferPackage resourcesGenerated = generate();
         if (person.getRole().getStatus() != Status.King) {
             workWallet.addResources(resourcesGenerated);

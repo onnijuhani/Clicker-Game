@@ -613,6 +613,9 @@
                      <font>
                         <Font size="26.0" />
                      </font>
+                     <padding>
+                        <Insets left="3.0" right="3.0" />
+                     </padding>
                   </Label>
                </children>
             </VBox>

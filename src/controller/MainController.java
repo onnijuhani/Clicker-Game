@@ -51,6 +51,8 @@ public class MainController extends BaseController {
     @FXML
     private CheckBox generateMessages;
     @FXML
+    private CheckBox minorMessages;
+    @FXML
     protected CheckBox incrementClicker;
     @FXML
     protected Button pauseBtn;
@@ -262,6 +264,11 @@ public class MainController extends BaseController {
     void hideGenerateMessages(ActionEvent event) {
         boolean isChecked = generateMessages.isSelected();
         model.getPlayerCharacter().getEventTracker().getPreferences().setShowClickerEvents(!isChecked);
+    }
+    @FXML
+    void hideMinorMessages(ActionEvent event) {
+        boolean isChecked = minorMessages.isSelected();
+        model.getPlayerCharacter().getEventTracker().getPreferences().setShowMinorEvents(!isChecked);
     }
     public Button getClickMeButton() {
         return clickMeButton;
