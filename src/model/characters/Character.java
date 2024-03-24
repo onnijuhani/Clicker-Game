@@ -18,13 +18,22 @@ public class Character implements NpcObserver, Details, Ownable {
     @Override
     public void npcUpdate(int day, int month, int year) {
 
+        if (mandatoryFoodConsumption(day)) return;
+
+        if(person.isPlayer()){
+            return;
+        }
+
+        getPerson().getAiEngine().getCombatActions().execute();
+    }
+
+    private boolean mandatoryFoodConsumption(int day) {
         if (day == GameManager.getFoodConsumptionDay()) {
             foodConsumption(this);
 
             if (person.isPlayer()) {
-                System.out.println("foood");
                 this.getEventTracker().addEvent(EventTracker.Message("Minor", GameManager.getFoodConsumptionDay() + " Food Consumed."));
-                return;
+                return true;
             }
 
             if (!person.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
@@ -34,6 +43,7 @@ public class Character implements NpcObserver, Details, Ownable {
                 upgrade();
             }
         }
+        return false;
     }
 
     protected Person person;

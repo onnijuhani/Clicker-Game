@@ -2,10 +2,8 @@ package model.characters.combat;
 
 import model.Model;
 import model.buildings.Property;
+import model.characters.*;
 import model.characters.Character;
-import model.characters.Peasant;
-import model.characters.Person;
-import model.characters.Support;
 import model.characters.authority.Authority;
 import model.characters.npc.Governor;
 import model.characters.npc.King;
@@ -18,6 +16,7 @@ import model.stateSystem.GameEvent;
 import model.stateSystem.State;
 import model.time.EventManager;
 import model.time.GenerateManager;
+import model.time.Time;
 
 import java.util.*;
 
@@ -47,17 +46,21 @@ public class CombatSystem {
      */
     public void authorityBattle() {
 
-        if (IsLevelHighEnough(4)) return; // Must be at least level 4 attack
+        if (IsLevelHighEnough(4)) return; // Must be at least level 4 to attack
 
         if (attacker.hasState(State.IN_BATTLE) || defender.hasState(State.IN_BATTLE) || venue.hasState(State.IN_BATTLE)) {
-            attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Error", "Either attacker or property is already in a battle. \nAction not allowed."));
+            if(attacker.isPlayer()) {
+                attacker.getEventTracker().addEvent(EventTracker.Message(
+                        "Error", "Either attacker or property is already in a battle. \nAction not allowed."));
+            }
             return; // Can not enter battle
         }
 
         if (attacker.getRole().getAuthority().getCharacterInThisPosition() != defender.getCharacter()) {
-            attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Error", "You may only challenge your direct authority"));
+            if(attacker.isPlayer()) {
+                attacker.getEventTracker().addEvent(EventTracker.Message(
+                        "Error", "You may only challenge your direct authority"));
+            }
             return;
         }
 
@@ -100,16 +103,21 @@ public class CombatSystem {
 
             GameEvent gameEvent = new GameEvent(Event.AuthorityBattle, participantsArray);
 
-            attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Challenging the Authority of " + defender));
-            defender.getEventTracker().addEvent(EventTracker.Message("Major", "Your Authority is being challenged by " + attacker));
+            if(attacker.isPlayer() || defender.isPlayer()) {
+                attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Challenging the Authority of " + defender));
+                defender.getEventTracker().addEvent(EventTracker.Message("Major", "Your Authority is being challenged by " + attacker));
+            }
+
             eligibleSupporters.forEach(support -> support.getEventTracker().addEvent(EventTracker.Message("Major", "Joined " + defender + " in authority battle against " + attacker)));
             EventManager.scheduleEvent(this::decideAuthorityBattle, daysUntilEvent, gameEvent);
     }
 
     private boolean IsLevelHighEnough(int requiredLevel) {
         if (attacker.getCombatStats().getOffenseLevel() < requiredLevel) {
-            attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Error", "Attack level must be " + requiredLevel +" or higher to enter this fight."));
+            if(attacker.isPlayer()) {
+                attacker.getEventTracker().addEvent(EventTracker.Message(
+                        "Error", "Attack level must be " + requiredLevel + " or higher to enter this fight."));
+            }
             return true;
         }
         return false;
@@ -124,35 +132,26 @@ public class CombatSystem {
                         .mapToInt(support -> support.getCombatStats().getDefenseLevel())
                         .sum();
 
-        System.out.println("Total Attack: "+ totalAttackerOffense);
-        System.out.println("Total Defender Defense: " + totalDefenderDefense);
-
-
         boolean attackerWins = battle(totalAttackerOffense, totalDefenderDefense);
 
         if (attackerWins) {
-            System.out.println("Attacker wins!");
 
             attacker.getEventTracker().addEvent(EventTracker.Message(
                     "Major", "Authority of " + defender.getName() + " has been overtaken."));
             defender.getEventTracker().addEvent(EventTracker.Message(
                     "Major", "Your Authority has been overtaken by " + attacker.getName()));
 
-            attacker.getRelationsManager().addVictory(defender);
+            attacker.getRelationsManager().processResults(defender);
 
             switchPositions();
 
-
-
-
         } else {
-            System.out.println("Defender wins!");
-
-            attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Failed to challenge the Authority of \n" + defender.getName() + ". Your power has been decreased."));
-            defender.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Successfully defended against\nthe Authority challenge by " + attacker.getName() + ".\nYour power has increased."));
-
+            if (attacker.isPlayer() || defender.isPlayer()) {
+                attacker.getEventTracker().addEvent(EventTracker.Message(
+                        "Major", "Failed to challenge the Authority of \n" + defender.getName() + ". Your power has been decreased."));
+                defender.getEventTracker().addEvent(EventTracker.Message(
+                        "Major", "Successfully defended against\nthe Authority challenge by " + attacker.getName() + ".\nYour power has increased."));
+            }
 
             String compensationFromWallet = TransferPackage.fromArray(attacker.getWallet().getWalletValues()).toString();
 
@@ -169,12 +168,14 @@ public class CombatSystem {
             ));
 
             attacker.decreaseOffense(3);
-            attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Offense decreased by 3 levels"));
+            if (attacker.isPlayer()){
+                attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Offense decreased by 3 levels"));
+            }
 
-            executeLoyaltyChanges();
+            executeRadicalLoyaltyChanges();
         }
         // Reset states
-        resetBattleStates();
+        resetBattleStatesAuthorityBattle();
     }
 
     private void switchPositions() {
@@ -182,7 +183,6 @@ public class CombatSystem {
         ALL THE CONNECTION NEED TO BE CHANGED. DO NOT CHANGE THE ORDER OF THESE SETTERS
          */
         rearrangeConnections();
-
 
         // WORK WALLET MUST BE UPDATED.
         attacker.getRole().getPosition().setWorkWallet(attacker.getWorkWallet());
@@ -192,8 +192,6 @@ public class CombatSystem {
 
         // MODEL MUST BE UPDATED TO KNOW THE OBJECTS OF PLAYER.
         Model.updatePlayer();
-
-
 
         //QUARTER MUST BE UPDATED
         attacker.getProperty().getLocation().updateEverything();
@@ -217,10 +215,12 @@ public class CombatSystem {
 
         // LOSING AUTHORITY POSITION COMPLETELY GRANTS MASSIVE EMPLOYMENT STATS
         LoseAuthorityPosition();
-
     }
 
     private void rearrangeConnections() {
+        /*
+        NEVER CHANGE THE ORDER OF THESE SETTERS
+         */
         attacker.setCharacter(defender.getCharacter());
         defender.setCharacter(attacker.getRole().getCharacter());
 
@@ -251,7 +251,7 @@ public class CombatSystem {
                     defender.getWorkWallet()
             );
             GenerateManager.subscribe((Peasant) defender.getCharacter());
-            // TAX RATE WILL ALSO BE LOWER
+            // TAX RATE WILL ALSO BE WAY LOWER
             attacker.getRole().getPosition().getTaxForm().setTaxInfo(Resource.Food,25);
             attacker.getRole().getPosition().getTaxForm().setTaxInfo(Resource.Alloy,25);
             attacker.getRole().getPosition().getTaxForm().setTaxInfo(Resource.Gold,15);
@@ -259,7 +259,7 @@ public class CombatSystem {
     }
 
 
-    private void resetBattleStates() {
+    private void resetBattleStatesAuthorityBattle() {
         attacker.removeState(State.IN_BATTLE);
         defender.removeState(State.IN_BATTLE);
         venue.removeState(State.IN_BATTLE);
@@ -272,20 +272,37 @@ public class CombatSystem {
      */
     public void robbery() {
 
-        if (IsLevelHighEnough(2)) return; // Must be at least level 2 attack
 
+        // robbery becomes possible only after first year to prevent unfair situations.
+        if(Time.year < 1){
+            if(attacker.isPlayer()){
+                attacker.getEventTracker().addEvent(EventTracker.Message("Error", "Robbery is only possible after first year"));
+            }
+            return;
+        }
+
+        // check if level is high enough
+        if (IsLevelHighEnough(2)) return;
+
+        // check that no one is in battle
         if (attacker.hasState(State.IN_BATTLE) || venue.hasState(State.IN_BATTLE)) {
-            attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Error", "Either attacker or property is already in a battle. \nAction not allowed."));
+            if (attacker.isPlayer()) {
+                attacker.getEventTracker().addEvent(EventTracker.Message(
+                        "Error", "Either attacker or property is already in a battle. \nAction not allowed."));
+            }
             return; // Can not enter battle
         }
 
-        if (attacker.getRelationsManager().isAlly(defender)) {
-            attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Error", "Attempted to rob \n" + defender.getProperty().getName() +
-                            " owned by ally " + defender.getName() + ". \nAction not allowed."));
-            return; // Abort the robbery because the defender is an ally
+        // check for loyalty issues
+        if (attacker.getRelationsManager().isAlly(defender) && !attacker.getAiEngine().getProfile().containsKey(Personality.Disloyal)) {
+            if (attacker.isPlayer()) {
+                attacker.getEventTracker().addEvent(EventTracker.Message(
+                        "Error", "Attempted to rob \n" + defender.getProperty().getName() +
+                                " owned by ally " + defender.getName() + ". \nAction not allowed."));
+            }
+            return; // Abort the duel because the defender is an ally and attacker is not disloyal
         }
+
 
         attacker.addState(State.IN_BATTLE);
         venue.addState(State.IN_BATTLE);
@@ -304,25 +321,30 @@ public class CombatSystem {
         int effectiveDefenderDefense = venueStats.getUpgradeLevel();
         boolean attackerWins = battle(effectiveAttackerOffense, effectiveDefenderDefense);
         if (attackerWins) {
-            attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Robbed the "
-                            + defender.getProperty().getName() + " vault"));
-
-            defender.getEventTracker().addEvent((EventTracker.Message(
-                    "Major", "You have been robbed by " + attacker.getName()
-            )));
+            if(attacker.isPlayer() || defender.isPlayer()) {
+                attacker.getEventTracker().addEvent(EventTracker.Message(
+                        "Major", "Robbed the "
+                                + defender.getProperty().getName() + " vault"));
+                defender.getEventTracker().addEvent((EventTracker.Message(
+                        "Major", "You have been robbed by " + attacker.getName()
+                )));
+            }
             venue.getVault().robbery(attacker, defender);
         } else {
             venueStats.increaseLevel();
             attackerStats.getOffense().decreaseLevel();
-            attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Robbery failed. \nOffense level decreased."));
-            defender.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Successfully defended a robbery. \nProperty defense increased."));
+            if(attacker.isPlayer() || defender.isPlayer()) {
+                attacker.getEventTracker().addEvent(EventTracker.Message(
+                        "Major", "Robbery failed. \nOffense level decreased."));
+                defender.getEventTracker().addEvent(EventTracker.Message(
+                        "Major", "Successfully defended a robbery. \nProperty defense increased."));
+            }
         }
-        executeLoyaltyChanges();
-        attacker.addState(State.NONE);
-        venue.addState(State.NONE);
+
+        executeSimpleLoyaltyChanges();
+
+        attacker.removeState(State.IN_BATTLE);
+        venue.removeState(State.IN_BATTLE);
     }
 
 
@@ -342,11 +364,13 @@ public class CombatSystem {
             return; // Can not enter battle
         }
 
-        if (attacker.getRelationsManager().isAlly(defender)) {
-            attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Error", "Attempted to duel \n" + defender +
-                            " who is your ally " + ". \nAction not allowed."));
-            return; // Abort the duel because the defender is an ally
+        if (attacker.getRelationsManager().isAlly(defender) && !attacker.getAiEngine().getProfile().containsKey(Personality.Disloyal)) {
+            if (attacker.isPlayer()) {
+                attacker.getEventTracker().addEvent(EventTracker.Message(
+                        "Error", "Attempted to duel \n" + defender.getName() +
+                                " who is your ally " + ". \nAction not allowed."));
+            }
+            return; // Abort the duel because the defender is an ally and attacker is not disloyal
         }
 
         attacker.addState(State.IN_BATTLE);
@@ -364,63 +388,89 @@ public class CombatSystem {
 
     private void decideDuel() {
         int effectiveAttackerOffense = attackerStats.getOffenseLevel() + attackerStats.getDefenseLevel() / 2;
-
         int effectiveDefenderDefense = defenderStats.getOffenseLevel() + defenderStats.getDefenseLevel() / 2;
-
 
         boolean attackerWins = battle(effectiveAttackerOffense, effectiveDefenderDefense);
 
         Random random = new Random();
 
-        if (attackerWins) {
-            attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Won the duel against " + defender));
-
-            defender.getEventTracker().addEvent((EventTracker.Message(
-                    "Major", "You were defeated by " + attacker
-            )));
-
-            if (random.nextInt(100) < 5){
-                attacker.getCombatStats().increaseOffence();
+        if (attackerWins) { // Usually nothing happens as duel doesn't really have a price
+            if(attacker.isPlayer() || defender.isPlayer()) {
                 attacker.getEventTracker().addEvent(EventTracker.Message(
-                        "Minor", "Offense increased for winning the Duel"));
-            }
-            if (random.nextInt(100) < 5){
-                defender.getCombatStats().decreaseDefence();
+                        "Major", "Won the duel against " + defender));
+
                 defender.getEventTracker().addEvent((EventTracker.Message(
-                        "Minor", "Defence decreased for losing the Duel"
+                        "Major", "You were defeated by " + attacker
                 )));
             }
-            attacker.getRelationsManager().addVictory(defender);
+
+            if (random.nextInt(100) < 5){ // small chance of increasing attack level
+                attacker.getCombatStats().increaseOffence();
+                if(attacker.isPlayer() || defender.isPlayer()) {
+                    attacker.getEventTracker().addEvent(EventTracker.Message(
+                            "Minor", "Offense increased for winning the Duel"));
+                }
+            }
+            if (random.nextInt(100) < 5){ // small chance of losing defence level
+                defender.getCombatStats().decreaseDefence();
+                if(attacker.isPlayer() || defender.isPlayer()) {
+                    defender.getEventTracker().addEvent((EventTracker.Message(
+                            "Minor", "Defence decreased for losing the Duel"
+                    )));
+                }
+            }
+            attacker.getRelationsManager().processResults(defender);
+
         } else {
-            attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Duel Lost. \nOffense level decreased by 2 levels."));
-            defender.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Duel won. \nDefense level increased."));
+            if(attacker.isPlayer() || defender.isPlayer()) {
+                attacker.getEventTracker().addEvent(EventTracker.Message(
+                        "Major", "Duel Lost."));
+                defender.getEventTracker().addEvent(EventTracker.Message(
+                        "Major", "Duel won."));
+            }
 
             if (random.nextInt(100) < 10) {
                 attacker.getCombatStats().decreaseOffense();
-                attacker.getEventTracker().addEvent(EventTracker.Message(
-                        "Minor", "Offense decreased for losing the Duel"));
+                if(attacker.isPlayer()) {
+                    attacker.getEventTracker().addEvent(EventTracker.Message(
+                            "Minor", "Offense decreased for losing the Duel"));
+                }
             } else if (random.nextInt(100) < 5) {
                 attacker.getCombatStats().decreaseOffense();
                 attacker.getCombatStats().decreaseOffense();
-                attacker.getEventTracker().addEvent(EventTracker.Message(
-                        "Minor", "Offense decreased by 2 for losing the Duel"));
+                if(attacker.isPlayer()) {
+                    attacker.getEventTracker().addEvent(EventTracker.Message(
+                            "Minor", "Offense decreased by 2 for losing the Duel"));
+                }
             }
             if (random.nextInt(100) < 20) {
                 defender.getCombatStats().increaseDefence();
-                defender.getEventTracker().addEvent(EventTracker.Message(
-                        "Minor", "Defense increased for winning the Duel"));
+                if(attacker.isPlayer()) {
+                    defender.getEventTracker().addEvent(EventTracker.Message(
+                            "Minor", "Defense increased for winning the Duel"));
+                }
             }
         }
-        executeLoyaltyChanges();
+
+
+        executeSimpleLoyaltyChanges();
         attacker.removeState(State.IN_BATTLE);
-        defender.addState(State.IN_BATTLE);
+        defender.removeState(State.IN_BATTLE);
+    }
+
+    /**
+     * adds attacker and defender as enemies of each other
+     */
+    private void executeSimpleLoyaltyChanges() {
+        attacker.getRelationsManager().addEnemy(defender);
+        defender.getRelationsManager().addEnemy(attacker);
     }
 
 
-    private void executeLoyaltyChanges() {
+    /**
+     *
+     */
+    private void executeRadicalLoyaltyChanges() {
         attacker.getRelationsManager().addEnemy(defender);
         defender.getRelationsManager().addEnemy(attacker);
 
@@ -435,34 +485,36 @@ public class CombatSystem {
         // Initialize a Random object for generating Gaussian distributed values
         Random rand = new Random();
 
-        // Base success chance still starts at 0.5
+        // Base success chance starts at 0.5
         double baseSuccessChance = 0.5;
 
         // Calculate stat difference
-        double statDifference = effectiveAttackerOffense - effectiveDefenderDefense;
-
-        // Use a non-linear map for offense and defense, considering a simple power law for illustration
-        double mappedAttackerOffense = mapValueWithPowerLaw(effectiveAttackerOffense, 1, 10);
-        double mappedDefenderDefense = mapValueWithPowerLaw(effectiveDefenderDefense, 1, 10);
-
-        // Calculate success chance modifier based on non-linear scaling
-        double successChanceModifier = calculateSuccessChanceModifier(statDifference, mappedAttackerOffense, mappedDefenderDefense);
+        double successChanceModifier = getSuccessChanceModifier(effectiveAttackerOffense, effectiveDefenderDefense);
 
         // Incorporate a Gaussian distribution based random modifier
         double randomModifier = rand.nextGaussian() * 0.1; // Standard deviation of 0.1 for randomness
 
         // Calculate final success chance with applied non-linear modifiers
         double finalSuccessChance = calculateFinalSuccessChance(baseSuccessChance, successChanceModifier, randomModifier);
-        System.out.println(finalSuccessChance);
 
         // Determine the battle outcome
-        boolean attackerWins = Math.random() < finalSuccessChance;
-        return attackerWins;
+        return Math.random() < finalSuccessChance;
     }
 
-    private double mapValueWithPowerLaw(int value, int fromMin, int fromMax) {
-        // Example with square root to reduce impact as value increases, making high values less dominant
-        return Math.sqrt((double)(value - fromMin) / (fromMax - fromMin));
+    private double getSuccessChanceModifier(int effectiveAttackerOffense, int effectiveDefenderDefense) {
+        double statDifference = effectiveAttackerOffense - effectiveDefenderDefense;
+
+        // Use a non-linear map for offense and defense, considering a simple power law for illustration
+        double mappedAttackerOffense = mapValueWithPowerLaw(effectiveAttackerOffense);
+        double mappedDefenderDefense = mapValueWithPowerLaw(effectiveDefenderDefense);
+
+        // Calculate success chance modifier based on non-linear scaling
+        return calculateSuccessChanceModifier(statDifference, mappedAttackerOffense, mappedDefenderDefense);
+    }
+
+    private double mapValueWithPowerLaw(int value) {
+        // square root to reduce impact as value increases, making high values less dominant
+        return Math.sqrt((double)(value - 1) / (10 - 1));
     }
 
     private double calculateSuccessChanceModifier(double statDifference, double mappedOffense, double mappedDefense) {

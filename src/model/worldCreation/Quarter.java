@@ -76,6 +76,39 @@ public class Quarter extends ControlledArea implements Details {
         }
     }
 
+    public void createInitialRivalries() {
+
+        List<Quarter> allQuarters = nation.getAllQuarters();
+
+        List<Quarter> otherQuarters = allQuarters.stream()
+                .filter(q -> !q.equals(this))
+                .toList();
+
+        if (otherQuarters.isEmpty()) {
+            return;
+        }
+
+        Random random = new Random();
+        Quarter rivalQuarter = otherQuarters.get(random.nextInt(otherQuarters.size()));
+
+        List<Person> thisPersons = populationMap.values().stream()
+                .flatMap(Collection::stream)
+                .toList();
+
+
+        List<Person> rivalPersons = rivalQuarter.populationMap.values().stream()
+                .flatMap(Collection::stream)
+                .toList();
+
+
+        for (Person ourPerson : thisPersons) {
+            for (Person rivalPerson : rivalPersons) {
+                ourPerson.getRelationsManager().addEnemy(rivalPerson);
+                rivalPerson.getRelationsManager().addEnemy(ourPerson);
+            }
+        }
+    }
+
     @Override
     public Area getHigher() {
         return city;

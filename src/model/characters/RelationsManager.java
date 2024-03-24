@@ -95,11 +95,11 @@ public class RelationsManager {
 
 
     /**
-     * Updates both managers
+     * Updates both managers but must be called by the winner
      */
-    public void addVictory(Person person) {
-        listOfDefeatedPersons.add(person);
-        person.getRelationsManager().addDefeat(person);
+    public void processResults(Person loser) {
+        listOfDefeatedPersons.add(loser);
+        loser.getRelationsManager().addDefeat(owner);
     }
     private void addDefeat(Person person){
         listOfDefeats.add(person);

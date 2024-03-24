@@ -15,7 +15,8 @@ package model.characters.ai.actions;
  * void defenderAction();
  */
 
-public interface NPCAction {
+public interface NPCAction extends Comparable<NPCAction> {
+
 
     void execute();
 
