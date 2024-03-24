@@ -3,6 +3,7 @@ package model.characters;
 import model.NameCreation;
 import model.Settings;
 import model.buildings.Property;
+import model.characters.ai.AiEngine;
 import model.characters.combat.CombatStats;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
@@ -30,6 +31,7 @@ public class Person implements PersonalAttributes, Ownable {
     private Character character;
     private Role role;
     private boolean isPlayer = false;
+    private final AiEngine aiEngine;
 
 
     public Person(Boolean isNpc) {
@@ -42,6 +44,8 @@ public class Person implements PersonalAttributes, Ownable {
         this.paymentCalendar = new PaymentCalendar();
         this.strikesTracker = new StrikesTracker(Settings.getInt("strikes"));
         states = EnumSet.noneOf(State.class);
+
+        this.aiEngine = new AiEngine(this);
     }
 
     @Override
@@ -60,6 +64,10 @@ public class Person implements PersonalAttributes, Ownable {
     @Override
     public String getName() {
         return name;
+    }
+
+    public AiEngine getAiEngine() {
+        return aiEngine;
     }
     @Override
     public Wallet getWallet() {

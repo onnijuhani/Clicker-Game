@@ -2,6 +2,7 @@ package model.characters;
 
 import model.GameManager;
 import model.buildings.utilityBuilding.UtilityBuildings;
+import model.characters.ai.AiEngine;
 import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Wallet;
 import model.shop.Exchange;
@@ -37,6 +38,7 @@ public class Character implements NpcObserver, Details, Ownable {
 
     protected Person person;
     protected Role role;
+    protected AiEngine aiEngine;
 
 
     // Constructor for NPC (default)
@@ -49,7 +51,9 @@ public class Character implements NpcObserver, Details, Ownable {
         this.role = new Role(Status.Peasant);
         makeConnections();
         NpcManager.subscribe(this);
+
     }
+
 
 
     protected void makeConnections() {

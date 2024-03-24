@@ -1,4 +1,4 @@
-package model.characters.decisions;
+package model.characters;
 
 public enum Personality {
     Ambitious, Unambitious,
