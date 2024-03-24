@@ -8,14 +8,15 @@ import java.util.*;
 
 public class AiEngine {
 
-    private CombatActions combatActions;
-    private PowerActions powerActions;
-    private UtilityActions utilityActions;
-    private WarActions warActions;
-    private ManagementActions managementActions;
-    private Person person;
-
+    private final CombatActions combatActions;
+    private final PowerActions powerActions;
+    private final UtilityActions utilityActions;
+    private final WarActions warActions;
+    private final ManagementActions managementActions;
+    private final Person person;
     private Map<Personality, Integer> profile;
+
+
 
 
 
@@ -32,7 +33,7 @@ public class AiEngine {
 
     /**
      * generates personality profile
-     * adds between 1-3 personality traits and weight for them
+     * adds between 2-4 personality traits and weight for them
      */
     protected void generatePersonalityProfile() {
         Random random = new Random();
@@ -98,6 +99,30 @@ public class AiEngine {
 
     public Map<Personality, Integer> getProfile() {
         return profile;
+    }
+
+    public CombatActions getCombatActions() {
+        return combatActions;
+    }
+
+    public PowerActions getPowerActions() {
+        return powerActions;
+    }
+
+    public UtilityActions getUtilityActions() {
+        return utilityActions;
+    }
+
+    public WarActions getWarActions() {
+        return warActions;
+    }
+
+    public ManagementActions getManagementActions() {
+        return managementActions;
+    }
+
+    public Person getPerson() {
+        return person;
     }
 
 }
