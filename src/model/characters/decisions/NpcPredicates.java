@@ -3,6 +3,7 @@ package model.characters.decisions;
 import model.characters.Character;
 import model.characters.authority.Authority;
 import model.resourceManagement.Resource;
+import model.stateSystem.State;
 import model.worldCreation.Quarter;
 
 import java.util.function.Predicate;
@@ -40,6 +41,13 @@ public class NpcPredicates {
     public static Predicate<Character> livesInQuarter(Quarter quarter) {
         return character -> quarter.equals(character.getPerson().getProperty().getLocation());
     }
+
+    public static Predicate<Character> isInBattle() {
+        return character -> character.getPerson().hasState(State.IN_BATTLE);
+    }
+
+
+
 
 
     /**

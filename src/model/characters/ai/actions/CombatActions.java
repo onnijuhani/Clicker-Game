@@ -2,8 +2,10 @@ package model.characters.ai.actions;
 
 import model.characters.Person;
 import model.characters.combat.CombatService;
+import model.stateSystem.State;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class CombatActions {
@@ -11,6 +13,9 @@ public class CombatActions {
     private final Person person;
     private final PriorityQueue<NPCAction> actionQueue = new PriorityQueue<>();
     private Person mainTarget;
+    private final Predicate<Person> isInBattle = person -> person.hasState(State.IN_BATTLE);
+
+
 
     public CombatActions(Person person) {
         this.person = person;
@@ -45,6 +50,9 @@ public class CombatActions {
 
         @Override
         public void execute() {
+            if(isInBattle.test(person)){
+                return;
+            }
             defaultAction();
 
         }
