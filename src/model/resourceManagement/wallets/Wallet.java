@@ -8,7 +8,8 @@ public class Wallet {
     private int food;
     private int alloy;
     private int gold;
-    private final Ownable owner;
+
+    private Ownable owner;
 
     public Wallet(final Ownable owner) {
         this.owner = owner;
@@ -95,6 +96,10 @@ public class Wallet {
         return "Food: " + food +
                 "\nAlloys: " + alloy +
                 "\nGold: " + gold;
+    }
+
+    public void setOwner(Ownable owner) {
+        this.owner = owner;
     }
 
 

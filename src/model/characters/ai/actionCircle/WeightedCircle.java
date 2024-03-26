@@ -1,30 +1,35 @@
-package model.characters.ai.cirle;
+package model.characters.ai.actionCircle;
 
 import java.util.LinkedList;
 
-public class PriorityCircle implements Circle<WeightedObject> {
+public class WeightedCircle implements Circle<WeightedObject> {
+
     private final LinkedList<WeightedObject> circle = new LinkedList<>();
     private final int weightThreshold;
     private final int weightIncrement;
 
     /**
-     * Constructor for creating a PriorityCircle with specified weight threshold and weight increment.
+     * Constructor for creating a WeightedCircle with specified weight threshold and weight increment.
      * @param weightThreshold The minimum weight an object must have to be selected.
      * @param weightIncrement The amount by which each object's weight is increased after selection.
      */
-    public PriorityCircle(int weightThreshold, int weightIncrement) {
+    public WeightedCircle(int weightThreshold, int weightIncrement) {
         this.weightThreshold = weightThreshold;
         this.weightIncrement = weightIncrement;
     }
 
     /**
-     * Overloaded constructor for creating a PriorityCircle with specified weight threshold and default weight increment of 1.
+     * Overloaded constructor for creating a WeightedCircle with specified weight threshold and default weight increment of 1.
      * @param weightThreshold The minimum weight an object must have to be selected.
      */
-    public PriorityCircle(int weightThreshold) {
+    public WeightedCircle(int weightThreshold) {
         this(weightThreshold, 1);
     }
 
+    @Override
+    public String toString(){
+        return circle.toString();
+    }
     @Override
     public void add(WeightedObject element) {
         circle.add(element);
@@ -40,23 +45,27 @@ public class PriorityCircle implements Circle<WeightedObject> {
         if (circle.isEmpty()) {
             return null;
         }
-
         WeightedObject maxWeightObject = null;
+        // Etsi ensin suurimman painon objekti
         for (WeightedObject obj : circle) {
-            obj.incrementWeight(weightIncrement);
             if (maxWeightObject == null || obj.getWeight() > maxWeightObject.getWeight()) {
                 maxWeightObject = obj;
             }
         }
 
-        if (maxWeightObject != null && maxWeightObject.getWeight() >= weightThreshold) {
-            circle.remove(maxWeightObject);
-            maxWeightObject.setWeight(0);
-            circle.addLast(maxWeightObject);
-            return maxWeightObject;
+        // Kasvata sitten jokaisen objektin painoa
+        for (WeightedObject obj : circle) {
+            obj.incrementWeight(weightIncrement);
         }
 
-        return null;
+        // Tarkista, täyttääkö löydetty objekti kriteerit valinnan jälkeen
+        if (maxWeightObject.getWeight() >= weightThreshold) {
+            circle.remove(maxWeightObject);
+            maxWeightObject.resetWeight(); // Aseta valitun objektin paino nollaksi
+            circle.addLast(maxWeightObject); // Lisää objekti takaisin listan loppuun
+            return maxWeightObject; // Palauta valittu objekti
+        }
+        return null; // Palauta null, jos yksikään objekti ei täytä kriteerejä
     }
 
     @Override
@@ -64,14 +73,10 @@ public class PriorityCircle implements Circle<WeightedObject> {
         return circle.peek();
     }
 
-    @Override
-    public void rotate() {
-        if (!circle.isEmpty()) {
-            WeightedObject firstElement = circle.poll(); // Remove the first element
-            if (firstElement != null) {
-                circle.addLast(firstElement); // Add it back to the end
-            }
-        }
-    }
+
+
 }
+
+
+
 

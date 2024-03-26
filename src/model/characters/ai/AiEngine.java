@@ -69,6 +69,10 @@ public class AiEngine {
             }
         }
 
+        if(profile.containsKey(Personality.Ambitious)){
+            person.addAspiration(Aspiration.ACHIEVE_HIGHER_POSITION);
+        }
+
         this.profile = profile;
     }
 

@@ -6,6 +6,7 @@ import model.buildings.Property;
 import model.buildings.PropertyCreation;
 import model.buildings.PropertyTracker;
 import model.characters.Character;
+import model.characters.Person;
 import model.characters.RelationsManager;
 import model.characters.Status;
 import model.characters.authority.Authority;
@@ -24,6 +25,8 @@ public class Nation extends ControlledArea implements Details {
     protected LinkedList<Quarter> allQuarters;
     private List<Character> nationsGenerals = null;
     private boolean isGeneralsCacheValid = false;
+    private final Set<Person> slaverGuild = new HashSet<>();
+    private final Set<Person> freedomFighters = new HashSet<>();
 
     public Nation(String name, Continent continent, Authority authority) {
         this.name = name;
@@ -158,6 +161,14 @@ public class Nation extends ControlledArea implements Details {
     }
     public void setGeneralsCacheValid(boolean generalsCacheValid) {
         isGeneralsCacheValid = generalsCacheValid;
+    }
+
+    public Set<Person> getSlaverGuild() {
+        return slaverGuild;
+    }
+
+    public Set<Person> getFreedomFighters() {
+        return freedomFighters;
     }
 
 

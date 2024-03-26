@@ -4,6 +4,7 @@ import model.Model;
 import model.buildings.Property;
 import model.characters.*;
 import model.characters.Character;
+import model.characters.ai.Aspiration;
 import model.characters.authority.Authority;
 import model.characters.npc.Governor;
 import model.characters.npc.King;
@@ -172,10 +173,16 @@ public class CombatSystem {
                 attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Offense decreased by 3 levels"));
             }
 
-            executeRadicalLoyaltyChanges();
+            defender.getRelationsManager().processResults(attacker);
+
+
         }
+
+        executeRadicalLoyaltyChanges();
         // Reset states
         resetBattleStatesAuthorityBattle();
+
+
     }
 
     private void switchPositions() {
@@ -264,6 +271,7 @@ public class CombatSystem {
         defender.removeState(State.IN_BATTLE);
         venue.removeState(State.IN_BATTLE);
         eligibleSupporters.forEach(support -> support.removeState(State.IN_BATTLE));
+        attacker.removeAspiration(Aspiration.ACHIEVE_HIGHER_POSITION);
     }
 
 
@@ -273,8 +281,8 @@ public class CombatSystem {
     public void robbery() {
 
 
-        // robbery becomes possible only after first year to prevent unfair situations.
-        if(Time.year < 1){
+        // robbery becomes possible only after third year to prevent unfair situations.
+        if(Time.year < 3){
             if(attacker.isPlayer()){
                 attacker.getEventTracker().addEvent(EventTracker.Message("Error", "Robbery is only possible after first year"));
             }

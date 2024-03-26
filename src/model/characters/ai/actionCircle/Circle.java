@@ -1,4 +1,4 @@
-package model.characters.ai.cirle;
+package model.characters.ai.actionCircle;
 
 /**
  * Circle is a custom data structure I designed as a possible way to run the NPC AI system in the game.
@@ -30,8 +30,5 @@ public interface Circle<T> {
      */
     T peek();
 
-    /**
-     * Rotates the circle, moving the first element to the end.
-     */
-    void rotate();
+
 }

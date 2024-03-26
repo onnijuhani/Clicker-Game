@@ -4,6 +4,7 @@ import model.NameCreation;
 import model.Settings;
 import model.buildings.Property;
 import model.characters.ai.AiEngine;
+import model.characters.ai.Aspiration;
 import model.characters.combat.CombatStats;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
@@ -25,6 +26,8 @@ public class Person implements PersonalAttributes, Ownable {
     private final EventTracker eventTracker;
     private final CombatStats combatStats;
     private final EnumSet<State> states;
+
+    private final EnumSet<Aspiration> aspirations;
     private final List<GameEvent> ongoingEvents = new ArrayList<>();
     private final PaymentCalendar paymentCalendar;
     private final StrikesTracker strikesTracker;
@@ -44,6 +47,7 @@ public class Person implements PersonalAttributes, Ownable {
         this.paymentCalendar = new PaymentCalendar();
         this.strikesTracker = new StrikesTracker(Settings.getInt("strikes"));
         states = EnumSet.noneOf(State.class);
+        aspirations = EnumSet.noneOf(Aspiration.class);
 
         this.aiEngine = new AiEngine(this);
     }
@@ -105,6 +109,18 @@ public class Person implements PersonalAttributes, Ownable {
     }
     public void clearStates() {
         states.clear();
+    }
+    public EnumSet<Aspiration> getAspirations() {
+        return aspirations;
+    }
+    public void addAspiration(Aspiration aspiration) {
+        aspirations.add(aspiration);
+    }
+    public void removeAspiration(Aspiration aspiration) {
+        aspirations.remove(aspiration);
+    }
+    public boolean hasAspiration(Aspiration aspiration) {
+        return aspirations.contains(aspiration);
     }
     @Override
     public List<GameEvent> getOngoingEvents() {

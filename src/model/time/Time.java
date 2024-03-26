@@ -71,13 +71,18 @@ public class Time {
 
         /**
          * TODO OPTIMIZE THIS
+         * // 26.3 only triggers during free days
          */
-        if (!isFirstDay) {
+        if (!isFirstDay && freeDay() ) {
             NpcManager.notifyTimeUpdate(day, month, year);
         }
         isFirstDay = false; // After the first increment, it's no longer the first day
 
         EventManager.processScheduledEvents(); // All scheduled events require information every day
+    }
+
+    private static boolean freeDay(){
+        return day != generate && day != maintenance && day != quarterTax && day != cityTax && day != provinceTax && day != nationTax && day != utilitySlots;
     }
 
     public static void incrementByClick(){
@@ -119,7 +124,7 @@ public class Time {
             milliseconds = 1000;
         }
         if (speed.equals(Speed.Fast)) {
-            milliseconds = 250;
+            milliseconds = 500;
         }
         if (speed.equals(Speed.Slow)) {
             milliseconds = 2000;

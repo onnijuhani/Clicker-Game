@@ -1,6 +1,12 @@
 package model.characters.ai.actions;
 
+import model.characters.AuthorityCharacter;
+import model.characters.Character;
 import model.characters.Person;
+import model.characters.Status;
+import model.characters.ai.Aspiration;
+import model.characters.ai.actionCircle.WeightedCircle;
+import model.characters.ai.actionCircle.WeightedObject;
 import model.characters.combat.CombatService;
 import model.stateSystem.State;
 
@@ -11,53 +17,53 @@ import java.util.stream.Collectors;
 public class CombatActions {
     private final Random random;
     private final Person person;
-    private final PriorityQueue<NPCAction> actionQueue = new PriorityQueue<>();
-    private Person mainTarget;
+    private final WeightedCircle actionCircle = new WeightedCircle(50,2);
+    private Character mainTarget;
     private final Predicate<Person> isInBattle = person -> person.hasState(State.IN_BATTLE);
 
+    public Character getMainTarget() {
+        return mainTarget;
+    }
 
+    public void setMainTarget(Character mainTarget) {
+        this.mainTarget = mainTarget;
+    }
 
     public CombatActions(Person person) {
         this.person = person;
         this.random = new Random();
-        Duel duel = new Duel();
-        actionQueue.add(duel);
+        Duel duel = new Duel(10);
+        actionCircle.add(duel);
     }
 
     public void execute(){
-        NPCAction next = actionQueue.poll();
-        assert next != null;
+        WeightedObject next = actionCircle.selectAndRotate();
+        if(next == null){
+            return;
+        }
         next.execute();
-        actionQueue.add(next);
+
 
     }
 
 
 
     /**
-     Should select random enemy to duel but only if there can be found enemy what is weaker than what they are.
-     IF THEY ARE TOO WEAK TO ATTACK ANYONE, CALL INCREASE PERSONAL ATTACK POWER METHOD EVERY TIME!!!
-     if there are no enemies SKIP unless they are Aggressive, then always attack randomly. If they are also Attackers, attack no matter what.
-     if they are Liberal they should always select Slaver as their opponent.
-     if they are Disloyal, attack allies, superiors and characters in their own city. Disloyal should be able to do attack allies!!!
-     if they are Passive, they should skip this one ALWAYS unless they are also Slaver, Ambitious or Attacker, then have small chance of attack
-     if they are defender, they should often skip this one unless they are also Slaver, Ambitious or Aggressive, then have higher chance of attack
+     * select a Set of possible targets, then call executeDuel method.
 
-     Skipping default = increase personal defence
      */
-    class Duel implements NPCAction{
-        int importanceLevel = 0;
+    class Duel extends WeightedObject implements NPCAction{
 
+        public Duel(int weight) {
+            super(weight);
+        }
         @Override
         public void execute() {
             if(isInBattle.test(person)){
                 return;
             }
-            defaultAction();
-
+            defaultSkip();
         }
-
-
         /**
          * default is to attack random enemy
          */
@@ -66,32 +72,112 @@ public class CombatActions {
             // Get all enemies
             Set<Person> enemies = person.getRelationsManager().getEnemies();
             // Exclude enemies already defeated by the person
-            Set<Person> undefeatedEnemies = enemies.stream()
+            Set<Person> listOfPossibleTargets = enemies.stream()
                     .filter(enemy -> !person.getRelationsManager().getListOfDefeatedPersons().contains(enemy))
                     .collect(Collectors.toSet());
 
-            if (undefeatedEnemies.isEmpty()) {
-                return; // Early return if there are no undefeated enemies
+            executeDuel(listOfPossibleTargets);
+        }
+
+        /**
+         * liberals will duel members of Slaver Guild
+         */
+        public void liberalAction(){
+            Set<Person> listOfPossibleTargets = person.getRole().getNation().getSlaverGuild();
+            executeDuel(listOfPossibleTargets);
+        }
+        @Override
+        public void defaultSkip() {
+
+            if(person.getAspirations().contains(Aspiration.ACHIEVE_HIGHER_POSITION)){
+                mainTarget = person.getRole().getAuthority().getCharacterInThisPosition();
+                if(mainTarget.getPerson() == person){
+                    return; // Cannot attack self
+                }
+                if(!(mainTarget instanceof AuthorityCharacter)){
+                    return; // quick return if there is a problem
+                }
+                roadToAchieveHigherPosition();
+            }
+
+        }
+
+        private void roadToAchieveHigherPosition(){
+            if (mainTarget == null) {
+                return;
+            }
+            Status mainTargetStatus = mainTarget.getRole().getStatus();
+
+
+            switch (mainTargetStatus) {
+                case Captain, Mayor:
+                    // Increase offense if target is Captain or Mayor
+//                    person.getCombatStats().upgradeOffenseWithGold();
+//                    CombatService.executeAuthorityBattle(person.getCharacter(),mainTarget);
+                    break;
+
+                case Governor, King:
+                    // Defeat all sentinels if target is Governor or King
+                    if (defeatAllSentinels()) {
+                        person.getCombatStats().upgradeOffenseWithGold();
+                        CombatService.executeAuthorityBattle(person.getCharacter(),mainTarget);
+                    } else {
+                        person.getCombatStats().upgradeOffenseWithGold();
+                    }
+                    break;
+
+                default:
+                    System.out.println("No specific action for " + mainTargetStatus);
+                    break;
+            }
+        }
+        private boolean defeatAllSentinels() {
+            // Get all sentinels of the main target
+            Set<Person> sentinels = mainTarget.getPerson().getRelationsManager().getListOfSentinels();
+
+            Set<Person> sentinelsCopy = new HashSet<>(sentinels); // prevent ConcurrentModificationException
+
+            Set<Person> undefeatedSentinels = new HashSet<>(); // sentinels that still need to be defeated
+
+            for (Person sentinel : sentinelsCopy) {
+                if(!person.getRelationsManager().getListOfDefeatedPersons().contains(sentinel)){
+                    undefeatedSentinels.add(sentinel);
+                }
+            }
+            if(!undefeatedSentinels.isEmpty()) {
+                executeDuel(undefeatedSentinels);
+            }
+
+
+            return undefeatedSentinels.isEmpty(); // return true if all sentinels have been defeated already
+
+        }
+
+
+
+        private void executeDuel(Set<Person> listOfPossibleTargets) {
+            if (listOfPossibleTargets.isEmpty()) {
+                return;
             }
 
             // Find the minimum sum of defense and offense levels among undefeated enemies
-            int minCombatSum = undefeatedEnemies.stream()
+            int minCombatSum = listOfPossibleTargets.stream()
                     .mapToInt(enemy -> enemy.getCombatStats().getDefenseLevel() + enemy.getCombatStats().getOffenseLevel())
                     .min()
                     .orElse(Integer.MAX_VALUE);
 
             // Filter undefeated enemies to those with the minimum sum of defense and offense levels
-            List<Person> weakestUndefeatedEnemies = undefeatedEnemies.stream()
+            List<Person> weakestTargets = listOfPossibleTargets.stream()
                     .filter(enemy -> (enemy.getCombatStats().getDefenseLevel() + enemy.getCombatStats().getOffenseLevel()) == minCombatSum)
                     .collect(Collectors.toList());
 
-            if (weakestUndefeatedEnemies.isEmpty()) {
-                return; // Double-check to ensure the list is not empty
+            if (weakestTargets.isEmpty()) {
+                return;
             }
 
             // Shuffle the list of weakest undefeated enemies and pick the first one
-            Collections.shuffle(weakestUndefeatedEnemies);
-            Person randomlySelectedEnemy = weakestUndefeatedEnemies.get(0);
+            Collections.shuffle(weakestTargets);
+            Person randomlySelectedEnemy = weakestTargets.get(0);
 
             // THIS MUST BE HERE TO UPGRADE THE ATTACK LEVEL ! REMOVE THIS EVENTUALLY !
             person.getCombatStats().upgradeOffenseWithGold();
@@ -99,18 +185,8 @@ public class CombatActions {
             // Execute duel against the selected weakest undefeated enemy
             CombatService.executeDuel(person.getCharacter(), randomlySelectedEnemy.getCharacter());
         }
-
-
-        @Override
-        public void defaultSkip() {
-
-        }
-
-        @Override
-        public int compareTo(NPCAction o) {
-            return importanceLevel;
-        }
     }
+
 
     private Person getRandomPersonFromSet() {
         Person[] array = person.getRelationsManager().getEnemies().toArray(new Person[0]);

@@ -39,8 +39,6 @@ public class Construct {
 
             assert newType != null;
 
-
-
             GameEvent gameEvent = new GameEvent(Event.CONSTRUCTION, character);
             character.getEventTracker().addEvent(EventTracker.Message("Major", "Construction Started"));
 
@@ -69,7 +67,11 @@ public class Construct {
 
     private static void switchPropertyAttributes(Character character, Property newHouse, Quarter location, Property oldHouse, UtilitySlot oldUtilitySlot) {
         newHouse.setLocation(location);
+        newHouse.getVault().setOwner(null);
+        newHouse.getVault().deleteFromGameManager();
+
         newHouse.setVault(oldHouse.getVault());
+        newHouse.getVault().setOwner(newHouse);
         newHouse.getUtilitySlot().setOwnedUtilityBuildings(oldUtilitySlot.getOwnedUtilityBuildings());
         newHouse.setDefense(oldHouse.getDefense());
         PropertyManager.unsubscribe(oldHouse);

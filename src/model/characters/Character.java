@@ -18,7 +18,13 @@ public class Character implements NpcObserver, Details, Ownable {
     @Override
     public void npcUpdate(int day, int month, int year) {
 
-        if (mandatoryFoodConsumption(day)) return;
+        if (mandatoryFoodConsumption(day)) return; // food consumption should be the only 1 done here, should also be day1
+        if (day == 2){
+            System.out.println("alkaa");
+            person.getRelationsManager().updateSets(); // updating relations should be the only one in day 2
+            System.out.println("loppuu");
+            return;
+        }
 
         if(person.isPlayer()){
             return;

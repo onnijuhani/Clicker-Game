@@ -35,8 +35,8 @@ public class RelationsController extends BaseController {
         return currentCharacter;
     }
 
-    private Character currentCharacter; // Character whose relations we are looking at
-    protected Character current;  //Character that might be selected for inspection
+    private Character currentCharacter; // Character whose relations we are looking at. CURRENT CHARACTER ALWAYS REFERS TO THE ONE IN CHARACTER CONTROLLER
+    protected Character current;  //Character that might be or is selected for inspection.
     private Person currentPerson;
     private RelationsManager relations;
 
@@ -65,7 +65,7 @@ public class RelationsController extends BaseController {
         homeQuarter.setText(currentPerson.getProperty().getLocation().toString());
         changeCurrentToThisHyper.setText(currentPerson.toString());
         compareToCharacter.setText(currentCharacter.getPerson().getRelationsManager().getRelationshipDescription(currentPerson));
-        authority.setText(currentCharacter.getRole().getAuthority().toString());
+        authority.setText(current.getRole().getAuthority().toString());
     }
 
     public void setUpCurrentCharacter() {
@@ -222,7 +222,7 @@ public class RelationsController extends BaseController {
 
     @FXML
     void openHomeQuarter(ActionEvent event) {
-        model.accessCurrentView().setCurrentView(currentCharacter.getPerson().getProperty().getLocation());
+        model.accessCurrentView().setCurrentView(current.getPerson().getProperty().getLocation());
         main.exploreMapController.updateExploreTab();
     }
     @FXML // CHANGES CHARACTER IN CHARACTER CONTROLLER TO THE CHARACTER CURRENTLY IN VIEW
