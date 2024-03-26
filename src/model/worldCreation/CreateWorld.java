@@ -87,7 +87,7 @@ public class CreateWorld {
         GenerateManager.unSubscribe(initialPlayer);
 
 
-        TransferPackage cheatPackage = new TransferPackage(0,0,9000000);
+        TransferPackage cheatPackage = new TransferPackage(100000,100000,9000000);
         initialPlayer.getPerson().getWallet().addResources(cheatPackage);
 //        initialPlayer.getPerson().getProperty().getVault().addResources(cheatPackage);
 //        initialPlayer.getPerson().getWorkWallet().addResources(cheatPackage);

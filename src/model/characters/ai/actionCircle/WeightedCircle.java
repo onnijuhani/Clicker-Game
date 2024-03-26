@@ -1,6 +1,7 @@
 package model.characters.ai.actionCircle;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class WeightedCircle implements Circle<WeightedObject> {
 
@@ -35,6 +36,11 @@ public class WeightedCircle implements Circle<WeightedObject> {
         circle.add(element);
     }
 
+
+    public void addAll(List list) {
+        circle.addAll(list);
+    }
+
     @Override
     public void remove(WeightedObject element) {
         circle.remove(element);
@@ -66,6 +72,34 @@ public class WeightedCircle implements Circle<WeightedObject> {
             return maxWeightObject; // Palauta valittu objekti
         }
         return null; // Palauta null, jos yksikään objekti ei täytä kriteerejä
+    }
+
+
+    public void executeLoop() {
+        if (circle.isEmpty()) {
+            return;
+        }
+        WeightedObject maxWeightObject = null;
+
+        for (WeightedObject obj : circle) {
+            if (maxWeightObject == null || obj.getWeight() > maxWeightObject.getWeight()) {
+                maxWeightObject = obj;
+            }
+        }
+
+
+        for (WeightedObject obj : circle) {
+            obj.incrementWeight(weightIncrement);
+        }
+
+
+        if (maxWeightObject.getWeight() >= weightThreshold) {
+            circle.remove(maxWeightObject);
+            maxWeightObject.resetWeight();
+            circle.addLast(maxWeightObject);
+            maxWeightObject.execute();
+        }
+
     }
 
     @Override

@@ -218,5 +218,6 @@
             </HBox>
          </children>
       </VBox>
+      <Button layoutX="371.0" layoutY="534.0" mnemonicParsing="false" onAction="#printEvents" text="print events" />
    </children>
 </AnchorPane>

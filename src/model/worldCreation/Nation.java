@@ -5,10 +5,8 @@ import model.Settings;
 import model.buildings.Property;
 import model.buildings.PropertyCreation;
 import model.buildings.PropertyTracker;
+import model.characters.*;
 import model.characters.Character;
-import model.characters.Person;
-import model.characters.RelationsManager;
-import model.characters.Status;
 import model.characters.authority.Authority;
 import model.characters.authority.ProvinceAuthority;
 import model.characters.npc.Governor;
@@ -165,6 +163,18 @@ public class Nation extends ControlledArea implements Details {
 
     public Set<Person> getSlaverGuild() {
         return slaverGuild;
+    }
+    public void joinSlaverGuild(Person person){
+        if(person.getAiEngine().getProfile().containsKey(Trait.Liberal)){
+            return;
+        }
+        slaverGuild.add(person);
+    }
+    public void joinLiberalGuild(Person person){
+        if(person.getAiEngine().getProfile().containsKey(Trait.Slaver)){
+            return;
+        }
+        freedomFighters.add(person);
     }
 
     public Set<Person> getFreedomFighters() {

@@ -1,5 +1,8 @@
 package model.characters;
 
+import javafx.animation.KeyFrame;
+import javafx.application.Platform;
+import javafx.util.Duration;
 import model.NameCreation;
 import model.Settings;
 import model.buildings.Property;
@@ -34,7 +37,7 @@ public class Person implements PersonalAttributes, Ownable {
     private Character character;
     private Role role;
     private boolean isPlayer = false;
-    private final AiEngine aiEngine;
+    private AiEngine aiEngine;
 
 
     public Person(Boolean isNpc) {
@@ -49,7 +52,39 @@ public class Person implements PersonalAttributes, Ownable {
         states = EnumSet.noneOf(State.class);
         aspirations = EnumSet.noneOf(Aspiration.class);
 
+
+
+
+
+        delayMethods();
+    }
+
+    private void generateStartingMessage() {
+
         this.aiEngine = new AiEngine(this);
+
+        eventTracker.addEvent(EventTracker.Message("Major", "You are "+character));
+        eventTracker.addEvent(EventTracker.Message("Major","Trait: "+getAiEngine().getProfile().keySet()));
+
+
+    }
+
+    private void delayMethods() {
+        if(isPlayer){
+            return;
+        }
+        // this is delayed because of eventTracker
+        javafx.animation.Timeline timeline = new javafx.animation.Timeline(new KeyFrame(
+                Duration.millis(1000), // Delay before executing the task
+                ae -> {
+                    try {
+                        Platform.runLater(this::generateStartingMessage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }));
+        timeline.setCycleCount(1);
+        timeline.play();
     }
 
     @Override

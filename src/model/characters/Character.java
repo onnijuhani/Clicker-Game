@@ -1,7 +1,6 @@
 package model.characters;
 
 import model.GameManager;
-import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.ai.AiEngine;
 import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Wallet;
@@ -20,9 +19,7 @@ public class Character implements NpcObserver, Details, Ownable {
 
         if (mandatoryFoodConsumption(day)) return; // food consumption should be the only 1 done here, should also be day1
         if (day == 2){
-            System.out.println("alkaa");
             person.getRelationsManager().updateSets(); // updating relations should be the only one in day 2
-            System.out.println("loppuu");
             return;
         }
 
@@ -30,7 +27,7 @@ public class Character implements NpcObserver, Details, Ownable {
             return;
         }
 
-        getPerson().getAiEngine().getCombatActions().execute();
+        getPerson().getAiEngine().executeAiEngine();
     }
 
     private boolean mandatoryFoodConsumption(int day) {
@@ -42,12 +39,6 @@ public class Character implements NpcObserver, Details, Ownable {
                 return true;
             }
 
-            if (!person.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
-                buyMeadowLandsTEST();
-            }
-            if (person.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
-                upgrade();
-            }
         }
         return false;
     }
@@ -80,14 +71,6 @@ public class Character implements NpcObserver, Details, Ownable {
         role.setCharacter(this);
     }
 
-    protected void buyMeadowLandsTEST(){
-        role.getNation().getShop().getUtilityShop().buyBuilding(UtilityBuildings.MeadowLands,this.getPerson());
-    }
-    protected void upgrade(){
-        if(person.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
-            role.getNation().getShop().getUtilityShop().upgradeBuilding(UtilityBuildings.MeadowLands, this.getPerson());
-        }
-    }
 
 
     public void foodConsumption(Character character) {

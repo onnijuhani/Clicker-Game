@@ -1,11 +1,8 @@
 package model.characters.ai.actions;
 
-import model.characters.AuthorityCharacter;
 import model.characters.Character;
-import model.characters.Person;
-import model.characters.Status;
+import model.characters.*;
 import model.characters.ai.Aspiration;
-import model.characters.ai.actionCircle.WeightedCircle;
 import model.characters.ai.actionCircle.WeightedObject;
 import model.characters.combat.CombatService;
 import model.stateSystem.State;
@@ -17,35 +14,26 @@ import java.util.stream.Collectors;
 public class CombatActions {
     private final Random random;
     private final Person person;
-    private final WeightedCircle actionCircle = new WeightedCircle(50,2);
     private Character mainTarget;
     private final Predicate<Person> isInBattle = person -> person.hasState(State.IN_BATTLE);
+    private final List<WeightedObject> allActions = new LinkedList<>();
 
-    public Character getMainTarget() {
-        return mainTarget;
-    }
 
-    public void setMainTarget(Character mainTarget) {
-        this.mainTarget = mainTarget;
-    }
 
     public CombatActions(Person person) {
         this.person = person;
         this.random = new Random();
-        Duel duel = new Duel(10);
-        actionCircle.add(duel);
+        createAllActions();
     }
 
-    public void execute(){
-        WeightedObject next = actionCircle.selectAndRotate();
-        if(next == null){
-            return;
-        }
-        next.execute();
-
-
+    private void createAllActions() {
+        Duel duel = new Duel(1);
+        allActions.add(duel);
     }
 
+    public List getAllActions() {
+        return allActions;
+    }
 
 
     /**
@@ -111,16 +99,30 @@ public class CombatActions {
 
             switch (mainTargetStatus) {
                 case Captain, Mayor:
-                    // Increase offense if target is Captain or Mayor
-//                    person.getCombatStats().upgradeOffenseWithGold();
-//                    CombatService.executeAuthorityBattle(person.getCharacter(),mainTarget);
+//                     Increase offense if target is Captain or Mayor
+                    person.getCombatStats().upgradeOffenseWithGold();
+                    CombatService.executeAuthorityBattle(person.getCharacter(),mainTarget);
                     break;
 
                 case Governor, King:
-                    // Defeat all sentinels if target is Governor or King
+
+                    // Defeat all sentinels if target is Governor or King before attempting the Authority battle
                     if (defeatAllSentinels()) {
+
                         person.getCombatStats().upgradeOffenseWithGold();
+
+                        int defensePower = mainTarget.getPerson().getCombatStats().getDefenseLevel() + mainTarget.getPerson().getProperty().getDefense().getUpgradeLevel();
+                        int attackPower = person.getCombatStats().getOffenseLevel() + person.getCombatStats().getDefenseLevel();
+
+                        // Must be 2 levels higher unless they have trait Aggressive. Aggressive always attacks.
+                        if (attackPower >= defensePower+2){
+                            if(!(attackPower <= defensePower && person.getAiEngine().getProfile().containsKey(Trait.Aggressive))) {
+                                return;
+                            }
+                        }
+
                         CombatService.executeAuthorityBattle(person.getCharacter(),mainTarget);
+
                     } else {
                         person.getCombatStats().upgradeOffenseWithGold();
                     }
@@ -154,7 +156,7 @@ public class CombatActions {
         }
 
 
-
+        // remember: both offense and defense are included in DUEL. Not in other combats.
         private void executeDuel(Set<Person> listOfPossibleTargets) {
             if (listOfPossibleTargets.isEmpty()) {
                 return;
@@ -165,6 +167,15 @@ public class CombatActions {
                     .mapToInt(enemy -> enemy.getCombatStats().getDefenseLevel() + enemy.getCombatStats().getOffenseLevel())
                     .min()
                     .orElse(Integer.MAX_VALUE);
+
+            int attackPower = person.getCombatStats().getOffenseLevel() + person.getCombatStats().getDefenseLevel();
+
+            // Must be 2 levels higher unless they have trait Aggressive
+            if (attackPower >= minCombatSum+2){
+                if(!(attackPower <= minCombatSum && person.getAiEngine().getProfile().containsKey(Trait.Aggressive))) {
+                    return;
+                }
+            }
 
             // Filter undefeated enemies to those with the minimum sum of defense and offense levels
             List<Person> weakestTargets = listOfPossibleTargets.stream()
@@ -181,6 +192,8 @@ public class CombatActions {
 
             // THIS MUST BE HERE TO UPGRADE THE ATTACK LEVEL ! REMOVE THIS EVENTUALLY !
             person.getCombatStats().upgradeOffenseWithGold();
+
+
 
             // Execute duel against the selected weakest undefeated enemy
             CombatService.executeDuel(person.getCharacter(), randomlySelectedEnemy.getCharacter());

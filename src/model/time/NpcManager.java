@@ -2,7 +2,6 @@ package model.time;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -33,33 +32,40 @@ public class NpcManager {
     }
 
     public static void notifyTimeUpdate(int day, int month, int year) {
-        List<NpcObserver> snapshot;
-        synchronized (observers) {
-            snapshot = new ArrayList<>(observers);
-        }
-
-        // CountDownLatch to wait for all tasks to complete
-        CountDownLatch latch = new CountDownLatch(snapshot.size());
-
-        for (NpcObserver observer : snapshot) {
-            executor.submit(() -> {
-                try {
-                    observer.npcUpdate(day, month, year);
-                } catch (Exception e) {
-                    // Log or handle the exception as appropriate
-                    e.printStackTrace();
-                } finally {
-                    latch.countDown(); // Ensure latch is decremented even if an exception occurs
-                }
-            });
-        }
-
-        try {
-            latch.await(); // Wait for all observers to be notified
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); // Restore the interrupted status
-
+        // Notify all observers
+        for (NpcObserver observer : observers) {
+            observer.npcUpdate(day, month, year);
         }
     }
+
+//    public static void notifyTimeUpdate(int day, int month, int year) {
+//        List<NpcObserver> snapshot;
+//        synchronized (observers) {
+//            snapshot = new ArrayList<>(observers);
+//        }
+//
+//        // CountDownLatch to wait for all tasks to complete
+//        CountDownLatch latch = new CountDownLatch(snapshot.size());
+//
+//        for (NpcObserver observer : snapshot) {
+//            executor.submit(() -> {
+//                try {
+//                    observer.npcUpdate(day, month, year);
+//                } catch (Exception e) {
+//                    // Log or handle the exception as appropriate
+//                    e.printStackTrace();
+//                } finally {
+//                    latch.countDown(); // Ensure latch is decremented even if an exception occurs
+//                }
+//            });
+//        }
+//
+//        try {
+//            latch.await(); // Wait for all observers to be notified
+//        } catch (InterruptedException e) {
+//            Thread.currentThread().interrupt(); // Restore the interrupted status
+//
+//        }
+//    }
 }
 

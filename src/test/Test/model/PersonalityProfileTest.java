@@ -1,7 +1,7 @@
 package model;
 
 import model.characters.Person;
-import model.characters.Personality;
+import model.characters.Trait;
 import model.characters.ai.AiEngine;
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public class PersonalityProfileTest {
         for(int i = 0; i < 20000; i++) {
             Person person = new Person(true);
             AiEngine engine = person.getAiEngine();
-            Map<Personality, Integer> profile = engine.getProfile(); // Ensure you have a getter for the profile
+            Map<Trait, Integer> profile = engine.getProfile(); // Ensure you have a getter for the profile
 
             assertNotNull("Profile should not be null", profile);
             assertFalse("Profile should not be empty", profile.isEmpty());

@@ -72,6 +72,17 @@ public class EventTracker {
                 .map(this::removeTimestampAndType)
                 .collect(Collectors.toList());
     }
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        StringBuilder sb = new StringBuilder();
+
+        majorEvents.forEach(message -> sb.append(message).append("\n"));
+
+        return sb.toString();
+
+    }
 
     private String removeTimestampAndType(String message) {
         String[] parts = message.split(" ", 4);

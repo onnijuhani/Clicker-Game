@@ -41,6 +41,7 @@ public class CharacterController extends BaseController  {
     private Button defenseTrainBtn;
 
 
+
     @FXML
     private HBox attackBox;
     @FXML
@@ -115,6 +116,11 @@ public class CharacterController extends BaseController  {
         updatePreviousButtonState(); // Update the button state
     }
 
+    @FXML
+    void printEvents(ActionEvent event) {
+        System.out.println(currentCharacter.getPerson().getEventTracker());
+
+    }
 
     @FXML
     void executeDuel(){

@@ -104,7 +104,7 @@ public class CombatSystem {
 
             GameEvent gameEvent = new GameEvent(Event.AuthorityBattle, participantsArray);
 
-            if(attacker.isPlayer() || defender.isPlayer()) {
+            if(attacker.isPlayer() || defender.isPlayer() || true) {
                 attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Challenging the Authority of " + defender));
                 defender.getEventTracker().addEvent(EventTracker.Message("Major", "Your Authority is being challenged by " + attacker));
             }
@@ -144,10 +144,12 @@ public class CombatSystem {
 
             attacker.getRelationsManager().processResults(defender);
 
+            System.out.println("attacker won " + attacker.getCharacter() + " " + defender.getCharacter() + "\n" + attacker.getProperty().getLocation().getFullHierarchyInfo());
+
             switchPositions();
 
         } else {
-            if (attacker.isPlayer() || defender.isPlayer()) {
+            if (attacker.isPlayer() || defender.isPlayer() || true) {
                 attacker.getEventTracker().addEvent(EventTracker.Message(
                         "Major", "Failed to challenge the Authority of \n" + defender.getName() + ". Your power has been decreased."));
                 defender.getEventTracker().addEvent(EventTracker.Message(
@@ -169,12 +171,13 @@ public class CombatSystem {
             ));
 
             attacker.decreaseOffense(3);
-            if (attacker.isPlayer()){
+            if (attacker.isPlayer() || true){
                 attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Offense decreased by 3 levels"));
             }
 
             defender.getRelationsManager().processResults(attacker);
 
+            System.out.println("defender won " + attacker.getCharacter() + " " + defender.getCharacter() + "\n" + attacker.getProperty().getLocation().getFullHierarchyInfo());
 
         }
 
@@ -302,7 +305,7 @@ public class CombatSystem {
         }
 
         // check for loyalty issues
-        if (attacker.getRelationsManager().isAlly(defender) && !attacker.getAiEngine().getProfile().containsKey(Personality.Disloyal)) {
+        if (attacker.getRelationsManager().isAlly(defender) && !attacker.getAiEngine().getProfile().containsKey(Trait.Disloyal)) {
             if (attacker.isPlayer()) {
                 attacker.getEventTracker().addEvent(EventTracker.Message(
                         "Error", "Attempted to rob \n" + defender.getProperty().getName() +
@@ -329,7 +332,7 @@ public class CombatSystem {
         int effectiveDefenderDefense = venueStats.getUpgradeLevel();
         boolean attackerWins = battle(effectiveAttackerOffense, effectiveDefenderDefense);
         if (attackerWins) {
-            if(attacker.isPlayer() || defender.isPlayer()) {
+            if(attacker.isPlayer() || defender.isPlayer() || true) {
                 attacker.getEventTracker().addEvent(EventTracker.Message(
                         "Major", "Robbed the "
                                 + defender.getProperty().getName() + " vault"));
@@ -341,7 +344,7 @@ public class CombatSystem {
         } else {
             venueStats.increaseLevel();
             attackerStats.getOffense().decreaseLevel();
-            if(attacker.isPlayer() || defender.isPlayer()) {
+            if(attacker.isPlayer() || defender.isPlayer() || true) {
                 attacker.getEventTracker().addEvent(EventTracker.Message(
                         "Major", "Robbery failed. \nOffense level decreased."));
                 defender.getEventTracker().addEvent(EventTracker.Message(
@@ -372,7 +375,7 @@ public class CombatSystem {
             return; // Can not enter battle
         }
 
-        if (attacker.getRelationsManager().isAlly(defender) && !attacker.getAiEngine().getProfile().containsKey(Personality.Disloyal)) {
+        if (attacker.getRelationsManager().isAlly(defender) && !attacker.getAiEngine().getProfile().containsKey(Trait.Disloyal)) {
             if (attacker.isPlayer()) {
                 attacker.getEventTracker().addEvent(EventTracker.Message(
                         "Error", "Attempted to duel \n" + defender.getName() +
@@ -403,7 +406,7 @@ public class CombatSystem {
         Random random = new Random();
 
         if (attackerWins) { // Usually nothing happens as duel doesn't really have a price
-            if(attacker.isPlayer() || defender.isPlayer()) {
+            if(attacker.isPlayer() || defender.isPlayer() || true) {
                 attacker.getEventTracker().addEvent(EventTracker.Message(
                         "Major", "Won the duel against " + defender));
 

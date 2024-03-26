@@ -1,6 +1,6 @@
 package model.characters;
 
-public enum Personality {
+public enum Trait {
     Ambitious, Unambitious,
 
     Slaver, Liberal,
