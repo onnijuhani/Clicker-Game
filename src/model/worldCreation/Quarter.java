@@ -189,10 +189,10 @@ public class Quarter extends ControlledArea implements Details {
         Province prov = city.getProvince();
         Nation nat = prov.getNation();
         return name + "\n" +
-                "Inside: " + city.getName() + " - City\n" +
-                "Of the: " + prov.getName() + " - Province\n" +
-                "Part of: " + nat.getName() + " - Nation\n" +
-                "In the: " + nat.getHigher().getName() + " - Continent\n" +
+                "Inside City - : " + city.getName() + "\n" +
+                "Of the Province - : " + prov.getName() + "\n" +
+                "Part of Nation - : " + nat.getName() + "\n" +
+                "In the Continent - : " + nat.getHigher().getName() + "\n" +
                 "Of the Mighty: " + nat.getHigher().getHigher().getName();
     }
 

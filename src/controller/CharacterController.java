@@ -119,6 +119,9 @@ public class CharacterController extends BaseController  {
     @FXML
     void printEvents(ActionEvent event) {
         System.out.println(currentCharacter.getPerson().getEventTracker());
+        System.out.println("Current Aspirations: "+currentCharacter.getPerson().getAspirations());
+        System.out.println("On Going Events : "+currentCharacter.getPerson().getOngoingEvents());
+        System.out.println("Current States : "+currentCharacter.getPerson().getStates());
 
     }
 

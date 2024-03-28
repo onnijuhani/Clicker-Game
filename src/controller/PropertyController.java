@@ -1,6 +1,7 @@
 package controller;
 
 
+import customExceptions.InsufficientResourcesException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -272,7 +273,9 @@ public class PropertyController extends BaseController {
 
     @FXML
     void upgradeProperty(){
-        Construct.constructProperty(character);
+        try {
+            Construct.constructProperty(character.getPerson());
+        } catch (InsufficientResourcesException ignored){}
     }
 
 
@@ -350,8 +353,8 @@ public class PropertyController extends BaseController {
 
     void updateConstructInfo(){
         upgradeBox.setVisible(character.getPerson().isPlayer());
-        TransferPackage cost = Construct.getCost(character);
-        constructBtn.setText("Construct "+ Construct.getNextProperty(character));
+        TransferPackage cost = Construct.getCost(character.getPerson());
+        constructBtn.setText("Construct "+ Construct.getNextProperty(character.getPerson()));
         if (cost != null) {
             upgradeCost.setText(cost.toShortString());
         } else {

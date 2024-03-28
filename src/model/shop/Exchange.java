@@ -1,6 +1,7 @@
 package model.shop;
 
 import model.characters.Character;
+import model.characters.Person;
 import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
@@ -9,13 +10,19 @@ import model.stateSystem.EventTracker;
 import java.util.Arrays;
 import java.util.OptionalInt;
 
+/**
+ * This class is a complete mess now
+ * TODO simplify and refactor
+ */
 public class Exchange extends ShopComponents {
 
     private final ExchangeRates rates;
     private int defaultFood = 100;  //these defaults exist mostly for the exchange view. They reflect the desired ratio 10-5-1
     private int defaultAlloys = 50;
     private int defaultGold = 10;
-    private double marketFee = 0.35;
+    private final double marketFee = 0.35;
+
+    private final boolean DB = true; //TODO remove this debugger
 
 
     public Exchange(Wallet wallet){
@@ -23,7 +30,75 @@ public class Exchange extends ShopComponents {
         this.rates = new ExchangeRates();
     }
 
-    public void sellResource(int amountToSell, Resource sellType, Character character) {
+    public boolean forceBuy(int amount, Resource buyType, Person person) {
+        boolean bought;
+
+        if (buyType == Resource.Gold){
+            int sellAmountFood = amount * 10;
+            bought = sellResource(sellAmountFood, Resource.Food, person.getCharacter() );
+            if (!bought){
+                int sellAmountAlloy = amount * 5;
+                bought = sellResource(sellAmountAlloy, Resource.Alloy, person.getCharacter());
+                if (bought){
+                    return true;
+                }
+            }
+        }
+
+        if (buyType == Resource.Food || buyType == Resource.Alloy){
+
+            Resource forceType;
+            if(buyType == Resource.Food){
+                forceType = Resource.Alloy;
+            }else{
+                forceType = Resource.Food;
+            }
+
+            bought = exchangeResources(amount, buyType, Resource.Gold, person.getCharacter());
+            if(!bought){
+                int forceAmount = calculateAmountToSellForGold(amount, buyType, forceType);
+                boolean forceBought = exchangeResources(forceAmount, forceType, Resource.Gold, person.getCharacter());
+                if(forceBought){
+                    bought = exchangeResources(amount, buyType, Resource.Gold, person.getCharacter());
+                    return bought;
+                }
+            }
+
+        }
+        return false;
+
+    }
+
+
+
+
+    private int calculateAmountToSellForGold(int amountToBuy, Resource buyType, Resource sellType) {
+
+        if(buyType == Resource.Gold || sellType == Resource.Gold){
+            System.out.println("Exchange calculateAmountToSellForGold went wrong");
+            throw new IllegalArgumentException("Unsupported resource exchange combination.");
+        }
+
+        double buyRate = rates.getRate(Resource.Gold, buyType);
+        double sellRate = rates.getRate(sellType, Resource.Gold);
+        double goldNeeded = amountToBuy * buyRate;
+        return (int) Math.ceil(goldNeeded / sellRate);
+    }
+
+
+    /**
+     * This method is used to see either food or alloys for Gold.
+     * @param amountToSell the amount you want to sell, either food or alloys
+     * @param sellType either food or alloys
+     * @param character character wishing to sell the resource
+     */
+    public Boolean sellResource(int amountToSell, Resource sellType, Character character) {
+
+        if(sellType == Resource.Gold){ // make sure gold is not being sold.
+            System.out.println("Exchange sellResource method went wrong");
+            return false;
+        }
+
         updateExchangeRates();
 
         double amountAfterFee = amountToSell - amountToSell * marketFee;
@@ -31,45 +106,55 @@ public class Exchange extends ShopComponents {
         double rate = rates.getRate(Resource.Gold, sellType);
         int amountGold = (int) (amountAfterFee / rate);
 
-
         TransferPackage costPackage = TransferPackage.fromEnum(sellType, (int) amountAfterFee);
+
+        if(!(character.getPerson().getWallet().hasEnoughResources(costPackage))){
+            return false; // not enough resources to sell
+        }
+
         TransferPackage purchasePackage = TransferPackage.fromEnum(Resource.Gold, amountGold);
 
         this.wallet.deposit(character.getPerson().getWallet(), costPackage);
         character.getPerson().getWallet().addResources(purchasePackage);
 
-
         if(character.getPerson().isPlayer()) {
             String message = EventTracker.Message("Shop", "Exchanged " + sellType + " for " + amountGold);
             character.getEventTracker().addEvent(message);
         }
-
-
+        return true;
     }
 
-    public void exchangeResources(int amountToBuy, Resource buyType, Resource sellType, Character character) {
 
+
+
+    public boolean exchangeResources(int amountToBuy, Resource buyType, Resource sellType, Character character) {
+        if(DB) {System.out.println("exchange 0");}
         updateExchangeRates(); // Update rates based on current wallet status
-
+        if(DB) {System.out.println("exchange 1" + buyType + sellType);}
         double rate = rates.getRate(sellType, buyType);
+        if(DB) {System.out.println("exchange 2");}
         double costWithoutFee = amountToBuy / rate;
+        if(DB) {System.out.println("exchange 3");}
         int totalCost = (int) (costWithoutFee * (1 + marketFee));
-
+        if(DB) {System.out.println("exchange 4");}
 
         if (!character.getPerson().getWallet().hasEnoughResource(sellType, totalCost)) {
             if(character.getPerson().isPlayer()) {
                 String errorMessage = EventTracker.Message("Error", "Insufficient resources for the exchange.");
                 character.getEventTracker().addEvent(errorMessage);
+                if(DB) {System.out.println("exchange 5");}
             }
-            return;
-        }
+            if(DB) {System.out.println("exchange 6");}
+            return false;
 
+        }
+        if(DB) {System.out.println("exchange 7");}
         TransferPackage costPackage = TransferPackage.fromEnum(sellType, totalCost);
         TransferPackage purchasePackage = TransferPackage.fromEnum(buyType, amountToBuy);
-
+        if(DB) {System.out.println("exchange 8");}
         this.wallet.deposit(character.getPerson().getWallet(), costPackage);
         character.getPerson().getWallet().addResources(purchasePackage);
-
+        if(DB) {System.out.println("exchange 9");}
         if(character.getPerson().isPlayer()) {
             String message = EventTracker.Message("Shop", "Exchanged " + sellType + " for " + buyType);
             character.getEventTracker().addEvent(message);
@@ -81,6 +166,7 @@ public class Exchange extends ShopComponents {
         if (max.getAsInt() > 100_000_000) {
             wallet.cutBalanceInHalf();
         }
+        return true;
 
 
     }
@@ -160,17 +246,7 @@ public class Exchange extends ShopComponents {
         return defaultAlloys;
     }
 
-    public void setDefaultAlloys(int defaultAlloys) {
-        this.defaultAlloys = defaultAlloys;
-    }
 
-    public void setDefaultGold(int defaultGold) {
-        this.defaultGold = defaultGold;
-    }
-
-    public void setMarketFee(double marketFee) {
-        this.marketFee = marketFee;
-    }
 
 
 
@@ -241,6 +317,7 @@ public class Exchange extends ShopComponents {
             } else if (sell.equals(Resource.Gold) && buy.equals(Resource.Alloy)) {
                 return getGoldToAlloy();
             } else {
+                System.out.println("Virhe Exchange getRate() metodissa");
                 throw new IllegalArgumentException("Unsupported resource exchange combination.");
             }
         }

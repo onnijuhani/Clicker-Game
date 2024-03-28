@@ -54,6 +54,8 @@ public class Property implements PropertyObserver, Details, Ownable {
     protected Person owner;
     protected Maintenance maintenance;
     protected String name;
+
+
     protected Properties propertyEnum;
 
     protected UtilitySlot utilitySlot;
@@ -101,7 +103,9 @@ public class Property implements PropertyObserver, Details, Ownable {
             getDefense().increaseLevel();
             owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName()+"'s defence was increased"));
         }else{
-            owner.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough alloys to increase property defence"));
+            if(owner.isPlayer()){
+                owner.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough alloys to increase property defence"));
+            }
         }
     }
     public Quarter getLocation() {
@@ -161,6 +165,9 @@ public class Property implements PropertyObserver, Details, Ownable {
     }
     public void clearStates() {
         states.clear();
+    }
+    public Properties getPropertyEnum() {
+        return propertyEnum;
     }
 
     @Override

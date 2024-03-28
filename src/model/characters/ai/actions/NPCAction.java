@@ -31,6 +31,16 @@ public interface NPCAction extends Comparable<NPCAction> {
      */
     void defaultSkip();
 
+     void ambitiousAction();
+ void unambitiousAction();
+ void slaverAction();
+ void liberalAction();
+ void aggressiveAction();
+ void passiveAction();
+ void loyalAction();
+ void disloyalAction();
+ void attackerAction();
+ void defenderAction();
 
 
 }

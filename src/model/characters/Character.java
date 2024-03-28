@@ -15,7 +15,7 @@ public class Character implements NpcObserver, Details, Ownable {
 
 
     @Override
-    public void npcUpdate(int day, int month, int year) {
+    public void npcUpdate(int day, int month, int year){
 
         if (mandatoryFoodConsumption(day)) return; // food consumption should be the only 1 done here, should also be day1
         if (day == 2){

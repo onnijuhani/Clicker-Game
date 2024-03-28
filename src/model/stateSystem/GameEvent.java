@@ -1,6 +1,7 @@
 package model.stateSystem;
 
 import model.characters.Character;
+import model.characters.Person;
 import model.time.Time;
 
 import java.util.Arrays;
@@ -11,12 +12,12 @@ public class GameEvent {
     private int executionDay;
     private int executionMonth;
     private int executionYear;
-    private final List<Character> participants;
+    private final List<Person> participants;
 
-    public GameEvent(Event event, Character... participants) {
+    public GameEvent(Event event, Person... participants) {
         this.event = event;
         this.participants = Arrays.asList(participants);
-        for (Character participant : participants) {
+        for (Person participant : participants) {
             participant.getPerson().addEvent(this);
         }
     }
@@ -54,7 +55,7 @@ public class GameEvent {
     }
 
     public void endEvent() {
-        for (Character participant : participants) {
+        for (Person participant : participants) {
             participant.getPerson().getOngoingEvents().remove(this);
         }
     }

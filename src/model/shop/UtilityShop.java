@@ -49,31 +49,39 @@ public class UtilityShop extends ShopComponents {
         UtilitySlot slot = person.getProperty().getUtilitySlot();
         if ((type == UtilityBuildings.SlaveFacility && slot.isUtilityBuildingOwned(UtilityBuildings.WorkerCenter)) ||
                 (type == UtilityBuildings.WorkerCenter && slot.isUtilityBuildingOwned(UtilityBuildings.SlaveFacility))) {
-            person.getEventTracker().addEvent(EventTracker.Message("Error", "Cannot own both " + UtilityBuildings.SlaveFacility + " and " + UtilityBuildings.WorkerCenter));
+            if(person.isPlayer()) {
+                person.getEventTracker().addEvent(EventTracker.Message("Error", "Cannot own both " + UtilityBuildings.SlaveFacility + " and " + UtilityBuildings.WorkerCenter));
+            }
             return false;
         }
 
 
         if(person.getProperty().getUtilitySlot().getSlotAmount() == person.getProperty().getUtilitySlot().usedSlotAmount()){
-            person.getEventTracker().addEvent(EventTracker.Message("Error", "No more available utility slots"));
+            if(person.isPlayer()) {
+                person.getEventTracker().addEvent(EventTracker.Message("Error", "No more available utility slots"));
+            }
             return false;
         }
         int price = getBuildingPrice(type);
         if (!person.getWallet().hasEnoughResource(Resource.Gold, price)) {
-            person.getEventTracker().addEvent(EventTracker.Message("Error", "Insufficient gold to buy " + type));
+            if(person.isPlayer()) {
+                person.getEventTracker().addEvent(EventTracker.Message("Error", "Insufficient gold to buy " + type));
+            }
             return false;
         }
 
         UtilityBuilding newBuilding = createBuilding(type, price, person.getCharacter());
         if (newBuilding == null) {
-            person.getEventTracker().addEvent(EventTracker.Message("Error", "Unknown building type: " + type));
+            if(person.isPlayer()) {
+                person.getEventTracker().addEvent(EventTracker.Message("Error", "Unknown building type: " + type));
+            }
             return false;
         }
 
         Property property = person.getProperty();
         property.getUtilitySlot().addUtilityBuilding(type, newBuilding);
         person.getWallet().subtractGold(price);
-        person.getEventTracker().addEvent(EventTracker.Message("Shop", "Successfully purchased " + type + "!"));
+        person.getEventTracker().addEvent(EventTracker.Message("Major", "Successfully purchased " + type + "!")); //This goes to major instead to see wtf npc is doing
         return true;
     }
 

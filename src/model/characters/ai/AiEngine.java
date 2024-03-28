@@ -8,7 +8,6 @@ import model.characters.ai.actions.*;
 import java.util.*;
 
 public class AiEngine {
-
     private final CombatActions combatActions;
     private final PowerActions powerActions;
     private final UtilityActions utilityActions;
@@ -16,24 +15,26 @@ public class AiEngine {
     private final ManagementActions managementActions;
     private final Person person;
     private Map<Trait, Integer> profile;
-
     private final WeightedCircle actionCircle = new WeightedCircle(5,1);
-
 
     public AiEngine(Person person) {
         this.person = person;
-        this.combatActions = new CombatActions(person);
-        this.powerActions = new PowerActions(person);
-        this.utilityActions = new UtilityActions(person);
-        this.warActions = new WarActions(person);
-        this.managementActions = new ManagementActions(person);
-
         generatePersonalityProfile();
+
+        this.combatActions = new CombatActions(person, profile);
+        this.powerActions = new PowerActions(person, profile);
+        this.utilityActions = new UtilityActions(person, profile);
+        this.warActions = new WarActions(person, profile);
+        this.managementActions = new ManagementActions(person, profile);
+
+
 
         setUpActionLoop();
     }
 
-    public void executeAiEngine(){
+    public void executeAiEngine() {
+
+
 
         actionCircle.executeLoop();
 
@@ -42,6 +43,9 @@ public class AiEngine {
     private void setUpActionLoop() {
         actionCircle.addAll(utilityActions.getAllActions());
         actionCircle.addAll(combatActions.getAllActions());
+        actionCircle.addAll(managementActions.getAllActions());
+
+
     }
 
     /**

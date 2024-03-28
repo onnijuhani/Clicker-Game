@@ -45,7 +45,7 @@ public class EventManager {
                 event.action().run();
                 event.gameEvent().endEvent(); // Ends the event and removes it from Character
                 iterator.remove();
-            } //event.gameEvent().timeLeftUntilExecution() USED TO TRACK THE TIME DURING EVENT
+            } //event.gameEvent().timeLeftUntilExecution() USED TO TRACK THE TIME DURING EVENT, why is this disabled?
         }
     }
 }

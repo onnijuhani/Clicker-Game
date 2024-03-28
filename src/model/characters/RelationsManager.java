@@ -95,7 +95,8 @@ public class RelationsManager {
 
 
     /**
-     * Updates both managers but must be called by the winner
+     * Processes results. Must be called by the WINNER. Both managers are updated
+     * @param loser must be loser inserted here.
      */
     public void processResults(Person loser) {
         listOfDefeatedPersons.add(loser);

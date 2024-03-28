@@ -18,16 +18,18 @@ public class CombatActions {
     private final Predicate<Person> isInBattle = person -> person.hasState(State.IN_BATTLE);
     private final List<WeightedObject> allActions = new LinkedList<>();
 
+    private final Map<Trait, Integer> profile;
 
 
-    public CombatActions(Person person) {
+    public CombatActions(Person person, final Map<Trait, Integer> profile) {
         this.person = person;
         this.random = new Random();
+        this.profile = profile;
         createAllActions();
     }
 
     private void createAllActions() {
-        Duel duel = new Duel(1);
+        Duel duel = new Duel(1, profile);
         allActions.add(duel);
     }
 
@@ -40,17 +42,20 @@ public class CombatActions {
      * select a Set of possible targets, then call executeDuel method.
 
      */
-    class Duel extends WeightedObject implements NPCAction{
+    class Duel extends WeightedObject{
 
-        public Duel(int weight) {
-            super(weight);
+
+        public Duel(int weight, Map<Trait, Integer> profile) {
+            super(weight, profile);
         }
+
+
         @Override
         public void execute() {
             if(isInBattle.test(person)){
                 return;
             }
-            defaultSkip();
+            super.execute();
         }
         /**
          * default is to attack random enemy
@@ -226,13 +231,10 @@ public class CombatActions {
 
      Skipping here should improve either personal or property defence.
      */
-    class AuthorityBattle implements NPCAction{
+    class AuthorityBattle extends WeightedObject{
 
 
-        @Override
-        public void execute() {
 
-        }
 
         @Override
         public void defaultAction() {
@@ -259,13 +261,9 @@ public class CombatActions {
 
      SKIPPING =  INCREASE PROPERTY DEFENCE
      */
-    class Robbery implements NPCAction{
+    class Robbery extends WeightedObject {
 
 
-        @Override
-        public void execute() {
-
-        }
 
         @Override
         public void defaultAction() {

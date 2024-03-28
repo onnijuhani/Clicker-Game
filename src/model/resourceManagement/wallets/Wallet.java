@@ -25,6 +25,14 @@ public class Wallet {
         };
     }
 
+    public boolean isEmpty(){
+        return food == 0 && alloy == 0 && gold == 0;
+    }
+
+    public boolean isLowBalance(){
+        return food <= 20 && alloy <= 10 && gold <= 5;
+    }
+
     public int getResource(Resource type) {
         return switch (type) {
             case Food -> food;
@@ -63,12 +71,18 @@ public class Wallet {
         if (transfer == null) {
             throw new IllegalArgumentException("TransferPackage cannot be null.");
         }
+        if(!hasEnoughResources(transfer)){
+            return; // quick return if there isn't enough resources
+        }
         this.food -= transfer.food();
         this.alloy-= transfer.alloy();
         this.gold -= transfer.gold();
     }
 
     public void deposit(Wallet depositFromWallet, TransferPackage transfer){
+        if(!depositFromWallet.hasEnoughResources(transfer)){
+            return; // quick return if there isn't enough resources, should never happen tho.
+        }
         this.addResources(transfer);
         depositFromWallet.subtractResources(transfer);
     }
@@ -79,9 +93,20 @@ public class Wallet {
         depositFromWallet.subtractResources(transfer);
     }
 
-    public void withdrawal(Wallet withdrawalToWallet, TransferPackage transfer){
+
+    /**
+     * Withdrawal is automatic way to send resources from this wallet to another wallet using transferPackage
+     * @param withdrawalToWallet wallet that will receive the resources
+     * @param transfer transferPackage that contains the amounts
+     * @return returns true if the transaction happens and false if not. There must be enough resources in the wallet.
+     */
+    public boolean withdrawal(Wallet withdrawalToWallet, TransferPackage transfer){
+        if(!hasEnoughResources(transfer)){
+            return false; // quick return if there isn't enough resources
+        }
         this.subtractResources(transfer);
         withdrawalToWallet.addResources(transfer);
+        return true;
     }
     @Override
     public String toString() {

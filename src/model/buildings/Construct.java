@@ -1,54 +1,57 @@
 package model.buildings;
 
+import customExceptions.InsufficientResourcesException;
 import model.Settings;
 import model.buildings.properties.*;
 import model.buildings.utilityBuilding.UtilitySlot;
-import model.characters.Character;
+import model.characters.Person;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.stateSystem.Event;
 import model.stateSystem.EventTracker;
 import model.stateSystem.GameEvent;
-import model.time.PropertyManager;
 import model.time.EventManager;
+import model.time.PropertyManager;
 import model.worldCreation.Quarter;
 
 public class Construct {
 
-    public static void constructProperty(Character character) {
+    public static void constructProperty(Person person) throws InsufficientResourcesException {
 
-        Property oldHouse = character.getPerson().getProperty();
+        Property oldHouse = person.getProperty();
         Quarter location = oldHouse.getLocation();
         UtilitySlot oldUtilitySlot = oldHouse.getUtilitySlot();
 
-        Wallet wallet = character.getPerson().getWallet();
+        Wallet wallet = person.getWallet();
 
         Properties currentType = Properties.valueOf(oldHouse.getClass().getSimpleName());
 
         if (currentType == Properties.Fortress) {
-            System.out.println("Property is already at maximum level and cannot be upgraded.");
             return;
         }
-        Properties newType = getNextProperty(character);
-        TransferPackage cost = getCost(character);
+        Properties newType = getNextProperty(person);
+        TransferPackage cost = getCost(person);
 
         assert cost != null;
         if (wallet.hasEnoughResources(cost)) {
 
             wallet.subtractResources(cost);
 
-            assert newType != null;
+            assert newType != null; // wtf does this even do?
 
-            GameEvent gameEvent = new GameEvent(Event.CONSTRUCTION, character);
-            character.getEventTracker().addEvent(EventTracker.Message("Major", "Construction Started"));
+            GameEvent gameEvent = new GameEvent(Event.CONSTRUCTION, person);
+            person.getEventTracker().addEvent(EventTracker.Message("Major", "Construction of "+newType+ " started"));
 
             int daysUntilEvent = getDaysUntilEvent(newType);
 
             EventManager.scheduleEvent(() -> {
-                Construct.finalizeConstruction(character, newType, location, oldHouse, oldUtilitySlot);
+                Construct.finalizeConstruction(person, newType, location, oldHouse, oldUtilitySlot);
             }, daysUntilEvent, gameEvent);
         } else {
-            character.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough resources for construction"));
+            if (person.isPlayer()){
+            person.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough resources for construction"));
+            }
+            throw new InsufficientResourcesException("Not enough resources for construction of " + newType, cost);
         }
     }
 
@@ -58,14 +61,14 @@ public class Construct {
         return (int) (baseConstructionTime * constructionTimeMultiplier);
     }
 
-    private static void finalizeConstruction(Character character, Properties newType, Quarter location, Property oldHouse, UtilitySlot oldUtilitySlot) {
-        Property newHouse = initiateNewProperty(newType, oldHouse.getName(), character);
+    private static void finalizeConstruction(Person person, Properties newType, Quarter location, Property oldHouse, UtilitySlot oldUtilitySlot) {
+        Property newHouse = initiateNewProperty(newType, oldHouse.getName(), person);
         newHouse.setFirstTimeReached(false);
-        switchPropertyAttributes(character, newHouse, location, oldHouse, oldUtilitySlot);
-        character.getEventTracker().addEvent(EventTracker.Message("Major", "New property constructed"));
+        switchPropertyAttributes(person, newHouse, location, oldHouse, oldUtilitySlot);
+        person.getEventTracker().addEvent(EventTracker.Message("Major", "New property constructed"));
     }
 
-    private static void switchPropertyAttributes(Character character, Property newHouse, Quarter location, Property oldHouse, UtilitySlot oldUtilitySlot) {
+    private static void switchPropertyAttributes(Person person, Property newHouse, Quarter location, Property oldHouse, UtilitySlot oldUtilitySlot) {
         newHouse.setLocation(location);
         newHouse.getVault().setOwner(null);
         newHouse.getVault().deleteFromGameManager();
@@ -75,11 +78,11 @@ public class Construct {
         newHouse.getUtilitySlot().setOwnedUtilityBuildings(oldUtilitySlot.getOwnedUtilityBuildings());
         newHouse.setDefense(oldHouse.getDefense());
         PropertyManager.unsubscribe(oldHouse);
-        character.getPerson().setProperty(newHouse);
+        person.setProperty(newHouse);
     }
 
-    public static Properties getNextProperty(Character character) {
-        Property oldHouse = character.getPerson().getProperty();
+    public static Properties getNextProperty(Person person) {
+        Property oldHouse = person.getProperty();
         Properties currentType = Properties.valueOf(oldHouse.getClass().getSimpleName());
         Properties[] allProperties = Properties.values();
         if (currentType.ordinal() >= allProperties.length - 1){
@@ -89,28 +92,28 @@ public class Construct {
         }
     }
 
-    private static Property initiateNewProperty(Properties type, String oldName, Character character) {
+    private static Property initiateNewProperty(Properties type, String oldName, Person person) {
         return switch (type) {
-            case Shack -> new Shack(oldName, character.getPerson());
-            case Cottage -> new Cottage(oldName, character.getPerson());
-            case Villa -> new Villa(oldName, character.getPerson());
-            case Mansion -> new Mansion(oldName, character.getPerson());
-            case Manor -> new Manor(oldName, character.getPerson());
-            case Castle -> new Castle(oldName, character.getPerson());
-            case Citadel -> new Citadel(oldName, character.getPerson());
-            case Fortress -> new Fortress(oldName, character.getPerson());
+            case Shack -> new Shack(oldName, person);
+            case Cottage -> new Cottage(oldName, person);
+            case Villa -> new Villa(oldName, person);
+            case Mansion -> new Mansion(oldName, person);
+            case Manor -> new Manor(oldName, person);
+            case Castle -> new Castle(oldName, person);
+            case Citadel -> new Citadel(oldName, person);
+            case Fortress -> new Fortress(oldName, person);
         };
     }
 
-    public static TransferPackage getCost(Character character) {
+    public static TransferPackage getCost(Person person) {
 
-        Properties currentType = Properties.valueOf(character.getPerson().getProperty().getClass().getSimpleName());
+        Properties currentType = Properties.valueOf(person.getProperty().getClass().getSimpleName());
         Properties[] allProperties = Properties.values();
 
         if (currentType.ordinal() == allProperties.length - 1) {
-            return null;
+            return null;    // this should never occur and if it does the game probably crashes
         } else {
-            Properties newType = getNextProperty(character);
+            Properties newType = getNextProperty(person);
             int baseFood = Settings.getInt("constructBaseFood");
             int baseAlloy = Settings.getInt("constructBaseAlloy");
             int baseGold = Settings.getInt("constructBaseGold");

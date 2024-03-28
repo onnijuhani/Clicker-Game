@@ -36,11 +36,12 @@ public class Person implements PersonalAttributes, Ownable {
     private final StrikesTracker strikesTracker;
     private Character character;
     private Role role;
-    private boolean isPlayer = false;
+    private boolean isPlayer = true;
     private AiEngine aiEngine;
 
 
     public Person(Boolean isNpc) {
+        this.isPlayer = !isNpc;
         this.wallet = new Wallet(this);
         this.workWallet = new WorkWallet(this, wallet);
         this.relationsManager = new RelationsManager(this);
@@ -63,8 +64,14 @@ public class Person implements PersonalAttributes, Ownable {
 
         this.aiEngine = new AiEngine(this);
 
-        eventTracker.addEvent(EventTracker.Message("Major", "You are "+character));
-        eventTracker.addEvent(EventTracker.Message("Major","Trait: "+getAiEngine().getProfile().keySet()));
+        eventTracker.addEvent(EventTracker.Message("Major",
+                "\nYou are "+character + "\n" +
+                        "Traits: "+getAiEngine().getProfile() + "\n" +
+                        "Starting Area: " + property.getLocation().getFullHierarchyInfo() + "\n" +
+                        "Your Authority is " + role.getAuthority()
+        ));
+
+
 
 
     }

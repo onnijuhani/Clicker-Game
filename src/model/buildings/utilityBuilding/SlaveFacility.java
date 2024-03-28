@@ -4,6 +4,7 @@ import javafx.animation.KeyFrame;
 import javafx.application.Platform;
 import javafx.util.Duration;
 import model.characters.Person;
+import model.characters.Trait;
 import model.resourceManagement.TransferPackage;
 import model.stateSystem.EventTracker;
 
@@ -82,15 +83,22 @@ public class SlaveFacility extends UtilityBuilding {
         production[2] += Math.max(1, production[2] / (increaseDivider * (level - MAX_LEVEL)));
     }
 
-    private void payConsequence() {
+    protected void payConsequence() {
         synchronized (this) {
             Set<Person> alliesCopy = new HashSet<>(owner.getRelationsManager().getAllies());
             for (Person ally : alliesCopy) {
-                if (!ally.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.SlaveFacility)) {
+
+                if (!ally.getAiEngine().getProfile().containsKey(Trait.Slaver)) { // slavers don't mind
                     owner.getRelationsManager().removeAlly(ally);
                     ally.getRelationsManager().removeAlly(owner);
+
+                    if(ally.getAiEngine().getProfile().containsKey(Trait.Liberal)){ // liberals become enemies
+                        owner.getRelationsManager().addEnemy(ally);
+                        ally.getRelationsManager().addEnemy(owner);
+                    }
+
                     if(owner.isPlayer()) {
-                        owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Relationship with " + ally + " cooled due to Slave Facility construction."));
+                        owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Relationship with " + ally.getCharacter() + "\n\t\t\t\tcooled due to Slave Facility construction."));
                     }
                 }
             }
@@ -98,11 +106,11 @@ public class SlaveFacility extends UtilityBuilding {
 
         Set<Person> enemiesCopy = new HashSet<>(owner.getRelationsManager().getEnemies());
         for (Person enemy : enemiesCopy) {
-            if (enemy.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.SlaveFacility)) {
+            if (enemy.getAiEngine().getProfile().containsKey(Trait.Slaver)) { // Enemies that are slavers are no longer enemies
                 owner.getRelationsManager().removeEnemy(enemy);
                 enemy.getRelationsManager().removeEnemy(owner);
                 if(owner.isPlayer()) {
-                    owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Common interests in Slave Facilities have improved your standing with " + enemy + "."));
+                    owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Common interests in Slave Facilities\n\t\t\t\thave improved your standing with " + enemy.getCharacter() + "."));
                 }
             }
         }
