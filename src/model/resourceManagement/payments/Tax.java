@@ -23,6 +23,48 @@ public class Tax {
 
     }
 
+    public void setExtremeTaxRate(){
+        taxInfoByResource.get(Resource.Food).setTaxPercentage(80);
+        taxInfoByResource.get(Resource.Alloy).setTaxPercentage(80);
+        taxInfoByResource.get(Resource.Food).setTaxPercentage(80);
+    }
+
+    public void setStandardTaxRate(){
+        taxInfoByResource.get(Resource.Food).setTaxPercentage(60);
+       taxInfoByResource.get(Resource.Alloy).setTaxPercentage(60);
+       taxInfoByResource.get(Resource.Food).setTaxPercentage(60);
+    }
+
+    public void setMediumTaxRate(){
+        taxInfoByResource.get(Resource.Food).setTaxPercentage(40);
+        taxInfoByResource.get(Resource.Alloy).setTaxPercentage(40);
+        taxInfoByResource.get(Resource.Food).setTaxPercentage(40);
+    }
+
+    public void setLowTaxRate(){
+        taxInfoByResource.get(Resource.Food).setTaxPercentage(20);
+        taxInfoByResource.get(Resource.Alloy).setTaxPercentage(20);
+        taxInfoByResource.get(Resource.Food).setTaxPercentage(20);
+    }
+
+
+    /**
+     * Set custom tax rate between 20-80 to any resource
+     * @param type the resource type that taxRate is being changed
+     * @param intPercentage new tax rate, insert as integer
+     */
+    public void setAnyTaxRate(Resource type, int intPercentage){
+
+        if(intPercentage < 20 || intPercentage > 80){
+            return; // these are the limits
+        }
+
+        taxInfoByResource.get(type).setTaxPercentage(intPercentage);
+
+    }
+
+
+
     public TaxInfo getTaxInfo(Resource resource) {
         return taxInfoByResource.get(resource);
     }
@@ -65,20 +107,17 @@ public class Tax {
         return taxRatesBuilder.toString().trim(); // Trim to remove the last newline
     }
 
+
+
     public static class TaxInfo {
         private double taxPercentage;
-
-
         public TaxInfo(double taxPercentage) {
             this.taxPercentage = taxPercentage;
 
         }
-
         public void setTaxPercentage(int taxPercentage) {
             this.taxPercentage = taxPercentage;
         }
-
-
 
         public double calculateTax(double amount) {
             return amount * (taxPercentage / 100.0);

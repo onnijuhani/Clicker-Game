@@ -295,12 +295,15 @@ public class CombatActions {
 
         @Override
         public void execute() {
+            if(Settings.DB) {System.out.println("rob execute 1" + this.getClass().getSimpleName());}
             if(Time.year < 1){
                 return;
             }
+            if(Settings.DB) {System.out.println("rob execute 2" + this.getClass().getSimpleName());}
             if(isInBattle.test(person)){
                 return;
             }
+            if(Settings.DB) {System.out.println("rob execute 3" + this.getClass().getSimpleName());}
             super.execute();
         }
 
@@ -310,28 +313,29 @@ public class CombatActions {
          */
         @Override
         public void defaultAction() {
-
+            if(Settings.DB) {System.out.println("default rob 1" + this.getClass().getSimpleName());}
             Set<Person> possibleTargets = person.getRelationsManager().getEnemies();
+            if(Settings.DB) {System.out.println("default rob 2" + this.getClass().getSimpleName());}
             if(!(mainTarget == null)){
                 possibleTargets.add(mainTarget.getPerson());
             }
-
+            if(Settings.DB) {System.out.println("default rob 3" + this.getClass().getSimpleName());}
             executeRobbery(possibleTargets);
 
         }
         @Override
         public void liberalAction() {
-
+            if(Settings.DB){System.out.println("librobbery 1");}
             Set<Person> possibleTargets = person.getRelationsManager().getEnemies();
-
+            if(Settings.DB){System.out.println("librobbery 2");}
             possibleTargets.removeIf(target -> !target.getAiEngine().getProfile().containsKey(Trait.Slaver)); // Liberal only want to attack slavers
-
+            if(Settings.DB){System.out.println("librobbery 3");}
             if(possibleTargets.isEmpty()){
                 possibleTargets.addAll(person.getRole().getNation().getSlaverGuild()); // if its empty, add all slaver guilders.
-            }
+            }if(Settings.DB){System.out.println("librobbery 4");}
             if(!(mainTarget == null)){
                 possibleTargets.add(mainTarget.getPerson());
-            }
+            }if(Settings.DB){System.out.println("librobbery 5");}
             executeRobbery(possibleTargets);
         }
         @Override
@@ -374,10 +378,13 @@ public class CombatActions {
 
         @Override
         public void aggressiveAction(){
+
             Set<Person> possibleTargets = person.getRelationsManager().getEnemies();
 
             Nation nation = person.getRole().getNation(); // aggressive picks random quarter and attacks randomly
-            possibleTargets.addAll(nation.getAllQuarters().get(random.nextInt(nation.numberOfQuarters)-5).getPersonsLivingHere());
+
+            possibleTargets.addAll(nation.getAllQuarters().get(random.nextInt(nation.numberOfQuarters)).getPersonsLivingHere());
+
 
             if(!(mainTarget == null)){
                 possibleTargets.add(mainTarget.getPerson());

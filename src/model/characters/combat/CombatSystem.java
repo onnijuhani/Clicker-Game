@@ -329,7 +329,6 @@ public class CombatSystem {
     public void robbery() {
 
 
-        // robbery becomes possible only after third year to prevent unfair situations.
         if(Time.year < 1){
             if(attacker.isPlayer()){
                 attacker.getEventTracker().addEvent(EventTracker.Message("Error", "Robbery is only possible after first year"));
@@ -550,9 +549,7 @@ public class CombatSystem {
     }
 
 
-    /**
-     *
-     */
+
     private void executeRadicalLoyaltyChanges() {
         attacker.getRelationsManager().addEnemy(defender);
         defender.getRelationsManager().addEnemy(attacker);

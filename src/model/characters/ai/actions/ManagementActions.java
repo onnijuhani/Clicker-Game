@@ -7,6 +7,8 @@ import model.buildings.Property;
 import model.buildings.properties.Fortress;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.Person;
+import model.characters.Role;
+import model.characters.Status;
 import model.characters.Trait;
 import model.characters.ai.Aspiration;
 import model.characters.ai.actionCircle.WeightedObject;
@@ -184,6 +186,139 @@ public class ManagementActions {
             }
         }
     }
+
+
+
+    class EvaluateRoleSpecificNeeds extends WeightedObject {
+
+        public EvaluateRoleSpecificNeeds(int weight, Map<Trait, Integer> profile) {
+            super(weight, profile);
+        }
+
+        @Override
+        public void execute(){
+            defaultAction();
+        }
+
+        /**
+         * default is the only method here
+         */
+        @Override
+        public void defaultAction() {
+
+            Role role = person.getRole();
+            Status status = role.getStatus();
+
+            switch (status) {
+                case Farmer:
+                    person.addAspiration(Aspiration.INVEST_IN_FOOD_PRODUCTION);
+
+                case Miner:
+                    person.addAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION);
+                    person.addAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION);
+
+                case Merchant:
+
+                    person.addAspiration(Aspiration.DEPOSIT_TO_VAULT);
+
+                case Captain:
+
+                    if(!evaluateExtremeTaxPolicy()){
+                        if(!evaluateLowTaxPolicy()){
+                            person.addAspiration(Aspiration.SET_STANDARD_TAX);
+                        }
+                    }
+
+
+                case Mayor:
+
+                    if(!evaluateExtremeTaxPolicy()){
+                        if(!evaluateLowTaxPolicy()){
+                            person.addAspiration(Aspiration.SET_STANDARD_TAX);
+                        }
+                    }
+
+
+                case Governor:
+
+                    if(!evaluateExtremeTaxPolicy()){
+                        if(!evaluateLowTaxPolicy()){
+                            person.addAspiration(Aspiration.SET_STANDARD_TAX);
+                        }
+                    }
+
+                case Mercenary:
+
+
+
+                case King:
+
+                    if(!evaluateExtremeTaxPolicy()){
+                        if(!evaluateLowTaxPolicy()){
+                            person.addAspiration(Aspiration.SET_STANDARD_TAX);
+                        }
+                    }
+
+                case Noble:
+
+
+
+                case Vanguard:
+
+
+
+                case Peasant:
+
+                }
+            }
+
+        private boolean evaluateExtremeTaxPolicy() {
+            Integer aggressive = person.getAiEngine().getProfile().get(Trait.Aggressive);
+            Integer disloyal = person.getAiEngine().getProfile().get(Trait.Disloyal);
+
+
+            if (aggressive != null && disloyal != null) {
+                if (aggressive > 25 && disloyal > 25) {
+                    person.addAspiration(Aspiration.SET_EXTREME_TAXES);
+                    return true;
+                }
+                if (aggressive > 75 || disloyal > 75) {
+                    person.addAspiration(Aspiration.SET_EXTREME_TAXES);
+                    return true;
+                }
+            }
+
+            Integer slaver = person.getAiEngine().getProfile().get(Trait.Slaver);
+            if( slaver != null && slaver > 20) {
+                person.addAspiration(Aspiration.SET_EXTREME_TAXES);
+                return true;
+            }
+
+            return false;
+
+        }
+
+        private boolean evaluateLowTaxPolicy() {
+            Integer loyal = person.getAiEngine().getProfile().get(Trait.Loyal);
+            Integer unambitious = person.getAiEngine().getProfile().get(Trait.Unambitious);
+            Integer liberal = person.getAiEngine().getProfile().get(Trait.Liberal);
+
+            if (loyal != null && unambitious != null && liberal != null) {
+                if (loyal > 10 && unambitious > 10 && liberal > 10) {
+                    person.addAspiration(Aspiration.SET_LOW_TAXES);
+                    return true;
+                }
+                if (loyal > 50 || unambitious > 70 || liberal > 40) {
+                    person.addAspiration(Aspiration.SET_MEDIUM_TAXES);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+    }
+
+
 
     /**
      * THIS METHOD SHOULD ONLY EVALUATE CURRENT NEEDS BUT !!!NOT!!! DO ANYTHING ABOUT THEM. JUST ADD IT INTO ASPIRATIONS
