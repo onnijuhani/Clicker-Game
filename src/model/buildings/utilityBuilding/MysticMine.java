@@ -25,8 +25,8 @@ public class MysticMine extends UtilityBuilding {
             alloyProduction *= 2;
             goldProduction *= 2;
         } else {
-            alloyProduction += Math.max(1, alloyProduction / (increaseDivider * (level - MAX_LEVEL)));
-            goldProduction += Math.max(1, goldProduction / (increaseDivider * (level - MAX_LEVEL)));
+            alloyProduction += Math.max(50, alloyProduction / (increaseDivider * (level - MAX_LEVEL)));
+            goldProduction += Math.max(50, goldProduction / (increaseDivider * (level - MAX_LEVEL)));
         }
         return true;
     }

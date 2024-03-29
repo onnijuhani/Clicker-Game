@@ -7,6 +7,7 @@ import java.util.Properties;
 public class Settings {
 
     private static final Properties settings = new Properties();
+    public static final boolean DB = true;
 
     static {
         try (FileInputStream input = new FileInputStream("resources/propertySetting.properties")) {

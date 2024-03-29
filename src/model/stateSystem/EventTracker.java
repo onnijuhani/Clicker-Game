@@ -41,12 +41,12 @@ public class EventTracker {
 
         if (isNpc) {
             // NPC's have lower amounts stored
-            maxErrorEvents = 3;
-            maxMajorEvents = 50;
+            maxErrorEvents = 0;
+            maxMajorEvents = Settings.getInt("maxMajorEvents");;
             maxClickerEvents = 0;
-            maxMinorEvents = 10;
-            maxShopEvents = 3;
-            maxUtilityEvents = 3;
+            maxMinorEvents = 0;
+            maxShopEvents = 0;
+            maxUtilityEvents = 0;
         } else {
             maxErrorEvents = Settings.getInt("maxErrorEvents");
             maxMajorEvents = Settings.getInt("maxMajorEvents");

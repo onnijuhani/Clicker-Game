@@ -5,9 +5,18 @@ import java.util.HashMap;
 public class UtilitySlot {
 
     private final int slotAmount;
-
-
     private HashMap<UtilityBuildings,UtilityBuilding> ownedUtilityBuildings;
+
+    public void increaseTotalLevels() {
+       totalUpgradeLevels++;
+    }
+
+    public int getTotalUpgradeLevels() {
+        return totalUpgradeLevels;
+    }
+
+    private int totalUpgradeLevels = 0;
+
 
     public UtilitySlot(int slotAmount) {
         this.slotAmount = slotAmount;

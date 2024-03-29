@@ -1,11 +1,16 @@
 package model.characters.ai.actions;
 
+import model.Settings;
+import model.buildings.Property;
 import model.characters.Character;
 import model.characters.*;
 import model.characters.ai.Aspiration;
 import model.characters.ai.actionCircle.WeightedObject;
 import model.characters.combat.CombatService;
+import model.resourceManagement.Resource;
 import model.stateSystem.State;
+import model.time.Time;
+import model.worldCreation.Nation;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -17,7 +22,6 @@ public class CombatActions {
     private Character mainTarget;
     private final Predicate<Person> isInBattle = person -> person.hasState(State.IN_BATTLE);
     private final List<WeightedObject> allActions = new LinkedList<>();
-
     private final Map<Trait, Integer> profile;
 
 
@@ -29,8 +33,11 @@ public class CombatActions {
     }
 
     private void createAllActions() {
-        Duel duel = new Duel(1, profile);
+        Duel duel = new Duel(4, profile);
+        Robbery robbery = new Robbery(10, profile);
+
         allActions.add(duel);
+        allActions.add(robbery);
     }
 
     public List getAllActions() {
@@ -79,19 +86,37 @@ public class CombatActions {
             Set<Person> listOfPossibleTargets = person.getRole().getNation().getSlaverGuild();
             executeDuel(listOfPossibleTargets);
         }
-        @Override
-        public void defaultSkip() {
+        public void passiveAction(){
+            defaultSkip();
+        }
+        public void slaverAction(){
+            defaultSkip();
+        }
+        public void unambitiousAction(){
+            defaultSkip();
+        }
+        public void attackerAction(){
+            person.getCombatStats().upgradeOffenseWithGold(); // attacker gets a chance to upgrade attack here
+            defaultSkip();
+        }
 
-            if(person.getAspirations().contains(Aspiration.ACHIEVE_HIGHER_POSITION)){
-                mainTarget = person.getRole().getAuthority().getCharacterInThisPosition();
-                if(mainTarget.getPerson() == person){
-                    return; // Cannot attack self
-                }
-                if(!(mainTarget instanceof AuthorityCharacter)){
-                    return; // quick return if there is a problem
-                }
-                roadToAchieveHigherPosition();
+
+        @Override
+        public void ambitiousAction() {
+
+            if(random.nextInt(6) > 2) { //ambitious duels, but has small chance to road to achieve higher Position
+                defaultAction();
+                return;
             }
+
+            mainTarget = person.getRole().getAuthority().getCharacterInThisPosition();
+            if(mainTarget.getPerson() == person){
+                return; // Cannot attack self
+            }
+            if(!(mainTarget instanceof AuthorityCharacter)){
+                return; // quick return if there is a problem with the targets role
+            }
+            roadToAchieveHigherPosition();
 
         }
 
@@ -199,6 +224,9 @@ public class CombatActions {
             person.getCombatStats().upgradeOffenseWithGold();
 
 
+            if(randomlySelectedEnemy.getAiEngine().getProfile().containsKey(Trait.Defender)) { // Defenders get to upgrade defence Here
+                randomlySelectedEnemy.getCombatStats().upgradeDefenceWithGold();
+            }
 
             // Execute duel against the selected weakest undefeated enemy
             CombatService.executeDuel(person.getCharacter(), randomlySelectedEnemy.getCharacter());
@@ -234,8 +262,6 @@ public class CombatActions {
     class AuthorityBattle extends WeightedObject{
 
 
-
-
         @Override
         public void defaultAction() {
 
@@ -263,22 +289,185 @@ public class CombatActions {
      */
     class Robbery extends WeightedObject {
 
+        public Robbery(int weight, Map<Trait, Integer> profile) {
+            super(weight, profile);
+        }
+
+        @Override
+        public void execute() {
+            if(Time.year < 1){
+                return;
+            }
+            if(isInBattle.test(person)){
+                return;
+            }
+            super.execute();
+        }
 
 
+        /**
+         * default is to rob random enemy. Add mainTarget to list if they have one
+         */
         @Override
         public void defaultAction() {
 
+            Set<Person> possibleTargets = person.getRelationsManager().getEnemies();
+            if(!(mainTarget == null)){
+                possibleTargets.add(mainTarget.getPerson());
+            }
+
+            executeRobbery(possibleTargets);
+
+        }
+        @Override
+        public void liberalAction() {
+
+            Set<Person> possibleTargets = person.getRelationsManager().getEnemies();
+
+            possibleTargets.removeIf(target -> !target.getAiEngine().getProfile().containsKey(Trait.Slaver)); // Liberal only want to attack slavers
+
+            if(possibleTargets.isEmpty()){
+                possibleTargets.addAll(person.getRole().getNation().getSlaverGuild()); // if its empty, add all slaver guilders.
+            }
+            if(!(mainTarget == null)){
+                possibleTargets.add(mainTarget.getPerson());
+            }
+            executeRobbery(possibleTargets);
+        }
+        @Override
+        public void slaverAction() {
+
+            Set<Person> possibleTargets = person.getRelationsManager().getEnemies();
+
+            possibleTargets.removeIf(target -> target.getAiEngine().getProfile().containsKey(Trait.Slaver)); // Remove other Slavers just in case
+
+            if(possibleTargets.isEmpty()){
+                possibleTargets.addAll(person.getRole().getNation().getFreedomFighters()); // if its empty, add all liberal guilders.
+            }
+            if(!(mainTarget == null)){
+                possibleTargets.add(mainTarget.getPerson());
+            }
+            executeRobbery(possibleTargets);
         }
 
         @Override
-        public void defaultSkip() {
+        public void disloyalAction() {
 
+            Set<Person> possibleTargets = person.getRelationsManager().getAllies(); // disloyal prefers to attack allies and authorities
+
+            possibleTargets.addAll(person.getProperty().getLocation().getPersonsLivingHere()); // add everyone from his quarter
+
+            if(!(mainTarget == null)){
+                possibleTargets.add(mainTarget.getPerson());
+            }
+
+            possibleTargets.add(person.getRole().getAuthority().getCharacterInThisPosition().getPerson()); // add authorities
+            possibleTargets.add(person.getRole().getAuthority().getCharacterInThisPosition().getRole().getAuthority().getCharacterInThisPosition().getPerson());
+
+            executeRobbery(possibleTargets);
         }
 
         @Override
-        public int compareTo(NPCAction o) {
-            return 0;
+        public void passiveAction(){
+            defaultSkip();
         }
+
+        @Override
+        public void aggressiveAction(){
+            Set<Person> possibleTargets = person.getRelationsManager().getEnemies();
+
+            Nation nation = person.getRole().getNation(); // aggressive picks random quarter and attacks randomly
+            possibleTargets.addAll(nation.getAllQuarters().get(random.nextInt(nation.numberOfQuarters)-5).getPersonsLivingHere());
+
+            if(!(mainTarget == null)){
+                possibleTargets.add(mainTarget.getPerson());
+            }
+
+            executeRobbery(possibleTargets);
+
+        }
+        private void executeRobbery(Set<Person> possibleTargets){
+            if (possibleTargets.isEmpty()) {
+                return;
+            }
+            if(Settings.DB){System.out.println("robbery 1");}
+
+            Resource resource = decideWhatResourceToTarget();
+
+            if(Settings.DB){System.out.println("robbery 2");}
+
+            double riskRewardRatio = 0; // higher the better
+            Person selectedTarget = null;
+
+            for (Person target : possibleTargets){
+
+                double riskReward = calculateRiskReward(target, resource);
+
+                if(riskReward > riskRewardRatio){
+                    riskRewardRatio = riskReward;
+                    selectedTarget = target;
+                }
+            }
+            if(Settings.DB){System.out.println("robbery 3");}
+
+            if (selectedTarget == null){
+                System.out.println("execute Robbery Action has NULL in selected target");
+                return;  // should never happen but will end here if it does
+            }
+            if(Settings.DB){System.out.println("robbery 4");}
+
+            if(selectedTarget.getProperty().getVault().isLowBalance()){
+                return; // double check to not rob low balance vault
+            }
+            if(Settings.DB){System.out.println("robbery 5");}
+
+            if(person.getAiEngine().getProfile().containsKey(Trait.Attacker)){ // attacker gets to upgrade his attack twice just before attacking
+                selectedTarget.getCombatStats().upgradeOffenseWithGold();
+            }
+            if(Settings.DB){System.out.println("robbery 6");}
+            if (selectedTarget.getProperty().getDefense().getUpgradeLevel() - 3 > person.getCombatStats().getOffenseLevel()){
+                if(!(person.getAiEngine().getProfile().containsKey(Trait.Aggressive))){
+                    return; // abort if the level difference is just too big and person is not aggressive
+                }
+            }
+            if(Settings.DB){System.out.println("robbery 7");}
+            if(selectedTarget.getAiEngine().getProfile().containsKey(Trait.Defender)){ // defender gets unfair way to increase his defence just before being attacked
+                selectedTarget.getProperty().upgradeDefence();
+            }
+            if(Settings.DB){System.out.println("robbery 8");}
+            CombatService.executeRobbery(person.getCharacter(), selectedTarget.getCharacter());
+
+        }
+
+        private double calculateRiskReward(Person target, Resource resource) {
+            Property targetProperty = target.getProperty();
+
+            double defence = targetProperty.getDefense().getUpgradeLevel();
+            double amount = targetProperty.getVault().getResource(resource);
+            double offence = person.getCombatStats().getOffenseLevel();
+            double base = 10;
+
+            if(targetProperty.getVault().isLowBalance()){
+                return 0;
+            }
+
+            return amount * ( Math.max(offence, 1)/ Math.max(defence, 1) ) / base;
+        }
+
+        private Resource decideWhatResourceToTarget() {
+            // check if there is need for certain resource and target it, prefer Gold to other resources.
+            Resource resource;
+            EnumSet<Aspiration> aspirations = person.getAspirations();
+            if(aspirations.contains(Aspiration.GET_FOOD_INSTANTLY)){
+                resource = Resource.Food;
+            }else if (aspirations.contains(Aspiration.GET_ALLOYS_INSTANTLY)){
+                resource = Resource.Alloy;
+            }else{
+                resource = Resource.Gold;
+            }
+            return resource;
+        }
+
     }
 
 

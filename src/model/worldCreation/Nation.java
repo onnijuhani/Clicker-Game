@@ -21,6 +21,7 @@ public class Nation extends ControlledArea implements Details {
     private final Continent continent;
     private final Shop shop;
     protected LinkedList<Quarter> allQuarters;
+    public int numberOfQuarters;
     private List<Character> nationsGenerals = null;
     private boolean isGeneralsCacheValid = false;
     private final Set<Person> slaverGuild = new HashSet<>();
@@ -253,5 +254,6 @@ public class Nation extends ControlledArea implements Details {
 
     public void addQuarterToNation(Quarter quarter){
         getAllQuarters().add(quarter);
+        numberOfQuarters++;
     }
 }

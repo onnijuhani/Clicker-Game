@@ -64,6 +64,11 @@ public class Person implements PersonalAttributes, Ownable {
 
         this.aiEngine = new AiEngine(this);
 
+        if(isPlayer){
+            return;
+        }
+
+
         eventTracker.addEvent(EventTracker.Message("Major",
                 "\nYou are "+character + "\n" +
                         "Traits: "+getAiEngine().getProfile() + "\n" +
@@ -77,9 +82,7 @@ public class Person implements PersonalAttributes, Ownable {
     }
 
     private void delayMethods() {
-        if(isPlayer){
-            return;
-        }
+
         // this is delayed because of eventTracker
         javafx.animation.Timeline timeline = new javafx.animation.Timeline(new KeyFrame(
                 Duration.millis(1000), // Delay before executing the task

@@ -29,8 +29,12 @@ public class Wallet {
         return food == 0 && alloy == 0 && gold == 0;
     }
 
+    public boolean hasEmptySlot(){
+        return food <= 0 || alloy <= 0 || gold <= 0;
+    }
+
     public boolean isLowBalance(){
-        return food <= 20 && alloy <= 10 && gold <= 5;
+        return food <= 100 && alloy <= 50 && gold <= 10;
     }
 
     public int getResource(Resource type) {

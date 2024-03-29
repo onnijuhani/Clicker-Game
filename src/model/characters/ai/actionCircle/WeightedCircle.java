@@ -1,5 +1,7 @@
 package model.characters.ai.actionCircle;
 
+import model.Settings;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -79,34 +81,34 @@ public class WeightedCircle implements Circle<WeightedObject> {
 
     public void executeLoop() {
 
-        System.out.println("loop 1");
+        if(Settings.DB){System.out.println("loop 1");}
 
         if (circle.isEmpty()) {
             return;
         }
         WeightedObject maxWeightObject = null;
 
-        System.out.println("loop 2");
+        if(Settings.DB){System.out.println("loop 2");}
         for (WeightedObject obj : circle) {
             if (maxWeightObject == null || obj.getWeight() > maxWeightObject.getWeight()) {
                 maxWeightObject = obj;
             }
         }
 
-        System.out.println("loop 3");
+        if(Settings.DB){System.out.println("loop 3");}
         for (WeightedObject obj : circle) {
             obj.incrementWeight(weightIncrement);
         }
-        System.out.println("loop 4");
 
-        System.out.println(maxWeightObject);
+
+        if(Settings.DB){System.out.println("loop 4"+maxWeightObject);}
         if (maxWeightObject.getWeight() >= weightThreshold) {
             circle.remove(maxWeightObject);
             maxWeightObject.resetWeight();
             circle.addLast(maxWeightObject);
             maxWeightObject.execute();
         }
-        System.out.println("loop 5");
+        if(Settings.DB){System.out.println("loop 5");}
 
     }
 

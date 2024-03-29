@@ -78,9 +78,9 @@ public class SlaveFacility extends UtilityBuilding {
         return true;
     }
     public void increaseProductionAfterMaxReached() {
-        production[0] += Math.max(1, production[0] / (increaseDivider * (level - MAX_LEVEL)));
-        production[1] += Math.max(1, production[1] / (increaseDivider * (level - MAX_LEVEL)));
-        production[2] += Math.max(1, production[2] / (increaseDivider * (level - MAX_LEVEL)));
+        production[0] += Math.max(50, production[0] / (increaseDivider * (level - MAX_LEVEL)));
+        production[1] += Math.max(50, production[1] / (increaseDivider * (level - MAX_LEVEL)));
+        production[2] += Math.max(50, production[2] / (increaseDivider * (level - MAX_LEVEL)));
     }
 
     protected void payConsequence() {

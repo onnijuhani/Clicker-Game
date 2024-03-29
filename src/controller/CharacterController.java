@@ -122,6 +122,7 @@ public class CharacterController extends BaseController  {
         System.out.println("Current Aspirations: "+currentCharacter.getPerson().getAspirations());
         System.out.println("On Going Events : "+currentCharacter.getPerson().getOngoingEvents());
         System.out.println("Current States : "+currentCharacter.getPerson().getStates());
+        System.out.println((currentCharacter.getPerson().getWallet().isEmpty() || currentCharacter.getPerson().getWallet().isLowBalance()));
 
     }
 

@@ -151,7 +151,10 @@ public class CombatSystem {
 
 
             // TODO remove this
-            System.out.println("Attacker won " + attacker.getCharacter() + " " + defender.getCharacter() + "\n\t\t\t\t" + attacker.getProperty().getLocation().getFullHierarchyInfo());
+            if(Settings.DB) {
+                System.out.println("Attacker won " + attacker.getCharacter() +
+                        " " + defender.getCharacter() + "\n\t\t\t\t" + attacker.getProperty().getLocation().getFullHierarchyInfo());
+            }
 
             switchPositions();
 
@@ -186,7 +189,10 @@ public class CombatSystem {
 
 
             // TODO remove this
-            System.out.println("Defender won " + attacker.getCharacter() + " " + defender.getCharacter() + "\n\t\t\t\t" + attacker.getProperty().getLocation().getFullHierarchyInfo());
+            if(Settings.DB) {
+                System.out.println("Defender won " + attacker.getCharacter() + " " +
+                        defender.getCharacter() + "\n\t\t\t\t" + attacker.getProperty().getLocation().getFullHierarchyInfo());
+            }
 
         }
 
@@ -375,12 +381,12 @@ public class CombatSystem {
     private int getDaysUntilEvent(String settingsGet) {
 
         if(Objects.equals(settingsGet, "duelTime")){  // Duel is special in a way that defenders defence Level matters rather than Venue type.
-            int baseTime = Settings.getInt("settingsGet");
+            int baseTime = Settings.getInt(settingsGet);
             int baseLevel = defender.getCombatStats().getDefenseLevel();
             return baseTime * baseLevel;
         }
 
-        int baseTime = Settings.getInt("settingsGet");
+        int baseTime = Settings.getInt(settingsGet);
         int baseLevel = venue.getPropertyEnum().ordinal();
         return baseTime * baseLevel;
     }
@@ -389,6 +395,7 @@ public class CombatSystem {
         int effectiveAttackerOffense = attackerStats.getOffense().getUpgradeLevel();
         int effectiveDefenderDefense = venueStats.getUpgradeLevel();
         boolean attackerWins = battle(effectiveAttackerOffense, effectiveDefenderDefense);
+
         if (attackerWins) {
 
                 attacker.getEventTracker().addEvent(EventTracker.Message(
@@ -399,14 +406,18 @@ public class CombatSystem {
                 )));
 
             venue.getVault().robbery(attacker, defender);
+            defender.addAspiration(Aspiration.INCREASE_PROPERTY_DEFENCE);
+
         } else {
             venueStats.increaseLevel();
             attackerStats.getOffense().decreaseLevel();
 
-                attacker.getEventTracker().addEvent(EventTracker.Message(
-                        "Major", "Robbery failed. \n\t\t\t\tOffense level decreased."));
-                defender.getEventTracker().addEvent(EventTracker.Message(
-                        "Major", "Successfully defended a robbery. \n\t\t\t\tProperty defense increased."));
+            attacker.getEventTracker().addEvent(EventTracker.Message(
+                    "Major", "Robbery failed. \n\t\t\t\tOffense level decreased."));
+            defender.getEventTracker().addEvent(EventTracker.Message(
+                    "Major", "Successfully defended a robbery. \n\t\t\t\tProperty defense increased."));
+
+            attacker.addAspiration(Aspiration.INCREASE_PERSONAL_OFFENCE);
 
         }
 
@@ -458,7 +469,7 @@ public class CombatSystem {
 
     private void decideDuel() {
         int effectiveAttackerOffense = attackerStats.getOffenseLevel() + attackerStats.getDefenseLevel() / 2;
-        int effectiveDefenderDefense = defenderStats.getOffenseLevel() + defenderStats.getDefenseLevel() / 2;
+        int effectiveDefenderDefense = defenderStats.getOffenseLevel() / 2 + defenderStats.getDefenseLevel();
 
         boolean attackerWins = battle(effectiveAttackerOffense, effectiveDefenderDefense);
 
@@ -490,7 +501,7 @@ public class CombatSystem {
                     )));
                 }
             }
-
+            defender.addAspiration(Aspiration.INCREASE_PERSONAL_DEFENCE);
 
         } else {
 
@@ -523,6 +534,7 @@ public class CombatSystem {
                             "Minor", "Defense increased for winning the Duel"));
                 }
             }
+            attacker.addAspiration(Aspiration.INCREASE_PERSONAL_OFFENCE);
         }
         makeEnemies();
         attacker.removeState(State.IN_BATTLE);

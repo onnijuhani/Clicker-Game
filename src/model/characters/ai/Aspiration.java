@@ -6,7 +6,7 @@ public enum Aspiration {
     INCREASE_PROPERTY_DEFENCE,
     ACHIEVE_HIGHER_POSITION,
 
-
+    SAVE_RESOURCES,
 
     UPGRADE_PROPERTY,
 

@@ -9,20 +9,18 @@ import java.util.*;
 
 public class AiEngine {
     private final CombatActions combatActions;
-    private final PowerActions powerActions;
     private final UtilityActions utilityActions;
     private final WarActions warActions;
     private final ManagementActions managementActions;
     private final Person person;
     private Map<Trait, Integer> profile;
-    private final WeightedCircle actionCircle = new WeightedCircle(5,1);
+    private final WeightedCircle actionCircle = new WeightedCircle(25,1);
 
     public AiEngine(Person person) {
         this.person = person;
         generatePersonalityProfile();
 
         this.combatActions = new CombatActions(person, profile);
-        this.powerActions = new PowerActions(person, profile);
         this.utilityActions = new UtilityActions(person, profile);
         this.warActions = new WarActions(person, profile);
         this.managementActions = new ManagementActions(person, profile);
@@ -86,11 +84,24 @@ public class AiEngine {
             }
         }
 
-        if(profile.containsKey(Trait.Ambitious)){
+        initialAspirations(profile);
+
+        this.profile = profile;
+    }
+
+    private void initialAspirations(Map<Trait, Integer> profile) {
+        if(profile.containsKey(Trait.Ambitious) || profile.containsKey(Trait.Disloyal)){
             person.addAspiration(Aspiration.ACHIEVE_HIGHER_POSITION);
         }
 
-        this.profile = profile;
+        if(profile.containsKey(Trait.Defender)){
+            person.addAspiration(Aspiration.INCREASE_PERSONAL_DEFENCE);
+            person.addAspiration(Aspiration.INCREASE_PROPERTY_DEFENCE);
+        }
+
+        if(profile.containsKey(Trait.Attacker)){
+            person.addAspiration(Aspiration.INCREASE_PERSONAL_OFFENCE);
+        }
     }
 
     private Trait[][] initializePersonalityStructure() {
@@ -126,9 +137,6 @@ public class AiEngine {
         return combatActions;
     }
 
-    public PowerActions getPowerActions() {
-        return powerActions;
-    }
 
     public UtilityActions getUtilityActions() {
         return utilityActions;

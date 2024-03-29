@@ -1,5 +1,6 @@
 package model.characters.ai.actionCircle;
 
+import model.Settings;
 import model.characters.Trait;
 import model.characters.ai.actions.NPCAction;
 
@@ -10,7 +11,7 @@ public class WeightedObject implements NPCAction {
     protected int weight;
     protected int importance;
     protected Map<Trait, Integer> profile;
-    boolean DB = true; //TODO remove the debugger eventually
+
 
 
     public WeightedObject(int weight, Map<Trait, Integer> profile) {
@@ -38,38 +39,40 @@ public class WeightedObject implements NPCAction {
         this.weight = 1;
     }
 
+
+    /**
+     * if there is only default action, overwriting this should improve performance slightly
+     */
     public void execute()  {
 
-
-
-        if(DB) {System.out.println("execute 1");}
+        if(Settings.DB) {System.out.println("execute 1");}
         Trait trait = pickTrait(profile);
 
-        if(DB) {System.out.println("execute 2");}
+        if(Settings.DB) {System.out.println("execute 2");}
         if(trait == null){
             defaultSkip();
-            if(DB) {System.out.println("execute 3");}
+            if(Settings.DB) {System.out.println("execute 3");}
             return;
         }
 
-        if(DB) {System.out.println("execute 4");}
+        if(Settings.DB) {System.out.println("execute 4");}
         switch (trait) {
             case Ambitious:
-                if(DB) {System.out.println("ambitious 1");}
+                if(Settings.DB) {System.out.println("ambitious 1");}
                 ambitiousAction();
-                if(DB) {System.out.println("ambitious 2");}
+                if(Settings.DB) {System.out.println("ambitious 2");}
             case Unambitious:
-                if(DB) {System.out.println("unambitious 1");}
+                if(Settings.DB) {System.out.println("unambitious 1");}
                 unambitiousAction();
-                if(DB) {System.out.println("unambitious 2");}
+                if(Settings.DB) {System.out.println("unambitious 2");}
             case Slaver:
-                if(DB) {System.out.println("slaver 1");}
+                if(Settings.DB) {System.out.println("slaver 1");}
                 slaverAction();
-                if(DB) {System.out.println("slaver 2");}
+                if(Settings.DB) {System.out.println("slaver 2");}
             case Liberal:
-                if(DB) {System.out.println("liberal 1");}
+                if(Settings.DB) {System.out.println("liberal 1");}
                 liberalAction();
-                if(DB) {System.out.println("liberal 2");}
+                if(Settings.DB) {System.out.println("liberal 2");}
             case Aggressive:
 
                 aggressiveAction();
@@ -166,31 +169,30 @@ public class WeightedObject implements NPCAction {
     public Trait pickTrait(Map<Trait, Integer> profile) {
 
 
-        if(DB) {System.out.println("traitPick 1");}
-        System.out.println(profile.values());
+        if(Settings.DB) {System.out.println("traitPick 1");}
         int totalSum = profile.values().stream().mapToInt(Integer::intValue).sum();
-        if(DB) {System.out.println("traitPick 2");}
+        if(Settings.DB) {System.out.println("traitPick 2");}
         int randomNum = new Random().nextInt(totalSum);
-        if(DB) {System.out.println("traitPick 3");}
+        if(Settings.DB) {System.out.println("traitPick 3");}
         int cumulativeProbability = 0;
-        if(DB) {System.out.println("traitPick 4");}
+        if(Settings.DB) {System.out.println("traitPick 4");}
 
         // 5% chance of not picking anything, that's default Skip
         if (randomNum < totalSum * 0.05) {
-            if(DB) {System.out.println("traitPick 5");}
+            if(Settings.DB) {System.out.println("traitPick 5");}
             return null;
 
         }
-        if(DB) {System.out.println("traitPick 6");}
+        if(Settings.DB) {System.out.println("traitPick 6");}
         for (Map.Entry<Trait, Integer> entry : profile.entrySet()) {
             cumulativeProbability += entry.getValue();
-            if(DB) {System.out.println("traitPick 7");}
+            if(Settings.DB) {System.out.println("traitPick 7");}
             if (randomNum < cumulativeProbability) {
-                if(DB) {System.out.println("traitPick 8");}
+                if(Settings.DB) {System.out.println("traitPick 8");}
                 return entry.getKey();
             }
         }
-        if(DB) {System.out.println("traitPick 9");}
+        if(Settings.DB) {System.out.println("traitPick 9");}
 
         // This should never happen if the probabilities sum up to 100
         throw new IllegalStateException("Unable to pick a trait.");

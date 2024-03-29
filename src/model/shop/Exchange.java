@@ -22,7 +22,7 @@ public class Exchange extends ShopComponents {
     private int defaultGold = 10;
     private final double marketFee = 0.35;
 
-    private final boolean DB = true; //TODO remove this debugger
+    private final boolean DB = false; //TODO remove this debugger
 
 
     public Exchange(Wallet wallet){
@@ -104,7 +104,7 @@ public class Exchange extends ShopComponents {
         double amountAfterFee = amountToSell - amountToSell * marketFee;
 
         double rate = rates.getRate(Resource.Gold, sellType);
-        int amountGold = (int) (amountAfterFee / rate);
+        int amountGold = Math.max( (int)(amountAfterFee / rate), 1);
 
         TransferPackage costPackage = TransferPackage.fromEnum(sellType, (int) amountAfterFee);
 
@@ -133,9 +133,9 @@ public class Exchange extends ShopComponents {
         if(DB) {System.out.println("exchange 1" + buyType + sellType);}
         double rate = rates.getRate(sellType, buyType);
         if(DB) {System.out.println("exchange 2");}
-        double costWithoutFee = amountToBuy / rate;
+        double costWithoutFee = Math.max( amountToBuy / rate, 1);
         if(DB) {System.out.println("exchange 3");}
-        int totalCost = (int) (costWithoutFee * (1 + marketFee));
+        int totalCost = Math.max( (int) (costWithoutFee * (1 + marketFee)), 1);
         if(DB) {System.out.println("exchange 4");}
 
         if (!character.getPerson().getWallet().hasEnoughResource(sellType, totalCost)) {
@@ -205,7 +205,7 @@ public class Exchange extends ShopComponents {
     }
     public String[] getExchangeCost(int amountToBuy, Resource buyType, Resource sellType) {
         double cost = calculateExchangeCost(amountToBuy, buyType, sellType);
-        long roundedCost = Math.round(cost);
+        long roundedCost = Math.max(Math.round(cost), 1);
         long roundedAmountToBuy = Math.round(amountToBuy);
         return new String[]{roundedCost + " " + sellType, roundedAmountToBuy + " " + buyType};
     }

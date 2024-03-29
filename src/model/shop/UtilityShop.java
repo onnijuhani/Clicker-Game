@@ -29,6 +29,7 @@ public class UtilityShop extends ShopComponents {
                             "Successfully upgraded " + type + " to level " +
                                     building.getUpgradeLevel() + "!"));
                 }
+                property.getUtilitySlot().increaseTotalLevels();
                 return true; // Upgrade was successful
             } else {
                 if(person.isPlayer()) {
@@ -81,7 +82,10 @@ public class UtilityShop extends ShopComponents {
         Property property = person.getProperty();
         property.getUtilitySlot().addUtilityBuilding(type, newBuilding);
         person.getWallet().subtractGold(price);
-        person.getEventTracker().addEvent(EventTracker.Message("Major", "Successfully purchased " + type + "!")); //This goes to major instead to see wtf npc is doing
+        if(person.isPlayer()) {
+            person.getEventTracker().addEvent(EventTracker.Message("Major", "Successfully purchased " + type + "!")); //This goes to major instead to see wtf npc is doing
+        }
+        property.getUtilitySlot().increaseTotalLevels();
         return true;
     }
 

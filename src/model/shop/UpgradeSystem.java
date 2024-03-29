@@ -40,19 +40,6 @@ public class UpgradeSystem {
         return (int) total;
     }
 
-    public static int roundToSensibleValue(int number) {
-        int length = (int) (Math.log10(number) + 1);
-        int divisor;
-
-        if (length <= 3) {
-            divisor = 10;
-        } else {
-            divisor = (int) Math.pow(10, length - 2);
-        }
-        return Math.round(number / (float)divisor) * divisor;
-    }
-
-
     public int getUpgradePrice() {
         if (level < MAX_LEVEL) {
             return calculateUpgradePrice();
@@ -70,7 +57,7 @@ public class UpgradeSystem {
         if (level <= MAX_LEVEL) {
             value *= 2;
         } else {
-            value += Math.max(1, value / (increaseDivider * (level - MAX_LEVEL)));
+            value += Math.max(50, value / (increaseDivider * (level - MAX_LEVEL)));
         }
         return true;
     }
