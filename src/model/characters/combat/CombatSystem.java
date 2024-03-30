@@ -408,13 +408,13 @@ public class CombatSystem {
             defender.addAspiration(Aspiration.INCREASE_PROPERTY_DEFENCE);
 
         } else {
-            venueStats.increaseLevel();
+
             attackerStats.getOffense().decreaseLevel();
 
             attacker.getEventTracker().addEvent(EventTracker.Message(
                     "Major", "Robbery failed. \n\t\t\t\tOffense level decreased."));
             defender.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Successfully defended a robbery. \n\t\t\t\tProperty defense increased."));
+                    "Major", "Successfully defended a robbery. \n\t\t\t\t"));
 
             attacker.addAspiration(Aspiration.INCREASE_PERSONAL_OFFENCE);
 

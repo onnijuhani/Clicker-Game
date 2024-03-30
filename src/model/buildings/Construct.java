@@ -5,6 +5,7 @@ import model.Settings;
 import model.buildings.properties.*;
 import model.buildings.utilityBuilding.UtilitySlot;
 import model.characters.Person;
+import model.characters.ai.Aspiration;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.stateSystem.Event;
@@ -34,6 +35,9 @@ public class Construct {
 
         assert cost != null;
         if (wallet.hasEnoughResources(cost)) {
+
+            person.removeAspiration(Aspiration.UPGRADE_PROPERTY);
+            person.removeAspiration(Aspiration.SAVE_RESOURCES);
 
             wallet.subtractResources(cost);
 

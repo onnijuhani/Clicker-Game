@@ -26,7 +26,7 @@ public class UtilityActions {
     private final Map<Trait, Integer> profile;
 
     private int counter = 0; // the point of this counter is to make sure every utility building gets upgraded slowly even if no other method does it.
-    private int counterTarget = 100; // getting the year from Time makes the Target higher so that later levels these "forced" upgrades happen more rarely
+    private int counterTarget = 10; // getting the year from Time makes the Target higher so that later levels these "forced" upgrades happen more rarely
     public UtilityActions(Person person, Map<Trait, Integer> profile ) {
         this.person = person;
         Property property = person.getProperty();
@@ -73,8 +73,6 @@ public class UtilityActions {
             super(weight, profile);
         }
 
-
-
         @Override
         public void execute(){
             defaultAction();
@@ -93,7 +91,7 @@ public class UtilityActions {
             } else {
                 if(counter > counterTarget) {
                     counter = 0;
-                    counterTarget = Time.getYear() * 100;
+                    counterTarget = 10 + Time.getYear() * 2;
                     utilityShop.upgradeBuilding(UtilityBuildings.GoldMine, person);
                 }
             }
@@ -135,7 +133,7 @@ public class UtilityActions {
             } else {
                 if (counter > counterTarget) {
                     counter = 0;
-                    counterTarget = Time.getYear() * 50;
+                    counterTarget = 10 + Time.getYear() * 2;
                     utilityShop.upgradeBuilding(UtilityBuildings.MeadowLands, person);
                 }
             }
@@ -173,7 +171,7 @@ public class UtilityActions {
             } else {
                 if(counter > counterTarget) {
                     counter = 0;
-                    counterTarget = Time.getYear() * 50;
+                    counterTarget = 10 + Time.getYear() * 2;
                     utilityShop.upgradeBuilding(UtilityBuildings.AlloyMine, person);
                 }
             }
@@ -201,7 +199,7 @@ public class UtilityActions {
             } else {
                 if(counter > counterTarget) {
                     counter = 0;
-                    counterTarget = Time.getYear() * 50;
+                    counterTarget = 10 + Time.getYear() * 2;
                     utilityShop.upgradeBuilding(UtilityBuildings.MysticMine, person);
                 }
             }
@@ -233,7 +231,7 @@ public class UtilityActions {
             } else {
                 if(counter > counterTarget) {
                     counter = 0;
-                    counterTarget = Time.getYear() * 50;
+                    counterTarget = 10 + Time.getYear() * 2;
                     utilityShop.upgradeBuilding(UtilityBuildings.SlaveFacility, person);
 
                     // non slavers join the guild after level 5
@@ -282,7 +280,7 @@ public class UtilityActions {
             } else {
                 if(counter > counterTarget) {
                     counter = 0;
-                    counterTarget = Time.getYear() * 50;
+                    counterTarget =  10 + Time.getYear() * 2;
                     utilityShop.upgradeBuilding(UtilityBuildings.WorkerCenter, person);
 
                     // non liberals join the guild after level 5

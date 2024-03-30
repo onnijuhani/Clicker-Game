@@ -66,9 +66,14 @@ public class Wallet {
         if (transfer == null) {
             throw new IllegalArgumentException("TransferPackage cannot be null.");
         }
+        if (limitReached()) return;
         this.food += transfer.food();
         this.alloy += transfer.alloy();
         this.gold += transfer.gold();
+    }
+
+    private boolean limitReached() {
+        return food > 1_000_000_000 || alloy > 1_000_000_000 || gold > 1_000_000_000;
     }
 
     public void subtractResources(TransferPackage transfer) {
@@ -84,6 +89,7 @@ public class Wallet {
     }
 
     public void deposit(Wallet depositFromWallet, TransferPackage transfer){
+        if (limitReached()) return;
         if(!depositFromWallet.hasEnoughResources(transfer)){
             return; // quick return if there isn't enough resources, should never happen tho.
         }
@@ -91,6 +97,7 @@ public class Wallet {
         depositFromWallet.subtractResources(transfer);
     }
     public void depositAll(Wallet depositFromWallet){
+        if (limitReached()) return;
         int[] all = depositFromWallet.getWalletValues();
         TransferPackage transfer = TransferPackage.fromArray(all);
         this.addResources(transfer);

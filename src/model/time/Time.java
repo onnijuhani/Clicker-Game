@@ -82,7 +82,7 @@ public class Time {
     }
 
     private static boolean freeDay(){
-        return day != 1 && day != generate && day != maintenance && day != quarterTax && day != cityTax && day != provinceTax && day != nationTax && day != utilitySlots;
+        return day != generate && day != maintenance && day != quarterTax && day != cityTax && day != provinceTax && day != nationTax && day != utilitySlots;
     }
 
     public static void incrementByClick(){

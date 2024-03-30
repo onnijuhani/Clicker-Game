@@ -33,8 +33,8 @@ public class CombatActions {
     }
 
     private void createAllActions() {
-        Duel duel = new Duel(4, profile);
-        Robbery robbery = new Robbery(10, profile);
+        Duel duel = new Duel(1, profile);
+        Robbery robbery = new Robbery(5, profile);
 
         allActions.add(duel);
         allActions.add(robbery);
@@ -419,7 +419,7 @@ public class CombatActions {
 
             if (selectedTarget == null){
                 System.out.println("execute Robbery Action has NULL in selected target");
-                return;  // should never happen but will end here if it does
+                return;
             }
             if(Settings.DB){System.out.println("robbery 4");}
 

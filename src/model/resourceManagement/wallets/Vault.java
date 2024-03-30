@@ -49,7 +49,12 @@ public class Vault extends Wallet implements Ownable {
         int[] interestValues = new int[walletValues.length];
 
         for (int i = 0; i < walletValues.length; i++) {
-            interestValues[i] = (int) (walletValues[i] * interestRate);
+
+            if (walletValues[i] > 100_000_000){
+                return;
+            }
+
+            interestValues[i] = Math.min(  (int) (walletValues[i] * interestRate), 1_000_000);
         }
 
         TransferPackage interestTransfer = TransferPackage.fromArray(interestValues);

@@ -17,6 +17,7 @@ import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.shop.Exchange;
 import model.shop.UtilityShop;
+import model.stateSystem.EventTracker;
 import model.time.Time;
 
 import java.util.LinkedList;
@@ -98,8 +99,7 @@ public class ManagementActions {
     }
 
     class TakeActionOnNeeds extends WeightedObject{
-
-
+        int counter = 0;
         public TakeActionOnNeeds(int weight, Map<Trait, Integer> profile) {
             super(weight, profile);
         }
@@ -111,46 +111,57 @@ public class ManagementActions {
 
         @Override
         public void defaultAction(){
-            if(Time.getYear() == 0 && Time.getMonth() < 3){
+
+            if(Time.getYear() == 0 && Time.getMonth() < 4){
                 return; // quick return in early game to allow some generate ramp up
             }
+            System.out.println("take action 1");
 
             if  (wallet.isLowBalance()){
                 return; // if wallet is empty or very low, return immediately. Nothing can be done here.
             }
-
+            System.out.println("take action 2");
             if(person.hasAspiration(Aspiration.GET_FOOD_INSTANTLY) && person.hasAspiration(Aspiration.GET_ALLOYS_INSTANTLY) && person.hasAspiration(Aspiration.GET_GOLD_INSTANTLY)){
                 return; // quick return if there is need for everything, don't waste time and let production ramp up
             }
-
+            System.out.println("take action 3");
             Property property = person.getProperty();
-
+            System.out.println("take action 4");
+            System.out.println(person.getAspirations());
             for (Aspiration aspiration : person.getAspirations()) {
+                System.out.println("take action 5");
+                System.out.println(aspiration);
                 switch (aspiration) {
-                    case UPGRADE_PROPERTY:
 
+                    case UPGRADE_PROPERTY:
+                        System.out.println("UPROPERTY 1");
                         try {
+                            System.out.println("UPROPERTY 2");
                             Construct.constructProperty(person);
                             person.removeAspiration(Aspiration.UPGRADE_PROPERTY);
                             person.removeAspiration(Aspiration.SAVE_RESOURCES);
+                            System.out.println("UPROPERTY 4");
                         } catch (InsufficientResourcesException e) {
                             person.getProperty().getVault().withdrawal(wallet, e.getCost());
+                            System.out.println("UPROPERTY 5");
                         }
+                        System.out.println("UPROPERTY 6");
+                        break;
 
                     case GET_GOLD_INSTANTLY:
-
+                        System.out.println("GOLD 1");
                         exchange.forceBuy(gold_need_threshold * 2, Resource.Gold, person);
                         // gold is so important that is need is removed only by the Evaluate Needs method
                         break;
 
                     case GET_FOOD_INSTANTLY:
-
+                        System.out.println("FOOD 1");
                         exchange.forceBuy(food_need_threshold * 2, Resource.Food, person);
                         person.removeAspiration(Aspiration.GET_FOOD_INSTANTLY);
                         break;
 
                     case GET_ALLOYS_INSTANTLY:
-
+                        System.out.println("ALLOYS 1");
                         exchange.forceBuy(alloy_need_threshold * 2, Resource.Alloy, person);
                         person.removeAspiration(Aspiration.GET_ALLOYS_INSTANTLY);
                         break;
@@ -170,16 +181,14 @@ public class ManagementActions {
                         utilityShop.upgradeBuilding(UtilityBuildings.MeadowLands, person);
                         break;
 
-                    default:// if there are no aspirations, make a deposit to vault if they are passive or unambitious. Others do nothing
-                        if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
+                    default:// if there are no aspirations, make a deposit to vault and upgrade defence if they are passive or unambitious. Others do nothing
+
+                        if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) break;
+                        if (counter < 1000) {counter++;break;}
                         if(profile.containsKey(Trait.Passive) || profile.containsKey(Trait.Unambitious)) {
-
-                            if(profile.containsKey(Trait.Defender)){
-                                property.upgradeDefence();
-                            }
-
-                            TransferPackage vaultDeposit = new TransferPackage(food_need_threshold, alloy_need_threshold, gold_need_threshold);
+                            TransferPackage vaultDeposit = new TransferPackage(food_need_threshold / 2, alloy_need_threshold / 2, gold_need_threshold / 2);
                             property.getVault().deposit(wallet, vaultDeposit);
+                            person.getEventTracker().addEvent(EventTracker.Message("Major","Adding resources to vault " + vaultDeposit));
                         }
                         break;
                 }
@@ -341,7 +350,7 @@ public class ManagementActions {
         @Override
         public void defaultAction() {
 
-            if(Time.getYear() == 0 && Time.getMonth() < 4){
+            if(Time.getYear() == 0 && Time.getMonth() < 3){
                 return; // quick return in early game to allow some generate ramp up
             }
 
@@ -350,7 +359,6 @@ public class ManagementActions {
             }else{
                 person.addAspiration(Aspiration.INCREASE_PROPERTY_DEFENCE); // fortress defence should be updated instead
             }
-
 
             evaluateResourceNeed();
 
@@ -373,7 +381,7 @@ public class ManagementActions {
                 //TODO add something here eventually to upgrade into military properties
 
             }else if(usedSlotAmount == property.getUtilitySlot().getSlotAmount()) {
-                if (property.getUtilitySlot().getTotalUpgradeLevels() > 5 * usedSlotAmount){ // idea here is to upgrade some of the utility buildings first before the property
+                if (property.getUtilitySlot().getTotalUpgradeLevels() > 3 * usedSlotAmount){ // idea here is to upgrade some of the utility buildings first before the property
                     person.addAspiration(Aspiration.UPGRADE_PROPERTY); // remember to remove this need after new property is created.
                     person.addAspiration(Aspiration.SAVE_RESOURCES); // remove this one too
                 }
