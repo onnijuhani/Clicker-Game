@@ -22,6 +22,12 @@ public class Exchange extends ShopComponents {
     private int defaultGold = 10;
     private final double marketFee = 0.35;
 
+    public MarketState getMarketState() {
+        return marketState;
+    }
+
+    private MarketState marketState = MarketState.GOOD_BALANCE;
+
     private final boolean DB = false; //TODO remove this debugger
 
 
@@ -128,49 +134,65 @@ public class Exchange extends ShopComponents {
 
 
     public boolean exchangeResources(int amountToBuy, Resource buyType, Resource sellType, Character character) {
-        if(DB) {System.out.println("exchange 0");}
+
         updateExchangeRates(); // Update rates based on current wallet status
-        if(DB) {System.out.println("exchange 1" + buyType + sellType);}
+
         double rate = rates.getRate(sellType, buyType);
-        if(DB) {System.out.println("exchange 2");}
+
         double costWithoutFee = Math.max( amountToBuy / rate, 1);
-        if(DB) {System.out.println("exchange 3");}
+
         int totalCost = Math.max( (int) (costWithoutFee * (1 + marketFee)), 1);
-        if(DB) {System.out.println("exchange 4");}
+
 
         if (!character.getPerson().getWallet().hasEnoughResource(sellType, totalCost)) {
-            if(character.getPerson().isPlayer()) {
-                String errorMessage = EventTracker.Message("Error", "Insufficient resources for the exchange.");
+            if(!character.getPerson().isPlayer()) { // FIX
+                String errorMessage = EventTracker.Message("Major", "Insufficient resources for the exchange.");
                 character.getEventTracker().addEvent(errorMessage);
-                if(DB) {System.out.println("exchange 5");}
+
             }
-            if(DB) {System.out.println("exchange 6");}
             return false;
 
         }
-        if(DB) {System.out.println("exchange 7");}
+
         TransferPackage costPackage = TransferPackage.fromEnum(sellType, totalCost);
         TransferPackage purchasePackage = TransferPackage.fromEnum(buyType, amountToBuy);
-        if(DB) {System.out.println("exchange 8");}
-        this.wallet.deposit(character.getPerson().getWallet(), costPackage);
-        character.getPerson().getWallet().addResources(purchasePackage);
-        if(DB) {System.out.println("exchange 9");}
-        if(character.getPerson().isPlayer()) {
-            String message = EventTracker.Message("Shop", "Exchanged " + sellType + " for " + buyType);
+
+
+        // transaction happens here if deposit return true
+        if(this.wallet.deposit(character.getPerson().getWallet(), costPackage)) {
+            character.getPerson().getWallet().addResources(purchasePackage);
+
+
+            String message = EventTracker.Message("Major", "Exchanged " +totalCost +"-"+ sellType + " for " + amountToBuy +"-"+ buyType);
             character.getEventTracker().addEvent(message);
+
+
+            // to prevent wallet growing too big it is cut in half
+            OptionalInt max = Arrays.stream(getWallet().getWalletValues()).max();
+
+            if (max.getAsInt() > 100_000_000) {
+                wallet.cutBalanceInHalf();
+            }
+
+            checkMarketBalance();
+
+            return true;
         }
 
-        // to prevent wallet growing too big it is cut in half
-        OptionalInt max = Arrays.stream(getWallet().getWalletValues()).max();
-
-        if (max.getAsInt() > 100_000_000) {
-            wallet.cutBalanceInHalf();
-        }
-        return true;
-
-
+        return false;
     }
 
+    private void checkMarketBalance() {
+        if (wallet.getBalanceRatio()[0] < 30){
+            marketState = MarketState.LACK_OF_FOOD;
+        } else if (wallet.getBalanceRatio()[1] < 20){
+            marketState = MarketState.LACK_OF_ALLOYS;
+        } else if (wallet.getBalanceRatio()[2] < 10){
+            marketState = MarketState.LACK_OF_GOLD;
+        }else{
+            marketState = MarketState.GOOD_BALANCE;
+        }
+    }
 
 
     private void updateExchangeRates() {
@@ -324,6 +346,13 @@ public class Exchange extends ShopComponents {
         BUY_FOOD,
         BUY_ALLOY,
         SELL_FOOD_AND_ALLOY
+    }
+
+    private enum MarketState {
+        LACK_OF_GOLD,
+        LACK_OF_ALLOYS,
+        LACK_OF_FOOD,
+        GOOD_BALANCE
     }
 
 

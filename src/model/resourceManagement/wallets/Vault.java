@@ -24,15 +24,15 @@ public class Vault extends Wallet implements Ownable {
     }
 
     @Override
-    public void deposit(Wallet depositFromWallet, TransferPackage transfer){
+    public boolean deposit(Wallet depositFromWallet, TransferPackage transfer){
         if(!depositFromWallet.hasEnoughResources(transfer)){
-            return; // quick return if there isn't enough resources
+            return false; // quick return if there isn't enough resources
         }
         lockedResources.addResources(transfer);
         depositFromWallet.subtractResources(transfer);
         TransferPackage lockedAmount = TransferPackage.fromArray(lockedResources.getWalletValues());
         getOwner().getEventTracker().addEvent(EventTracker.Message("Minor", "Deposited resources "+lockedAmount.toShortString()+"\nare locked and will be available after the year ends.\nInterest will not be applied during this time."));
-
+        return true;
     }
 
     public void releaseLockedResources(){

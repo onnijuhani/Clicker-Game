@@ -49,11 +49,76 @@ public class ManagementActions {
         EvaluateNeeds evaluateNeeds = new EvaluateNeeds(10, profile);
         TakeActionOnNeeds takeActionOnNeeds = new TakeActionOnNeeds(10, profile);
         BalanceResources balanceResources = new BalanceResources(10,profile);
+        TradeMarket tradeMarket = new TradeMarket(10, profile);
 
 
         allActions.add(evaluateNeeds);
         allActions.add(takeActionOnNeeds);
         allActions.add(balanceResources);
+        allActions.add(tradeMarket);
+    }
+
+
+    /**
+     * Main class that attempts to balance the market.
+     */
+    class TradeMarket extends WeightedObject {
+
+        public TradeMarket(int weight, Map<Trait, Integer> profile) {
+            super(weight, profile);
+        }
+
+        @Override
+        public void execute(){
+            defaultAction();
+        }
+        @Override
+        public void defaultAction() {
+            person.getEventTracker().addEvent(EventTracker.Message("Major", "started it "));
+
+            if(wallet.isLowBalance()){
+                return;
+            }
+
+            int gold = wallet.getGold();
+            double foodRatioInMarket = exchange.getWallet().getBalanceRatio()[0];
+            double alloyRatioInMarket = exchange.getWallet().getBalanceRatio()[1];
+            double goldRatioInMarket = exchange.getWallet().getBalanceRatio()[2];
+
+            person.getEventTracker().addEvent(EventTracker.Message("Major", "whaat " + goldRatioInMarket));
+
+            if (!(gold > gold_need_threshold * 4)){
+                person.getEventTracker().addEvent(EventTracker.Message("Major", "ended it "));
+                return;
+            }
+
+            if (!(goldRatioInMarket < 15)){
+                person.getEventTracker().addEvent(EventTracker.Message("Major", "ended here "));
+                return;
+            }
+
+            person.getEventTracker().addEvent(EventTracker.Message("Major", "wtf "));
+
+            double fRatio = foodRatioInMarket / (foodRatioInMarket + alloyRatioInMarket);
+            double aRatio = alloyRatioInMarket / (foodRatioInMarket + alloyRatioInMarket);
+
+                int amountGoldToSpend = gold - (gold / 4);
+
+
+            person.getEventTracker().addEvent(EventTracker.Message("Major", fRatio +"   "+ aRatio +"   " + amountGoldToSpend));
+
+            if (fRatio > 0.35 && amountGoldToSpend > 0){
+                if(exchange.exchangeResources(amountGoldToSpend*10, Resource.Food, Resource.Gold, person.getCharacter())) {
+                    person.getEventTracker().addEvent(EventTracker.Message("Major", "bought food and spent " + amountGoldToSpend));
+                }
+            }
+            person.getEventTracker().addEvent(EventTracker.Message("Major", "fail " ));
+            if (aRatio > 0.35 && amountGoldToSpend > 0){
+                if(exchange.exchangeResources(amountGoldToSpend*5, Resource.Alloy, Resource.Gold, person.getCharacter())) {
+                    person.getEventTracker().addEvent(EventTracker.Message("Major", "bought alloys and spent " + amountGoldToSpend));
+                }
+            }
+        }
     }
 
     /**

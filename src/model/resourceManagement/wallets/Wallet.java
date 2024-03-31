@@ -88,13 +88,14 @@ public class Wallet {
         this.gold -= transfer.gold();
     }
 
-    public void deposit(Wallet depositFromWallet, TransferPackage transfer){
-        if (limitReached()) return;
+    public boolean deposit(Wallet depositFromWallet, TransferPackage transfer){
+        if (limitReached()) return false;
         if(!depositFromWallet.hasEnoughResources(transfer)){
-            return; // quick return if there isn't enough resources, should never happen tho.
+            return false; // quick return if there isn't enough resources, should never happen tho.
         }
         this.addResources(transfer);
         depositFromWallet.subtractResources(transfer);
+        return true;
     }
     public void depositAll(Wallet depositFromWallet){
         if (limitReached()) return;
