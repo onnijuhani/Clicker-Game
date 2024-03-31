@@ -40,7 +40,7 @@ public class CombatSystem {
         this.venue = defender.getPerson().getProperty();
         this.attackerStats = attacker.getPerson().getCombatStats();
         this.defenderStats = defender.getPerson().getCombatStats();
-        this.venueStats = venue.getDefense();
+        this.venueStats = venue.getDefenceStats();
     }
 
 
@@ -133,7 +133,7 @@ public class CombatSystem {
 
         int totalAttackerOffense = attacker.getCombatStats().getOffenseLevel();
 
-        int totalDefenderDefense = defender.getCombatStats().getDefenseLevel() + venue.getDefense().getUpgradeLevel() +
+        int totalDefenderDefense = defender.getCombatStats().getDefenseLevel() + venue.getDefenceStats().getUpgradeLevel() +
                 eligibleSupporters.stream()
                         .mapToInt(support -> support.getCombatStats().getDefenseLevel())
                         .sum();
@@ -405,6 +405,7 @@ public class CombatSystem {
                 )));
 
             venue.getVault().robbery(attacker, defender);
+
             defender.addAspiration(Aspiration.INCREASE_PROPERTY_DEFENCE);
 
         } else {

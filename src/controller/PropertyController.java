@@ -387,7 +387,7 @@ public class PropertyController extends BaseController {
             robVaultBtn.setVisible(false);
             playerVaultBox.setVisible(true);
             upgradeDefBtn.setVisible(true);
-            upgradeDefBtn.setText(property.getDefense().getUpgradePrice()+" Alloys");
+            upgradeDefBtn.setText(property.getDefenceStats().getUpgradePrice()+" Alloys");
             upgradeDefLabel.setVisible(true);
         }else{
             robVaultBtn.setVisible(true);
@@ -399,14 +399,14 @@ public class PropertyController extends BaseController {
 
     @FXML
     void upgradeDef(){
-        property.upgradeDefence();
+        property.upgradeDefenceWithGold();
         updatePropertyTab();
     }
     void updateVaultValue() {
         vaultValue.setText(property.getVault().toShortString());
     }
     void updateDefenceLevel() {
-        defenceLevel.setText("Level: " + property.getDefense().getUpgradeLevel());
+        defenceLevel.setText("Level: " + property.getDefenceStats().getUpgradeLevel());
     }
 
     void updateMaintenance(){

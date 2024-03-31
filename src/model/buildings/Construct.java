@@ -30,10 +30,20 @@ public class Construct {
         if (currentType == Properties.Fortress) {
             return;
         }
+
+
         Properties newType = getNextProperty(person);
         TransferPackage cost = getCost(person);
 
         assert cost != null;
+
+        person.getEventTracker().addEvent(EventTracker.Message("Major" , "Tried construction property 1"));
+
+        if(!wallet.hasEnoughResources(cost)){
+            person.getRole().getNation().getShop().getExchange().forceAcquire(cost, person, false);
+        }
+        person.getEventTracker().addEvent(EventTracker.Message("Major" , "Tried construction property 2"));
+
         if (wallet.hasEnoughResources(cost)) {
 
             person.removeAspiration(Aspiration.UPGRADE_PROPERTY);
@@ -41,7 +51,7 @@ public class Construct {
 
             wallet.subtractResources(cost);
 
-            assert newType != null; // wtf does this even do?
+            assert newType != null;
 
             GameEvent gameEvent = new GameEvent(Event.CONSTRUCTION, person);
             person.getEventTracker().addEvent(EventTracker.Message("Major", "Construction of "+newType+ " started"));
@@ -80,7 +90,7 @@ public class Construct {
         newHouse.setVault(oldHouse.getVault());
         newHouse.getVault().setOwner(newHouse);
         newHouse.getUtilitySlot().setOwnedUtilityBuildings(oldUtilitySlot.getOwnedUtilityBuildings());
-        newHouse.setDefense(oldHouse.getDefense());
+        newHouse.setDefense(oldHouse.getDefenceStats());
         PropertyManager.unsubscribe(oldHouse);
         person.setProperty(newHouse);
     }

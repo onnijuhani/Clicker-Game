@@ -62,7 +62,7 @@ public class Property implements PropertyObserver, Details, Ownable {
     private final EnumSet<State> states;
 
     public Property(PropertyConfig.PropertyValues propertyValues, String name, Person owner) {
-        this.defense = new UpgradeSystem(propertyValues.getPower());
+        this.defense = new UpgradeSystem(50);
         this.vault = new Vault(this);
 
         owner.setProperty(this);
@@ -96,11 +96,11 @@ public class Property implements PropertyObserver, Details, Ownable {
         owner.setProperty(this);
     }
 
-    public void upgradeDefence(){
-        int price = getDefense().getUpgradePrice();
+    public void upgradeDefenceWithGold(){
+        int price = getDefenceStats().getUpgradePrice();
         if(owner.getWallet().hasEnoughResource(Resource.Alloy,price)){
             owner.getWallet().subtractAlloy(price);
-            getDefense().increaseLevel();
+            getDefenceStats().increaseLevel();
             owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName()+"'s defence was increased"));
         }else{
             if(owner.isPlayer()){
@@ -143,7 +143,7 @@ public class Property implements PropertyObserver, Details, Ownable {
     public Vault getVault() {
         return vault;
     }
-    public UpgradeSystem getDefense() {
+    public UpgradeSystem getDefenceStats() {
         return defense;
     }
     public void setDefense(UpgradeSystem defense) {

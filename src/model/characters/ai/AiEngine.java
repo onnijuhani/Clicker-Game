@@ -90,17 +90,23 @@ public class AiEngine {
     }
 
     private void initialAspirations(Map<Trait, Integer> profile) {
-        if(profile.containsKey(Trait.Ambitious) || profile.containsKey(Trait.Disloyal)){
-            person.addAspiration(Aspiration.ACHIEVE_HIGHER_POSITION);
+        if(profile.containsKey(Trait.Ambitious) && profile.containsKey(Trait.Disloyal)){
+            if(profile.get(Trait.Ambitious) > 30 || profile.get(Trait.Disloyal) > 30){
+                person.addAspiration(Aspiration.ACHIEVE_HIGHER_POSITION);
+            }
         }
 
         if(profile.containsKey(Trait.Defender)){
-            person.addAspiration(Aspiration.INCREASE_PERSONAL_DEFENCE);
-            person.addAspiration(Aspiration.INCREASE_PROPERTY_DEFENCE);
+            if(profile.get(Trait.Defender) > 45){
+                person.addAspiration(Aspiration.INCREASE_PERSONAL_DEFENCE);
+                person.addAspiration(Aspiration.INCREASE_PROPERTY_DEFENCE);
+            }
         }
 
         if(profile.containsKey(Trait.Attacker)){
-            person.addAspiration(Aspiration.INCREASE_PERSONAL_OFFENCE);
+            if(profile.get(Trait.Attacker) > 45) {
+                person.addAspiration(Aspiration.INCREASE_PERSONAL_OFFENCE);
+            }
         }
     }
 

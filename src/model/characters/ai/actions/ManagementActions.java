@@ -47,7 +47,7 @@ public class ManagementActions {
     }
     private void createAllActions() {
         EvaluateNeeds evaluateNeeds = new EvaluateNeeds(10, profile);
-        TakeActionOnNeeds takeActionOnNeeds = new TakeActionOnNeeds(15, profile);
+        TakeActionOnNeeds takeActionOnNeeds = new TakeActionOnNeeds(10, profile);
         BalanceResources balanceResources = new BalanceResources(10,profile);
 
 
@@ -56,8 +56,14 @@ public class ManagementActions {
         allActions.add(balanceResources);
     }
 
-
+    /**
+     * This is the main class to balance out the wallet, only called max once per month.
+     */
     class BalanceResources extends WeightedObject{
+        private int foodBoughtCounter = 0;
+        private int alloyBoughtCounter = 0;
+        private int goldBoughtCounter = 0;
+        private int lastCheck;
         public BalanceResources(int weight, Map<Trait, Integer> profile) {
             super(weight, profile);
         }
@@ -67,8 +73,18 @@ public class ManagementActions {
         }
         @Override
         public void defaultAction() {
+            if(Time.year == 0 && Time.month == 0){
+                return;
+            }
+            // do this only once per month
+            int currentMonth = Time.month;
+            if(currentMonth == lastCheck){
+                return;
+            }else{
+                lastCheck = currentMonth;
+            }
 
-            double[]currentRatio = person.getWallet().getBalanceRatio();
+            double[] currentRatio = person.getWallet().getBalanceRatio();
             double total = currentRatio[0] + currentRatio[1] + currentRatio[2];
 
             int[] desiredRatio;
@@ -80,123 +96,57 @@ public class ManagementActions {
 
             int food = wallet.getFood();
             int alloy = wallet.getAlloy();
-            // balancing out food and alloy amounts should also balance gold.
 
 
             if(food > ( desiredRatio[0] + food/3) ){
-                exchange.sellResource(food -desiredRatio[0], Resource.Food, person.getCharacter());
+                exchange.sellResource((food - desiredRatio[0]) / 2, Resource.Food, person.getCharacter());
+                
+                foodBoughtCounter--;
+                goldBoughtCounter++;
+                if(goldBoughtCounter > 4){
+                    person.addAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION);
+                }
+                
             }else{
-                exchange.forceBuy(desiredRatio[0]-food, Resource.Food, person);
-            }
-
-            if(alloy > ( desiredRatio[1] + alloy/3) ){
-                exchange.sellResource(alloy-desiredRatio[1],Resource.Alloy, person.getCharacter());
-            }else{
-                exchange.forceBuy(desiredRatio[1]-alloy, Resource.Alloy, person);
-            }
-
-        }
-    }
-
-    class TakeActionOnNeeds extends WeightedObject{
-        int counter = 0;
-        public TakeActionOnNeeds(int weight, Map<Trait, Integer> profile) {
-            super(weight, profile);
-        }
-
-        @Override
-        public void execute(){
-            defaultAction();
-        }
-
-        @Override
-        public void defaultAction(){
-
-            if(Time.getYear() == 0 && Time.getMonth() < 4){
-                return; // quick return in early game to allow some generate ramp up
-            }
-            System.out.println("take action 1");
-
-            if  (wallet.isLowBalance()){
-                return; // if wallet is empty or very low, return immediately. Nothing can be done here.
-            }
-            System.out.println("take action 2");
-            if(person.hasAspiration(Aspiration.GET_FOOD_INSTANTLY) && person.hasAspiration(Aspiration.GET_ALLOYS_INSTANTLY) && person.hasAspiration(Aspiration.GET_GOLD_INSTANTLY)){
-                return; // quick return if there is need for everything, don't waste time and let production ramp up
-            }
-            System.out.println("take action 3");
-            Property property = person.getProperty();
-            System.out.println("take action 4");
-            System.out.println(person.getAspirations());
-            for (Aspiration aspiration : person.getAspirations()) {
-                System.out.println("take action 5");
-                System.out.println(aspiration);
-                switch (aspiration) {
-
-                    case UPGRADE_PROPERTY:
-                        System.out.println("UPROPERTY 1");
-                        try {
-                            System.out.println("UPROPERTY 2");
-                            Construct.constructProperty(person);
-                            person.removeAspiration(Aspiration.UPGRADE_PROPERTY);
-                            person.removeAspiration(Aspiration.SAVE_RESOURCES);
-                            System.out.println("UPROPERTY 4");
-                        } catch (InsufficientResourcesException e) {
-                            person.getProperty().getVault().withdrawal(wallet, e.getCost());
-                            System.out.println("UPROPERTY 5");
-                        }
-                        System.out.println("UPROPERTY 6");
-                        break;
-
-                    case GET_GOLD_INSTANTLY:
-                        System.out.println("GOLD 1");
-                        exchange.forceBuy(gold_need_threshold * 2, Resource.Gold, person);
-                        // gold is so important that is need is removed only by the Evaluate Needs method
-                        break;
-
-                    case GET_FOOD_INSTANTLY:
-                        System.out.println("FOOD 1");
-                        exchange.forceBuy(food_need_threshold * 2, Resource.Food, person);
-                        person.removeAspiration(Aspiration.GET_FOOD_INSTANTLY);
-                        break;
-
-                    case GET_ALLOYS_INSTANTLY:
-                        System.out.println("ALLOYS 1");
-                        exchange.forceBuy(alloy_need_threshold * 2, Resource.Alloy, person);
-                        person.removeAspiration(Aspiration.GET_ALLOYS_INSTANTLY);
-                        break;
-
-                    case INVEST_IN_GOLD_PRODUCTION:
-                        if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
-                        utilityShop.upgradeBuilding(UtilityBuildings.GoldMine, person);
-                        break;
-
-                    case INVEST_IN_ALLOY_PRODUCTION:
-                        if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
-                        utilityShop.upgradeBuilding(UtilityBuildings.AlloyMine, person);
-                        break;
-
-                    case INVEST_IN_FOOD_PRODUCTION:
-                        if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
-                        utilityShop.upgradeBuilding(UtilityBuildings.MeadowLands, person);
-                        break;
-
-                    default:// if there are no aspirations, make a deposit to vault and upgrade defence if they are passive or unambitious. Others do nothing
-
-                        if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) break;
-                        if (counter < 1000) {counter++;break;}
-                        if(profile.containsKey(Trait.Passive) || profile.containsKey(Trait.Unambitious)) {
-                            TransferPackage vaultDeposit = new TransferPackage(food_need_threshold / 2, alloy_need_threshold / 2, gold_need_threshold / 2);
-                            property.getVault().deposit(wallet, vaultDeposit);
-                            person.getEventTracker().addEvent(EventTracker.Message("Major","Adding resources to vault " + vaultDeposit));
-                        }
-                        break;
+                exchange.forceBuy((desiredRatio[0]-food) / 2, Resource.Food, person);
+                
+                foodBoughtCounter++;
+                goldBoughtCounter--;
+                if(foodBoughtCounter > 4){
+                    person.addAspiration(Aspiration.INVEST_IN_FOOD_PRODUCTION);
                 }
             }
+            checkFood result = new checkFood(desiredRatio, alloy);
+
+
+            if(result.alloy() > ( result.desiredRatio()[1] + result.alloy() /3) ){
+                exchange.sellResource((result.alloy() - result.desiredRatio()[1]) / 2,Resource.Alloy, person.getCharacter());
+
+                alloyBoughtCounter--;
+                goldBoughtCounter++;
+                if(goldBoughtCounter > 4){
+                    person.addAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION);
+                }
+                
+            }else {
+                exchange.forceBuy((result.desiredRatio()[1] - result.alloy()) / 2, Resource.Alloy, person);
+
+                alloyBoughtCounter++;
+                goldBoughtCounter--;
+                if (alloyBoughtCounter > 4) {
+                    person.addAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION);
+                }
+            }
+
+        }
+        private record checkFood(int[] desiredRatio, int alloy) {
         }
     }
 
 
+    /**
+     *  Only class to evaluate Role specific needs, should execute or add aspirations
+     */
 
     class EvaluateRoleSpecificNeeds extends WeightedObject {
 
@@ -327,11 +277,138 @@ public class ManagementActions {
 
     }
 
+    /**
+     * This class takes action on different management Aspirations, should not do any combat management here AT ALL. Only add combat aspirations if needed
+     */
+    class TakeActionOnNeeds extends WeightedObject{
+        int counter = 0;
+        public TakeActionOnNeeds(int weight, Map<Trait, Integer> profile) {
+            super(weight, profile);
+        }
 
+        @Override
+        public void execute(){
+            defaultAction();
+            balanceSkewedResources();
+        }
+
+        /**
+         * If there is significant overweight in certain resource, try to balance it out.
+         * This should be secondary balance mechanism to Balance Resources class
+         */
+        private void balanceSkewedResources() {
+
+            double fRatio = wallet.getBalanceRatio()[0];
+            double aRatio = wallet.getBalanceRatio()[1];
+            double gRatio = wallet.getBalanceRatio()[2];
+
+            if (fRatio > 0.70){
+                exchange.sellResource(wallet.getFood() / 2, Resource.Food, person.getCharacter());
+            }else if (aRatio > 0.70){
+                exchange.sellResource(wallet.getAlloy() / 2, Resource.Alloy, person.getCharacter());
+            }else if (gRatio > 0.75){
+                exchange.exchangeResources(wallet.getGold() / 4 * 10, Resource.Food, Resource.Gold, person.getCharacter());
+                exchange.exchangeResources(wallet.getGold() / 4 * 5, Resource.Alloy, Resource.Gold, person.getCharacter());
+            }
+
+        }
+
+        @Override
+        public void defaultAction(){
+
+            if(Time.getYear() == 0 && Time.getMonth() < 4){
+                return; // quick return in early game to allow some generate ramp up
+            }
+
+
+            if  (wallet.isLowBalance()){
+                return; // if wallet is empty or very low, return immediately. Nothing can be done here.
+            }
+
+            if(person.hasAspiration(Aspiration.GET_FOOD_INSTANTLY) && person.hasAspiration(Aspiration.GET_ALLOYS_INSTANTLY) && person.hasAspiration(Aspiration.GET_GOLD_INSTANTLY)){
+                return; // quick return if there is need for everything, don't waste time and let production ramp up
+            }
+
+            Property property = person.getProperty();
+
+            for (Aspiration aspiration : person.getAspirations()) {
+
+
+                if(person.getAspirations().contains(Aspiration.SAVE_RESOURCES) && person.getAspirations().contains(Aspiration.UPGRADE_PROPERTY)){
+                    if(!aspiration.equals(Aspiration.UPGRADE_PROPERTY)){
+                        continue; // make sure upgrade is prioritized so resources can be saved
+                    }
+                }
+
+                switch (aspiration) {
+
+
+                    case UPGRADE_PROPERTY:
+
+                        try {
+                            person.getEventTracker().addEvent(EventTracker.Message("Major" , "Tried construction property"));
+                            Construct.constructProperty(person);
+                            person.removeAspiration(Aspiration.UPGRADE_PROPERTY);
+                            person.removeAspiration(Aspiration.SAVE_RESOURCES);
+                            person.getEventTracker().addEvent(EventTracker.Message("Major" , "success construction property"));
+                        } catch (InsufficientResourcesException e) {
+                            person.getProperty().getVault().withdrawal(wallet, e.getCost());
+
+                        }
+
+
+                        break;
+
+                    case GET_GOLD_INSTANTLY:
+
+                        exchange.forceBuy(gold_need_threshold * 2, Resource.Gold, person);
+                        // gold is so important that is need is removed only by the Evaluate Needs method
+                        break;
+
+                    case GET_FOOD_INSTANTLY:
+
+                        exchange.forceBuy(food_need_threshold * 2, Resource.Food, person);
+                        person.removeAspiration(Aspiration.GET_FOOD_INSTANTLY);
+                        break;
+
+                    case GET_ALLOYS_INSTANTLY:
+
+                        exchange.forceBuy(alloy_need_threshold * 2, Resource.Alloy, person);
+                        person.removeAspiration(Aspiration.GET_ALLOYS_INSTANTLY);
+                        break;
+
+                    case INVEST_IN_GOLD_PRODUCTION:
+                        if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
+                        utilityShop.upgradeBuilding(UtilityBuildings.GoldMine, person);
+                        break;
+
+                    case INVEST_IN_ALLOY_PRODUCTION:
+                        if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
+                        utilityShop.upgradeBuilding(UtilityBuildings.AlloyMine, person);
+                        break;
+
+                    case INVEST_IN_FOOD_PRODUCTION:
+                        if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
+                        utilityShop.upgradeBuilding(UtilityBuildings.MeadowLands, person);
+                        break;
+
+                    default:// if there are no aspirations, make a deposit to vault and upgrade defence if they are passive or unambitious. Others do nothing
+
+                        if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) break;
+                        if (counter < 1000) {counter++;break;}
+                        if(profile.containsKey(Trait.Passive) || profile.containsKey(Trait.Unambitious)) {
+                            TransferPackage vaultDeposit = new TransferPackage(food_need_threshold / 2, alloy_need_threshold / 2, gold_need_threshold / 2);
+                            property.getVault().deposit(wallet, vaultDeposit);
+                            person.getEventTracker().addEvent(EventTracker.Message("Major","Adding resources to vault " + vaultDeposit));
+                        }
+                        break;
+                }
+            }
+        }
+    }
 
     /**
-     * THIS METHOD SHOULD ONLY EVALUATE CURRENT NEEDS BUT !!!NOT!!! DO ANYTHING ABOUT THEM. JUST ADD IT INTO ASPIRATIONS
-     * Having separate class for actually taking required action should improve performance
+     *  THIS CLASS SHOULD ONLY EVALUATE CURRENT MANAGEMENT NEEDS BUT NOT DO ANYTHING ABOUT THEM. JUST ADD IT INTO ASPIRATIONS
      */
     class EvaluateNeeds extends WeightedObject {
         int counter = 0;
@@ -354,20 +431,21 @@ public class ManagementActions {
                 return; // quick return in early game to allow some generate ramp up
             }
 
-            if(!(person.getProperty() instanceof Fortress) && counter == 0) {  // fortress cannot be upgraded
+            if(!(person.getProperty() instanceof Fortress) && counter < 2) {  // fortress cannot be upgraded
                 evaluatePropertyNeed();
-            }else{
-                person.addAspiration(Aspiration.INCREASE_PROPERTY_DEFENCE); // fortress defence should be updated instead
             }
 
-            evaluateResourceNeed();
+            evaluateMinimumResourceNeeds();
 
-            counter++; // property shouldn't be checked every time, every 20th time is just fine to prevent AI advancing too greedily
-            if(counter > 20){
+
+            counter++; // property shouldn't be checked every time, every 10th time is just fine to prevent AI advancing too greedily
+            if(counter > 10){
                 counter = 0;
             }
 
         }
+
+
 
         /**
          * property need isn't important enough to get own Actions
@@ -388,7 +466,7 @@ public class ManagementActions {
             }
         }
 
-        private void evaluateResourceNeed() {
+        private void evaluateMinimumResourceNeeds() {
 
             int food = wallet.getFood();
 
@@ -434,6 +512,11 @@ public class ManagementActions {
         }
     }
 
+
+    /**
+     * get all action classes that are about overall management
+     * @return
+     */
     public List<WeightedObject> getAllActions() {
         return allActions;
     }

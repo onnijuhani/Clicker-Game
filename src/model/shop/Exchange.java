@@ -87,8 +87,8 @@ public class Exchange extends ShopComponents {
 
 
     /**
-     * This method is used to see either food or alloys for Gold.
-     * @param amountToSell the amount you want to sell, either food or alloys
+     * This method is used to sell either food or alloys for Gold.
+     * @param amountToSell the amount you want to sell, either food or alloys, the actual amount will be way smaller because the fee 35% is NOT added
      * @param sellType either food or alloys
      * @param character character wishing to sell the resource
      */
@@ -118,7 +118,7 @@ public class Exchange extends ShopComponents {
         character.getPerson().getWallet().addResources(purchasePackage);
 
         if(character.getPerson().isPlayer()) {
-            String message = EventTracker.Message("Shop", "Exchanged " + sellType + " for " + amountGold);
+            String message = EventTracker.Message("Shop", "Exchanged " + sellType + " for " + amountGold + " gold");
             character.getEventTracker().addEvent(message);
         }
         return true;
@@ -246,9 +246,85 @@ public class Exchange extends ShopComponents {
         return defaultAlloys;
     }
 
+    public void forceAcquire(TransferPackage cost, Person person, boolean isMandatory) {
 
+        person.getEventTracker().addEvent(EventTracker.Message("Major" , "Tried force Acquire"));
 
+        if(person.isPlayer() && !isMandatory){
+            return;
+        }
+        person.getEventTracker().addEvent(EventTracker.Message("Major" , "Tried force Acquire 1"));
+        if (person.getWallet().hasEnoughResources(cost)) {
+            return; // Sufficient resources available, no action needed
+        }
+        person.getEventTracker().addEvent(EventTracker.Message("Major" , "Tried force Acquire 2"));
 
+        int fCost = cost.food();
+        int aCost = cost.alloy();
+        int gCost = cost.gold();
+
+        int fOwned = person.getWallet().getFood();
+        int aOwned = person.getWallet().getAlloy();
+        int gOwned = person.getWallet().getGold();
+
+        int fNeeded = fCost - fOwned;
+        int aNeeded = aCost - aOwned;
+        int gNeeded = gCost - gOwned;
+
+        person.getEventTracker().addEvent(EventTracker.Message("Major" , "Tried force Acquire\n" + fNeeded +" "+ aNeeded +" "+ gNeeded));
+
+        switch (getAction(fNeeded, aNeeded, gNeeded)) {
+            case BUY_FOOD_AND_ALLOY:
+                forceBuy(fNeeded, Resource.Food, person);
+                forceBuy(aNeeded, Resource.Alloy, person);
+                break;
+            case BUY_FOOD_AND_SELL_ALLOY:
+                forceBuy(fNeeded, Resource.Food, person);
+                sellResource(aNeeded * -1, Resource.Alloy, person.getCharacter());
+                break;
+            case BUY_ALLOY_AND_SELL_FOOD:
+                forceBuy(aNeeded, Resource.Alloy, person);
+                sellResource(fNeeded * -1, Resource.Food, person.getCharacter());
+                break;
+            case BUY_FOOD:
+                forceBuy(fNeeded, Resource.Food, person);
+                break;
+            case BUY_ALLOY:
+                forceBuy(aNeeded, Resource.Alloy, person);
+                break;
+            case SELL_FOOD_AND_ALLOY:
+                sellResource(fNeeded * -1, Resource.Food, person.getCharacter());
+                sellResource(aNeeded * -1, Resource.Alloy, person.getCharacter());
+                break;
+        }
+    }
+
+    private ActionType getAction(int fNeeded, int aNeeded, int gNeeded) {
+        if (fNeeded > 0 && aNeeded > 0 && gNeeded > 0) {
+            return ActionType.BUY_FOOD_AND_ALLOY;
+        } else if (fNeeded > 0 && aNeeded > 0) {
+            return ActionType.BUY_FOOD_AND_ALLOY;
+        } else if (fNeeded > 0 && gNeeded > 0) {
+            return ActionType.BUY_FOOD_AND_SELL_ALLOY;
+        } else if (aNeeded > 0 && gNeeded > 0) {
+            return ActionType.BUY_ALLOY_AND_SELL_FOOD;
+        } else if (fNeeded > 0) {
+            return ActionType.BUY_FOOD;
+        } else if (aNeeded > 0) {
+            return ActionType.BUY_ALLOY;
+        } else {
+            return ActionType.SELL_FOOD_AND_ALLOY;
+        }
+    }
+
+    private enum ActionType {
+        BUY_FOOD_AND_ALLOY,
+        BUY_FOOD_AND_SELL_ALLOY,
+        BUY_ALLOY_AND_SELL_FOOD,
+        BUY_FOOD,
+        BUY_ALLOY,
+        SELL_FOOD_AND_ALLOY
+    }
 
 
     /**

@@ -61,40 +61,51 @@ public class WeightedObject implements NPCAction {
                 if(Settings.DB) {System.out.println("ambitious 1" + this.getClass().getSimpleName());}
                 ambitiousAction();
                 if(Settings.DB) {System.out.println("ambitious 2" + this.getClass().getSimpleName());}
+                break;
             case Unambitious:
                 if(Settings.DB) {System.out.println("unambitious 1" + this.getClass().getSimpleName());}
                 unambitiousAction();
                 if(Settings.DB) {System.out.println("unambitious 2" + this.getClass().getSimpleName());}
+                break;
             case Slaver:
                 if(Settings.DB) {System.out.println("slaver 1" + this.getClass().getSimpleName());}
                 slaverAction();
                 if(Settings.DB) {System.out.println("slaver 2" + this.getClass().getSimpleName());}
+                break;
             case Liberal:
                 if(Settings.DB) {System.out.println("liberal 1" + this.getClass().getSimpleName());}
                 liberalAction();
                 if(Settings.DB) {System.out.println("liberal 2" + this.getClass().getSimpleName());}
+                break;
             case Aggressive:
                 if(Settings.DB) {System.out.println("aggressivr1!!" + this.getClass().getSimpleName());}
                 aggressiveAction();
                 if(Settings.DB) {System.out.println("aggressiv2" + this.getClass().getSimpleName());}
+                break;
             case Passive:
                 if(Settings.DB) {System.out.println("passive " + this.getClass().getSimpleName());}
                 passiveAction();
+                break;
             case Loyal:
                 if(Settings.DB) {System.out.println("loyal " + this.getClass().getSimpleName());}
                 loyalAction();
+                break;
             case Disloyal:
                 if(Settings.DB) {System.out.println("disloyal " + this.getClass().getSimpleName());}
                 disloyalAction();
+                break;
             case Attacker:
                 if(Settings.DB) {System.out.println("attacker " + this.getClass().getSimpleName());}
                 attackerAction();
+                break;
             case Defender:
                 if(Settings.DB) {System.out.println("defender" + this.getClass().getSimpleName());}
                 defenderAction();
+                break;
             default:
                 if(Settings.DB) {System.out.println("default" + this.getClass().getSimpleName());}
                 defaultSkip();
+                break;
         }
     }
     @Override
