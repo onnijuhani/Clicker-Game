@@ -76,16 +76,17 @@ public class Wallet {
         return food > 1_000_000_000 || alloy > 1_000_000_000 || gold > 1_000_000_000;
     }
 
-    public void subtractResources(TransferPackage transfer) {
+    public boolean subtractResources(TransferPackage transfer) {
         if (transfer == null) {
             throw new IllegalArgumentException("TransferPackage cannot be null.");
         }
         if(!hasEnoughResources(transfer)){
-            return; // quick return if there isn't enough resources
+            return false; // quick return if there isn't enough resources
         }
         this.food -= transfer.food();
         this.alloy-= transfer.alloy();
         this.gold -= transfer.gold();
+        return true;
     }
 
     public boolean deposit(Wallet depositFromWallet, TransferPackage transfer){

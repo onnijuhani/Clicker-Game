@@ -17,9 +17,8 @@ import model.stateSystem.GameEvent;
 import model.stateSystem.State;
 import model.time.Time;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
+
 public class Person implements PersonalAttributes, Ownable {
     private final String name;
     private final Wallet wallet;
@@ -29,7 +28,6 @@ public class Person implements PersonalAttributes, Ownable {
     private final EventTracker eventTracker;
     private final CombatStats combatStats;
     private final EnumSet<State> states;
-
     private final EnumSet<Aspiration> aspirations;
     private final List<GameEvent> ongoingEvents = new ArrayList<>();
     private final PaymentCalendar paymentCalendar;
@@ -38,6 +36,7 @@ public class Person implements PersonalAttributes, Ownable {
     private Role role;
     private boolean isPlayer = true;
     private AiEngine aiEngine;
+    private final Map<String, Integer> mandatoryPayments = new HashMap<String, Integer>();
 
 
     public Person(Boolean isNpc) {

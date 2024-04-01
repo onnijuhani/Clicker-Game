@@ -31,19 +31,14 @@ public class AiEngine {
     }
 
     public void executeAiEngine() {
-
-
-
         actionCircle.executeLoop();
-
     }
 
     private void setUpActionLoop() {
         actionCircle.addAll(utilityActions.getAllActions());
         actionCircle.addAll(combatActions.getAllActions());
         actionCircle.addAll(managementActions.getAllActions());
-
-
+        actionCircle.addAll(warActions.getAllActions());
     }
 
     /**

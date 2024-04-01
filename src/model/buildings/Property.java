@@ -54,10 +54,7 @@ public class Property implements PropertyObserver, Details, Ownable {
     protected Person owner;
     protected Maintenance maintenance;
     protected String name;
-
-
     protected Properties propertyEnum;
-
     protected UtilitySlot utilitySlot;
     private final EnumSet<State> states;
 

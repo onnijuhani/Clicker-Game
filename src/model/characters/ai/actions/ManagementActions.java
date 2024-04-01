@@ -2,7 +2,7 @@ package model.characters.ai.actions;
 
 import customExceptions.InsufficientResourcesException;
 import model.buildings.Construct;
-import model.buildings.MilitaryBuilding;
+import model.war.Military;
 import model.buildings.Property;
 import model.buildings.properties.Fortress;
 import model.buildings.utilityBuilding.UtilityBuildings;
@@ -153,7 +153,7 @@ public class ManagementActions {
             double total = currentRatio[0] + currentRatio[1] + currentRatio[2];
 
             int[] desiredRatio;
-            if (person.getProperty() instanceof MilitaryBuilding) {
+            if (person.getProperty() instanceof Military) {
                 desiredRatio = new int[]{(int) (0.40 * total), (int) (0.40 * total), (int) (0.20 * total)};
             } else {
                 desiredRatio = new int[]{(int) (0.33 * total), (int) (0.33 * total), (int) (0.33 * total)};

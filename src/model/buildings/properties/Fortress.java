@@ -1,12 +1,11 @@
 package model.buildings.properties;
 
-import model.buildings.MilitaryBuilding;
 import model.buildings.Properties;
-import model.buildings.Property;
 import model.buildings.PropertyConfig;
 import model.characters.Person;
+import model.war.Military;
 
-public class Fortress extends Property  implements MilitaryBuilding {
+public class Fortress extends MilitaryProperty implements Military {
 
     public Fortress(String name, Person owner) {
         super(PropertyConfig.FORTRESS, name, owner);
