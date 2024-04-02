@@ -21,7 +21,7 @@ public class Army {
         if(wallet == null){
             return false;
         }
-        if(!wallet.subtractResources(new TransferPackage(0,5_000,0))){
+        if(!wallet.subtractResources(new TransferPackage(0, ArmyCost.increaseArmyDefence,0))){
             return false;
         }
         defencePower++;
@@ -31,7 +31,7 @@ public class Army {
         if(wallet == null){
             return false;
         }
-        if(!wallet.subtractResources(new TransferPackage(0,5_000,0))){
+        if(!wallet.subtractResources(new TransferPackage(0,ArmyCost.increaseArmyAttack,0))){
             return false;
         }
         attackPower++;
@@ -46,7 +46,7 @@ public class Army {
         if(wallet == null){
             return false;
         }
-        if(!wallet.subtractResources(new TransferPackage(amount*10_000,amount*5_000, amount*500))){
+        if(!wallet.subtractResources(new TransferPackage(ArmyCost.hireSoldierFood,ArmyCost.hireSoldierAlloy, ArmyCost.hireSoldierGold))){
             return false;
         }
         numOfSoldiers = numOfSoldiers + amount;
@@ -55,11 +55,11 @@ public class Army {
     }
 
 
-    public TransferPackage countTotalCost(){
+    public TransferPackage countRunningCosts(){
 
-        int food = numOfSoldiers * 5000;
-        int alloys = attackPower + defencePower * 1000;
-        int gold = numOfSoldiers * 100;
+        int food = numOfSoldiers * ArmyCost.runningFood;
+        int alloys = attackPower + defencePower * ArmyCost.runningAlloy;
+        int gold = numOfSoldiers * ArmyCost.runningGold;
 
         return new TransferPackage(food, alloys, gold);
     }

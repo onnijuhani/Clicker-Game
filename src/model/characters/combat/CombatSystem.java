@@ -180,7 +180,7 @@ public class CombatSystem {
                     ")\n\t\t\t\tas compensation for disloyalty."
             ));
 
-            attacker.decreaseOffense(3);
+            attacker.decreasePersonalOffence(3);
 
             attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Offense decreased by 3 levels"));
 

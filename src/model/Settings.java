@@ -9,6 +9,10 @@ public class Settings {
     private static final Properties settings = new Properties();
     public static final boolean DB = false;
 
+
+
+
+
     static {
         try (FileInputStream input = new FileInputStream("resources/propertySetting.properties")) {
             settings.load(input);
@@ -25,4 +29,5 @@ public class Settings {
     public static double getDouble(String key) {
         return Double.parseDouble(settings.getProperty(key, "0")); // Default value if key not found
     }
+
 }
