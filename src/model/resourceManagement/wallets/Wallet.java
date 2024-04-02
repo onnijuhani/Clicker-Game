@@ -8,7 +8,6 @@ public class Wallet {
     private int food;
     private int alloy;
     private int gold;
-
     private Ownable owner;
 
     public Wallet(final Ownable owner) {
@@ -179,7 +178,6 @@ public class Wallet {
     public void subtractGold(int amount) {
         gold -= amount;
     }
-
     public int getFood() {
         return food;
     }

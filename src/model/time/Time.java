@@ -24,20 +24,14 @@ public class Time {
     public static final int utilitySlots = Settings.getInt("utilitySlots");
     public static final int armyRunningCost = Settings.getInt("armyRunningCost");
     private static int milliseconds = 1000;
-
     public static boolean gameOver = false;
-
-
     public static Speed getSpeed() {
         return speed;
     }
-
     public static void setSpeed(Speed speed) {
         Time.speed = speed;
     }
-
     public static Speed speed = Speed.Normal;
-
 
     public Time() {
         executorService = Executors.newSingleThreadScheduledExecutor();

@@ -13,11 +13,10 @@ public class MarketActions {
         Exchange exchange = npc.getRole().getNation().getShop().getExchange();
         double foodRatio = exchange.getRatioBalance()[0];
         double alloyRatio = exchange.getRatioBalance()[1];
-        System.out.println(foodRatio);
+
 
         if (foodRatio < 10) {
             sellFood(npc, exchange);
-            System.out.println("sold food for gold if foodratio < 10. foodratio = " + foodRatio);
         }
 
 

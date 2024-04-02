@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class WarActions {
-    private Person person;
+    private final Person person;
     private final Map<Trait, Integer> profile;
 
     private final List<WeightedObject> allActions = new LinkedList<>();
@@ -48,7 +48,7 @@ public class WarActions {
             MilitaryProperty property = (MilitaryProperty) person.getProperty();
             Army army = property.getArmy();
 
-            if(army.hireSoldiers(1)){
+            if(army.recruitSoldier()){
                 person.getEventTracker().addEvent(EventTracker.Message("Major", "Recruited new Soldier"));
             }else{
                 person.getEventTracker().addEvent(EventTracker.Message("Major", "Recruiting new Soldiers went wrong"));

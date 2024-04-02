@@ -1,13 +1,6 @@
 package model.resourceManagement;
 
 public record TransferPackage(int food, int alloy, int gold) {
-
-    public TransferPackage(int food, int alloy, int gold) {
-        this.food = food;
-        this.alloy = alloy;
-        this.gold =  gold;
-    }
-
     public int[] getAll() {
         return new int[]{food, alloy, gold};
     }
@@ -20,20 +13,13 @@ public record TransferPackage(int food, int alloy, int gold) {
     public static TransferPackage fromAnotherPackage(TransferPackage other) {
         return new TransferPackage(other.food, other.alloy, other.gold);
     }
-
-
-
     public static TransferPackage fromEnum(Resource type, int amount) {
-        switch (type) {
-            case Food:
-                return new TransferPackage(amount, 0, 0);
-            case Alloy:
-                return new TransferPackage(0, amount, 0);
-            case Gold:
-                return new TransferPackage(0, 0, amount);
-            default:
-                throw new IllegalArgumentException("Unsupported resource type: " + type);
-        }
+        return switch (type) {
+            case Food -> new TransferPackage(amount, 0, 0);
+            case Alloy -> new TransferPackage(0, amount, 0);
+            case Gold -> new TransferPackage(0, 0, amount);
+            default -> throw new IllegalArgumentException("Unsupported resource type: " + type);
+        };
     }
     @Override
     public String toString() {
@@ -42,7 +28,6 @@ public record TransferPackage(int food, int alloy, int gold) {
     public String toShortString() {
         return " (F:"+food+" A:"+alloy+" G:"+gold+")";
     }
-
     public int food() {
         return food;
     }

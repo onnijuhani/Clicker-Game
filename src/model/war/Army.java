@@ -61,26 +61,26 @@ public class Army implements ArmyObserver {
     }
 
 
-    public boolean hireSoldiers(int amount){
-        if(amount == 0){
-            return false;
-        }
+    public boolean recruitSoldier(){
         if(wallet == null){
             return false;
         }
-        if(!wallet.subtractResources(new TransferPackage(ArmyCost.hireSoldierFood,ArmyCost.hireSoldierAlloy, ArmyCost.hireSoldierGold))){
+        TransferPackage cost = ArmyCost.getRecruitingCost();
+        if(!wallet.subtractResources(cost)){
             return false;
         }
-        numOfSoldiers = numOfSoldiers + amount;
+        numOfSoldiers++;
         return true;
 
     }
 
 
+
+
     public TransferPackage countRunningCosts(){
 
         int food = numOfSoldiers * ArmyCost.runningFood;
-        int alloys = attackPower + defencePower * ArmyCost.runningAlloy;
+        int alloys = (attackPower + defencePower) * ArmyCost.runningAlloy;
         int gold = numOfSoldiers * ArmyCost.runningGold;
 
         return new TransferPackage(food, alloys, gold);

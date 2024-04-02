@@ -74,7 +74,6 @@ public class ManagementActions {
         }
         @Override
         public void defaultAction() {
-            person.getEventTracker().addEvent(EventTracker.Message("Major", "started it "));
 
             if(wallet.isLowBalance()){
                 return;
@@ -85,27 +84,20 @@ public class ManagementActions {
             double alloyRatioInMarket = exchange.getWallet().getBalanceRatio()[1];
             double goldRatioInMarket = exchange.getWallet().getBalanceRatio()[2];
 
-            person.getEventTracker().addEvent(EventTracker.Message("Major", "whaat " + goldRatioInMarket));
 
             if (!(gold > gold_need_threshold * 4)){
-                person.getEventTracker().addEvent(EventTracker.Message("Major", "ended it "));
                 return;
             }
 
             if (!(goldRatioInMarket < 15)){
-                person.getEventTracker().addEvent(EventTracker.Message("Major", "ended here "));
                 return;
             }
-
-            person.getEventTracker().addEvent(EventTracker.Message("Major", "wtf "));
 
             double fRatio = foodRatioInMarket / (foodRatioInMarket + alloyRatioInMarket);
             double aRatio = alloyRatioInMarket / (foodRatioInMarket + alloyRatioInMarket);
 
                 int amountGoldToSpend = gold - (gold / 4);
 
-
-            person.getEventTracker().addEvent(EventTracker.Message("Major", fRatio +"   "+ aRatio +"   " + amountGoldToSpend));
 
             if (fRatio > 0.35 && amountGoldToSpend > 0){
                 if(exchange.exchangeResources(amountGoldToSpend*10, Resource.Food, Resource.Gold, person.getCharacter())) {
@@ -411,11 +403,9 @@ public class ManagementActions {
                     case UPGRADE_PROPERTY:
 
                         try {
-                            person.getEventTracker().addEvent(EventTracker.Message("Major" , "Tried construction property"));
                             Construct.constructProperty(person);
                             person.removeAspiration(Aspiration.UPGRADE_PROPERTY);
                             person.removeAspiration(Aspiration.SAVE_RESOURCES);
-                            person.getEventTracker().addEvent(EventTracker.Message("Major" , "success construction property"));
                         } catch (InsufficientResourcesException e) {
                             person.getProperty().getVault().withdrawal(wallet, e.getCost());
 

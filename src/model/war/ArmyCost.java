@@ -1,6 +1,7 @@
 package model.war;
 
 import model.Settings;
+import model.resourceManagement.TransferPackage;
 
 public class ArmyCost {
     public static final int increaseArmyDefence = Settings.getInt("increaseArmyDefence");
@@ -11,4 +12,9 @@ public class ArmyCost {
     public static final int runningFood = Settings.getInt("runningFood");
     public static final int runningAlloy = Settings.getInt("runningAlloy");
     public static final int runningGold = Settings.getInt("runningGold");
+
+
+    public static TransferPackage getRecruitingCost() {
+        return new TransferPackage(ArmyCost.hireSoldierFood,ArmyCost.hireSoldierAlloy, ArmyCost.hireSoldierGold);
+    }
 }
