@@ -10,7 +10,6 @@ public class TaxEventManager {
     private static final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     public static synchronized List<TaxObserver> getObservers() {
-        // Return a defensive copy of the observer list to ensure thread-safe iteration
         return new ArrayList<>(observers);
     }
 
@@ -31,13 +30,11 @@ public class TaxEventManager {
     }
 
     public static void notifyTimeUpdate(int day, int month, int year) {
-        // Create a snapshot of the observer list to ensure thread-safe iteration
         List<TaxObserver> snapshot;
         synchronized (observers) {
             snapshot = new ArrayList<>(observers);
         }
 
-        // Notify all observers in parallel
         for (TaxObserver observer : snapshot) {
             executor.submit(() -> observer.taxUpdate(day, month, year));
         }

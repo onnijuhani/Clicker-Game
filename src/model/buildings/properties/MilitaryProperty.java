@@ -14,7 +14,7 @@ public class MilitaryProperty extends Property implements Military {
 
     public MilitaryProperty(PropertyConfig.PropertyValues propertyValues ,String name, Person owner) {
         super(propertyValues, name, owner);
-        this.army = new Army(this, owner.getWallet());
+        this.army = new Army(this, owner);
         this.propertyEnum = Properties.Castle;
     }
 

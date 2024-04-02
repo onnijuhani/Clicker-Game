@@ -22,6 +22,7 @@ public class Time {
     public static final int provinceTax = Settings.getInt("provinceTax");
     public static final int nationTax = Settings.getInt("nationTax");
     public static final int utilitySlots = Settings.getInt("utilitySlots");
+    public static final int armyRunningCost = Settings.getInt("armyRunningCost");
     private static int milliseconds = 1000;
 
     public static boolean gameOver = false;
@@ -67,6 +68,9 @@ public class Time {
         }
         if (day == utilitySlots) {
             UtilityManager.notifyTimeUpdate();
+        }
+        if (day == armyRunningCost && !(year == 0 && month == 0)) { // prevent unfair situations by skipping the very first time
+            ArmyManager.notifyTimeUpdate(day);
         }
 
         /**
