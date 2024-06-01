@@ -2,44 +2,54 @@ package model.characters;
 
 import model.resourceManagement.TransferPackage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PaymentCalendar {
 
     // A class to hold payment information
     public static class PaymentInfo {
-        String name;
-        TransferPackage payment;
-        int day;
+        public Payment name;
+        public TransferPackage amount;
+        public int day;
 
-        public PaymentInfo(String name, TransferPackage payment, int day) {
+        public PaymentInfo(Payment name, TransferPackage amount, int day) {
             this.name = name;
-            this.payment = payment;
+            this.amount = amount;
             this.day = day;
         }
 
         @Override
         public String toString() {
-            return String.format("%s on day %d: %s", name, day, payment.toString());
+            return String.format("%s on day %d: %s", name, day, amount.toString());
         }
     }
 
     // Map that holds information of all payments
-    private final Map<Integer, List<PaymentInfo>> paymentSchedule = new HashMap<>();
+    private final Map<Payment, PaymentInfo> expenses = new HashMap<>();
+    private final Map<Payment, PaymentInfo> incomes = new HashMap<>();
 
 
-    public void addPayment(String name, TransferPackage payment, int day) {
-        PaymentInfo paymentInfo = new PaymentInfo(name, payment, day);
+    /**
+     * @param type Income or Expense
+     * @param name Type of payment
+     * @param payment transferPackage with amounts
+     * @param day day the payment occurs
+     */
+    public void addPayment(PaymentType type, Payment name, TransferPackage payment, int day) {
+        PaymentInfo newPaymentInfo = new PaymentInfo(name, payment, day);
+        Map<Payment, PaymentInfo> payments = (type == PaymentType.EXPENSE) ? expenses : incomes;
 
-        // If there's already a payment scheduled for this day, add to the list. Otherwise, create a new list.
-        paymentSchedule.computeIfAbsent(day, k -> new ArrayList<>()).add(paymentInfo);
+        payments.put(name, newPaymentInfo);
     }
 
-    public List<PaymentInfo> getPaymentsForDay(int day) {
-        return paymentSchedule.getOrDefault(day, new ArrayList<>());
+    public enum PaymentType {
+        EXPENSE,
+        INCOME
     }
+
+    public PaymentInfo getExpense(Payment payment){
+        return expenses.get(payment);
+    }
+
 }
 

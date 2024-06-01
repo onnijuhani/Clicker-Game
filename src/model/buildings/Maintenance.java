@@ -1,11 +1,15 @@
 package model.buildings;
 
+import model.GameManager;
+import model.characters.Payment;
+import model.characters.PaymentCalendar;
+import model.characters.Tracker;
 import model.stateSystem.EventTracker;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Vault;
 import model.resourceManagement.wallets.Wallet;
 
-public class Maintenance {
+public class Maintenance implements Tracker {
     private final int food;
     private final int alloy;
     private final int gold;
@@ -17,7 +21,7 @@ public class Maintenance {
     }
 
     public void payMaintenance(Property property) {
-        TransferPackage maintenanceCost = maintenanceCost();
+        TransferPackage maintenanceCost = getMaintenanceCost();
         Vault propertyVault = property.getVault();
         Wallet ownerWallet = property.getOwner().getWallet();
         String message = "Maintenance paid. " + maintenanceCost.toString();
@@ -51,14 +55,22 @@ public class Maintenance {
                 walletResources[2] >= costResources[2];
     }
 
-    public TransferPackage maintenanceCost() {
+    public TransferPackage getMaintenanceCost() {
         return new TransferPackage(food, alloy, gold);
     }
+
+
+
 
     @Override
     public String toString() {
         return food + " Food " + "\n" +
                 alloy + " Alloys " + "\n" +
                  gold + " Gold";
+    }
+
+    @Override
+    public void updatePaymentCalendar(PaymentCalendar calendar) {
+        calendar.addPayment(PaymentCalendar.PaymentType.EXPENSE, Payment.MAINTENANCE_EXPENSE, getMaintenanceCost(), GameManager.getMaintenanceDay());
     }
 }

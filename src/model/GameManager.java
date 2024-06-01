@@ -6,10 +6,15 @@ import java.util.LinkedList;
 
 public class GameManager {
     private static final int foodConsumptionDay = Settings.getInt("foodConsumptionDay");
+
     private static int foodConsumptionRate = Settings.getInt("foodConsumption");
+
+
     private static final int foodConsumptionIncreaseInterval = Settings.getInt("foodConsumptionIncreaseInterval");
     private static final int foodConsumptionIncreaseRate = Settings.getInt("foodConsumptionIncreaseRate");
     private static int currentYear = 0;
+
+    private static final int maintenanceDay = Settings.getInt("maintenance");
 
 
 
@@ -32,6 +37,9 @@ public class GameManager {
 
     public static int getFoodConsumptionRate() {
         return foodConsumptionRate;
+    }
+    public static int getMaintenanceDay() {
+        return maintenanceDay;
     }
     public static int getFoodConsumptionDay() {
         return foodConsumptionDay;

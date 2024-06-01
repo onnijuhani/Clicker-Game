@@ -2,13 +2,13 @@ package model.characters.ai.actionCircle;
 
 import model.Settings;
 
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class WeightedCircle implements Circle<WeightedObject> {
 
-    private final LinkedList<WeightedObject> circle = new LinkedList<>();
+    private final Queue<WeightedObject> circle = new PriorityQueue<>();
     private final int weightThreshold;
     private final int weightIncrement;
 
@@ -42,7 +42,6 @@ public class WeightedCircle implements Circle<WeightedObject> {
 
     public void addAll(List list) {
         circle.addAll(list);
-        Collections.shuffle(circle);  // circle is shuffled at the beginning
     }
 
     @Override
@@ -72,7 +71,7 @@ public class WeightedCircle implements Circle<WeightedObject> {
         if (maxWeightObject.getWeight() >= weightThreshold) {
             circle.remove(maxWeightObject);
             maxWeightObject.resetWeight(); // Aseta valitun objektin paino nollaksi
-            circle.addLast(maxWeightObject); // Lisää objekti takaisin listan loppuun
+            circle.add(maxWeightObject); // Lisää objekti takaisin listan loppuun
             return maxWeightObject; // Palauta valittu objekti
         }
         return null; // Palauta null, jos yksikään objekti ei täytä kriteerejä
@@ -105,7 +104,7 @@ public class WeightedCircle implements Circle<WeightedObject> {
         if (maxWeightObject.getWeight() >= weightThreshold) {
             circle.remove(maxWeightObject);
             maxWeightObject.resetWeight();
-            circle.addLast(maxWeightObject);
+            circle.add(maxWeightObject);
             maxWeightObject.execute();
         }
         if(Settings.DB){System.out.println("loop 5");}

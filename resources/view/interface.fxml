@@ -58,7 +58,9 @@
                         <Tab text="Untitled Tab 1">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="340.0" prefWidth="773.0" style="-fx-background-color: white;">
-                                    </AnchorPane>
+                                 <children>
+                                    <fx:include fx:id="information" source="information.fxml" />
+                                 </children></AnchorPane>
                            </content>
                         </Tab>
                         <Tab onSelectionChanged="#updateExchange" text="Exchange">

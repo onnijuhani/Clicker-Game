@@ -1,8 +1,5 @@
 package model.characters;
 
-import javafx.animation.KeyFrame;
-import javafx.application.Platform;
-import javafx.util.Duration;
 import model.NameCreation;
 import model.Settings;
 import model.buildings.Property;
@@ -17,7 +14,12 @@ import model.stateSystem.GameEvent;
 import model.stateSystem.State;
 import model.time.Time;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Person implements Ownable {
     private final String name;
@@ -36,6 +38,7 @@ public class Person implements Ownable {
     private Role role;
     private boolean isPlayer;
     private AiEngine aiEngine;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public Person(Boolean isNpc) {
         this.isPlayer = !isNpc;
@@ -66,18 +69,13 @@ public class Person implements Ownable {
         ));
     }
     private void delayMethods() {
-        // some methods need to be delayed to allow the simulation to load
-        javafx.animation.Timeline timeline = new javafx.animation.Timeline(new KeyFrame(
-                Duration.millis(1000), // Delay before executing the task
-                ae -> {
-                    try {
-                        Platform.runLater(this::startingMsgAndAiEngine);
-                    } catch (Exception e) {
-                        System.out.println("Something went wrong with delaying methods in Person " + e);
-                    }
-                }));
-        timeline.setCycleCount(1);
-        timeline.play();
+        scheduler.schedule(() -> {
+            try {
+                startingMsgAndAiEngine();
+            } catch (Exception e) {
+                System.out.println("Something went wrong with delaying methods in Person " + e);
+            }
+        }, 1, TimeUnit.SECONDS); // Delay before executing the task
     }
     public void loseStrike(){
         getStrikesTracker().loseStrike();

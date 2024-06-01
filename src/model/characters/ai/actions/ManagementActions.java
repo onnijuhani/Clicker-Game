@@ -104,7 +104,7 @@ public class ManagementActions {
                     person.getEventTracker().addEvent(EventTracker.Message("Major", "bought food and spent " + amountGoldToSpend));
                 }
             }
-            person.getEventTracker().addEvent(EventTracker.Message("Major", "fail " ));
+
             if (aRatio > 0.35 && amountGoldToSpend > 0){
                 if(exchange.exchangeResources(amountGoldToSpend*5, Resource.Alloy, Resource.Gold, person.getCharacter())) {
                     person.getEventTracker().addEvent(EventTracker.Message("Major", "bought alloys and spent " + amountGoldToSpend));

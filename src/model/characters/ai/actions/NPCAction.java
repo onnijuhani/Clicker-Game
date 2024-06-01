@@ -17,7 +17,6 @@ package model.characters.ai.actions;
 
 public interface NPCAction extends Comparable<NPCAction> {
 
-
     void execute();
 
     /**
@@ -42,5 +41,12 @@ public interface NPCAction extends Comparable<NPCAction> {
  void attackerAction();
  void defenderAction();
 
-
+    /**
+     * Compares this NPC action with another to determine order.
+     *
+     * @param other the other NPCAction to compare to this one
+     * @return a negative integer, zero, or a positive integer as this NPCAction
+     * is less than, equal to, or greater than the specified NPCAction.
+     */
+    int compareTo(NPCAction other);
 }

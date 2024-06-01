@@ -32,6 +32,8 @@ public class MainController extends BaseController {
     private CharacterController characterController;
     @FXML
     private PropertyController propertyController;
+    @FXML
+    private InformationController informationController;
 
     public RelationsController getRelationsController() {
         return relationsController;
@@ -62,11 +64,11 @@ public class MainController extends BaseController {
     @FXML
     protected Tab characterTab;
 
-
-
     public MainController() {
         super();
     }
+
+
     @Override
     public void setModel(Model model) {
         super.setModel(model);
@@ -120,6 +122,13 @@ public class MainController extends BaseController {
             relationsController.resetEverything();
         } else {
             System.out.println("RelationsController is null");
+        }
+        if (informationController != null) {
+            informationController.setMain(this);
+            informationController.setModel(model);
+        }
+        else {
+            System.out.println("InformationController is null");
         }
     }
 

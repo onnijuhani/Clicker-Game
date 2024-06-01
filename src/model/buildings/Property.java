@@ -72,6 +72,8 @@ public class Property implements PropertyObserver, Details, Ownable {
         PropertyManager.subscribe(this);
         this.utilitySlot = new UtilitySlot(5);
         states = EnumSet.noneOf(State.class);
+
+        maintenance.updatePaymentCalendar(owner.getPaymentCalendar());
     }
 
     private void depositStartingBalance(PropertyConfig.PropertyValues propertyValues) {

@@ -8,17 +8,25 @@ import java.util.Map;
 import java.util.Random;
 
 public class WeightedObject implements NPCAction {
-    protected int weight;
-    protected int importance;
+    protected int weight; // Weight is used in natural comparator to decide which operation to execute
+    protected int importance; // Importance affects the speed in which weight is changed
     protected Map<Trait, Integer> profile;
-
-
 
     public WeightedObject(int weight, Map<Trait, Integer> profile) {
         this.weight = weight;
         this.importance = weight;
         this.profile = profile;
     }
+
+    @Override
+    public int compareTo(NPCAction other) {
+        if (other instanceof WeightedObject otherWeightedObject) {
+            return Integer.compare(this.weight, otherWeightedObject.weight);
+        }
+        throw new IllegalArgumentException("Cannot compare WeightedObject with " + other.getClass());
+    }
+
+
     public WeightedObject() {
         this.weight = 1;
         this.importance = 1;
@@ -172,10 +180,7 @@ public class WeightedObject implements NPCAction {
         this.importance = importance;
     }
 
-    @Override
-    public int compareTo(NPCAction o) {
-        return 0;
-    }
+
 
 
     /**
