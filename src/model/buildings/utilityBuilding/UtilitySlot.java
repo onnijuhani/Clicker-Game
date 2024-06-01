@@ -1,6 +1,6 @@
 package model.buildings.utilityBuilding;
 
-import model.characters.payments.PaymentCalendar;
+import model.characters.payments.PaymentManager;
 import model.characters.payments.Tracker;
 
 import java.util.HashMap;
@@ -56,7 +56,7 @@ public class UtilitySlot implements Tracker {
 
 
     @Override
-    public void updatePaymentCalendar(PaymentCalendar calendar) {
+    public void updatePaymentCalendar(PaymentManager calendar) {
         ownedUtilityBuildings.forEach((key, building) -> {
             building.updatePaymentCalendar(calendar);
         });

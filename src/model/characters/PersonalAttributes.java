@@ -2,7 +2,7 @@ package model.characters;
 
 import model.buildings.Property;
 import model.characters.combat.CombatStats;
-import model.characters.payments.PaymentCalendar;
+import model.characters.payments.PaymentManager;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.stateSystem.EventTracker;
@@ -22,7 +22,7 @@ public interface PersonalAttributes {
     CombatStats getCombatStats();
     EnumSet<State> getStates();
     List<GameEvent> getOngoingEvents();
-    PaymentCalendar getPaymentCalendar();
+    PaymentManager getPaymentCalendar();
     StrikesTracker getStrikesTracker();
 
 

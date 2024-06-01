@@ -1,7 +1,7 @@
 package model.buildings.utilityBuilding;
 
 import model.Settings;
-import model.characters.payments.PaymentCalendar;
+import model.characters.payments.PaymentManager;
 import model.characters.Person;
 import model.characters.payments.Tracker;
 import model.resourceManagement.TransferPackage;
@@ -44,7 +44,7 @@ public class UtilityBuilding extends UpgradeSystem implements UtilityObserver, T
     }
 
     @Override
-    public void updatePaymentCalendar(PaymentCalendar calendar) {
+    public void updatePaymentCalendar(PaymentManager calendar) {
 
     }
 }

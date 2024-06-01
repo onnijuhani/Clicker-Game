@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="700.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364) linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-border-color: white; -fx-border-width: 1;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RelationsController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="700.0" style=": white;" styleClass="mainColorRight" stylesheets="@../characterStyle.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RelationsController">
    <children>
       <VBox alignment="CENTER" layoutX="14.0" layoutY="124.0" AnchorPane.leftAnchor="10.0">
          <children>
@@ -57,7 +57,7 @@
                   </Button>
                </children>
             </HBox>
-            <ListView fx:id="charactersList" prefHeight="360.0" prefWidth="208.0">
+            <ListView fx:id="charactersList" prefHeight="360.0" prefWidth="208.0" style="-fx-background-color: #262226;">
                <VBox.margin>
                   <Insets bottom="1.0" left="1.0" right="1.0" top="5.0" />
                </VBox.margin>

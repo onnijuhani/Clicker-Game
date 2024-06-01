@@ -3,7 +3,7 @@ package model.characters;
 import model.GameManager;
 import model.characters.ai.AiEngine;
 import model.characters.payments.Payment;
-import model.characters.payments.PaymentCalendar;
+import model.characters.payments.PaymentManager;
 import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
@@ -71,7 +71,7 @@ public class Character implements NpcObserver, Details, Ownable {
     }
 
     private void updateFoodConsumption(int FoodConsumptionRate) {
-        person.getPaymentCalendar().addPayment(PaymentCalendar.PaymentType.EXPENSE, Payment.FOOD_EXPENSE, new TransferPackage(FoodConsumptionRate, 0, 0), 1);
+        person.getPaymentCalendar().addPayment(PaymentManager.PaymentType.EXPENSE, Payment.FOOD_EXPENSE, new TransferPackage(FoodConsumptionRate, 0, 0), 1);
     }
 
 

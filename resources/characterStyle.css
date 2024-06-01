@@ -28,3 +28,52 @@
     -fx-border-color: white;
     -fx-border-radius: 20;
 }
+.mainColorLeft {
+    -fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364), linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364);
+}
+.mainColorRight {
+    -fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #2C5364, #203A43, #0F2027), linear-gradient(from 15% 100% to 100% 15%, #2C5364, #203A43, #0F2027);
+}
+.overviewBox {
+    -fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F1221, #202741, #2E3E51);
+    -fx-background-radius: 35;
+    -fx-border-radius: 35;
+    -fx-border-color: white;
+}
+.settingsBox {
+    -fx-background-color: white;
+    -fx-background-radius: 25;
+    -fx-border-color:  linear-gradient(from 15% 100% to 100% 15%, #59033f, #4c023f, #3e023e, #30033c, #210339);
+    -fx-border-radius: 25;
+}
+
+.list-view {
+    -fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F1221, #202741, #2E3E51);
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 10;
+    -fx-control-inner-background: transparent;
+}
+
+.list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-padding: 10;
+    -fx-background-radius: 10;
+}
+
+.list-view .list-cell:filled:selected {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-background-insets: 0;
+}
+
+.list-view .list-cell:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-text-fill: white;
+    -fx-background-insets: 0;
+}
+
+.topSection {
+    -fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F1221, #202741, #2E3E51);
+}

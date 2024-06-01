@@ -1,7 +1,7 @@
 package model.buildings.utilityBuilding;
 
 import model.characters.payments.Payment;
-import model.characters.payments.PaymentCalendar;
+import model.characters.payments.PaymentManager;
 import model.characters.Person;
 import model.characters.Trait;
 import model.resourceManagement.TransferPackage;
@@ -66,8 +66,8 @@ public class WorkerCenter extends SlaveFacility {
     }
 
     @Override
-    public void updatePaymentCalendar(PaymentCalendar calendar) {
-        calendar.addPayment(PaymentCalendar.PaymentType.INCOME, Payment.WORKER_CENTER_INCOME, getGenerateAmount(), Time.utilitySlots);
+    public void updatePaymentCalendar(PaymentManager calendar) {
+        calendar.addPayment(PaymentManager.PaymentType.INCOME, Payment.WORKER_CENTER_INCOME, getGenerateAmount(), Time.utilitySlots);
     }
 
 

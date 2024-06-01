@@ -2,7 +2,7 @@ package model.buildings;
 
 import model.GameManager;
 import model.characters.payments.Payment;
-import model.characters.payments.PaymentCalendar;
+import model.characters.payments.PaymentManager;
 import model.characters.payments.Tracker;
 import model.stateSystem.EventTracker;
 import model.resourceManagement.TransferPackage;
@@ -70,7 +70,7 @@ public class Maintenance implements Tracker {
     }
 
     @Override
-    public void updatePaymentCalendar(PaymentCalendar calendar) {
-        calendar.addPayment(PaymentCalendar.PaymentType.EXPENSE, Payment.MAINTENANCE_EXPENSE, getMaintenanceCost(), GameManager.getMaintenanceDay());
+    public void updatePaymentCalendar(PaymentManager calendar) {
+        calendar.addPayment(PaymentManager.PaymentType.EXPENSE, Payment.MAINTENANCE_EXPENSE, getMaintenanceCost(), GameManager.getMaintenanceDay());
     }
 }

@@ -6,7 +6,7 @@ import model.time.Time;
 
 import java.util.*;
 
-public class PaymentCalendar {
+public class PaymentManager {
 
 
     // A class to hold payment information
@@ -53,12 +53,15 @@ public class PaymentCalendar {
 
 
 
-    // Map that holds information of all payments
+    // Maps that holds information of all payments
     private final Map<Payment, PaymentInfo> expenses = new HashMap<>();
     private final Map<Payment, PaymentInfo> incomes = new HashMap<>();
     protected Wallet wallet;
 
-    public PaymentCalendar(Wallet wallet) {
+
+    private boolean combineUtilities = false;
+
+    public PaymentManager(Wallet wallet) {
         this.wallet = wallet;
     }
 
@@ -137,6 +140,23 @@ public class PaymentCalendar {
         allPayments.addAll(expenses.values());
         allPayments.addAll(incomes.values());
 
+        // Combine utility incomes if the flag is set
+        if (combineUtilities) {
+            Map<String, PaymentInfo> combinedUtilities = new HashMap<>();
+            for (PaymentInfo info : new ArrayList<>(allPayments)) {
+                if (isUtilityIncome(info.name)) {
+                    allPayments.remove(info);
+                    combinedUtilities.merge("Utility Income", info, (existing, newInfo) -> {
+                        int combinedFood = existing.amount.food() + newInfo.amount.food();
+                        int combinedAlloy = existing.amount.alloy() + newInfo.amount.alloy();
+                        int combinedGold = existing.amount.gold() + newInfo.amount.gold();
+                        return new PaymentInfo(Payment.UTILITY_INCOME, new TransferPackage(combinedFood, combinedAlloy, combinedGold), existing.day);
+                    });
+                }
+            }
+            allPayments.addAll(combinedUtilities.values());
+        }
+
         allPayments.sort((p1, p2) -> {
             int dayDifference1 = (p1.day >= currentDay) ? p1.day - currentDay : (p1.day - currentDay + 30);
             int dayDifference2 = (p2.day >= currentDay) ? p2.day - currentDay : (p2.day - currentDay + 30);
@@ -144,6 +164,23 @@ public class PaymentCalendar {
         });
 
         return allPayments;
+    }
+
+    private boolean isUtilityIncome(Payment name) {
+        return name.equals(Payment.MEADOWLANDS_INCOME) ||
+                name.equals(Payment.ALLOY_MINE_INCOME) ||
+                name.equals(Payment.GOLD_MINE_INCOME) ||
+                name.equals(Payment.SLAVE_FACILITY_INCOME) ||
+                name.equals(Payment.MYSTIC_MINE_INCOME) ||
+                name.equals(Payment.WORKER_CENTER_INCOME);
+    }
+
+    public boolean isCombineUtilities() {
+        return combineUtilities;
+    }
+
+    public void setCombineUtilities(boolean combineUtilities) {
+        this.combineUtilities = combineUtilities;
     }
 
 

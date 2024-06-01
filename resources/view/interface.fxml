@@ -55,7 +55,7 @@
                <children>
                   <TabPane prefHeight="330.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE">
                      <tabs>
-                        <Tab text="Untitled Tab 1">
+                        <Tab text="Overview">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="340.0" prefWidth="773.0" style="-fx-background-color: white;">
                                  <children>
@@ -167,7 +167,7 @@
             </TabPane>
             <VBox fillWidth="false" layoutX="100.0" layoutY="350.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="340.0">
                <children>
-                  <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-color: linear-gradient(from 15% 100% to 100% 15%, #59033f, #4c023f, #3e023e, #30033c, #210339); -fx-border-radius: 25;">
+                  <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" styleClass="settingsBox">
                      <children>
                         <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Hide Clicker Messages" textAlignment="CENTER" wrappingWidth="78.30859375" />
                         <CheckBox fx:id="generateMessages" mnemonicParsing="false" onAction="#hideGenerateMessages">
@@ -180,7 +180,7 @@
                         <Insets bottom="2.0" top="2.0" />
                      </VBox.margin>
                   </HBox>
-                  <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-color: linear-gradient(from 15% 100% to 100% 15%, #59033f, #4c023f, #3e023e, #30033c, #210339); -fx-border-radius: 25;">
+                  <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" styleClass="settingsBox">
                      <children>
                         <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Hide Minor Messages" textAlignment="CENTER" wrappingWidth="78.30859375" />
                         <CheckBox fx:id="minorMessages" mnemonicParsing="false" onAction="#hideMinorMessages">
@@ -190,7 +190,7 @@
                         </CheckBox>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-color: linear-gradient(from 15% 100% to 100% 15%, #59033f, #4c023f, #3e023e, #30033c, #210339); -fx-border-radius: 25;">
+                  <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" styleClass="settingsBox">
                      <children>
                         <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Advance Day per Click" textAlignment="CENTER" wrappingWidth="78.30859375" />
                         <CheckBox fx:id="incrementClicker" mnemonicParsing="false" onAction="#incrementByClick" prefWidth="15.0">

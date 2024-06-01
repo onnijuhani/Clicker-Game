@@ -6,7 +6,7 @@ import model.buildings.Property;
 import model.characters.ai.AiEngine;
 import model.characters.ai.Aspiration;
 import model.characters.combat.CombatStats;
-import model.characters.payments.PaymentCalendar;
+import model.characters.payments.PaymentManager;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.shop.Ownable;
@@ -33,7 +33,7 @@ public class Person implements Ownable {
     private final EnumSet<State> states;
     private final EnumSet<Aspiration> aspirations;
     private final List<GameEvent> ongoingEvents = new ArrayList<>();
-    private final PaymentCalendar paymentCalendar;
+    private final PaymentManager paymentManager;
     private final StrikesTracker strikesTracker;
     private Character character;
     private Role role;
@@ -49,7 +49,7 @@ public class Person implements Ownable {
         this.name = NameCreation.generateCharacterName(isNpc);
         this.eventTracker = new EventTracker(isNpc);
         this.combatStats = new CombatStats(Settings.getInt("offenceBasePrice"),Settings.getInt("defenceBasePrice"), this);
-        this.paymentCalendar = new PaymentCalendar(wallet);
+        this.paymentManager = new PaymentManager(wallet);
         this.strikesTracker = new StrikesTracker(Settings.getInt("strikes"));
         states = EnumSet.noneOf(State.class);
         aspirations = EnumSet.noneOf(Aspiration.class);
@@ -156,7 +156,7 @@ public class Person implements Ownable {
     public List<GameEvent> getOngoingEvents() {
         return ongoingEvents;
     }
-    public PaymentCalendar getPaymentCalendar() {return paymentCalendar;}
+    public PaymentManager getPaymentCalendar() {return paymentManager;}
     public StrikesTracker getStrikesTracker() {
         return strikesTracker;
     }

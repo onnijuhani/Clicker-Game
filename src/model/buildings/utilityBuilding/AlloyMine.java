@@ -2,7 +2,7 @@ package model.buildings.utilityBuilding;
 
 import model.Settings;
 import model.characters.payments.Payment;
-import model.characters.payments.PaymentCalendar;
+import model.characters.payments.PaymentManager;
 import model.characters.Person;
 import model.characters.Status;
 import model.resourceManagement.TransferPackage;
@@ -42,8 +42,8 @@ public class AlloyMine extends UtilityBuilding {
     }
 
     @Override
-    public void updatePaymentCalendar(PaymentCalendar calendar) {
-        calendar.addPayment(PaymentCalendar.PaymentType.INCOME, Payment.ALLOY_MINE_INCOME, getGenerateAmount(), Time.utilitySlots);
+    public void updatePaymentCalendar(PaymentManager calendar) {
+        calendar.addPayment(PaymentManager.PaymentType.INCOME, Payment.ALLOY_MINE_INCOME, getGenerateAmount(), Time.utilitySlots);
     }
 
 

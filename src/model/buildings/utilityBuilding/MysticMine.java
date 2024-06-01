@@ -2,7 +2,7 @@ package model.buildings.utilityBuilding;
 
 import model.Settings;
 import model.characters.payments.Payment;
-import model.characters.payments.PaymentCalendar;
+import model.characters.payments.PaymentManager;
 import model.characters.Person;
 import model.resourceManagement.TransferPackage;
 import model.time.Time;
@@ -64,8 +64,8 @@ public class MysticMine extends UtilityBuilding {
     }
 
     @Override
-    public void updatePaymentCalendar(PaymentCalendar calendar) {
-        calendar.addPayment(PaymentCalendar.PaymentType.INCOME, Payment.MYSTIC_MINE_INCOME, getGenerateAmount(), Time.utilitySlots);
+    public void updatePaymentCalendar(PaymentManager calendar) {
+        calendar.addPayment(PaymentManager.PaymentType.INCOME, Payment.MYSTIC_MINE_INCOME, getGenerateAmount(), Time.utilitySlots);
     }
 
 

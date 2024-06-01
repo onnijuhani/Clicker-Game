@@ -23,10 +23,10 @@ public record TransferPackage(int food, int alloy, int gold) {
     }
     @Override
     public String toString() {
-        return " (Food: "+food+" Alloys: "+alloy+" Gold: "+gold+")";
+        return "Food: "+food+" Alloys: "+alloy+" Gold: "+gold;
     }
     public String toShortString() {
-        return " (F:"+food+" A:"+alloy+" G:"+gold+")";
+        return "F:"+food+" A:"+alloy+" G:"+gold;
     }
     public int food() {
         return food;

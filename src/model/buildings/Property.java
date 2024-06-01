@@ -34,11 +34,13 @@ public class Property implements PropertyObserver, Details, Ownable {
         if (firstTimeReached) {
                 // Skip the first model.time this condition is met
                 firstTimeReached = false;
+
         } else {
                 maintenance.payMaintenance(this);
         }
 
-        utilitySlot.updatePaymentCalendar(owner.getPaymentCalendar()); // update payments monthly
+        maintenance.updatePaymentCalendar(owner.getPaymentCalendar());
+
     }
     @Override
     public String getDetails(){
@@ -75,7 +77,6 @@ public class Property implements PropertyObserver, Details, Ownable {
         this.utilitySlot = new UtilitySlot(5);
         states = EnumSet.noneOf(State.class);
 
-        maintenance.updatePaymentCalendar(owner.getPaymentCalendar());
     }
 
     private void depositStartingBalance(PropertyConfig.PropertyValues propertyValues) {
