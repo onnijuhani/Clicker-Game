@@ -6,6 +6,7 @@ import model.buildings.Property;
 import model.characters.ai.AiEngine;
 import model.characters.ai.Aspiration;
 import model.characters.combat.CombatStats;
+import model.characters.payments.PaymentCalendar;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.shop.Ownable;
@@ -48,7 +49,7 @@ public class Person implements Ownable {
         this.name = NameCreation.generateCharacterName(isNpc);
         this.eventTracker = new EventTracker(isNpc);
         this.combatStats = new CombatStats(Settings.getInt("offenceBasePrice"),Settings.getInt("defenceBasePrice"), this);
-        this.paymentCalendar = new PaymentCalendar();
+        this.paymentCalendar = new PaymentCalendar(wallet);
         this.strikesTracker = new StrikesTracker(Settings.getInt("strikes"));
         states = EnumSet.noneOf(State.class);
         aspirations = EnumSet.noneOf(Aspiration.class);

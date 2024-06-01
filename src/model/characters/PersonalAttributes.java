@@ -2,6 +2,7 @@ package model.characters;
 
 import model.buildings.Property;
 import model.characters.combat.CombatStats;
+import model.characters.payments.PaymentCalendar;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.stateSystem.EventTracker;

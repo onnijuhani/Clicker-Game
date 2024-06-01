@@ -170,13 +170,15 @@ public class Wallet {
 
 
     public void subtractFood(int amount) {
-        food -= amount;
+        food = Math.max(0, food - amount);
     }
+
     public void subtractAlloy(int amount) {
-        alloy -= amount;
+        alloy = Math.max(0, alloy - amount);
     }
+
     public void subtractGold(int amount) {
-        gold -= amount;
+        gold = Math.max(0, gold - amount);
     }
     public int getFood() {
         return food;

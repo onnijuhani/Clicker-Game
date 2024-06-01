@@ -37,6 +37,8 @@ public class Property implements PropertyObserver, Details, Ownable {
         } else {
                 maintenance.payMaintenance(this);
         }
+
+        utilitySlot.updatePaymentCalendar(owner.getPaymentCalendar()); // update payments monthly
     }
     @Override
     public String getDetails(){

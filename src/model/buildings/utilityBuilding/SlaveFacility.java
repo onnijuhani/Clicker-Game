@@ -3,10 +3,13 @@ package model.buildings.utilityBuilding;
 import javafx.animation.KeyFrame;
 import javafx.application.Platform;
 import javafx.util.Duration;
+import model.characters.payments.Payment;
+import model.characters.payments.PaymentCalendar;
 import model.characters.Person;
 import model.characters.Trait;
 import model.resourceManagement.TransferPackage;
 import model.stateSystem.EventTracker;
+import model.time.Time;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -132,6 +135,15 @@ public class SlaveFacility extends UtilityBuilding {
         if(owner.isPlayer()) {
             owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
         }
+    }
+
+    private TransferPackage getGenerateAmount() {
+        return new TransferPackage(production[0],production[1],production[2]);
+    }
+
+    @Override
+    public void updatePaymentCalendar(PaymentCalendar calendar) {
+        calendar.addPayment(PaymentCalendar.PaymentType.INCOME, Payment.SLAVE_FACILITY_INCOME, getGenerateAmount(), Time.utilitySlots);
     }
 
 

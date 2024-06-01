@@ -1,0 +1,17 @@
+package model.characters.payments;
+
+public enum Payment {
+
+    MAINTENANCE_EXPENSE,
+    FOOD_EXPENSE,
+    ARMY_EXPENSE,
+
+    EXPECTED_SALARY_INCOME,
+    MEADOWLANDS_INCOME,
+    ALLOY_MINE_INCOME,
+    GOLD_MINE_INCOME,
+    SLAVE_FACILITY_INCOME,
+    MYSTIC_MINE_INCOME,
+    WORKER_CENTER_INCOME
+
+}

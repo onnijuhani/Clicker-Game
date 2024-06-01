@@ -1,9 +1,12 @@
 package model.buildings.utilityBuilding;
 
+import model.characters.payments.Payment;
+import model.characters.payments.PaymentCalendar;
 import model.characters.Person;
 import model.characters.Trait;
 import model.resourceManagement.TransferPackage;
 import model.stateSystem.EventTracker;
+import model.time.Time;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -56,6 +59,15 @@ public class WorkerCenter extends SlaveFacility {
                 }
             }
         }
+    }
+
+    private TransferPackage getGenerateAmount() {
+        return new TransferPackage(production[0],production[1],production[2]);
+    }
+
+    @Override
+    public void updatePaymentCalendar(PaymentCalendar calendar) {
+        calendar.addPayment(PaymentCalendar.PaymentType.INCOME, Payment.WORKER_CENTER_INCOME, getGenerateAmount(), Time.utilitySlots);
     }
 
 

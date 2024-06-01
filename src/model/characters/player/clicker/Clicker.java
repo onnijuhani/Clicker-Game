@@ -85,9 +85,9 @@ public class Clicker {
         return new TransferPackage(totalFood, totalAlloy, totalGold);
     }
     private String clickerTransferMessage(TransferPackage resourcesGenerated) {
-        return "Generated " + resourcesGenerated.food() + " food, " +
-                resourcesGenerated.alloy() + " alloys, " +
-                resourcesGenerated.gold() + " gold!";
+        return "Generated " + resourcesGenerated.food() + "F, " +
+                resourcesGenerated.alloy() + "A, " +
+                resourcesGenerated.gold() + "G!";
     }
     public ClickerTools getClickerTool(Resource resourceType) {
         return ownedClickerTools.get(resourceType);

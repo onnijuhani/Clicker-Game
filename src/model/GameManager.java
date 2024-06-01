@@ -1,20 +1,20 @@
 package model;
 
 import model.resourceManagement.wallets.Vault;
+import model.time.Time;
 
 import java.util.LinkedList;
 
 public class GameManager {
     private static final int foodConsumptionDay = Settings.getInt("foodConsumptionDay");
-
     private static int foodConsumptionRate = Settings.getInt("foodConsumption");
-
 
     private static final int foodConsumptionIncreaseInterval = Settings.getInt("foodConsumptionIncreaseInterval");
     private static final int foodConsumptionIncreaseRate = Settings.getInt("foodConsumptionIncreaseRate");
     private static int currentYear = 0;
 
     private static final int maintenanceDay = Settings.getInt("maintenance");
+    private static final int utilityDay = Time.utilitySlots;
 
 
 

@@ -1,14 +1,16 @@
 package model.buildings.utilityBuilding;
 
 import model.Settings;
+import model.characters.payments.PaymentCalendar;
 import model.characters.Person;
+import model.characters.payments.Tracker;
 import model.resourceManagement.TransferPackage;
 import model.shop.UpgradeSystem;
 import model.stateSystem.EventTracker;
 import model.time.UtilityManager;
 import model.time.UtilityObserver;
 
-public class UtilityBuilding extends UpgradeSystem implements UtilityObserver {
+public class UtilityBuilding extends UpgradeSystem implements UtilityObserver, Tracker {
 
     protected UtilityBuildings name;
 
@@ -24,10 +26,13 @@ public class UtilityBuilding extends UpgradeSystem implements UtilityObserver {
     public String getInfo(){
         return "empty";
     }
+
+
     public UtilityBuilding(int basePrice, Person owner) {
         super(basePrice);
         this.owner = owner;
         UtilityManager.subscribe(this);
+
     }
 
     protected void generateAction() {
@@ -38,4 +43,8 @@ public class UtilityBuilding extends UpgradeSystem implements UtilityObserver {
         }
     }
 
+    @Override
+    public void updatePaymentCalendar(PaymentCalendar calendar) {
+
+    }
 }

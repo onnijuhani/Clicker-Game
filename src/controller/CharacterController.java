@@ -100,7 +100,7 @@ public class CharacterController extends BaseController  {
 
     @FXML
     public void initialize() {
-        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateCharacterTab()));
+        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> updateCharacterTab()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
     }

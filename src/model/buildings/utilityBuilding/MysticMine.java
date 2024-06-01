@@ -1,7 +1,11 @@
 package model.buildings.utilityBuilding;
 
 import model.Settings;
+import model.characters.payments.Payment;
+import model.characters.payments.PaymentCalendar;
 import model.characters.Person;
+import model.resourceManagement.TransferPackage;
+import model.time.Time;
 
 import java.util.Random;
 
@@ -37,14 +41,6 @@ public class MysticMine extends UtilityBuilding {
     }
 
 
-    public int calculateRandomAlloyProduction() {
-        return calculateNormalDistValue(alloyProduction);
-    }
-
-    public int calculateRandomGoldProduction() {
-        return calculateNormalDistValue(goldProduction);
-    }
-
     private int calculateNormalDistValue(int mean) {
         double result = random.nextGaussian() * ( (double) mean ) + (double) mean / 2;
 
@@ -54,12 +50,22 @@ public class MysticMine extends UtilityBuilding {
 
         return (int) Math.round(result);
     }
+
     @Override
     public String getInfo(){
         return (
                 "Level " + getUpgradeLevel() +"\n"+
                         "Alloys and Gold"
         );
+    }
+
+    private TransferPackage getGenerateAmount() {
+        return new TransferPackage(0,alloyProduction, goldProduction);
+    }
+
+    @Override
+    public void updatePaymentCalendar(PaymentCalendar calendar) {
+        calendar.addPayment(PaymentCalendar.PaymentType.INCOME, Payment.MYSTIC_MINE_INCOME, getGenerateAmount(), Time.utilitySlots);
     }
 
 

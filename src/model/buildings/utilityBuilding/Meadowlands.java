@@ -1,10 +1,13 @@
 package model.buildings.utilityBuilding;
 
 import model.Settings;
+import model.characters.payments.Payment;
+import model.characters.payments.PaymentCalendar;
 import model.characters.Person;
 import model.characters.Status;
 import model.resourceManagement.TransferPackage;
 import model.stateSystem.EventTracker;
+import model.time.Time;
 
 public class Meadowlands extends UtilityBuilding {
 
@@ -25,11 +28,22 @@ public class Meadowlands extends UtilityBuilding {
                 );
     }
     protected void generateAction() {
-        TransferPackage transfer = new TransferPackage(value,0,0);
+        TransferPackage transfer = getGenerateAmount();
         owner.getWallet().addResources(transfer);
         if (owner.isPlayer()) {
             owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated" + transfer));
         }
     }
+
+    private TransferPackage getGenerateAmount() {
+        return new TransferPackage(value,0,0);
+    }
+
+    @Override
+    public void updatePaymentCalendar(PaymentCalendar calendar) {
+        calendar.addPayment(PaymentCalendar.PaymentType.INCOME, Payment.GOLD_MINE_INCOME, getGenerateAmount(), Time.utilitySlots);
+    }
+
+
 
 }

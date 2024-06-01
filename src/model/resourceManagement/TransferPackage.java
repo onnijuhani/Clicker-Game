@@ -37,4 +37,6 @@ public record TransferPackage(int food, int alloy, int gold) {
     public int gold() {
         return gold;
     }
+
+
 }

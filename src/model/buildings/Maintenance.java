@@ -1,9 +1,9 @@
 package model.buildings;
 
 import model.GameManager;
-import model.characters.Payment;
-import model.characters.PaymentCalendar;
-import model.characters.Tracker;
+import model.characters.payments.Payment;
+import model.characters.payments.PaymentCalendar;
+import model.characters.payments.Tracker;
 import model.stateSystem.EventTracker;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Vault;

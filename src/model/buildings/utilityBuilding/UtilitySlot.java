@@ -1,8 +1,11 @@
 package model.buildings.utilityBuilding;
 
+import model.characters.payments.PaymentCalendar;
+import model.characters.payments.Tracker;
+
 import java.util.HashMap;
 
-public class UtilitySlot {
+public class UtilitySlot implements Tracker {
 
     private final int slotAmount;
     private HashMap<UtilityBuildings,UtilityBuilding> ownedUtilityBuildings;
@@ -16,7 +19,6 @@ public class UtilitySlot {
     }
 
     private int totalUpgradeLevels = 0;
-
 
     public UtilitySlot(int slotAmount) {
         this.slotAmount = slotAmount;
@@ -53,5 +55,11 @@ public class UtilitySlot {
     }
 
 
+    @Override
+    public void updatePaymentCalendar(PaymentCalendar calendar) {
+        ownedUtilityBuildings.forEach((key, building) -> {
+            building.updatePaymentCalendar(calendar);
+        });
+    }
 }
 
