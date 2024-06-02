@@ -207,4 +207,8 @@ public class Time {
         executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleAtFixedRate(Time::incrementDay, 0, milliseconds, TimeUnit.MILLISECONDS);
     }
+
+    public static boolean isIsSimulationRunning() {
+        return isSimulationRunning;
+    }
 }

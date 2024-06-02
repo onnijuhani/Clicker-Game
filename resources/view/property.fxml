@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -510,14 +511,24 @@
                      <VBox.margin>
                         <Insets top="5.0" />
                      </VBox.margin>
+                     <tooltip>
+                        <Tooltip text="Disable simulation to use the vault">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Tooltip>
+                     </tooltip>
                   </Label>
-                  <Label fx:id="vaultValue" alignment="CENTER" text="Vault Value" textFill="WHITE" wrapText="true">
+                  <Label fx:id="vaultValue" alignment="CENTER" styleClass="walletBack" stylesheets="@../characterStyle.css" text="Vault Value" textFill="WHITE" wrapText="true">
                      <font>
                         <Font size="15.0" />
                      </font>
                      <VBox.margin>
-                        <Insets top="5.0" />
+                        <Insets />
                      </VBox.margin>
+                     <padding>
+                        <Insets bottom="1.0" left="5.0" right="5.0" top="1.0" />
+                     </padding>
                   </Label>
                   <StackPane fx:id="VaultStackPane">
                      <VBox.margin>
@@ -532,7 +543,7 @@
                                     <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
                                  </VBox.margin>
                               </Slider>
-                              <Label fx:id="playerVaultSliderAmount" text="Amount" textFill="WHITE">
+                              <Label fx:id="playerVaultSliderAmount" text="Amount%" textFill="WHITE">
                                  <font>
                                     <Font size="14.0" />
                                  </font>

@@ -2,6 +2,7 @@ package controller;
 
 
 import customExceptions.InsufficientResourcesException;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -16,12 +17,14 @@ import model.buildings.Construct;
 import model.buildings.Property;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.Character;
+import model.characters.Person;
 import model.characters.combat.CombatService;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.shop.Shop;
 import model.stateSystem.Event;
 import model.stateSystem.GameEvent;
+import model.time.Time;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -183,12 +186,21 @@ public class PropertyController extends BaseController {
         updateVaultValue();
         updateDefenceLevel();
         updateConstructInfo();
+        updateVaultButtons();
+        updateVaultButtons();
+
 
     }
     @FXML
     public void initialize() {
         initializeUIMappings();
-        setUpSlider();
+        Platform.runLater(this::setUpSlider);
+    }
+
+    private void updateVaultButtons(){
+            vaultDepositBtn.setDisable(Time.isIsSimulationRunning());
+            vaultWithdrawBtn.setDisable(Time.isIsSimulationRunning());
+            playerVaultSliderAmount.setDisable(Time.isIsSimulationRunning());
     }
 
     public void setUpSlider() {
@@ -199,7 +211,14 @@ public class PropertyController extends BaseController {
 
         vaultSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             int percentage = (int) vaultSlider.getValue();
-            playerVaultSliderAmount.setText(percentage + "%");
+            Person person = model.getPlayerPerson();
+            int foodAmount =  percentage  * person.getWallet().getFood() / 100;
+            int alloyAmount =  percentage * person.getPerson().getWallet().getAlloy() / 100;
+            int goldAmount = percentage  * person.getPerson().getWallet().getGold() / 100;
+
+
+
+            playerVaultSliderAmount.setText(percentage + "%\t F:" + foodAmount + " A:" + alloyAmount + " G:" + goldAmount);
         });
 
         vaultDepositBtn.setOnAction(e -> vaultDeposit());
