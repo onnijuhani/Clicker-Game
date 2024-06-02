@@ -160,6 +160,15 @@
                         </AnchorPane>
                     </content>
                   </Tab>
+                  <Tab fx:id="armyTab" text="Army">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <fx:include fx:id="army" source="army.fxml" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
               </tabs>
                <padding>
                   <Insets bottom="5.0" left="2.0" />

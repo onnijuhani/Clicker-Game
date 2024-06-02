@@ -38,7 +38,6 @@ public class InformationController extends BaseController {
     @FXML
     private VBox heartsContainer;
     private final Image heartImage = new Image(getClass().getResourceAsStream("/heart.png"));
-    private int currentLives = 10;
 
     @FXML
     private HBox heartsLower;
@@ -67,7 +66,7 @@ public class InformationController extends BaseController {
 
     private void updateHearts() {
 
-        currentLives = model.getPlayerPerson().getStrikesTracker().getStrikes();
+        int currentLives = model.getPlayerPerson().getStrikesTracker().getStrikes();
 
         heartsUpper.getChildren().clear();
         heartsLower.getChildren().clear();

@@ -34,6 +34,8 @@ public class MainController extends BaseController {
     private PropertyController propertyController;
     @FXML
     private InformationController informationController;
+    @FXML
+    private ArmyController armyController;
 
     public RelationsController getRelationsController() {
         return relationsController;
@@ -63,6 +65,8 @@ public class MainController extends BaseController {
     protected TabPane mainTabPane;
     @FXML
     protected Tab characterTab;
+    @FXML
+    protected Tab armyTab;
 
     public MainController() {
         super();
@@ -130,6 +134,13 @@ public class MainController extends BaseController {
         else {
             System.out.println("InformationController is null");
         }
+        if (armyController != null) {
+            armyController.setMain(this);
+            armyController.setModel(model);
+        }
+        else {
+            System.out.println("armyController is null");
+        }
     }
 
 
@@ -159,6 +170,7 @@ public class MainController extends BaseController {
         relationsController.resetEverything();
         clickMeButton.requestFocus();
         relationsController.setCurrentCharacter(Model.getPlayerAsCharacter());
+        mainTabPane.getSelectionModel().select(characterTab);
     }
 
 
