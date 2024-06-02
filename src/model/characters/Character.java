@@ -71,7 +71,7 @@ public class Character implements NpcObserver, Details, Ownable {
     }
 
     private void updateFoodConsumption(int FoodConsumptionRate) {
-        person.getPaymentCalendar().addPayment(PaymentManager.PaymentType.EXPENSE, Payment.FOOD_EXPENSE, new TransferPackage(FoodConsumptionRate, 0, 0), 1);
+        person.getPaymentManager().addPayment(PaymentManager.PaymentType.EXPENSE, Payment.FOOD_EXPENSE, new TransferPackage(FoodConsumptionRate, 0, 0), 1);
     }
 
 

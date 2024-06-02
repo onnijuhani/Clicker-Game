@@ -30,13 +30,13 @@ public class UtilityShop extends ShopComponents {
                                     building.getUpgradeLevel() + "!"));
                 }
                 property.getUtilitySlot().increaseTotalLevels();
-                building.updatePaymentCalendar(person.getPaymentCalendar());
+                building.updatePaymentCalendar(person.getPaymentManager());
                 return true; // Upgrade was successful
             } else {
                 if(person.isPlayer()) {
                     person.getEventTracker().addEvent(EventTracker.Message("Error", "Insufficient gold to upgrade " + type));
                 }
-                building.updatePaymentCalendar(person.getPaymentCalendar());
+                building.updatePaymentCalendar(person.getPaymentManager());
                 return false; // Upgrade failed
 
             }
@@ -89,7 +89,7 @@ public class UtilityShop extends ShopComponents {
             person.getEventTracker().addEvent(EventTracker.Message("Major", "Successfully purchased " + type + "!")); //This goes to major instead to see wtf npc is doing
         }
         property.getUtilitySlot().increaseTotalLevels();
-        newBuilding.updatePaymentCalendar(person.getPaymentCalendar());
+        newBuilding.updatePaymentCalendar(person.getPaymentManager());
         return true;
     }
 

@@ -81,7 +81,7 @@ public class Construct {
         switchPropertyAttributes(person, newHouse, location, oldHouse, oldUtilitySlot);
         person.getEventTracker().addEvent(EventTracker.Message("Major", "New property constructed"));
 
-        newHouse.maintenance.updatePaymentCalendar(person.getPaymentCalendar());
+        newHouse.maintenance.updatePaymentCalendar(person.getPaymentManager());
     }
 
     private static void switchPropertyAttributes(Person person, Property newHouse, Quarter location, Property oldHouse, UtilitySlot oldUtilitySlot) {

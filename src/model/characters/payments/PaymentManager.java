@@ -21,6 +21,7 @@ public class PaymentManager {
             this.day = day;
         }
 
+
         public boolean canMakePayment() {
             return wallet.hasEnoughResources(amount);
         }
@@ -58,6 +59,8 @@ public class PaymentManager {
     private final Map<Payment, PaymentInfo> incomes = new HashMap<>();
     protected Wallet wallet;
 
+    private boolean netBalanceNeedsUpdate = true;
+    private TransferPackage cachedNetBalance;
 
     private boolean combineUtilities = false;
 
@@ -77,6 +80,31 @@ public class PaymentManager {
         Map<Payment, PaymentInfo> payments = (type == PaymentType.EXPENSE) ? expenses : incomes;
 
         payments.put(name, newPaymentInfo);
+        netBalanceNeedsUpdate = true;
+    }
+    public void removePayment(PaymentType type, Payment name) {
+        Map<Payment, PaymentInfo> payments = (type == PaymentType.EXPENSE) ? expenses : incomes;
+        payments.remove(name);
+        netBalanceNeedsUpdate = true;
+    }
+
+    public TransferPackage getNetBalance() {
+        if (netBalanceNeedsUpdate) {
+            cachedNetBalance = calculateNetBalance();
+            netBalanceNeedsUpdate = false; // Reset the flag after updating the cached value
+        }
+        return cachedNetBalance;
+    }
+
+    private TransferPackage calculateNetBalance() {
+        TransferPackage totalIncome = getFullIncome();
+        TransferPackage totalExpense = getFullExpense();
+
+        int netFood = totalIncome.food() - totalExpense.food();
+        int netAlloy = totalIncome.alloy() - totalExpense.alloy();
+        int netGold = totalIncome.gold() - totalExpense.gold();
+
+        return new TransferPackage(netFood, netAlloy, netGold);
     }
 
     public enum PaymentType {

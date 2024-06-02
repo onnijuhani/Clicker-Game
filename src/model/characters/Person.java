@@ -156,7 +156,7 @@ public class Person implements Ownable {
     public List<GameEvent> getOngoingEvents() {
         return ongoingEvents;
     }
-    public PaymentManager getPaymentCalendar() {return paymentManager;}
+    public PaymentManager getPaymentManager() {return paymentManager;}
     public StrikesTracker getStrikesTracker() {
         return strikesTracker;
     }
