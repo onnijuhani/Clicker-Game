@@ -33,7 +33,7 @@ public class Clicker {
         this.wallet = person.getWallet();
         this.workWallet = person.getWorkWallet();
         this.ownedClickerTools = new HashMap<>();
-        this.ownedClickerTools.put(Resource.Food, new FoodClicker(Settings.getInt("foodClicker"), Resource.Food));
+        this.ownedClickerTools.put(Resource.Food, new FoodClicker(Settings.getInt("foodClicker")));
     }
     public static void initializeClicker(Person person) {
         if (instance == null) {
