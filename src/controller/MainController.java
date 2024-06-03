@@ -3,10 +3,12 @@ package controller;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import model.Model;
 import model.characters.player.clicker.Clicker;
@@ -14,6 +16,7 @@ import model.stateSystem.EventTracker;
 import model.time.Time;
 import model.worldCreation.Quarter;
 
+import java.util.HashSet;
 import java.util.List;
 
 public class MainController extends BaseController {
@@ -61,8 +64,6 @@ public class MainController extends BaseController {
 
     @FXML
     private CheckBox hideUtility;
-    @FXML
-    private CheckBox combineUtility;
 
     @FXML
     protected Button pauseBtn;
@@ -73,6 +74,11 @@ public class MainController extends BaseController {
     protected Tab characterTab;
     @FXML
     protected Tab armyTab;
+    @FXML
+    protected Button settingsBtn;
+
+    @FXML
+    private VBox settingsBox;
 
     public MainController() {
         super();
@@ -143,6 +149,7 @@ public class MainController extends BaseController {
         if (armyController != null) {
             armyController.setMain(this);
             armyController.setModel(model);
+            armyController.characterController = characterController;
         }
         else {
             System.out.println("armyController is null");
@@ -225,12 +232,19 @@ public class MainController extends BaseController {
 
 
     public void updateEventList() {
-        List<String> newEvents = model.getPlayerCharacter().getEventTracker().getCombinedEvents();
-        // Only add new events that are not already in the list
-        if (!eventList.getItems().equals(newEvents)) {
-            eventList.getItems().setAll(newEvents);
-            eventList.scrollTo(eventList.getItems().size() - 1);
-        }
+        updatePauseBtnText();
+        Platform.runLater(() -> {
+            List<String> newEvents = model.getPlayerCharacter().getEventTracker().getCombinedEvents();
+            ObservableList<String> currentEvents = eventList.getItems();
+
+            // Check if the lists are different in size or content
+            if (currentEvents.size() != newEvents.size() || !new HashSet<>(currentEvents).containsAll(newEvents)) {
+                // Only update the items if there are changes
+                currentEvents.setAll(newEvents);
+                // Scroll to the last item
+                eventList.scrollTo(currentEvents.size() - 1);
+            }
+        });
     }
 
 
@@ -243,6 +257,15 @@ public class MainController extends BaseController {
     void setUpRelationsTab() {
         Model.getPlayerAsPerson().getRelationsManager().updateSets();
         relationsController.setCurrentCharacter(characterController.getCurrentCharacter());
+    }
+    @FXML
+    void setUpArmyTab() {
+        armyController.setCurrentCharacter();
+        armyController.differentiatePlayer();
+    }
+    @FXML
+    void setUpPropertyTab() {
+        propertyController.updatePropertyTab();
     }
 
     @FXML
@@ -281,7 +304,7 @@ public class MainController extends BaseController {
 
 
     void updatePauseBtnText(){
-        if(getModel().accessTime().isSimulationRunning()){
+        if(Time.isIsSimulationRunning()){
             pauseBtn.setText(" ▶ " + Time.getSpeed().toString() + " Speed");
         } else if (!getModel().accessTime().isSimulationRunning()) {
             pauseBtn.setText(" ⏸ Paused");
@@ -297,16 +320,28 @@ public class MainController extends BaseController {
         boolean isChecked = minorMessages.isSelected();
         model.getPlayerCharacter().getEventTracker().getPreferences().setShowMinorEvents(!isChecked);
     }
+
+    @FXML
+    void hideUtilityMessages(ActionEvent event) {
+        boolean isChecked = hideUtility.isSelected();
+        System.out.println("hideUtilityMsgs triggered: " + isChecked);
+        model.getPlayerCharacter().getEventTracker().getPreferences().setShowUtilityEvents(!isChecked);
+        System.out.println("showUtilityEvents set to: " + !isChecked);
+    }
+
+    @FXML
+    void openSettings(ActionEvent event) {
+        settingsBox.setVisible(!settingsBox.isVisible());
+    }
+
+
+
     public Button getClickMeButton() {
         return clickMeButton;
     }
 
-    @FXML
-    void combineUtility(ActionEvent actionEvent) {
-    }
-    @FXML
-    void hideUtility(ActionEvent actionEvent) {
-    }
+
+
 
 
 }

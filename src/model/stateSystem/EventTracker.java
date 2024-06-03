@@ -6,9 +6,7 @@ import model.time.Time;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -59,19 +57,25 @@ public class EventTracker {
     public List<String> getCombinedEvents() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+
         return Stream.of(
                         getPreferences().isShowErrorEvents() ? errorEvents.stream() : Stream.<String>empty(),
                         getPreferences().isShowClickerEvents() ? clickerEvents.stream() : Stream.<String>empty(),
                         getPreferences().isShowMinorEvents() ? minorEvents.stream() : Stream.<String>empty(),
                         getPreferences().isShowShopEvents() ? shopEvents.stream() : Stream.<String>empty(),
-                        getPreferences().isShowShopEvents() ? utilityEvents.stream() : Stream.<String>empty(),
+                        getPreferences().isShowUtilityEvents() ? utilityEvents.stream() : Stream.<String>empty(),
                         getPreferences().isShowMajorEvents() ? majorEvents.stream() : Stream.<String>empty()
                 )
                 .flatMap(s -> s)
                 .sorted(Comparator.comparing((String message) -> LocalDateTime.parse(message.split(" ")[0] + " " + message.split(" ")[1], formatter)))
                 .map(this::removeTimestampAndType)
+                .map(this::removeGameTime)
+                .map(this::removeGameTime)
                 .collect(Collectors.toList());
     }
+
+
+
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -85,6 +89,11 @@ public class EventTracker {
     }
 
     private String removeTimestampAndType(String message) {
+        String[] parts = message.split(" ", 4);
+        return parts.length > 3 ? parts[3] : message; // Return the message part or the original message if splitting failed
+    }
+
+    private String removeGameTime(String message) {
         String[] parts = message.split(" ", 4);
         return parts.length > 3 ? parts[3] : message; // Return the message part or the original message if splitting failed
     }

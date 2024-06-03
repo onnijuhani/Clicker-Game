@@ -35,7 +35,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -143,7 +142,7 @@
                         </AnchorPane>
                   </content>
                 </Tab>
-                <Tab text="Property">
+                <Tab onSelectionChanged="#setUpPropertyTab" text="Property">
                   <content>
                     <AnchorPane style="-fx-background-radius: 25;">
                            <children>
@@ -161,7 +160,7 @@
                         </AnchorPane>
                     </content>
                   </Tab>
-                  <Tab fx:id="armyTab" text="Army">
+                  <Tab fx:id="armyTab" onSelectionChanged="#setUpArmyTab" text="Army">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
@@ -182,7 +181,7 @@
                   <Insets bottom="5.0" left="2.0" />
                </padding>
             </TabPane>
-            <VBox fillWidth="false" layoutX="100.0" layoutY="350.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="340.0">
+            <VBox fx:id="settingsBox" layoutX="150.0" layoutY="365.0" styleClass="militaryBox" visible="false">
                <children>
                   <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" styleClass="settingsBox">
                      <children>
@@ -194,7 +193,7 @@
                         </CheckBox>
                      </children>
                      <VBox.margin>
-                        <Insets bottom="2.0" top="2.0" />
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
                      </VBox.margin>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" styleClass="settingsBox">
@@ -206,80 +205,70 @@
                            </font>
                         </CheckBox>
                      </children>
+                     <VBox.margin>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                     </VBox.margin>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" styleClass="settingsBox">
                      <children>
-                        <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Advance Day per Click" textAlignment="CENTER" wrappingWidth="78.30859375" />
-                        <CheckBox fx:id="incrementClicker" mnemonicParsing="false" onAction="#incrementByClick" prefWidth="15.0">
+                        <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Hide Utility Messages" textAlignment="CENTER" wrappingWidth="78.30859375" />
+                        <CheckBox fx:id="hideUtility" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#hideUtilityMessages" prefWidth="15.0">
                            <font>
                               <Font size="14.0" />
                            </font>
-                           <tooltip>
-                              <Tooltip text="Progress the time by using the Clicker. Allows precise time control." />
-                           </tooltip>
                         </CheckBox>
                      </children>
                      <VBox.margin>
-                        <Insets bottom="2.0" top="2.0" />
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
                      </VBox.margin>
                   </HBox>
-                  <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" styleClass="settingsBox">
-                     <children>
-                        <VBox alignment="TOP_CENTER">
-                           <children>
-                              <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Utility" textAlignment="CENTER" wrappingWidth="78.30859375" />
-                              <HBox alignment="CENTER_RIGHT">
-                                 <children>
-                                    <VBox alignment="CENTER">
-                                       <children>
-                                          <Label text="Hide" />
-                                          <CheckBox fx:id="hideUtility" mnemonicParsing="false" onAction="#hideUtility" prefWidth="15.0">
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
-                                             <tooltip>
-                                                <Tooltip text="Progress the time by using the Clicker. Allows precise time control." />
-                                             </tooltip>
-                                          </CheckBox>
-                                       </children>
-                                       <HBox.margin>
-                                          <Insets right="2.0" />
-                                       </HBox.margin>
-                                    </VBox>
-                                    <VBox alignment="CENTER">
-                                       <children>
-                                          <Label text="Combine" />
-                                          <CheckBox fx:id="combineUtility" mnemonicParsing="false" onAction="#combineUtility" prefWidth="15.0">
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
-                                             <tooltip>
-                                                <Tooltip text="Progress the time by using the Clicker. Allows precise time control." />
-                                             </tooltip>
-                                          </CheckBox>
-                                       </children>
-                                       <HBox.margin>
-                                          <Insets left="2.0" />
-                                       </HBox.margin>
-                                       <padding>
-                                          <Insets left="1.0" />
-                                       </padding>
-                                    </VBox>
-                                 </children>
-                              </HBox>
-                           </children>
-                        </VBox>
-                     </children>
-                  </HBox>
-                  <Button fx:id="pauseBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#pauseTime" prefWidth="120.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #232526, #414345); -fx-background-radius: 15;" text="Pause" textAlignment="CENTER" textFill="WHITE" wrapText="true">
-                     <font>
-                        <Font name="System Italic" size="11.0" />
-                     </font>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </VBox>
+            <VBox alignment="CENTER" layoutX="5.0" layoutY="475.0">
+               <children>
+                  <Button fx:id="settingsBtn" mnemonicParsing="false" onAction="#openSettings" text="Settings">
                      <VBox.margin>
-                        <Insets bottom="2.0" top="2.0" />
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                      </VBox.margin>
                   </Button>
+                  <VBox>
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" styleClass="utilityBox">
+                           <children>
+                              <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Advance Day per Click" textAlignment="CENTER" wrappingWidth="78.30859375" />
+                              <CheckBox fx:id="incrementClicker" mnemonicParsing="false" onAction="#incrementByClick" prefWidth="15.0">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <tooltip>
+                                    <Tooltip text="Progress the time by using the Clicker. Allows precise time control." />
+                                 </tooltip>
+                              </CheckBox>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <Button fx:id="pauseBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#pauseTime" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #232526, #414345); -fx-background-radius: 15;" text="Pause" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                           <font>
+                              <Font name="System Italic" size="11.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                           </VBox.margin>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </VBox>
                </children>
+               <padding>
+                  <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+               </padding>
             </VBox>
             <Button fx:id="resetBtn" layoutX="720.0" layoutY="560.0" mnemonicParsing="false" onAction="#getPlayer" prefHeight="24.0" prefWidth="80.0" text="Reset" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="615.0" />
          </children>

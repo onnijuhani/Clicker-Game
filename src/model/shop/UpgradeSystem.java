@@ -12,6 +12,7 @@ public class UpgradeSystem {
     protected int value;
     protected final int PRICE_CEILING;
     protected final Map<String, Double> bonus = new HashMap<>();
+    protected double priceIncreaseAmount = 2.5;
 
     public UpgradeSystem(int basePrice) {
         this.level = 1;
@@ -48,8 +49,8 @@ public class UpgradeSystem {
         }
     }
 
-    private int calculateUpgradePrice() {
-        return Math.min((int) (basePrice * Math.pow(3, level - 1)), PRICE_CEILING);
+    protected int calculateUpgradePrice() {
+        return Math.min((int) (basePrice * Math.pow(priceIncreaseAmount, level - 1)), PRICE_CEILING);
     }
 
     public boolean increaseLevel() {
@@ -57,7 +58,8 @@ public class UpgradeSystem {
         if (level <= MAX_LEVEL) {
             value *= 2;
         } else {
-            value += Math.max(50, value / (increaseDivider * (level - MAX_LEVEL)));
+            int minAdjustment = (int) (value * 0.1);
+            value += Math.max(minAdjustment, value / (increaseDivider * (level - MAX_LEVEL)));
         }
         return true;
     }

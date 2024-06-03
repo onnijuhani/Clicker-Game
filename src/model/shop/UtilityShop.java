@@ -25,7 +25,7 @@ public class UtilityShop extends ShopComponents {
                 person.getWallet().subtractGold(upgradePrice);
                 building.increaseLevel();
                 if(person.isPlayer()) {
-                    person.getEventTracker().addEvent(EventTracker.Message("Shop",
+                    person.getEventTracker().addEvent(EventTracker.Message("Utility",
                             "Successfully upgraded " + type + " to level " +
                                     building.getUpgradeLevel() + "!"));
                 }

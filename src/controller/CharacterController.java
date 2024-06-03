@@ -67,9 +67,9 @@ public class CharacterController extends BaseController  {
     }
 
     public void updateCharacterTab(){
+        propertyController.setCurrentProperty(currentCharacter.getPerson().getProperty());
         updateCharacterName();
         updateCharacterStatus();
-        propertyController.setCurrentProperty(currentCharacter.getPerson().getProperty());
         propertyController.updatePropertyTab();
         updateWalletInfo();
         updateAuthority();

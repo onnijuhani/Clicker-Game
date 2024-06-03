@@ -8,9 +8,15 @@ public class PlayerPreferences {
     private boolean showErrorEvents = true;
     private boolean showMinorEvents = true;
     private boolean showShopEvents = true;
-
-
     private boolean showUtilityEvents = true;
+    private boolean combineUtilityEvents = false;
+
+    public boolean isCombineUtilityEvents() {
+        return combineUtilityEvents;
+    }
+
+
+
 
 
     public boolean isShowMajorEvents() {
@@ -40,7 +46,6 @@ public class PlayerPreferences {
         this.showUtilityEvents = showUtilityEvents;
     }
 
-
     public void setShowMajorEvents(boolean showMajorEvents) {
         this.showMajorEvents = showMajorEvents;
     }
@@ -59,6 +64,9 @@ public class PlayerPreferences {
 
     public void setShowShopEvents(boolean showShopEvents) {
         this.showShopEvents = showShopEvents;
+    }
+    public void setCombineUtilityEvents(boolean combineUtilityEvents) {
+        this.combineUtilityEvents = combineUtilityEvents;
     }
 
 }

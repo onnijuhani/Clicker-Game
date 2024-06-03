@@ -65,9 +65,7 @@ public class SlaveFacility extends UtilityBuilding {
         }
     }
 
-    private int calculateUpgradePrice() {
-        return Math.min((int) (basePrice * Math.pow(3, level - 1)), PRICE_CEILING);
-    }
+
 
     public boolean increaseLevel() {
         level++;
