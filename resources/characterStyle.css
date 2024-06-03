@@ -96,13 +96,15 @@
     -fx-font-weight: bold;
 }
 .militaryButton {
-    -fx-background-color: linear-gradient(from 15% 15% to 100% 100%, #505050, #303030);
     -fx-background-radius: 5;
     -fx-border-radius: 5;
     -fx-border-color: #A0A0A0;
     -fx-border-width: 1;
-    -fx-text-fill: #C0C0C0;
-    -fx-font-size: 14px;
+    -fx-text-fill: black;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Serif";
+
 }
 .militaryBox2 {
     -fx-background-color: linear-gradient(from 15% 15% to 100% 100%, #5A5A5A, #3F3F3F);

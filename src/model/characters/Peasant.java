@@ -1,15 +1,20 @@
 package model.characters;
 
 import model.buildings.PropertyCreation;
+import model.characters.payments.Payment;
+import model.characters.payments.PaymentManager;
+import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.WorkWallet;
 import model.time.GenerateManager;
 import model.time.GenerateObserver;
+import model.time.Time;
 
 public class Peasant extends Character implements GenerateObserver {
 
     @Override
     public void generateUpdate() {
         getEmployment().generatePayment();
+        getPerson().getPaymentManager().addPayment(PaymentManager.PaymentType.INCOME, Payment.EXPECTED_SALARY_INCOME, countSalary(), Time.quarterTax);
     }
 
     protected Employment employment;
@@ -28,6 +33,11 @@ public class Peasant extends Character implements GenerateObserver {
     private void initializePeasant() {
         person.setProperty(PropertyCreation.createPeasantProperty(person));
         GenerateManager.subscribe(this);
+    }
+
+    private TransferPackage countSalary(){
+        double taxRate = getRole().getAuthority().getTaxForm().getTaxRate()  / 100;
+        return employment.getFullSalary().multiply(taxRate);
     }
 
 

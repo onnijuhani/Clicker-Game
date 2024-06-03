@@ -3,6 +3,8 @@ package model.characters.player.clicker;
 import model.Settings;
 import model.characters.Person;
 import model.characters.Status;
+import model.characters.payments.Payment;
+import model.characters.payments.PaymentManager;
 import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
@@ -20,8 +22,10 @@ public class Clicker {
     private int totalClicks = 0;
     private final Wallet wallet;
     private final WorkWallet workWallet;
-
     private final Person person;
+
+
+    private boolean showSalaryInPayments = true;
 
     private Clicker(Person person) {
         this.person = person;
@@ -36,6 +40,14 @@ public class Clicker {
             instance = new Clicker(person);
         }
     }
+
+    private void countSalary(){
+        double taxRate = person.getRole().getAuthority().getTaxForm().getTaxRate() / 100;
+        person.getPaymentManager().addPayment(PaymentManager.PaymentType.INCOME, Payment.EXPECTED_SALARY_INCOME ,person.getWorkWallet().getBalance().multiply(taxRate), 27);
+    }
+
+
+
 
     public static Clicker getInstance() {
         return instance;
@@ -59,6 +71,9 @@ public class Clicker {
             totalClicks++;
             String message = clickerTransferMessage(resourcesGenerated);
             eventTracker.addEvent(EventTracker.Message("Clicker", message));
+        }
+        if(showSalaryInPayments) {
+            countSalary();
         }
     }
     private TransferPackage generate() {
@@ -109,6 +124,15 @@ public class Clicker {
     public boolean isGoldClickerOwned() {
         System.out.println(ownedClickerTools.containsKey(Resource.Gold));
         return ownedClickerTools.containsKey(Resource.Gold);
+    }
+
+    public void setShowSalaryInPayments(boolean showSalaryInPayments) {
+
+        if(!showSalaryInPayments){
+            person.getPaymentManager().removePayment(PaymentManager.PaymentType.INCOME, Payment.EXPECTED_SALARY_INCOME);
+        }
+
+        this.showSalaryInPayments = showSalaryInPayments;
     }
 
 }

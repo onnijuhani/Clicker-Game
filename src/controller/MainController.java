@@ -58,6 +58,12 @@ public class MainController extends BaseController {
     private CheckBox minorMessages;
     @FXML
     protected CheckBox incrementClicker;
+
+    @FXML
+    private CheckBox hideUtility;
+    @FXML
+    private CheckBox combineUtility;
+
     @FXML
     protected Button pauseBtn;
 
@@ -294,4 +300,13 @@ public class MainController extends BaseController {
     public Button getClickMeButton() {
         return clickMeButton;
     }
+
+    @FXML
+    void combineUtility(ActionEvent actionEvent) {
+    }
+    @FXML
+    void hideUtility(ActionEvent actionEvent) {
+    }
+
+
 }

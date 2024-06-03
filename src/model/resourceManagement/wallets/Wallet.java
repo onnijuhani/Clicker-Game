@@ -166,6 +166,10 @@ public class Wallet {
         return String.format("Food: %.0f%% Alloys: %.0f%% Gold: %.0f%%", ratios[0], ratios[1], ratios[2]);
     }
 
+    public TransferPackage getBalance(){
+        return new TransferPackage(food, alloy, gold);
+    }
+
 
 
 

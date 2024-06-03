@@ -10,6 +10,8 @@ import java.util.EnumMap;
 
 public class Tax {
     private final EnumMap<Resource, TaxInfo> taxInfoByResource;
+    private boolean isTaxRateChanged = true;
+    private double taxRate;
 
     public Tax() {
         taxInfoByResource = new EnumMap<>(Resource.class);
@@ -26,25 +28,29 @@ public class Tax {
     public void setExtremeTaxRate(){
         taxInfoByResource.get(Resource.Food).setTaxPercentage(80);
         taxInfoByResource.get(Resource.Alloy).setTaxPercentage(80);
-        taxInfoByResource.get(Resource.Food).setTaxPercentage(80);
+        taxInfoByResource.get(Resource.Gold).setTaxPercentage(80);
+        isTaxRateChanged = true;
     }
 
-    public void setStandardTaxRate(){
-        taxInfoByResource.get(Resource.Food).setTaxPercentage(60);
+    public void setStandardTaxRate(){taxInfoByResource.get(Resource.Food).setTaxPercentage(60);
        taxInfoByResource.get(Resource.Alloy).setTaxPercentage(60);
        taxInfoByResource.get(Resource.Food).setTaxPercentage(60);
+       taxInfoByResource.get(Resource.Gold).setTaxPercentage(60);
+       isTaxRateChanged = true;
     }
 
     public void setMediumTaxRate(){
         taxInfoByResource.get(Resource.Food).setTaxPercentage(40);
         taxInfoByResource.get(Resource.Alloy).setTaxPercentage(40);
-        taxInfoByResource.get(Resource.Food).setTaxPercentage(40);
+        taxInfoByResource.get(Resource.Gold).setTaxPercentage(40);
+        isTaxRateChanged = true;
     }
 
     public void setLowTaxRate(){
         taxInfoByResource.get(Resource.Food).setTaxPercentage(20);
         taxInfoByResource.get(Resource.Alloy).setTaxPercentage(20);
-        taxInfoByResource.get(Resource.Food).setTaxPercentage(20);
+        taxInfoByResource.get(Resource.Gold).setTaxPercentage(20);
+        isTaxRateChanged = true;
     }
 
 
@@ -61,12 +67,25 @@ public class Tax {
 
         taxInfoByResource.get(type).setTaxPercentage(intPercentage);
 
+        isTaxRateChanged = true;
+
     }
 
 
 
     public TaxInfo getTaxInfo(Resource resource) {
         return taxInfoByResource.get(resource);
+    }
+
+    public double getTaxRate() {
+        if (isTaxRateChanged) {
+            taxRate = (getTaxInfo(Resource.Food).taxPercentage
+                    + getTaxInfo(Resource.Alloy).taxPercentage
+                    + getTaxInfo(Resource.Gold).taxPercentage) / 3;
+            isTaxRateChanged = false;
+            return taxRate;
+        }
+        return taxRate;
     }
 
 

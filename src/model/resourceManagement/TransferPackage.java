@@ -42,6 +42,10 @@ public record TransferPackage(int food, int alloy, int gold) {
         return new TransferPackage(this.food + other.food, this.alloy + other.alloy, this.gold + other.gold);
     }
 
+    public TransferPackage multiply(double factor) {
+        return new TransferPackage((int) (food * factor), (int) (alloy * factor), (int) (gold * factor));
+    }
+
     public TransferPackage subtract(TransferPackage other) {
         return new TransferPackage(this.food - other.food, this.alloy - other.alloy, this.gold - other.gold);
     }

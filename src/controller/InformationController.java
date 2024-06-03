@@ -15,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import model.characters.payments.PaymentManager;
+import model.characters.player.clicker.Clicker;
 import model.resourceManagement.TransferPackage;
 
 public class InformationController extends BaseController {
@@ -45,6 +46,12 @@ public class InformationController extends BaseController {
     @FXML
     private HBox heartsUpper;
 
+    @FXML
+    private CheckBox hideClickerSalary;
+
+
+
+
     public void initialize() {
         Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> updateInfoTab()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
@@ -63,6 +70,8 @@ public class InformationController extends BaseController {
     private void updateNetBalance() {
         netBalance.setText(model.getPlayerPerson().getPaymentManager().getNetBalance().toString());
     }
+
+
 
     private void updateHearts() {
 
@@ -90,6 +99,12 @@ public class InformationController extends BaseController {
     void combineUtilityIncomes(ActionEvent actionEvent) {
         boolean isChecked = combineUtility.isSelected();
         model.getPlayerPerson().getPaymentManager().setCombineUtilities(isChecked );
+    }
+
+    @FXML
+    void hideClickerSalary(ActionEvent event) {
+        boolean isChecked = hideClickerSalary.isSelected();
+        Clicker.getInstance().setShowSalaryInPayments(!isChecked);
     }
 
 

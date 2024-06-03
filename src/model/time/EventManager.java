@@ -24,7 +24,7 @@ public class EventManager {
                 targetMonth = 1;
                 targetYear++;
             }
-        } // Now targetDay, targetMonth, and targetYear represent the future date when the event should occur
+        }
 
         gameEvent.setExecutionTime(targetDay, targetMonth, targetYear);
         scheduledEvents.add(new ScheduledEvent(eventAction, targetDay, targetMonth,targetYear, gameEvent));

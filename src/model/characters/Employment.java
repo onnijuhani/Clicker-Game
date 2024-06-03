@@ -28,6 +28,14 @@ public class Employment {
         workWallet.addResources(transfer);
     }
 
+    public TransferPackage getFullSalary() {
+        int bonusFood = (int) (food * bonusFoodRate);
+        int bonusAlloy = (int) (alloy * bonusAlloyRate);
+        int bonusGold = (int) (gold * bonusGoldRate);
+
+        return new TransferPackage(bonusFood, bonusAlloy, bonusGold);
+    }
+
     public void setBonusFoodRate(float bonusFoodRate) {
         this.bonusFoodRate = bonusFoodRate;
     }

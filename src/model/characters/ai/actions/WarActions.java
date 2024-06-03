@@ -48,8 +48,8 @@ public class WarActions {
             MilitaryProperty property = (MilitaryProperty) person.getProperty();
             Army army = property.getArmy();
 
-            if(army.recruitSoldier()){
-                person.getEventTracker().addEvent(EventTracker.Message("Major", "Recruited new Soldier"));
+            if(army.recruitSoldier(2)){ //todo add logic to determine the amount
+                person.getEventTracker().addEvent(EventTracker.Message("Major", "Recruited new Soldier(s)"));
             }else{
                 person.getEventTracker().addEvent(EventTracker.Message("Major", "Recruiting new Soldiers went wrong"));
             }
