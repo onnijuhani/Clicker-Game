@@ -482,7 +482,7 @@
                   </StackPane>
                </children>
             </VBox>
-            <VBox fx:id="utilityBuyView5" alignment="CENTER" layoutY="129.0" prefHeight="119.0" prefWidth="134.0" styleClass="property">
+            <VBox alignment="CENTER" layoutY="129.0" prefHeight="119.0" prefWidth="134.0" styleClass="property">
                <children>
                   <Label alignment="CENTER" text="Maintenance" textFill="WHITE">
                      <font>
