@@ -429,10 +429,8 @@ public class CombatSystem {
 
 
     /**
-    Duel is a battle type where there is no resource exchange at all. Doesn't affect positions unlike authorityBattle.
+     Duel is a battle type where there is no resource exchange at all. Doesn't affect positions unlike authorityBattle.
      Both offense and defense levels are used for both characters. Venue is not included.
-    Attacker might increase/decrease offence while Defender same with defence.
-     Can be used to cheaply increase offence stats, but is risky.
      */
     public void Duel() {
 
@@ -485,22 +483,6 @@ public class CombatSystem {
             defender.getEventTracker().addEvent((EventTracker.Message(
                     "Major", "You were defeated by " + attacker.getCharacter())));
 
-
-            if (random.nextInt(100) < 5){ // small chance of increasing attack level
-                attacker.getCombatStats().increaseOffence();
-                if(attacker.isPlayer() || defender.isPlayer()) {
-                    attacker.getEventTracker().addEvent(EventTracker.Message(
-                            "Minor", "Offense increased for winning the Duel"));
-                }
-            }
-            if (random.nextInt(100) < 5){ // small chance of losing defence level
-                defender.getCombatStats().decreaseDefence();
-                if(attacker.isPlayer() || defender.isPlayer()) {
-                    defender.getEventTracker().addEvent((EventTracker.Message(
-                            "Minor", "Defence decreased for losing the Duel"
-                    )));
-                }
-            }
             defender.addAspiration(Aspiration.INCREASE_PERSONAL_DEFENCE);
 
         } else {
@@ -527,13 +509,7 @@ public class CombatSystem {
                             "Minor", "Offense decreased by 2 for losing the Duel"));
                 }
             }
-            if (random.nextInt(100) < 20) {
-                defender.getCombatStats().increaseDefence();
-                if(attacker.isPlayer()) {
-                    defender.getEventTracker().addEvent(EventTracker.Message(
-                            "Minor", "Defense increased for winning the Duel"));
-                }
-            }
+
             attacker.addAspiration(Aspiration.INCREASE_PERSONAL_OFFENCE);
         }
         makeEnemies();
