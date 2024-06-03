@@ -5,6 +5,7 @@ import model.characters.payments.Payment;
 import model.characters.payments.PaymentManager;
 import model.characters.Person;
 import model.resourceManagement.TransferPackage;
+import model.stateSystem.EventTracker;
 import model.time.Time;
 
 import java.util.Random;
@@ -20,6 +21,15 @@ public class MysticMine extends UtilityBuilding {
         this.alloyProduction = Settings.getInt("mineProduction")*2;
         this.goldProduction = Settings.getInt("mineProduction");
         this.name = UtilityBuildings.MysticMine;
+    }
+
+    @Override
+    protected void generateAction() {
+        TransferPackage transfer = getGenerateAmount();
+        owner.getWallet().addResources(transfer);
+        if (owner.isPlayer()) {
+            owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
+        }
     }
 
 
@@ -60,12 +70,18 @@ public class MysticMine extends UtilityBuilding {
     }
 
     private TransferPackage getGenerateAmount() {
+        return new TransferPackage(0,calculateNormalDistValue(alloyProduction), calculateNormalDistValue(goldProduction));
+    }
+
+    private TransferPackage getExpectedAmount() {
         return new TransferPackage(0,alloyProduction, goldProduction);
     }
 
+
+
     @Override
     public void updatePaymentCalendar(PaymentManager calendar) {
-        calendar.addPayment(PaymentManager.PaymentType.INCOME, Payment.MYSTIC_MINE_INCOME, getGenerateAmount(), Time.utilitySlots);
+        calendar.addPayment(PaymentManager.PaymentType.INCOME, Payment.MYSTIC_MINE_INCOME, getExpectedAmount(), Time.utilitySlots);
     }
 
 
