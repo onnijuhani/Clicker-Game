@@ -38,5 +38,20 @@ public record TransferPackage(int food, int alloy, int gold) {
         return gold;
     }
 
+    public TransferPackage add(TransferPackage other) {
+        return new TransferPackage(this.food + other.food, this.alloy + other.alloy, this.gold + other.gold);
+    }
+
+    public TransferPackage subtract(TransferPackage other) {
+        return new TransferPackage(this.food - other.food, this.alloy - other.alloy, this.gold - other.gold);
+    }
+
+    public TransferPackage divide(double divisor) {
+        if (divisor == 0) {
+            throw new IllegalArgumentException("Divisor cannot be zero.");
+        }
+        return new TransferPackage((int) (food / divisor), (int) (alloy / divisor), (int) (gold / divisor));
+    }
+
 
 }
