@@ -27,11 +27,12 @@ public class Meadowlands extends UtilityBuilding {
                         value + " Food"
                 );
     }
+    @Override
     protected void generateAction() {
         TransferPackage transfer = getGenerateAmount();
         owner.getWallet().addResources(transfer);
         if (owner.isPlayer()) {
-            owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated" + transfer));
+            owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
         }
     }
 

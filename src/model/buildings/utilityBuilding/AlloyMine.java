@@ -28,12 +28,12 @@ public class AlloyMine extends UtilityBuilding {
                         value + " Alloys"
         );
     }
-
+    @Override
     protected void generateAction() {
         TransferPackage transfer = getGenerateAmount();
         owner.getWallet().addResources(transfer);
         if (owner.isPlayer()) {
-            owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated" + transfer));
+            owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
         }
     }
 
