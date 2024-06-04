@@ -45,7 +45,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
 <VBox alignment="CENTER" prefWidth="1415.0" style="-fx-background-color: gray;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
   <children>
@@ -193,53 +192,102 @@
                         <Insets bottom="5.0" left="2.0" />
                      </padding>
                   </TabPane>
-                  <VBox fx:id="settingsBox" layoutX="145.0" layoutY="360.0" styleClass="militaryBox" visible="false">
+                  <HBox fx:id="settingsBox" alignment="CENTER" layoutX="136.0" layoutY="356.0" visible="false">
                      <children>
-                        <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" styleClass="settingsBox">
+                        <VBox styleClass="militaryBox">
                            <children>
-                              <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Hide Clicker Messages" textAlignment="CENTER" wrappingWidth="78.30859375" />
-                              <CheckBox fx:id="generateMessages" mnemonicParsing="false" onAction="#hideGenerateMessages">
+                              <CheckBox fx:id="generateMessages" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#hideGenerateMessages" prefHeight="63.0" prefWidth="120.0" styleClass="settingsBox" text="Hide Clicker Messages" textAlignment="CENTER" wrapText="true">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
+                                 <padding>
+                                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                 </padding>
+                                 <VBox.margin>
+                                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                 </VBox.margin>
                               </CheckBox>
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" styleClass="settingsBox">
-                           <children>
-                              <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Hide Minor Messages" textAlignment="CENTER" wrappingWidth="78.30859375" />
-                              <CheckBox fx:id="minorMessages" mnemonicParsing="false" onAction="#hideMinorMessages">
+                              <CheckBox fx:id="minorMessages" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#hideMinorMessages" prefHeight="63.0" prefWidth="120.0" styleClass="settingsBox" text="Hide Minor Messages" textAlignment="CENTER" wrapText="true">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
+                                 <VBox.margin>
+                                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                 </VBox.margin>
+                                 <padding>
+                                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                 </padding>
                               </CheckBox>
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" styleClass="settingsBox">
-                           <children>
-                              <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Hide Utility Messages" textAlignment="CENTER" wrappingWidth="78.30859375" />
-                              <CheckBox fx:id="hideUtility" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#hideUtilityMessages" prefWidth="15.0">
+                              <CheckBox fx:id="hideUtility" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#hideUtilityMessages" prefHeight="63.0" prefWidth="120.0" styleClass="settingsBox" text="Hide Utility Messages" textAlignment="CENTER" wrapText="true">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
+                                 <VBox.margin>
+                                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                 </VBox.margin>
+                                 <padding>
+                                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                 </padding>
                               </CheckBox>
                            </children>
-                           <VBox.margin>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <VBox styleClass="militaryBox">
+                           <children>
+                              <CheckBox fx:id="pausePopBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#pauseAfterPop" prefHeight="63.0" prefWidth="120.0" selected="true" styleClass="settingsBox" text="Pause Time After PopUp" textAlignment="CENTER" wrapText="true">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                 </padding>
+                                 <VBox.margin>
+                                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                 </VBox.margin>
+                              </CheckBox>
+                              <CheckBox fx:id="errorMessages" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#hideErrorMessages" prefHeight="63.0" prefWidth="120.0" styleClass="settingsBox" text="Hide Error Messages" textAlignment="CENTER" wrapText="true">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                 </VBox.margin>
+                                 <padding>
+                                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                 </padding>
+                              </CheckBox>
+                              <CheckBox fx:id="shopMessages" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#hideShopMessages" prefHeight="63.0" prefWidth="120.0" styleClass="settingsBox" text="Hide Shop Messages" textAlignment="CENTER" wrapText="true">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                 </VBox.margin>
+                                 <padding>
+                                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                 </padding>
+                              </CheckBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <Button mnemonicParsing="false" onAction="#openSettings" text="Close">
+                           <HBox.margin>
                               <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-                           </VBox.margin>
-                        </HBox>
+                           </HBox.margin>
+                        </Button>
                      </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                  </VBox>
-                  <VBox alignment="CENTER" layoutY="470.0" AnchorPane.bottomAnchor="2.0">
+                  </HBox>
+                  <VBox alignment="CENTER" layoutY="470.0" prefWidth="120.0" AnchorPane.bottomAnchor="2.0">
                      <children>
                         <Button mnemonicParsing="false" onAction="#cheat" text="Cheat">
                            <VBox.margin>
@@ -253,22 +301,20 @@
                         </Button>
                         <VBox>
                            <children>
-                              <HBox alignment="CENTER" prefHeight="62.0" prefWidth="120.0" styleClass="utilityBox">
-                                 <children>
-                                    <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Advance Day per Click" textAlignment="CENTER" wrappingWidth="78.30859375" />
-                                    <CheckBox fx:id="incrementClicker" mnemonicParsing="false" onAction="#incrementByClick" prefWidth="15.0">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <tooltip>
-                                          <Tooltip text="Progress the time by using the Clicker. Allows precise time control." />
-                                       </tooltip>
-                                    </CheckBox>
-                                 </children>
+                              <CheckBox fx:id="incrementClicker" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#incrementByClick" styleClass="settingsBox" text="Advance Day per Click" textAlignment="CENTER" wrapText="true">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <tooltip>
+                                    <Tooltip text="Progress the time by using the Clicker. Allows precise time control." />
+                                 </tooltip>
                                  <VBox.margin>
-                                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                    <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
                                  </VBox.margin>
-                              </HBox>
+                                 <padding>
+                                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                 </padding>
+                              </CheckBox>
                            </children>
                            <VBox.margin>
                               <Insets top="5.0" />
@@ -282,17 +328,42 @@
                   <Button fx:id="resetBtn" layoutX="715.0" layoutY="555.0" mnemonicParsing="false" onAction="#getPlayer" prefHeight="24.0" prefWidth="80.0" text="Reset" />
                </children>
             </AnchorPane>
-            <VBox fx:id="popUpBox" alignment="BOTTOM_CENTER" layoutX="500.0" layoutY="200.0" prefWidth="500.0" styleClass="militaryBox" AnchorPane.leftAnchor="450.0" AnchorPane.rightAnchor="450.0">
+            <VBox fx:id="popUpBox" layoutX="400.0" layoutY="150.0" style="-fx-background-color: black; -fx-background-radius: 15;" AnchorPane.leftAnchor="450.0" AnchorPane.rightAnchor="450.0">
                <children>
-                  <Label fx:id="popUpMessage" text="New Game Started" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP" wrapText="true">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
+                  <VBox alignment="TOP_CENTER" style="-fx-background-color: white; -fx-background-radius: 7;">
+                     <children>
+                        <VBox alignment="CENTER" styleClass="militaryBox2">
+                           <VBox.margin>
+                              <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                           </VBox.margin>
+                           <children>
+                              <VBox alignment="BOTTOM_CENTER" prefWidth="500.0" style="-fx-border-color: white; -fx-border-width: 1;" styleClass="militaryBox">
+                                 <children>
+                                    <Label fx:id="popUpMessage" text="New Game Started" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP" wrapText="true">
+                                       <font>
+                                          <Font name="Serif Bold" size="18.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets bottom="40.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <Button fx:id="closePopUpBtn" mnemonicParsing="false" onAction="#closePopUp" styleClass="militaryButton" text="Close">
+                                       <padding>
+                                          <Insets bottom="3.0" left="15.0" right="15.0" top="3.0" />
+                                       </padding>
+                                    </Button>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </VBox>
+                           </children>
+                        </VBox>
+                     </children>
                      <VBox.margin>
-                        <Insets bottom="35.0" />
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
                      </VBox.margin>
-                  </Label>
-                  <Button fx:id="closePopUpBtn" mnemonicParsing="false" onAction="#closePopUp" text="Close" />
+                  </VBox>
                </children>
             </VBox>
          </children>

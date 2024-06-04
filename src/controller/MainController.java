@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import model.Model;
@@ -66,6 +67,10 @@ public class MainController extends BaseController {
     @FXML
     private CheckBox minorMessages;
     @FXML
+    private CheckBox errorMessages;
+    @FXML
+    private CheckBox shopMessages;
+    @FXML
     protected CheckBox incrementClicker;
 
     @FXML
@@ -84,7 +89,7 @@ public class MainController extends BaseController {
     protected Button settingsBtn;
 
     @FXML
-    private VBox settingsBox;
+    private HBox settingsBox;
     @FXML
     private VBox popUpBox;
     @FXML
@@ -93,6 +98,13 @@ public class MainController extends BaseController {
     private GridPane topSection;
     @FXML
     protected Button closePopUpBtn;
+
+    @FXML
+    private CheckBox pausePopBtn;
+
+
+
+    boolean autoContinue = false;
 
     public MainController() {
         super();
@@ -259,6 +271,7 @@ public class MainController extends BaseController {
 
 
     public void updateEventList() {
+
         updatePauseBtnText();
         Platform.runLater(() -> {
             List<String> newEvents = model.getPlayerCharacter().getEventTracker().getCombinedEvents();
@@ -340,13 +353,15 @@ public class MainController extends BaseController {
             clickMeButton.requestFocus();
             return;
         }
-        Time.startSimulation();
+        if(!pausePopBtn.isSelected()) {
+            topSectionController.startTimeFuntion();
+        }
         clickMeButton.requestFocus();
     }
 
     private void openPopUp() {
         mainLayout.setDisable(true);
-        Time.stopSimulation();
+        topSectionController.stopTimeFunction();
         String message = PopUpMessageTracker.getMessage();
         popUpMessage.setText(message);
         popUpBox.setVisible(true);
@@ -371,13 +386,26 @@ public class MainController extends BaseController {
         boolean isChecked = minorMessages.isSelected();
         model.getPlayerCharacter().getEventTracker().getPreferences().setShowMinorEvents(!isChecked);
     }
+    @FXML
+    void hideErrorMessages(ActionEvent event) {
+        boolean isChecked = errorMessages.isSelected();
+        model.getPlayerCharacter().getEventTracker().getPreferences().setShowErrorEvents(!isChecked);
+    }
+    @FXML
+    void hideShopMessages(ActionEvent event) {
+        boolean isChecked = shopMessages.isSelected();
+        model.getPlayerCharacter().getEventTracker().getPreferences().setShowShopEvents(!isChecked);
+    }
+
+    @FXML
+    void pauseAfterPop(ActionEvent event) {
+        pausePopBtn.setSelected(pausePopBtn.isSelected());
+    }
 
     @FXML
     void hideUtilityMessages(ActionEvent event) {
         boolean isChecked = hideUtility.isSelected();
-        System.out.println("hideUtilityMsgs triggered: " + isChecked);
         model.getPlayerCharacter().getEventTracker().getPreferences().setShowUtilityEvents(!isChecked);
-        System.out.println("showUtilityEvents set to: " + !isChecked);
     }
 
     @FXML
@@ -387,8 +415,9 @@ public class MainController extends BaseController {
 
     @FXML
     void cheat(ActionEvent event) {
-        TransferPackage transferPackage = new TransferPackage(10000000,10000000, 10000000);
+        TransferPackage transferPackage = new TransferPackage(1000000,1000000, 1000000);
         model.getPlayerPerson().getWallet().addResources(transferPackage);
+        PopUpMessageTracker.sendMessage("Cheat package used\n"+transferPackage);
     }
 
 

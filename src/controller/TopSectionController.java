@@ -63,6 +63,11 @@ public class TopSectionController extends BaseController {
 
     @FXML
     void startTime(MouseEvent event) {
+        startTimeFuntion();
+
+    }
+
+    public void startTimeFuntion() {
         main.incrementClicker.setDisable(true);
         main.incrementClicker.setSelected(false);
         Time.setManualSimulation(false);
@@ -75,6 +80,10 @@ public class TopSectionController extends BaseController {
 
     @FXML
     void stopTime(MouseEvent event) {
+        stopTimeFunction();
+    }
+
+    public void stopTimeFunction() {
         main.incrementClicker.setDisable(false);
         main.incrementClicker.setSelected(false);
         Time.setManualSimulation(false);
@@ -84,6 +93,8 @@ public class TopSectionController extends BaseController {
 
         stopTimeBtn.setDisable(true); // Disable the stop button
         startTimeBtn.setDisable(false); // Enable the start button
+
+
     }
 
     @FXML

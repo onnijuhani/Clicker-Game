@@ -127,12 +127,14 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
 
         TransferPackage netCash = person.getPaymentManager().getNetCash();
 
+        int minimum = Time.getYear() * 10;
+
         if(monthlyFood.isSelected()){
-            int amountSell = netCash.food() ;
+            int amountSell = netCash.food() - minimum;
             getExchange().sellResource(amountSell, Resource.Food, person.getCharacter());
         }
         if(monthlyAlloys.isSelected()){
-            int amountSell = netCash.alloy();
+            int amountSell = netCash.alloy() - minimum;
             getExchange().sellResource(amountSell, Resource.Alloy, person.getCharacter());
         }
 

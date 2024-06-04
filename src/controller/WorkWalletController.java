@@ -24,7 +24,7 @@ public class WorkWalletController extends BaseController {
 
     @FXML
     public void initialize() {
-        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> updateWorkWallet()));
+        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateWorkWallet()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
     }

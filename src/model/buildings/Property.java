@@ -63,7 +63,7 @@ public class Property implements PropertyObserver, Details, Ownable {
     private final EnumSet<State> states;
 
     public Property(PropertyConfig.PropertyValues propertyValues, String name, Person owner) {
-        this.defense = new UpgradeSystem(50);
+        this.defense = new UpgradeSystem(50,500);
         this.vault = new Vault(this);
 
         owner.setProperty(this);

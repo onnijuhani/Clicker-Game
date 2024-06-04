@@ -95,7 +95,7 @@ public class Time {
     }
 
     private static void executeMonthlyTrades() {
-        if (day == 8 || day == 16 || day == 24 && tradeExecutor != null) {
+        if (day == 30 || day == 16 && tradeExecutor != null) {
             tradeExecutor.executeMonthlyTrades();
         }
     }
@@ -149,7 +149,7 @@ public class Time {
             milliseconds = 500;
         }
         if (speed.equals(Speed.Fast)) {
-            milliseconds = 50;
+            milliseconds = 100;
         }
         if (speed.equals(Speed.Slow)) {
             milliseconds = 1000;

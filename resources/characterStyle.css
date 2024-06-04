@@ -42,10 +42,11 @@
 }
 .settingsBox {
     -fx-background-color: white;
-    -fx-background-radius: 25;
+    -fx-background-radius: 20;
     -fx-border-color:  linear-gradient(from 15% 100% to 100% 15%, #59033f, #4c023f, #3e023e, #30033c, #210339);
-    -fx-border-radius: 25;
+    -fx-border-radius: 20;
 }
+
 
 .list-view {
     -fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F1221, #202741, #2E3E51);
@@ -101,7 +102,7 @@
     -fx-border-color: #A0A0A0;
     -fx-border-width: 1;
     -fx-text-fill: black;
-    -fx-font-size: 16px;
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-font-family: "Serif";
 
@@ -115,3 +116,4 @@
     -fx-padding: 10;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 10, 0, 0, 5);
 }
+

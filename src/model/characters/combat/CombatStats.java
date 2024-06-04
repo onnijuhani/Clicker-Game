@@ -14,8 +14,8 @@ public class CombatStats {
     private final Person person;
 
     public CombatStats(int offenseBasePrice, int defenseBasePrice, Person person) {
-        this.offense = new UpgradeSystem(offenseBasePrice);
-        this.defense = new UpgradeSystem(defenseBasePrice);
+        this.offense = new UpgradeSystem(offenseBasePrice,2000);
+        this.defense = new UpgradeSystem(defenseBasePrice,2000);
         this.person = person;
     }
 
@@ -25,7 +25,7 @@ public class CombatStats {
             person.getWallet().subtractGold(price);
             if(getOffense().increaseLevel()) {
                 person.getEventTracker().addEvent(EventTracker.Message("Utility", "Offence was increased"));
-            }else{ // useless because UI doesn't allow the button to be pressed anyway.
+            }else{ // useless because UI doesn't allow the button to be pressed anyway. // even more useless now
                 person.getEventTracker().addEvent(EventTracker.Message("Error", "Offence is already at max level"));
             }
         }else{
