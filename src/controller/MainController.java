@@ -8,11 +8,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import model.Model;
 import model.characters.player.clicker.Clicker;
+import model.resourceManagement.TransferPackage;
 import model.stateSystem.EventTracker;
+import model.stateSystem.PopUpMessageTracker;
 import model.time.Time;
 import model.worldCreation.Quarter;
 
@@ -39,6 +43,8 @@ public class MainController extends BaseController {
     private InformationController informationController;
     @FXML
     private ArmyController armyController;
+    @FXML
+    private AnchorPane mainLayout;
 
     public RelationsController getRelationsController() {
         return relationsController;
@@ -79,6 +85,14 @@ public class MainController extends BaseController {
 
     @FXML
     private VBox settingsBox;
+    @FXML
+    private VBox popUpBox;
+    @FXML
+    private Label popUpMessage;
+    @FXML
+    private GridPane topSection;
+    @FXML
+    protected Button closePopUpBtn;
 
     public MainController() {
         super();
@@ -166,9 +180,22 @@ public class MainController extends BaseController {
         Platform.runLater(() -> exploreMapController.updateExploreTab());
         Platform.runLater(() -> clickerShopController.updateClickerShopPrices());
         Platform.runLater(() -> characterController.setCurrentCharacter(model.getPlayerCharacter()));
-        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateEventList()));
+        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateEventList()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
+
+        PopUpMessageTracker.messageProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                openPopUp();
+            }
+        });
+
+        PopUpMessageTracker.gameOverProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                openPopUp();
+                closePopUpBtn.setVisible(false);
+            }
+        });
     }
 
     @FXML
@@ -302,6 +329,30 @@ public class MainController extends BaseController {
         toggleSimulation();
     }
 
+    @FXML
+    void closePopUp(ActionEvent event) {
+        PopUpMessageTracker.resetMessage();
+        popUpBox.setVisible(false);
+        mainLayout.setDisable(false);
+        topSection.setDisable(false);
+        clickMeButton.requestFocus();
+        if(Time.isFirstDay){
+            clickMeButton.requestFocus();
+            return;
+        }
+        Time.startSimulation();
+        clickMeButton.requestFocus();
+    }
+
+    private void openPopUp() {
+        mainLayout.setDisable(true);
+        Time.stopSimulation();
+        String message = PopUpMessageTracker.getMessage();
+        popUpMessage.setText(message);
+        popUpBox.setVisible(true);
+        topSection.setDisable(true);
+    }
+
 
     void updatePauseBtnText(){
         if(Time.isIsSimulationRunning()){
@@ -332,6 +383,12 @@ public class MainController extends BaseController {
     @FXML
     void openSettings(ActionEvent event) {
         settingsBox.setVisible(!settingsBox.isVisible());
+    }
+
+    @FXML
+    void cheat(ActionEvent event) {
+        TransferPackage transferPackage = new TransferPackage(10000000,10000000, 10000000);
+        model.getPlayerPerson().getWallet().addResources(transferPackage);
     }
 
 

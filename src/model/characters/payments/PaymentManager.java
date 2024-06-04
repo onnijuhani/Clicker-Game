@@ -9,6 +9,7 @@ import java.util.*;
 public class PaymentManager {
 
 
+
     // A class to hold payment information
     public class PaymentInfo {
         public Payment name;
@@ -54,6 +55,7 @@ public class PaymentManager {
 
 
 
+
     // Maps that holds information of all payments
     private final Map<Payment, PaymentInfo> expenses = new HashMap<>();
     private final Map<Payment, PaymentInfo> incomes = new HashMap<>();
@@ -66,6 +68,11 @@ public class PaymentManager {
 
     public PaymentManager(Wallet wallet) {
         this.wallet = wallet;
+    }
+
+
+    public TransferPackage getNetCash() {
+        return wallet.getBalance().subtract(getFullExpense());
     }
 
 

@@ -19,220 +19,236 @@
             <Image url="@../BackGround/property.png" />
          </image>
       </ImageView>
-      <HBox layoutX="110.0" layoutY="66.0">
+      <VBox alignment="CENTER" fillWidth="false" layoutX="110.0" layoutY="14.0">
          <children>
-            <VBox alignment="TOP_CENTER" prefHeight="149.0" prefWidth="140.0" styleClass="utilityBox">
+            <Label styleClass="utilityBox" text="Buy and Upgrade Your Clicker">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <padding>
+                  <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+            </Label>
+            <HBox>
                <children>
-                  <Label alignment="CENTER" text="Food Clicker">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font>
-                  </Label>
-                  <StackPane alignment="TOP_CENTER">
+                  <VBox alignment="TOP_CENTER" prefHeight="149.0" prefWidth="140.0" styleClass="utilityBox">
                      <children>
-                        <Button fx:id="buyFoodClickerButton" alignment="CENTER" cancelButton="true" contentDisplay="CENTER" disable="true" mnemonicParsing="false" prefHeight="32.0" prefWidth="72.0" text="Owned!" visible="false">
+                        <Label alignment="CENTER" text="Food Clicker">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Label>
+                        <StackPane alignment="TOP_CENTER">
+                           <children>
+                              <Button fx:id="buyFoodClickerButton" alignment="CENTER" cancelButton="true" contentDisplay="CENTER" disable="true" mnemonicParsing="false" prefHeight="32.0" prefWidth="72.0" text="Owned!" visible="false">
+                                 <tooltip>
+                                    <Tooltip text="Food Clicker: Generates 1 Food per click. This is your starting item in the game.">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Tooltip>
+                                 </tooltip>
+                              </Button>
+                              <VBox fx:id="foodBox" alignment="CENTER">
+                                 <children>
+                                    <Label fx:id="foodLevel" alignment="CENTER" text="Label" textAlignment="CENTER" textOverrun="CLIP" wrapText="true">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="foodInfo" alignment="CENTER" text="Label" textAlignment="CENTER" textOverrun="CLIP" wrapText="true">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </StackPane>
+                        <Label alignment="BOTTOM_CENTER" text="Upgrade For:">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="foodUpgradeBtn" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#upgradeFoodClicker" text="price">
                            <tooltip>
-                              <Tooltip text="Food Clicker: Generates 1 Food per click. This is your starting item in the game.">
+                              <Tooltip contentDisplay="TEXT_ONLY" text="Upgrade Food Clicker: Doubles current production rate and the cost for the next upgrade." wrapText="true">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
                               </Tooltip>
                            </tooltip>
-                        </Button>
-                        <VBox fx:id="foodBox" alignment="CENTER">
-                           <children>
-                              <Label fx:id="foodLevel" alignment="CENTER" text="Label" textAlignment="CENTER" textOverrun="CLIP" wrapText="true">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="foodInfo" alignment="CENTER" text="Label" textAlignment="CENTER" textOverrun="CLIP" wrapText="true">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
-                                 </VBox.margin>
-                              </Label>
-                           </children>
-                        </VBox>
-                     </children>
-                  </StackPane>
-                  <Label alignment="BOTTOM_CENTER" text="Upgrade For:">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font>
-                  </Label>
-                  <Button fx:id="foodUpgradeBtn" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#upgradeFoodClicker" text="price">
-                     <tooltip>
-                        <Tooltip contentDisplay="TEXT_ONLY" text="Upgrade Food Clicker: Doubles current production rate and the cost for the next upgrade." wrapText="true">
                            <font>
-                              <Font size="15.0" />
+                              <Font size="13.0" />
                            </font>
-                        </Tooltip>
-                     </tooltip>
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Button>
-               </children>
-               <HBox.margin>
-                  <Insets left="10.0" right="10.0" />
-               </HBox.margin>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </VBox>
-            <VBox alignment="TOP_CENTER" prefHeight="149.0" prefWidth="140.0" styleClass="utilityBox">
-               <children>
-                  <Label alignment="CENTER" text="Alloy Clicker">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font>
-                  </Label>
-                  <StackPane alignment="TOP_CENTER">
+                        </Button>
+                     </children>
+                     <HBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </HBox.margin>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
+                  <VBox alignment="TOP_CENTER" prefHeight="149.0" prefWidth="140.0" styleClass="utilityBox">
                      <children>
-                        <Button fx:id="buyAlloyClickerButton" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false" onMouseClicked="#buyAlloyClicker" text="Buy Now">
-                           <tooltip>
-                              <Tooltip text="Alloy Clicker: Produces 1 Alloy per click. Purchasing this item significantly boosts your game progression." />
-                           </tooltip>
-                        </Button>
-                        <VBox fx:id="alloyBox" alignment="CENTER" visible="false">
-                           <children>
-                              <Label fx:id="alloyLevel" alignment="CENTER" text="Label" textAlignment="CENTER" textOverrun="CLIP" wrapText="true">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="alloyInfo" alignment="CENTER" text="Label" textAlignment="CENTER" textOverrun="CLIP" wrapText="true">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
-                                 </VBox.margin>
-                              </Label>
-                           </children>
-                        </VBox>
-                     </children>
-                  </StackPane>
-                  <Label fx:id="alloyOwned" alignment="BOTTOM_CENTER" text="Not Owned">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font>
-                  </Label>
-                  <Button fx:id="alloyUpgradeBtn" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#upgradeAlloyClicker" text="price" visible="false">
-                     <tooltip>
-                        <Tooltip text="Upgrade Alloy Clicker: Doubles current production rate and the cost for the next upgrade.">
+                        <Label alignment="CENTER" text="Alloy Clicker">
                            <font>
-                              <Font size="15.0" />
+                              <Font name="System Bold" size="16.0" />
                            </font>
-                        </Tooltip>
-                     </tooltip>
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Button>
-               </children>
-               <HBox.margin>
-                  <Insets left="10.0" right="10.0" />
-               </HBox.margin>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </VBox>
-            <VBox alignment="TOP_CENTER" prefHeight="149.0" prefWidth="140.0" styleClass="utilityBox">
-               <children>
-                  <Label alignment="CENTER" text="Gold Clicker">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font>
-                  </Label>
-                  <StackPane alignment="TOP_CENTER">
+                        </Label>
+                        <StackPane alignment="TOP_CENTER">
+                           <children>
+                              <Button fx:id="buyAlloyClickerButton" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false" onMouseClicked="#buyAlloyClicker" text="Buy Now">
+                                 <tooltip>
+                                    <Tooltip text="Alloy Clicker: Produces 1 Alloy per click. Purchasing this item significantly boosts your game progression." />
+                                 </tooltip>
+                              </Button>
+                              <VBox fx:id="alloyBox" alignment="CENTER" visible="false">
+                                 <children>
+                                    <Label fx:id="alloyLevel" alignment="CENTER" text="Label" textAlignment="CENTER" textOverrun="CLIP" wrapText="true">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="alloyInfo" alignment="CENTER" text="Label" textAlignment="CENTER" textOverrun="CLIP" wrapText="true">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </StackPane>
+                        <Label fx:id="alloyOwned" alignment="BOTTOM_CENTER" text="Not Owned">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="alloyUpgradeBtn" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#upgradeAlloyClicker" text="price" visible="false">
+                           <tooltip>
+                              <Tooltip text="Upgrade Alloy Clicker: Doubles current production rate and the cost for the next upgrade.">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Tooltip>
+                           </tooltip>
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <HBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </HBox.margin>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
+                  <VBox alignment="TOP_CENTER" prefHeight="149.0" prefWidth="140.0" styleClass="utilityBox">
                      <children>
-                        <Button fx:id="buyGoldClickerButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#buyGoldClicker" text="Buy Now">
-                           <tooltip>
-                              <Tooltip text="Gold Clicker: Generates 1 Gold per click. As the most valuable resource in the game, acquiring this item greatly accelerates your progression." />
-                           </tooltip>
-                        </Button>
-                        <VBox fx:id="goldBox" alignment="CENTER" visible="false">
+                        <Label alignment="CENTER" text="Gold Clicker">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Label>
+                        <StackPane alignment="TOP_CENTER">
                            <children>
-                              <Label fx:id="goldLevel" alignment="CENTER" text="Label" textAlignment="CENTER" textOverrun="CLIP" wrapText="true">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="goldInfo" alignment="CENTER" text="Label" textAlignment="CENTER" textOverrun="CLIP" wrapText="true">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
-                                 </VBox.margin>
-                              </Label>
+                              <Button fx:id="buyGoldClickerButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#buyGoldClicker" text="Buy Now">
+                                 <tooltip>
+                                    <Tooltip text="Gold Clicker: Generates 1 Gold per click. As the most valuable resource in the game, acquiring this item greatly accelerates your progression." />
+                                 </tooltip>
+                              </Button>
+                              <VBox fx:id="goldBox" alignment="CENTER" visible="false">
+                                 <children>
+                                    <Label fx:id="goldLevel" alignment="CENTER" text="Label" textAlignment="CENTER" textOverrun="CLIP" wrapText="true">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="goldInfo" alignment="CENTER" text="Label" textAlignment="CENTER" textOverrun="CLIP" wrapText="true">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                 </children>
+                              </VBox>
                            </children>
-                        </VBox>
+                        </StackPane>
+                        <Label fx:id="goldOwned" alignment="BOTTOM_CENTER" text="Not Owned">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="goldUpgradeBtn" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#upgradeGoldClicker" text="price" visible="false">
+                           <tooltip>
+                              <Tooltip text="Upgrade Gold Clicker: Doubles current production rate and the cost for the next upgrade.">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Tooltip>
+                           </tooltip>
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Button>
                      </children>
-                  </StackPane>
-                  <Label fx:id="goldOwned" alignment="BOTTOM_CENTER" text="Not Owned">
+                     <HBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </HBox.margin>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER" styleClass="utilityBox">
+               <children>
+                  <Label styleClass="´" text="AutoClicker">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                     </HBox.margin>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </Label>
+                  <Label fx:id="autoClickerPrice" text="F:100,000 A:100,000 G:100,000">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
+                     <HBox.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </HBox.margin>
                   </Label>
-                  <Button fx:id="goldUpgradeBtn" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#upgradeGoldClicker" text="price" visible="false">
-                     <tooltip>
-                        <Tooltip text="Upgrade Gold Clicker: Doubles current production rate and the cost for the next upgrade.">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Tooltip>
-                     </tooltip>
-                     <font>
-                        <Font size="13.0" />
-                     </font>
+                  <Button fx:id="autoClickerBtn" mnemonicParsing="false" onAction="#buyAutoClicker" text="Buy Now">
+                     <HBox.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </HBox.margin>
                   </Button>
                </children>
-               <HBox.margin>
-                  <Insets left="10.0" right="10.0" />
-               </HBox.margin>
                <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets left="5.0" right="5.0" />
                </padding>
-            </VBox>
+            </HBox>
          </children>
-      </HBox>
-      <Label layoutX="193.0" layoutY="14.0" styleClass="utilityBox" text="Buy and Upgrade Your Clicker">
-         <font>
-            <Font name="System Bold" size="20.0" />
-         </font>
-         <padding>
-            <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
-         </padding>
-      </Label>
-      <HBox alignment="CENTER_LEFT" layoutX="133.0" layoutY="233.0" styleClass="utilityBox">
-         <children>
-            <Label styleClass="´" text="AutoClicker">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-               <HBox.margin>
-                  <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-               </HBox.margin>
-            </Label>
-            <Label text="F:100,000 A:100,000 G:100,000">
-               <font>
-                  <Font name="System Bold" size="16.0" />
-               </font>
-               <HBox.margin>
-                  <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-               </HBox.margin>
-            </Label>
-            <Button fx:id="autoClickerBtn" mnemonicParsing="false" onAction="#buyAutoClicker" text="Buy Now">
-               <HBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </HBox.margin>
-            </Button>
-         </children>
-      </HBox>
+      </VBox>
    </children>
 </AnchorPane>

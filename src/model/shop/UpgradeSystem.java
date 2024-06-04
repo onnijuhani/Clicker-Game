@@ -12,13 +12,13 @@ public class UpgradeSystem {
     protected int value;
     protected final int PRICE_CEILING;
     protected final Map<String, Double> bonus = new HashMap<>();
-    protected double priceIncreaseAmount = 2.5;
+    protected double priceIncreaseAmount = 3;
 
     public UpgradeSystem(int basePrice) {
         this.level = 1;
         this.basePrice = basePrice;
         this.value = 1;
-        this.PRICE_CEILING = basePrice * 200_000;
+        this.PRICE_CEILING = basePrice * 50_000;
     }
 
     public void addBonus(String bonusName, double percentage){

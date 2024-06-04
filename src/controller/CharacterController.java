@@ -2,6 +2,7 @@ package controller;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -62,6 +63,7 @@ public class CharacterController extends BaseController  {
     private HBox CombatBox;
 
 
+
     private void updateWalletInfo(){
         walletInfo.setText(currentCharacter.getPerson().getWallet().toStringValuesRows());
     }
@@ -106,7 +108,11 @@ public class CharacterController extends BaseController  {
 
     @FXML
     public void initialize() {
-        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(3), e -> updateCharacterTab()));
+        Platform.runLater(this::createTimeLine);
+    }
+
+    private void createTimeLine() {
+        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateCharacterTab()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
     }

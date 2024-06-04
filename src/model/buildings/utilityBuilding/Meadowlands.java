@@ -42,7 +42,7 @@ public class Meadowlands extends UtilityBuilding {
 
     @Override
     public void updatePaymentCalendar(PaymentManager calendar) {
-        calendar.addPayment(PaymentManager.PaymentType.INCOME, Payment.GOLD_MINE_INCOME, getGenerateAmount(), Time.utilitySlots);
+        calendar.addPayment(PaymentManager.PaymentType.INCOME, Payment.MEADOWLANDS_INCOME, getGenerateAmount(), Time.utilitySlots);
     }
 
 

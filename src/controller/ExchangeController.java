@@ -5,13 +5,19 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
+import model.Model;
+import model.characters.Person;
 import model.resourceManagement.Resource;
+import model.resourceManagement.TransferPackage;
 import model.shop.Exchange;
+import model.time.MonthlyTradeExecutor;
+import model.time.Time;
 
-public class ExchangeController extends BaseController {
+public class ExchangeController extends BaseController implements MonthlyTradeExecutor {
 
     @FXML
     private Label alloyToGoldPrice;
@@ -39,8 +45,22 @@ public class ExchangeController extends BaseController {
     private Label marketFee;
     @FXML
     private Label shopWalletBalance;
-
     private MainController main;
+
+    @FXML
+    private CheckBox monthlyAlloys;
+
+    @FXML
+    private CheckBox monthlyFood;
+
+    @FXML
+    private CheckBox monthlyGoldAlloys;
+
+    @FXML
+    private CheckBox monthlyGoldFood;
+
+
+
 
 
     @FXML
@@ -48,6 +68,7 @@ public class ExchangeController extends BaseController {
         Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateExchange()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
+        Time.setTradeExecutor(this);
     }
 
     void updateExchange(){
@@ -73,8 +94,8 @@ public class ExchangeController extends BaseController {
         updateExchange();
     }
 
-    private Exchange getExchange(){
-        return model.getPlayerCharacter().getRole().getNation().getShop().getExchange();
+    private static Exchange getExchange(){
+        return Model.getPlayerAsCharacter().getRole().getNation().getShop().getExchange();
     }
     void updateExchangePrices(){
         int defaultGold = getExchange().getDefaultGold();
@@ -98,6 +119,40 @@ public class ExchangeController extends BaseController {
         goldToAlloysPrice.setText(goldAlloy[1]+"s");
         goldAlloyBtn.setText(goldAlloy[0]);
     }
+
+    @Override
+    public void executeMonthlyTrades(){
+
+        Person person = Model.getPlayerAsPerson();
+
+        TransferPackage netCash = person.getPaymentManager().getNetCash();
+
+        if(monthlyFood.isSelected()){
+            int amountSell = netCash.food() ;
+            getExchange().sellResource(amountSell, Resource.Food, person.getCharacter());
+        }
+        if(monthlyAlloys.isSelected()){
+            int amountSell = netCash.alloy();
+            getExchange().sellResource(amountSell, Resource.Alloy, person.getCharacter());
+        }
+
+        int amountSpendGold = netCash.gold();
+
+        if(monthlyGoldFood.isSelected()){
+            int amountSpend = amountSpendGold / (monthlyGoldAlloys.isSelected() ? 2 : 1);
+            int amountBuy = amountSpend * 10;
+            getExchange().exchangeResources(amountBuy, Resource.Food, Resource.Gold, person.getCharacter());
+            System.out.println(amountBuy+" "+amountSpend);
+        }
+        if(monthlyGoldAlloys.isSelected()){
+            int amountSpend = amountSpendGold / (monthlyGoldFood.isSelected() ? 2 : 1);
+            int amountBuy = amountSpend * 5;
+            getExchange().exchangeResources(amountBuy, Resource.Alloy, Resource.Gold, person.getCharacter());
+        }
+
+
+    }
+
     @FXML
     void buyGoldFoodBtn(MouseEvent event) {
         int amountToBuy = getExchange().getDefaultGold();
@@ -135,4 +190,7 @@ public class ExchangeController extends BaseController {
     public void setMain(MainController main) {
         this.main = main;
     }
+
+
+
 }

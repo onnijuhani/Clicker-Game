@@ -34,14 +34,32 @@ public class ClickerShop extends ShopComponents {
     }
 
     public boolean buyAutoClicker(Person person){
-        TransferPackage amount = new TransferPackage(100_000, 100_000, 100_000);
+        TransferPackage amount = getAutoClickerPrice();
+
         if(person.getWallet().subtractResources(amount)){
             Clicker.getInstance().setAutoClickerOwned(true);
+            Clicker.getInstance().decreaseAutoClickerLevel();
             return true;
         }
         return false;
     }
 
+    public static TransferPackage getAutoClickerPrice() {
+        TransferPackage amount = new TransferPackage(5, 5, 5);
+
+        int level = Clicker.getInstance().getAutoClickerLevel();
+
+        if(level == 3){
+            amount = amount.multiply(500);
+        }
+        if(level == 2){
+            amount = amount.multiply(10_000);
+        }
+        if(level == 1){
+            amount = amount.multiply(0);
+        }
+        return amount;
+    }
 
 
     public ClickerTools createClickerTool(Resource type) {

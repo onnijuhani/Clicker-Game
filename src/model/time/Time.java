@@ -3,6 +3,7 @@ package model.time;
 import model.GameManager;
 import model.Settings;
 import model.characters.player.clicker.Clicker;
+import model.stateSystem.SpecialEventsManager;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -15,7 +16,7 @@ public class Time {
     private static ScheduledExecutorService executorService;
     private static boolean isSimulationRunning = false;
     private static boolean isManualSimulation = false;
-    private static boolean isFirstDay = true;
+    public static boolean isFirstDay = true;
     private static final int generate = Settings.getInt("generate");
     private static final int maintenance = Settings.getInt("maintenance");
     public static final int quarterTax = Settings.getInt("quarterTax");
@@ -24,7 +25,7 @@ public class Time {
     public static final int nationTax = Settings.getInt("nationTax");
     public static final int utilitySlots = Settings.getInt("utilitySlots");
     public static final int armyRunningCost = Settings.getInt("armyRunningCost");
-    private static int milliseconds = 1000;
+    private static int milliseconds = 500;
     public static boolean gameOver = false;
     public static Speed getSpeed() {
         return speed;
@@ -33,7 +34,7 @@ public class Time {
         Time.speed = speed;
     }
     public static Speed speed = Speed.Normal;
-
+    private static MonthlyTradeExecutor tradeExecutor;
     public Time() {
         executorService = Executors.newSingleThreadScheduledExecutor();
     }
@@ -80,10 +81,29 @@ public class Time {
         EventManager.processScheduledEvents(); // All scheduled events require information every day
 
 
+        //AUTO CLICKER FUNCTIONALITY
         if(Clicker.getInstance().isAutoClickerOwned()){
-            Clicker.getInstance().generateResources();
+            if(day % Clicker.getInstance().getAutoClickerLevel() == 0) {
+                Clicker.getInstance().generateResources();
+            }
         }
 
+        startingBonusTrigger(); // early game resource bonus
+
+        executeMonthlyTrades(); // players monthly trades
+
+    }
+
+    private static void executeMonthlyTrades() {
+        if (day == 8 || day == 16 || day == 24 && tradeExecutor != null) {
+            tradeExecutor.executeMonthlyTrades();
+        }
+    }
+
+    private static void startingBonusTrigger() {
+        if(day == 1 && month == 2 && year == 0){
+            SpecialEventsManager.triggerStartingBonus();
+        }
     }
 
     private static boolean freeDay(){
@@ -126,13 +146,13 @@ public class Time {
 
     private static void speedToMilliseconds(){
         if (speed.equals(Speed.Normal)) {
-            milliseconds = 1000;
+            milliseconds = 500;
         }
         if (speed.equals(Speed.Fast)) {
             milliseconds = 50;
         }
         if (speed.equals(Speed.Slow)) {
-            milliseconds = 2000;
+            milliseconds = 1000;
         }
     }
 
@@ -217,5 +237,8 @@ public class Time {
 
     public static boolean isIsSimulationRunning() {
         return isSimulationRunning;
+    }
+    public static void setTradeExecutor(MonthlyTradeExecutor executor) {
+        tradeExecutor = executor;
     }
 }

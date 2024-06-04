@@ -24,10 +24,8 @@ public class Clicker {
     private final WorkWallet workWallet;
     private final Person person;
 
-
     private boolean autoClickerOwned = false;
-
-
+    private int autoClickerLevel = 4; // smaller number is better. 1 is the best. Functionality in Time.java
     private boolean showSalaryInPayments = true;
 
     private Clicker(Person person) {
@@ -139,11 +137,19 @@ public class Clicker {
     public boolean isAutoClickerOwned() {
         return autoClickerOwned;
     }
-
     public void setAutoClickerOwned(boolean autoClickerOwned) {
         this.autoClickerOwned = autoClickerOwned;
     }
+    public int getAutoClickerLevel() {
+        return autoClickerLevel;
+    }
 
+    public void decreaseAutoClickerLevel() {
+        if(autoClickerLevel == 1){
+            return;
+        }
+        autoClickerLevel--;
+    }
 }
 
 

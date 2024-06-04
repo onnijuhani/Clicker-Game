@@ -12,6 +12,7 @@ import model.resourceManagement.wallets.WorkWallet;
 import model.shop.Ownable;
 import model.stateSystem.EventTracker;
 import model.stateSystem.GameEvent;
+import model.stateSystem.PopUpMessageTracker;
 import model.stateSystem.State;
 import model.time.Time;
 
@@ -104,6 +105,8 @@ public class Person implements Ownable {
         if(character.getPerson().isPlayer()) {
             getEventTracker().addEvent(EventTracker.Message("Major","GAME OVER. No Strikes left."));
             Time.setGameOver(true);
+            PopUpMessageTracker.sendMessage("ALL STRIKES LOST\n\nGAME OVER");
+            PopUpMessageTracker.sendGameOver();
         }else{
             getStrikesTracker().gainStrike(20);
             for(int i = 0; i < 5; i++){

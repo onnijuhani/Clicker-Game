@@ -8,6 +8,7 @@ import model.Model;
 import model.Settings;
 import model.characters.player.clicker.*;
 import model.resourceManagement.Resource;
+import model.shop.ClickerShop;
 import model.shop.Shop;
 
 public class ClickerShopController extends BaseController {
@@ -51,6 +52,9 @@ public class ClickerShopController extends BaseController {
     @FXML
     private Label goldOwned;
 
+    @FXML
+    private Label autoClickerPrice;
+
 
 
     public ClickerShopController() {
@@ -78,7 +82,6 @@ public class ClickerShopController extends BaseController {
             goldInfo.setText("Produces: " + goldClicker.getValue() + " Gold");
         }
 
-
     }
 
 
@@ -88,6 +91,7 @@ public class ClickerShopController extends BaseController {
         updateClickerPrice(Resource.Gold, buyGoldClickerButton, goldUpgradeBtn);
         updateClickerPrice(Resource.Food, buyFoodClickerButton, foodUpgradeBtn);
         setInfoTexts();
+        autoClickerPrice.setText(Clicker.getInstance().getAutoClickerLevel() == 1 ?  " " :ClickerShop.getAutoClickerPrice().toString());
     }
 
     private void updateClickerPrice(Resource resource, Button buyButton, Button upgradeButton) {
@@ -128,7 +132,16 @@ public class ClickerShopController extends BaseController {
     void buyAutoClicker() {
         setShop(Model.getPlayerRole().getNation().getShop());
         boolean purchaseSuccessful = shop.getClickerShop().buyAutoClicker(model.getPlayerPerson());
-        autoClickerBtn.setDisable(purchaseSuccessful);
+        if(purchaseSuccessful) {
+            autoClickerBtn.setText("Upgrade");
+        };
+        if(Clicker.getInstance().getAutoClickerLevel() == 1) {
+            autoClickerBtn.setDisable(purchaseSuccessful);
+            autoClickerBtn.setText("Max");
+            autoClickerPrice.setText("");
+            autoClickerPrice.setVisible(false);
+        }
+        updateClickerShopPrices();
     }
 
 
