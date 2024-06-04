@@ -33,6 +33,15 @@ public class ClickerShop extends ShopComponents {
         }
     }
 
+    public boolean buyAutoClicker(Person person){
+        TransferPackage amount = new TransferPackage(100_000, 100_000, 100_000);
+        if(person.getWallet().subtractResources(amount)){
+            Clicker.getInstance().setAutoClickerOwned(true);
+            return true;
+        }
+        return false;
+    }
+
 
 
     public ClickerTools createClickerTool(Resource type) {

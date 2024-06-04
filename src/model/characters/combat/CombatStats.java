@@ -52,9 +52,15 @@ public class CombatStats {
     }
 
     public void decreaseOffense(){
+        if(offense.getUpgradeLevel() == 1){
+            return;
+        }
         getOffense().decreaseLevel();
     }
     public void decreaseDefence(){
+        if(defense.getUpgradeLevel() == 1){
+            return;
+        }
         getDefense().decreaseLevel();
     }
 

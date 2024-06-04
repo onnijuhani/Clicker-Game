@@ -25,6 +25,9 @@ public class Clicker {
     private final Person person;
 
 
+    private boolean autoClickerOwned = false;
+
+
     private boolean showSalaryInPayments = true;
 
     private Clicker(Person person) {
@@ -45,8 +48,6 @@ public class Clicker {
         double taxRate = person.getRole().getAuthority().getTaxForm().getTaxRate() / 100;
         person.getPaymentManager().addPayment(PaymentManager.PaymentType.INCOME, Payment.EXPECTED_SALARY_INCOME ,person.getWorkWallet().getBalance().multiply(taxRate), 27);
     }
-
-
 
 
     public static Clicker getInstance() {
@@ -133,6 +134,14 @@ public class Clicker {
         }
 
         this.showSalaryInPayments = showSalaryInPayments;
+    }
+
+    public boolean isAutoClickerOwned() {
+        return autoClickerOwned;
+    }
+
+    public void setAutoClickerOwned(boolean autoClickerOwned) {
+        this.autoClickerOwned = autoClickerOwned;
     }
 
 }

@@ -2,6 +2,7 @@ package model.time;
 
 import model.GameManager;
 import model.Settings;
+import model.characters.player.clicker.Clicker;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -77,6 +78,12 @@ public class Time {
         isFirstDay = false; // After the first increment, it's no longer the first day
 
         EventManager.processScheduledEvents(); // All scheduled events require information every day
+
+
+        if(Clicker.getInstance().isAutoClickerOwned()){
+            Clicker.getInstance().generateResources();
+        }
+
     }
 
     private static boolean freeDay(){

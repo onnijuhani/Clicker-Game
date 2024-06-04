@@ -19,7 +19,7 @@
             <Image url="@../BackGround/property.png" />
          </image>
       </ImageView>
-      <HBox layoutX="110.0" layoutY="97.0">
+      <HBox layoutX="110.0" layoutY="66.0">
          <children>
             <VBox alignment="TOP_CENTER" prefHeight="149.0" prefWidth="140.0" styleClass="utilityBox">
                <children>
@@ -116,12 +116,12 @@
                         </VBox>
                      </children>
                   </StackPane>
-                  <Label alignment="BOTTOM_CENTER" text="Upgrade For:">
+                  <Label fx:id="alloyOwned" alignment="BOTTOM_CENTER" text="Not Owned">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Label>
-                  <Button fx:id="alloyUpgradeBtn" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#upgradeAlloyClicker" text="price">
+                  <Button fx:id="alloyUpgradeBtn" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#upgradeAlloyClicker" text="price" visible="false">
                      <tooltip>
                         <Tooltip text="Upgrade Alloy Clicker: Doubles current production rate and the cost for the next upgrade.">
                            <font>
@@ -174,12 +174,12 @@
                         </VBox>
                      </children>
                   </StackPane>
-                  <Label alignment="BOTTOM_CENTER" text="Upgrade For:">
+                  <Label fx:id="goldOwned" alignment="BOTTOM_CENTER" text="Not Owned">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Label>
-                  <Button fx:id="goldUpgradeBtn" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#upgradeGoldClicker" text="price">
+                  <Button fx:id="goldUpgradeBtn" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#upgradeGoldClicker" text="price" visible="false">
                      <tooltip>
                         <Tooltip text="Upgrade Gold Clicker: Doubles current production rate and the cost for the next upgrade.">
                            <font>
@@ -201,7 +201,7 @@
             </VBox>
          </children>
       </HBox>
-      <Label layoutX="193.0" layoutY="33.0" styleClass="utilityBox" text="Buy and Upgrade Your Clicker">
+      <Label layoutX="193.0" layoutY="14.0" styleClass="utilityBox" text="Buy and Upgrade Your Clicker">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
@@ -209,5 +209,30 @@
             <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
          </padding>
       </Label>
+      <HBox alignment="CENTER_LEFT" layoutX="133.0" layoutY="233.0" styleClass="utilityBox">
+         <children>
+            <Label styleClass="´" text="AutoClicker">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <HBox.margin>
+                  <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+               </HBox.margin>
+            </Label>
+            <Label text="F:100,000 A:100,000 G:100,000">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+               <HBox.margin>
+                  <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+               </HBox.margin>
+            </Label>
+            <Button fx:id="autoClickerBtn" mnemonicParsing="false" onAction="#buyAutoClicker" text="Buy Now">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
    </children>
 </AnchorPane>

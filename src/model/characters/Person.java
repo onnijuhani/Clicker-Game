@@ -86,11 +86,29 @@ public class Person implements Ownable {
         }else {
             getEventTracker().addEvent(EventTracker.Message("Major", "Lost a Strike! Strikes left: " + strikesLeft));
         }
+        decreasePersonalPower();
     }
+
+    private void decreasePersonalPower() {
+        if(!character.getPerson().isPlayer){
+            character.getPerson().getCombatStats().decreaseOffense();
+            character.getPerson().getCombatStats().decreaseDefence();
+        }
+    }
+
+    /**
+     * Player loses all strikes triggers game over and simulation stops.
+     * NPC's gain back 20 strikes and lose attack and defence points instead weakening them.
+     */
     private void triggerGameOver(){
         if(character.getPerson().isPlayer()) {
             getEventTracker().addEvent(EventTracker.Message("Major","GAME OVER. No Strikes left."));
             Time.setGameOver(true);
+        }else{
+            getStrikesTracker().gainStrike(20);
+            for(int i = 0; i < 5; i++){
+                decreasePersonalPower();
+            }
         }
     }
     public void decreasePersonalOffence(int x) {
