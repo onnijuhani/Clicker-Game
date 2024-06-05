@@ -37,12 +37,11 @@ public class Construct {
 
         assert cost != null;
 
-        person.getEventTracker().addEvent(EventTracker.Message("Major" , "Tried construction property 1"));
 
         if(!wallet.hasEnoughResources(cost)){
             person.getRole().getNation().getShop().getExchange().forceAcquire(cost, person, false);
         }
-        person.getEventTracker().addEvent(EventTracker.Message("Major" , "Tried construction property 2"));
+
 
         if (wallet.hasEnoughResources(cost)) {
 

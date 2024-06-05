@@ -24,7 +24,7 @@ public class Army implements ArmyObserver {
             owner.getEventTracker().addEvent(EventTracker.Message("Major", "Army expenses not paid"));
             owner.getStrikesTracker().loseStrike();
         }else{
-            owner.getEventTracker().addEvent(EventTracker.Message("Major", "Army expenses paid:\n\t\t\t\t" + countRunningCosts()));
+            owner.getEventTracker().addEvent(EventTracker.Message("Major", "Army expenses paid: " + countRunningCosts()));
         }
     }
 

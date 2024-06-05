@@ -82,7 +82,7 @@ public class CharacterController extends BaseController  {
         EnumSet states = currentPerson.getStates();
 
 
-        if(states.contains(State.IN_BATTLE)){
+        if(states.contains(State.IN_BATTLE) || states.contains(State.IN_DEFENCE)){
             stateBox.setVisible(true);
 
             GameEvent authorityEvent = currentPerson.getAnyOnGoingEvent(Event.AuthorityBattle);
@@ -93,15 +93,17 @@ public class CharacterController extends BaseController  {
 
             List<Person> participants = new ArrayList<>();
 
-            if (authorityEvent != null) {
-                participants = authorityEvent.getParticipants();
-                onGoingEvent = authorityEvent;
-            } else if (duelEvent != null) {
-                participants = duelEvent.getParticipants();
-                onGoingEvent = duelEvent;
-            } else if (robberyEvent != null) {
+            if (robberyEvent != null) {
                 participants = robberyEvent.getParticipants();
                 onGoingEvent = robberyEvent;
+            }
+            else if (authorityEvent != null) {
+                participants = authorityEvent.getParticipants();
+                onGoingEvent = authorityEvent;
+            }
+            else if (duelEvent != null) {
+                participants = duelEvent.getParticipants();
+                onGoingEvent = duelEvent;
             }
 
             List<Person> otherParticipants = participants.stream()
