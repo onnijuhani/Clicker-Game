@@ -408,7 +408,7 @@ public class PropertyController extends BaseController {
             upgradeDefBtn.setText(property.getDefenceStats().getUpgradePrice()+" Alloys");
             upgradeDefLabel.setVisible(true);
         }else{
-            robVaultBtn.setVisible(true);
+            if(Time.year != 0) {robVaultBtn.setVisible(true);};
             playerVaultBox.setVisible(false);
             upgradeDefBtn.setVisible(false);
             upgradeDefLabel.setVisible(false);

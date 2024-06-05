@@ -10,10 +10,7 @@ import model.characters.payments.PaymentManager;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.shop.Ownable;
-import model.stateSystem.EventTracker;
-import model.stateSystem.GameEvent;
-import model.stateSystem.PopUpMessageTracker;
-import model.stateSystem.State;
+import model.stateSystem.*;
 import model.time.Time;
 
 import java.util.ArrayList;
@@ -97,7 +94,13 @@ public class Person implements Ownable {
         }
     }
 
-    /**
+    public GameEvent getAnyOnGoingEvent(Event event){
+        return getOngoingEvents().stream()
+                .filter(any -> any.getEvent() == event)
+                .findFirst()
+                .orElse(null);
+    }
+                                        /**
      * Player loses all strikes triggers game over and simulation stops.
      * NPC's gain back 20 strikes and lose attack and defence points instead weakening them.
      */
@@ -202,5 +205,7 @@ public class Person implements Ownable {
     public Person getPerson(){
         return this;
     }
+
+
 }
 

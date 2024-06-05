@@ -361,6 +361,7 @@ public class CombatSystem {
 
         attacker.addState(State.IN_BATTLE);
         venue.addState(State.IN_BATTLE);
+        defender.addState(State.IN_DEFENCE);
 
         int daysUntilEvent = getDaysUntilEvent("robberyTime");
 
@@ -425,6 +426,7 @@ public class CombatSystem {
 
         attacker.removeState(State.IN_BATTLE);
         venue.removeState(State.IN_BATTLE);
+        defender.removeState(State.IN_DEFENCE);
     }
 
 

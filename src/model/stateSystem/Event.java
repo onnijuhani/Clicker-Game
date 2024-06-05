@@ -1,9 +1,22 @@
 package model.stateSystem;
 
 public enum Event {
-    ROBBERY,
-    DUEL,
-    CONSTRUCTION, AuthorityBattle, SupportBattle, RecruitSoldier, ArmyTraining,
+    ROBBERY("Robbery"),
+    DUEL("Duel"),
+    CONSTRUCTION("Construction"),
+    AuthorityBattle("Authority Battle"),
+    SupportBattle("Support Battle"),
+    RecruitSoldier("Recruit Soldier"),
+    ArmyTraining("Army Training");
 
+    private final String displayName;
 
+    Event(String displayName) {
+        this.displayName = displayName;
+    }
+
+    @Override
+    public String toString() {
+        return displayName;
+    }
 }

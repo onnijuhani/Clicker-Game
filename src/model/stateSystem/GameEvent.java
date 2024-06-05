@@ -12,6 +12,8 @@ public class GameEvent {
     private int executionDay;
     private int executionMonth;
     private int executionYear;
+
+
     private final List<Person> participants;
 
     public GameEvent(Event event, Person... participants) {
@@ -67,6 +69,10 @@ public class GameEvent {
 
     public void setEvent(Event event) {
         this.event = event;
+    }
+
+    public List<Person> getParticipants() {
+        return participants;
     }
 
 

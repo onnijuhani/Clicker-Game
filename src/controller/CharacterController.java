@@ -10,14 +10,18 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import model.Model;
 import model.buildings.properties.MilitaryProperty;
 import model.characters.Character;
+import model.characters.Person;
 import model.characters.combat.CombatService;
+import model.stateSystem.Event;
+import model.stateSystem.GameEvent;
+import model.stateSystem.State;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.*;
 
 public class CharacterController extends BaseController  {
 
@@ -62,6 +66,81 @@ public class CharacterController extends BaseController  {
     @FXML
     private HBox CombatBox;
 
+    @FXML
+    private Label currentState;
+    @FXML
+    private Label stateTimeLeft;
+    @FXML
+    private VBox stateBox;
+
+    @FXML
+    private VBox opponentsBox;
+
+    void getCurrentStates(){
+
+        Person currentPerson = currentCharacter.getPerson();
+        EnumSet states = currentPerson.getStates();
+
+
+        if(states.contains(State.IN_BATTLE)){
+            stateBox.setVisible(true);
+
+            GameEvent authorityEvent = currentPerson.getAnyOnGoingEvent(Event.AuthorityBattle);
+            GameEvent duelEvent = currentPerson.getAnyOnGoingEvent(Event.DUEL);
+            GameEvent robberyEvent = currentPerson.getAnyOnGoingEvent(Event.ROBBERY);
+
+            GameEvent onGoingEvent = null;
+
+            List<Person> participants = new ArrayList<>();
+
+            if (authorityEvent != null) {
+                participants = authorityEvent.getParticipants();
+                onGoingEvent = authorityEvent;
+            } else if (duelEvent != null) {
+                participants = duelEvent.getParticipants();
+                onGoingEvent = duelEvent;
+            } else if (robberyEvent != null) {
+                participants = robberyEvent.getParticipants();
+                onGoingEvent = robberyEvent;
+            }
+
+            List<Person> otherParticipants = participants.stream()
+                    .filter(p -> !p.equals(currentPerson))
+                    .toList();
+
+            opponentsBox.getChildren().clear();
+
+            if (!otherParticipants.isEmpty()) {
+                for (Person participant : otherParticipants) {
+                    Hyperlink link = new Hyperlink(participant.getCharacter().toString());
+                    link.setOnAction(e -> handleParticipantClick(participant));
+                    opponentsBox.getChildren().add(link);
+                }
+            } else {
+                Hyperlink link = new Hyperlink("Unknown Character");
+                opponentsBox.getChildren().add(link);
+            }
+
+            assert onGoingEvent != null;
+            stateTimeLeft.setText(""+ Arrays.toString(onGoingEvent.timeLeftUntilExecution()));
+
+            int[] timeLeft = onGoingEvent.timeLeftUntilExecution();
+            stateTimeLeft.setText(String.format("%d days, %d months, %d years left", timeLeft[2], timeLeft[1], timeLeft[0]));
+
+            currentState.setText("On Going "+onGoingEvent.getEvent());
+
+        }
+        else{
+            stateBox.setVisible(false);
+        }
+
+    }
+
+    private void handleParticipantClick(Person participant) {
+        openCharacterProfile(participant.getCharacter());
+    }
+
+
 
 
     private void updateWalletInfo(){
@@ -80,6 +159,7 @@ public class CharacterController extends BaseController  {
         updateCombatStats();
         main.resetBtn.setDisable(currentCharacter.getPerson() == Model.getPlayerAsPerson());
         disableArmyTab();
+        getCurrentStates();
     }
 
     public void disableArmyTab(){
@@ -219,6 +299,7 @@ public class CharacterController extends BaseController  {
     private void openCharacterProfile(Character character) {
         setCurrentCharacter(character);
         updateCharacterTab();
+        main.clickMeButton.requestFocus();
     }
 
     private void updatePreviousButtonState() {
