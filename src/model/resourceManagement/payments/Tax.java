@@ -13,6 +13,8 @@ public class Tax {
     private boolean isTaxRateChanged = true;
     private double taxRate;
 
+    private TransferPackage lastAmount;
+
     public Tax() {
         taxInfoByResource = new EnumMap<>(Resource.class);
         for (Resource resource : Resource.values()) {
@@ -89,22 +91,24 @@ public class Tax {
     }
 
 
-    public void collectTax(WorkWallet fromWallet, EventTracker taxPayerTracker, WorkWallet toWallet, EventTracker taxManTracker) {
+    public void collectTax(WorkWallet fromWallet, EventTracker taxPayerTracker, WorkWallet toWallet, EventTracker taxManTracker, int day) {
         int foodTax = (int) taxInfoByResource.get(Resource.Food).calculateTax(fromWallet.getFood());
         int alloyTax = (int) taxInfoByResource.get(Resource.Alloy).calculateTax(fromWallet.getAlloy());
         int goldTax = (int) taxInfoByResource.get(Resource.Gold).calculateTax(fromWallet.getGold());
 
-        TransferPackage transfer = new TransferPackage(foodTax,alloyTax,goldTax);
+        TransferPackage transfer = new TransferPackage(foodTax, alloyTax, goldTax);
         toWallet.deposit(fromWallet, transfer);
 
         fromWallet.setTaxedOrNot(true);
-        fromWallet.cashOutSalary(); //after taxation salary is added to the main wallet of the owner. This wallet cannot be taxed.
 
-        String taxPaid = EventTracker.Message("Minor","Tax paid "+transfer);
-        String taxCollected = EventTracker.Message("Minor","Tax Collected"+transfer);
+        fromWallet.cashOutSalary(day);
+
+        String taxPaid = EventTracker.Message("Minor", "Tax paid " + transfer);
+        String taxCollected = EventTracker.Message("Minor", "Tax Collected " + transfer);
         taxPayerTracker.addEvent(taxPaid);
         taxManTracker.addEvent(taxCollected);
     }
+
 
     private int getResourceAmount(Wallet wallet, Resource resource) {
         return switch (resource) {

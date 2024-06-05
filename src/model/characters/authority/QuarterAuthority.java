@@ -25,6 +25,7 @@ public class QuarterAuthority extends Authority {
         if (getCharacterInThisPosition().getPerson().isPlayer()){
             return;
         }
+
     }
 
     private final LinkedList<Peasant> peasants;
@@ -44,6 +45,7 @@ public class QuarterAuthority extends Authority {
         taxForm.setTaxInfo(Resource.Food, Settings.getInt("peasantFoodTax"));
         taxForm.setTaxInfo(Resource.Alloy, Settings.getInt("peasantAlloyTax"));
         taxForm.setTaxInfo(Resource.Gold, Settings.getInt("peasantGoldTax"));
+        this.taxDay = Time.quarterTax;
     }
 
     @Override
@@ -55,7 +57,7 @@ public class QuarterAuthority extends Authority {
                     : getTaxForm();
             WorkWallet taxedWallet = peasant.getPerson().getWorkWallet();
             EventTracker tracker = peasant.getEventTracker();
-            taxForm.collectTax(taxedWallet,tracker,workWallet,this.getCharacterInThisPosition().getEventTracker());
+            taxForm.collectTax(taxedWallet,tracker,workWallet,this.getCharacterInThisPosition().getEventTracker(), taxDay);
         }
     }
     public void addPeasant(Peasant peasant){

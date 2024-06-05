@@ -17,5 +17,6 @@ public class ProvinceAuthority extends Authority {
     }
     public ProvinceAuthority(Character character) {
         super(character);
+        this.taxDay = Time.provinceTax;
     }
 }

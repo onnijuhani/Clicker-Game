@@ -11,14 +11,16 @@ public class NationAuthority extends Authority {
             paySupporters();
             if(getSupervisor().equals(this)) {
                 workWallet.setTaxedOrNot(true); //nation authority can set his own taxation status if he is his own authority
-                workWallet.cashOutSalary();
+                workWallet.cashOutSalary(day);
             }
         }
         if (getCharacterInThisPosition().getPerson().isPlayer()){
             return;
         }
+
     }
     public NationAuthority(Character character) {
         super(character);
+        this.taxDay = Time.nationTax;
     }
 }

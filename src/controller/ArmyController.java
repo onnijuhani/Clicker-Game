@@ -178,7 +178,7 @@ public class ArmyController extends BaseController {
         attackPower.setText(""+army.totalAttackPower());
         numOfSoldiers.setText(""+army.getNumOfSoldiers());
 
-        TransferPackage runningCost = army.countRunningCosts();
+        TransferPackage runningCost = army.getRunningCost();
 
         foodCost.setText("F: "+runningCost.food());
         alloyCost.setText("A: "+runningCost.alloy());

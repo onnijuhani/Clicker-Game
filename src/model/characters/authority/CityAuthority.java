@@ -13,9 +13,11 @@ public class CityAuthority extends Authority {
         if (getCharacterInThisPosition().getPerson().isPlayer()){
             return;
         }
+
     }
 
     public CityAuthority(Character character) {
         super(character);
+        this.taxDay = Time.cityTax;
     }
 }

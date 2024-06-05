@@ -3,14 +3,14 @@ package model.buildings.utilityBuilding;
 import model.Settings;
 import model.characters.payments.PaymentManager;
 import model.characters.Person;
-import model.characters.payments.Tracker;
+import model.characters.payments.PaymentTracker;
 import model.resourceManagement.TransferPackage;
 import model.shop.UpgradeSystem;
 import model.stateSystem.EventTracker;
 import model.time.UtilityManager;
 import model.time.UtilityObserver;
 
-public class UtilityBuilding extends UpgradeSystem implements UtilityObserver, Tracker {
+public class UtilityBuilding extends UpgradeSystem implements UtilityObserver, PaymentTracker {
 
     protected UtilityBuildings name;
 

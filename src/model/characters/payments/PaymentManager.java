@@ -135,11 +135,15 @@ public class PaymentManager {
     }
 
     private TransferPackage getTransferPackage(Map<Payment, PaymentInfo> payments) {
-        int[] fullAmount = {0,0,0};
+        int[] fullAmount = {0, 0, 0};
         payments.forEach((payment, info) -> {
-            fullAmount[0] += info.amount.food();
-            fullAmount[1] += info.amount.alloy();
-            fullAmount[2] += info.amount.gold();
+            if (info != null && info.amount != null) {
+                fullAmount[0] += info.amount.food();
+                fullAmount[1] += info.amount.alloy();
+                fullAmount[2] += info.amount.gold();
+            } else {
+                System.err.println("Warning: PaymentInfo or its amount is null for payment: " + payment);
+            }
         });
         return new TransferPackage(fullAmount[0], fullAmount[1], fullAmount[2]);
     }

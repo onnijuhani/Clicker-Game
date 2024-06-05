@@ -2,6 +2,7 @@ package model.resourceManagement.wallets;
 
 import model.GameManager;
 import model.characters.Person;
+import model.characters.payments.PaymentManager;
 import model.resourceManagement.TransferPackage;
 import model.shop.Ownable;
 import model.stateSystem.EventTracker;
@@ -91,6 +92,11 @@ public class Vault extends Wallet implements Ownable {
 
     @Override
     public EventTracker getEventTracker() {
+        return null;
+    }
+
+    @Override
+    public PaymentManager getPaymentManager() {
         return null;
     }
 

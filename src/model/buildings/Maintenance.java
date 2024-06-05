@@ -3,13 +3,13 @@ package model.buildings;
 import model.GameManager;
 import model.characters.payments.Payment;
 import model.characters.payments.PaymentManager;
-import model.characters.payments.Tracker;
+import model.characters.payments.PaymentTracker;
 import model.stateSystem.EventTracker;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Vault;
 import model.resourceManagement.wallets.Wallet;
 
-public class Maintenance implements Tracker {
+public class Maintenance implements PaymentTracker {
     private final int food;
     private final int alloy;
     private final int gold;

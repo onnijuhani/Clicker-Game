@@ -5,6 +5,7 @@ import model.characters.Person;
 import model.characters.Status;
 import model.characters.payments.Payment;
 import model.characters.payments.PaymentManager;
+import model.characters.payments.PaymentTracker;
 import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
@@ -15,7 +16,7 @@ import model.time.Time;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Clicker {
+public class Clicker implements PaymentTracker {
     private static Clicker instance;
     private final Map<Resource, ClickerTools> ownedClickerTools;
     private final EventTracker eventTracker;
@@ -23,10 +24,9 @@ public class Clicker {
     private final Wallet wallet;
     private final WorkWallet workWallet;
     private final Person person;
-
     private boolean autoClickerOwned = false;
     private int autoClickerLevel = 4; // smaller number is better. 1 is the best. Functionality in Time.java
-    private boolean showSalaryInPayments = true;
+    private boolean showClickerSalaryInPayments = true;
 
     private Clicker(Person person) {
         this.person = person;
@@ -42,10 +42,13 @@ public class Clicker {
         }
     }
 
-    private void countSalary(){
+    @Override
+    public void updatePaymentCalendar(PaymentManager calendar) {
         double taxRate = person.getRole().getAuthority().getTaxForm().getTaxRate() / 100;
-        person.getPaymentManager().addPayment(PaymentManager.PaymentType.INCOME, Payment.EXPECTED_SALARY_INCOME ,person.getWorkWallet().getBalance().multiply(taxRate), 27);
+        person.getPaymentManager().addPayment(PaymentManager.PaymentType.INCOME, Payment.EXPECTED_CLICKER_INCOME ,person.getWorkWallet().getBalance().multiply(taxRate), 27);
+
     }
+
 
 
     public static Clicker getInstance() {
@@ -71,8 +74,8 @@ public class Clicker {
             String message = clickerTransferMessage(resourcesGenerated);
             eventTracker.addEvent(EventTracker.Message("Clicker", message));
         }
-        if(showSalaryInPayments) {
-            countSalary();
+        if(showClickerSalaryInPayments) {
+            updatePaymentCalendar(person.getPaymentManager());
         }
     }
     private TransferPackage generate() {
@@ -125,13 +128,13 @@ public class Clicker {
         return ownedClickerTools.containsKey(Resource.Gold);
     }
 
-    public void setShowSalaryInPayments(boolean showSalaryInPayments) {
+    public void setShowClickerSalaryInPayments(boolean showClickerSalaryInPayments) {
 
-        if(!showSalaryInPayments){
-            person.getPaymentManager().removePayment(PaymentManager.PaymentType.INCOME, Payment.EXPECTED_SALARY_INCOME);
+        if(!showClickerSalaryInPayments){
+            person.getPaymentManager().removePayment(PaymentManager.PaymentType.INCOME, Payment.EXPECTED_CLICKER_INCOME);
         }
 
-        this.showSalaryInPayments = showSalaryInPayments;
+        this.showClickerSalaryInPayments = showClickerSalaryInPayments;
     }
 
     public boolean isAutoClickerOwned() {
@@ -150,6 +153,8 @@ public class Clicker {
         }
         autoClickerLevel--;
     }
+
+
 }
 
 

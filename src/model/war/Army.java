@@ -1,6 +1,10 @@
 package model.war;
 
+import model.Settings;
 import model.characters.Person;
+import model.characters.payments.Payment;
+import model.characters.payments.PaymentManager;
+import model.characters.payments.PaymentTracker;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.stateSystem.Event;
@@ -10,28 +14,37 @@ import model.time.ArmyManager;
 import model.time.ArmyObserver;
 import model.time.EventManager;
 
-public class Army implements ArmyObserver {
+public class Army implements ArmyObserver, PaymentTracker {
 
     @Override
     public void armyUpdate(int day) {
-        if(day == 20) {
+        if(day == expenseDay) {
             payRunningCosts();
+            updatePaymentCalendar(owner.getPaymentManager());
         }
+
+
     }
 
+    @Override
+    public void updatePaymentCalendar(PaymentManager calendar) {
+        calendar.addPayment(PaymentManager.PaymentType.EXPENSE, Payment.ARMY_EXPENSE, getRunningCost(), expenseDay);
+    }
+
+
     private void payRunningCosts() {
-        if(!wallet.subtractResources(countRunningCosts())){
+        if(!wallet.subtractResources(getRunningCost())){
             owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army expenses not paid"));
             owner.getStrikesTracker().loseStrike();
         }else{
-            owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army expenses paid: " + countRunningCosts()));
+            owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army expenses paid: " + getRunningCost()));
         }
     }
 
     private int numOfSoldiers = 1;
     private int attackPower = 1;
 
-
+    private final int expenseDay = Settings.getInt("armyExpense");
     private int defencePower = 1;
     private Military military;
     private final Wallet wallet;
@@ -44,6 +57,7 @@ public class Army implements ArmyObserver {
         this.owner = owner;
         this.wallet = owner.getWallet();
         ArmyManager.subscribe(this);
+        updatePaymentCalendar(owner.getPaymentManager());
     }
 
 
@@ -73,6 +87,7 @@ public class Army implements ArmyObserver {
     private void finishDefenceIncrease() {
         defencePower++;
         trainingInProcess = false;
+        updatePaymentCalendar(owner.getPaymentManager());
         owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army Defence Training Finished"));
     }
     public boolean increaseAttackPower(){
@@ -100,6 +115,7 @@ public class Army implements ArmyObserver {
     private void finishAttackIncrease() {
         attackPower++;
         trainingInProcess = false;
+        updatePaymentCalendar(owner.getPaymentManager());
         owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army Offence Training Finished"));
     }
 
@@ -125,7 +141,7 @@ public class Army implements ArmyObserver {
 
         int daysUntilEvent = 30 * amount;
 
-        EventManager.scheduleEvent(() -> increaseSoldierAmount(amount), daysUntilEvent, gameEvent);
+        EventManager.scheduleEvent(() -> finishSoldierRecruit(amount), daysUntilEvent, gameEvent);
 
         return true;
 
@@ -133,13 +149,14 @@ public class Army implements ArmyObserver {
 
 
 
-    private void increaseSoldierAmount(int amount) {
+    private void finishSoldierRecruit(int amount) {
         numOfSoldiers += amount;
         recruitingInProcess = false;
+        updatePaymentCalendar(owner.getPaymentManager());
     }
 
 
-    public TransferPackage countRunningCosts(){
+    public TransferPackage getRunningCost(){
 
         int food = numOfSoldiers * ArmyCost.runningFood;
         int alloys = (attackPower + defencePower) * ArmyCost.runningAlloy;
@@ -181,6 +198,7 @@ public class Army implements ArmyObserver {
     public Military getMilitary() {
         return military;
     }
+
 
 
 }

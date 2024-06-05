@@ -18,7 +18,7 @@ public class UpgradeSystem {
         this.level = 1;
         this.basePrice = basePrice;
         this.value = 1;
-        this.PRICE_CEILING = basePrice * 50_000;
+        this.PRICE_CEILING = basePrice * 5000;
     }
     public UpgradeSystem(int basePrice, int price_ceiling_coef) {
         this.level = 1;
@@ -56,7 +56,7 @@ public class UpgradeSystem {
     }
 
     protected int calculateUpgradePrice() {
-        return Math.min((int) (basePrice * Math.pow(priceIncreaseAmount, level)), PRICE_CEILING);
+        return Math.min((int) (basePrice * Math.pow(priceIncreaseAmount, level - 1)), PRICE_CEILING);
     }
 
     public boolean increaseLevel() {

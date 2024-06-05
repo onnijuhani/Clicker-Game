@@ -3,6 +3,7 @@ package model.characters.authority;
 import model.characters.AuthorityCharacter;
 import model.characters.Character;
 import model.characters.Support;
+import model.characters.payments.PaymentManager;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.payments.Salary;
 import model.resourceManagement.payments.Tax;
@@ -20,15 +21,15 @@ public class Authority implements TaxObserver, Ownable {
     @Override
     public void taxUpdate(int day, int month, int year) {
         System.out.println("Who called this ??  "+this+"  "+this.characterPositionedHere+"  "+characterPositionedHere.getPerson());
-        if (day == 0) {
+        if (day == taxDay) {
             imposeTax();
             paySupporters();
         }
         if (getCharacterInThisPosition().getPerson().isPlayer()){
             return;
         }
-    }
 
+    }
 
     protected Character characterPositionedHere; //the character who is in this position
     protected ArrayList<Authority> subordinate;
@@ -36,8 +37,7 @@ public class Authority implements TaxObserver, Ownable {
     protected ArrayList<Support> supporters;
     protected Tax taxForm;
     protected WorkWallet workWallet;
-
-
+    protected int taxDay;
     protected Area areaUnderAuthority;
 
     public void subscribeToTimeEvents() {
@@ -51,6 +51,7 @@ public class Authority implements TaxObserver, Ownable {
         this.subordinate = new ArrayList<>();
         this.supporters = new ArrayList<>();
 
+        taxDay = 1;
 
         setInitialCharacterToThisPosition();
 
@@ -68,7 +69,7 @@ public class Authority implements TaxObserver, Ownable {
         for (Authority authority : subordinate){
             WorkWallet walletUnderTaxation = authority.getWorkWallet();
             EventTracker tracker = authority.getCharacterInThisPosition().getEventTracker();
-            taxForm.collectTax(walletUnderTaxation,tracker,workWallet,this.getCharacterInThisPosition().getEventTracker());
+            taxForm.collectTax(walletUnderTaxation,tracker,workWallet,this.getCharacterInThisPosition().getEventTracker(), taxDay);
         }
     }
 
@@ -140,6 +141,11 @@ public class Authority implements TaxObserver, Ownable {
         return characterPositionedHere.getEventTracker();
     }
 
+    @Override
+    public PaymentManager getPaymentManager() {
+        return getCharacterInThisPosition().getPaymentManager();
+    }
+
     public Area getAreaUnderAuthority() {
         return areaUnderAuthority;
     }
@@ -147,6 +153,7 @@ public class Authority implements TaxObserver, Ownable {
     public void setAreaUnderAuthority(Area areaUnderAuthority) {
         this.areaUnderAuthority = areaUnderAuthority;
     }
+
 
 }
 

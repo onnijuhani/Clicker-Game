@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import model.Images;
 import model.buildings.utilityBuilding.UtilitySlot;
 import model.characters.Person;
+import model.characters.payments.PaymentManager;
 import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Vault;
 import model.shop.Ownable;
@@ -175,5 +176,10 @@ public class Property implements PropertyObserver, Details, Ownable {
     @Override
     public EventTracker getEventTracker(){
         return owner.getEventTracker();
+    }
+
+    @Override
+    public PaymentManager getPaymentManager() {
+        return null;
     }
 }

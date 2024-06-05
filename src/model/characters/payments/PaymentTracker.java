@@ -1,5 +1,5 @@
 package model.characters.payments;
 
-public interface Tracker {
+public interface PaymentTracker {
     void updatePaymentCalendar(PaymentManager calendar);
 }

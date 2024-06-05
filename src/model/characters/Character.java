@@ -150,6 +150,12 @@ public class Character implements NpcObserver, Details, Ownable {
     public EventTracker getEventTracker() {
         return person.getEventTracker();
     }
+
+    @Override
+    public PaymentManager getPaymentManager() {
+        return getPerson().getPaymentManager();
+    }
+
     public Person getPerson() {
         return person;
     }

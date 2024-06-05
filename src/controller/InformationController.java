@@ -18,6 +18,8 @@ import model.characters.payments.PaymentManager;
 import model.characters.player.clicker.Clicker;
 import model.resourceManagement.TransferPackage;
 
+import java.util.Objects;
+
 public class InformationController extends BaseController {
     @FXML
     private Label fullExpense;
@@ -38,7 +40,7 @@ public class InformationController extends BaseController {
 
     @FXML
     private VBox heartsContainer;
-    private final Image heartImage = new Image(getClass().getResourceAsStream("/heart.png"));
+    private final Image heartImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/heart.png")));
 
     @FXML
     private HBox heartsLower;
@@ -104,7 +106,7 @@ public class InformationController extends BaseController {
     @FXML
     void hideClickerSalary(ActionEvent event) {
         boolean isChecked = hideClickerSalary.isSelected();
-        Clicker.getInstance().setShowSalaryInPayments(!isChecked);
+        Clicker.getInstance().setShowClickerSalaryInPayments(!isChecked);
     }
 
 

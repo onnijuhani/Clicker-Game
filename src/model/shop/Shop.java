@@ -1,5 +1,6 @@
 package model.shop;
 
+import model.characters.payments.PaymentManager;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.stateSystem.EventTracker;
@@ -38,8 +39,13 @@ public class Shop implements Ownable {
         this.wallet = wallet;
     }
 
-    @Override // maybe add event Tracker later
+    @Override // maybe add event PaymentTracker later
     public EventTracker getEventTracker() {
+        return null;
+    }
+
+    @Override
+    public PaymentManager getPaymentManager() {
         return null;
     }
 

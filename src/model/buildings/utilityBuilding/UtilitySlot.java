@@ -1,11 +1,11 @@
 package model.buildings.utilityBuilding;
 
 import model.characters.payments.PaymentManager;
-import model.characters.payments.Tracker;
+import model.characters.payments.PaymentTracker;
 
 import java.util.HashMap;
 
-public class UtilitySlot implements Tracker {
+public class UtilitySlot implements PaymentTracker {
 
     private final int slotAmount;
     private HashMap<UtilityBuildings,UtilityBuilding> ownedUtilityBuildings;

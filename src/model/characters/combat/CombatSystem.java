@@ -391,7 +391,7 @@ public class CombatSystem {
 
         int baseTime = Settings.getInt(settingsGet);
         int baseLevel = venue.getPropertyEnum().ordinal();
-        return Math.max(baseTime * baseLevel, baseTime*15);
+        return Math.min(baseTime * baseLevel, baseTime*15);
     }
 
     private void decideRobbery() {
