@@ -5,4 +5,6 @@ package model.war;
  */
 public interface Military {
 
+    Army getArmy();
+
 }

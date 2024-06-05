@@ -62,6 +62,15 @@ public class GameEvent {
         }
     }
 
+    public String getTimeLeftString() {
+        int[] timeLeft = timeLeftUntilExecution();
+        return (String.format("%d days, %d months, %d years left", timeLeft[2], timeLeft[1], timeLeft[0]));
+    }
+    public String getTimeLeftShortString() {
+        int[] timeLeft = timeLeftUntilExecution();
+        return (String.format("%d d, %d m, %d y left", timeLeft[2], timeLeft[1], timeLeft[0]));
+    }
+
 
     public Event getEvent() {
         return event;

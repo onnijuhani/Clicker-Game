@@ -21,15 +21,17 @@ public class Army implements ArmyObserver {
 
     private void payRunningCosts() {
         if(!wallet.subtractResources(countRunningCosts())){
-            owner.getEventTracker().addEvent(EventTracker.Message("Major", "Army expenses not paid"));
+            owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army expenses not paid"));
             owner.getStrikesTracker().loseStrike();
         }else{
-            owner.getEventTracker().addEvent(EventTracker.Message("Major", "Army expenses paid: " + countRunningCosts()));
+            owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army expenses paid: " + countRunningCosts()));
         }
     }
 
     private int numOfSoldiers = 1;
     private int attackPower = 1;
+
+
     private int defencePower = 1;
     private Military military;
     private final Wallet wallet;
@@ -60,7 +62,7 @@ public class Army implements ArmyObserver {
         GameEvent gameEvent = new GameEvent(Event.ArmyTraining, owner);
         owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army Defence Training Started"));
 
-        int daysUntilEvent = 90;
+        int daysUntilEvent = 30;
 
         EventManager.scheduleEvent(this::finishDefenceIncrease, daysUntilEvent, gameEvent);
 
@@ -88,7 +90,7 @@ public class Army implements ArmyObserver {
         GameEvent gameEvent = new GameEvent(Event.ArmyTraining, owner);
         owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army Offence Training Started"));
 
-        int daysUntilEvent = 60;
+        int daysUntilEvent = 30;
 
         EventManager.scheduleEvent(this::finishAttackIncrease, daysUntilEvent, gameEvent);
 
@@ -162,6 +164,22 @@ public class Army implements ArmyObserver {
 
     public void setMilitaryBuilding(Military military) {
         this.military = military;
+    }
+
+    public int getNumOfSoldiers() {
+        return numOfSoldiers;
+    }
+
+    public int getAttackPower() {
+        return attackPower;
+    }
+
+    public int getDefencePower() {
+        return defencePower;
+    }
+
+    public Military getMilitary() {
+        return military;
     }
 
 

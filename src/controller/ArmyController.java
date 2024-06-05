@@ -9,25 +9,38 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import model.buildings.Property;
+import model.buildings.properties.MilitaryProperty;
 import model.characters.Character;
+import model.resourceManagement.TransferPackage;
+import model.stateSystem.Event;
+import model.stateSystem.GameEvent;
+import model.war.Army;
+import model.war.ArmyCost;
+
+import java.util.Optional;
 
 public class ArmyController extends BaseController {
     @Override
     public void initialize() {
-        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateArmyTab()));
+        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateArmyTab()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
     }
 
 
     @FXML
-    private VBox alloyCost;
+    private Label alloyCost;
 
     @FXML
     private AnchorPane armyView;
 
     @FXML
+    private Label trainingTime;
+
+    @FXML
     private Label attackPower;
+
 
     @FXML
     private Label defPower;
@@ -42,61 +55,73 @@ public class ArmyController extends BaseController {
     private Button hideButton;
 
     @FXML
-    private Button increaseAttack;
+    private Button increaseAttackBtn;
 
     @FXML
-    private Button increaseDef;
+    private Button increaseDefBtn;
+
+    @FXML
+    private Button minusSoldierBtn;
 
     @FXML
     private Label numOfSoldiers;
 
     @FXML
-    private Button recruitSoldiers;
+    private Button plusSoldierBtn;
+
+    @FXML
+    private Button recruitSoldiersBtn;
+
+    @FXML
+    private Label recruitTimeLeft;
+
+    @FXML
+    private Label soldierAmountToTrain;
 
     @FXML
     private Button switchButton;
-
     @FXML
-    private Button plusSoldier;
-    @FXML
-    private Button minusSoldier;
-    @FXML
-    private Label attDaysLeft;
-    @FXML
-    private Label defDaysLeft;
-    @FXML
-    private Label recruitTimeLeft;
+    private VBox trainingBox;
     private boolean isShowing = true;
 
     protected CharacterController characterController;
     private Character currentCharacter;
+    private Army army;
 
     private void updateArmyTab() {
+        timerUpdate();
+        costAndPowerUpdate();
     }
 
-    public void setCurrentCharacter(){
-        if(currentCharacter == characterController.getCurrentCharacter()){
+    public void setCurrentCharacter() {
+        if (currentCharacter == characterController.getCurrentCharacter()) {
             return;
-        }else{
+        } else {
             currentCharacter = characterController.getCurrentCharacter();
+
+            Property property = currentCharacter.getPerson().getProperty();
+
+            if (property instanceof MilitaryProperty militaryProperty) {
+                army = militaryProperty.getArmy();
+            } else {
+                army = null;
+            }
         }
     }
 
-
-
     void differentiatePlayer(){
-        if(characterController.getCurrentCharacter() == model.getPlayerCharacter()){
-            increaseAttack.setDisable(false);
-            increaseDef.setDisable(false);
-            minusSoldier.setDisable(false);
-            plusSoldier.setDisable(false);
-            recruitSoldiers.setDisable(false);
+        if(currentCharacter == model.getPlayerCharacter()){
+            increaseAttackBtn.setDisable(false);
+            increaseDefBtn.setDisable(false);
+            minusSoldierBtn.setDisable(false);
+            plusSoldierBtn.setDisable(false);
+            recruitSoldiersBtn.setDisable(false);
         }else{
-            increaseAttack.setDisable(true);
-            increaseDef.setDisable(true);
-            minusSoldier.setDisable(true);
-            plusSoldier.setDisable(true);
-            recruitSoldiers.setDisable(true);
+            increaseAttackBtn.setDisable(true);
+            increaseDefBtn.setDisable(true);
+            minusSoldierBtn.setDisable(true);
+            plusSoldierBtn.setDisable(true);
+            recruitSoldiersBtn.setDisable(true);
         }
     }
 
@@ -111,21 +136,115 @@ public class ArmyController extends BaseController {
             hideButton.setText("Hide");
             isShowing = true;
         }
+    }
+
+    public void timerUpdate() {
+
+        if (currentCharacter == null) {
+            return;
+        }
+
+        Optional<GameEvent> armyTrainingEvent = Optional.ofNullable(currentCharacter.getPerson().getAnyOnGoingEvent(Event.ArmyTraining));
+        Optional<GameEvent> recruitSoldierEvent = Optional.ofNullable(currentCharacter.getPerson().getAnyOnGoingEvent(Event.RecruitSoldier));
+
+        armyTrainingEvent.ifPresentOrElse(
+                event -> {
+                    trainingTime.setText(event.getTimeLeftShortString());
+                    trainingBox.setVisible(true);
+                },
+                () -> {
+                    trainingBox.setVisible(false);
+                    increaseDefBtn.setDisable(false);
+                    increaseAttackBtn.setDisable(false);
+                }
+        );
+
+        recruitSoldierEvent.ifPresentOrElse(
+                event -> recruitTimeLeft.setText(event.getTimeLeftShortString()),
+                () -> {
+                    recruitTimeLeft.setText("");
+                    recruitSoldiersBtn.setDisable(false);
+                }
+        );
+    }
+
+
+    public void costAndPowerUpdate(){
+        if(army == null){
+            return;
+        }
+
+        defPower.setText(""+army.totalDefencePower());
+        attackPower.setText(""+army.totalAttackPower());
+        numOfSoldiers.setText(""+army.getNumOfSoldiers());
+
+        TransferPackage runningCost = army.countRunningCosts();
+
+        foodCost.setText("F: "+runningCost.food());
+        alloyCost.setText("A: "+runningCost.alloy());
+        goldCost.setText("G: "+runningCost.gold());
+
+        increaseDefBtn.setText(ArmyCost.increaseArmyDefence+ " Alloys");
+        increaseAttackBtn.setText(ArmyCost.increaseArmyAttack+ " Alloys");
+
+
+
+
+    }
+
+
+    void updateRecruitCost(){
+        recruitSoldiersBtn.setText(ArmyCost.getRecruitingCost().multiply(Double.parseDouble(soldierAmountToTrain.getText())).toShortString());
+    }
+
+
+
+    @FXML
+    void increaseAtt(ActionEvent event) {
+        if(army.increaseAttackPower()){
+            increaseAttackBtn.setDisable(true);
+            increaseDefBtn.setDisable(true);
+        }
+    }
+
+    @FXML
+    void increaseDef(ActionEvent event) {
+        if(army.increaseDefencePower()){
+            increaseAttackBtn.setDisable(true);
+            increaseDefBtn.setDisable(true);
+        }
+    }
+
+    @FXML
+    void minusSoldier(ActionEvent event) {
+        int currentAmount = Integer.parseInt(soldierAmountToTrain.getText());
+        if(currentAmount > 1){
+            currentAmount--;
+            soldierAmountToTrain.setText(String.valueOf(currentAmount));
+        }
+        updateRecruitCost();
+    }
+
+    @FXML
+    void plusSoldier(ActionEvent event) {
+        int currentAmount = Integer.parseInt(soldierAmountToTrain.getText());
+        if(currentAmount < 10){
+            currentAmount++;
+            soldierAmountToTrain.setText(String.valueOf(currentAmount));
+        }
+        updateRecruitCost();
+    }
+
+    @FXML
+    void recruitSoldiers(ActionEvent event) {
+        if(army.recruitSoldier(Integer.parseInt(soldierAmountToTrain.getText()))){
+            recruitSoldiersBtn.setDisable(true);
+        }
 
     }
 
     @FXML
     void switchView(ActionEvent event) {
-
-    }
-
-    @FXML
-    void minusSoldier(ActionEvent event) {
-
-    }
-
-    @FXML
-    void plusSoldier(ActionEvent event) {
 
     }
 

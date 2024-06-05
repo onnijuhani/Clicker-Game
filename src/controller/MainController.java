@@ -417,7 +417,6 @@ public class MainController extends BaseController {
     void cheat(ActionEvent event) {
         TransferPackage transferPackage = new TransferPackage(1000000,1000000, 1000000);
         model.getPlayerPerson().getWallet().addResources(transferPackage);
-        PopUpMessageTracker.sendMessage("Cheat package used\n"+transferPackage);
     }
 
 
