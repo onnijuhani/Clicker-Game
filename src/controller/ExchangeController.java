@@ -144,7 +144,7 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
             int amountSpend = amountSpendGold / (monthlyGoldAlloys.isSelected() ? 2 : 1);
             int amountBuy = amountSpend * 10;
             getExchange().exchangeResources(amountBuy, Resource.Food, Resource.Gold, person.getCharacter());
-            System.out.println(amountBuy+" "+amountSpend);
+
         }
         if(monthlyGoldAlloys.isSelected()){
             int amountSpend = amountSpendGold / (monthlyGoldFood.isSelected() ? 2 : 1);

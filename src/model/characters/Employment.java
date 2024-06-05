@@ -3,6 +3,8 @@ package model.characters;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.WorkWallet;
 
+import java.util.Random;
+
 public class Employment {
     private int food;
     private int alloy;
@@ -10,13 +12,26 @@ public class Employment {
     private float bonusFoodRate = 1;
     private float bonusAlloyRate = 1;
     private float bonusGoldRate = 1;
-    private final WorkWallet workWallet;
+
+    public void setWorkWallet(WorkWallet workWallet) {
+        this.workWallet = workWallet;
+    }
+
+    private WorkWallet workWallet;
+    private static final Random random = new Random();
 
     public Employment(int foodBaseRate, int alloyBaseRate, int goldBaseRate, WorkWallet workWallet) {
-        this.food = foodBaseRate;
-        this.alloy = alloyBaseRate;
-        this.gold = goldBaseRate;
+        this.food = generateRandomValue(foodBaseRate);
+        this.alloy = generateRandomValue(alloyBaseRate);
+        this.gold = generateRandomValue(goldBaseRate);
         this.workWallet = workWallet;
+    }
+
+    private int generateRandomValue(int baseRate) {
+        double factor = 0.25; // 25% range
+        int minValue = (int) (baseRate * (1 - factor));
+        int maxValue = (int) (baseRate * (1 + factor));
+        return minValue + random.nextInt(maxValue - minValue + 1);
     }
 
     public void generatePayment() {
@@ -58,5 +73,9 @@ public class Employment {
 
     public void setGold(int gold) {
         this.gold = gold;
+    }
+
+    public void clearResources() {
+        this.workWallet = null;
     }
 }

@@ -47,6 +47,9 @@ public class Peasant extends Character implements GenerateObserver {
     }
 
     public void createEmployment(int food, int alloy, int gold, WorkWallet workwallet) {
+        if (this.employment != null) { // to make sure the old object is gone
+            employment.clearResources();
+        }
         this.employment = new Employment(food, alloy, gold, workwallet);
     }
 

@@ -18,7 +18,6 @@ public class StrikesTracker {
     public void gainStrike(int amount) {
         if (strikes < maxStrikes) {
             strikes += amount;
-            System.out.println("Extra Strikes gained! Strikes now: " + strikes);
         }
     }
     public boolean isGameOver() {

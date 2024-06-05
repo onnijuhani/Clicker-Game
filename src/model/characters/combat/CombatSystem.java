@@ -9,15 +9,14 @@ import model.characters.ai.Aspiration;
 import model.characters.authority.Authority;
 import model.characters.npc.Governor;
 import model.characters.npc.King;
-import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
+import model.resourceManagement.wallets.WorkWallet;
 import model.shop.UpgradeSystem;
 import model.stateSystem.Event;
 import model.stateSystem.EventTracker;
 import model.stateSystem.GameEvent;
 import model.stateSystem.State;
 import model.time.EventManager;
-import model.time.GenerateManager;
 import model.time.Time;
 import model.worldCreation.Area;
 
@@ -266,10 +265,7 @@ public class CombatSystem {
         }
 
 
-
-
-        // LOSING AUTHORITY POSITION COMPLETELY GRANTS MASSIVE EMPLOYMENT STATS
-        LoseAuthorityPosition();
+        loseAuthorityPosition();
     }
 
     private void rearrangeConnections() {
@@ -297,19 +293,24 @@ public class CombatSystem {
 
     }
 
-    private void LoseAuthorityPosition() {
-        if (defender.getCharacter() instanceof Peasant)    {
-            ((Peasant) defender.getCharacter()).createEmployment(
-                    model.Settings.getInt("farmerGenerate")*2,
-                    model.Settings.getInt("minerGenerate")*2,
-                    model.Settings.getInt("merchantGenerate")*4,
-                    defender.getWorkWallet()
-            );
-            GenerateManager.subscribe((Peasant) defender.getCharacter());
-            // TAX RATE WILL ALSO BE WAY LOWER
-            attacker.getRole().getPosition().getTaxForm().setTaxInfo(Resource.Food,25);
-            attacker.getRole().getPosition().getTaxForm().setTaxInfo(Resource.Alloy,25);
-            attacker.getRole().getPosition().getTaxForm().setTaxInfo(Resource.Gold,15);
+    private void loseAuthorityPosition() {
+        if (defender.getCharacter() instanceof Peasant) {
+            Peasant peasantCharacter = (Peasant) defender.getCharacter();
+            if (peasantCharacter == null) {
+                return;
+            }
+
+            Employment employment = peasantCharacter.getEmployment();
+            if (employment == null) {
+                new Employment(100, 100, 50, defender.getWorkWallet());
+                return;
+            }
+
+            WorkWallet defenderWorkWallet = defender.getWorkWallet();
+            if (defenderWorkWallet == null) {
+                return;
+            }
+            employment.setWorkWallet(defenderWorkWallet);
         }
     }
 

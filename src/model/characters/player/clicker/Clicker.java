@@ -2,7 +2,6 @@ package model.characters.player.clicker;
 
 import model.Settings;
 import model.characters.Person;
-import model.characters.Status;
 import model.characters.payments.Payment;
 import model.characters.payments.PaymentManager;
 import model.characters.payments.PaymentTracker;
@@ -63,17 +62,10 @@ public class Clicker implements PaymentTracker {
             return;
         }
         TransferPackage resourcesGenerated = generate();
-        if (person.getRole().getStatus() != Status.King) {
-            workWallet.addResources(resourcesGenerated);
-            totalClicks++;
-            String message = "Clicker generated "+ clickerTransferMessage(resourcesGenerated);
-            eventTracker.addEvent(EventTracker.Message("Clicker", message));
-        } else {
-            wallet.addResources(resourcesGenerated);
-            totalClicks++;
-            String message = clickerTransferMessage(resourcesGenerated);
-            eventTracker.addEvent(EventTracker.Message("Clicker", message));
-        }
+        workWallet.addResources(resourcesGenerated);
+        totalClicks++;
+        String message = "Clicker generated "+ clickerTransferMessage(resourcesGenerated);
+        eventTracker.addEvent(EventTracker.Message("Clicker", message));
         if(showClickerSalaryInPayments) {
             updatePaymentCalendar(person.getPaymentManager());
         }
