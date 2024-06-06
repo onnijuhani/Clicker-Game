@@ -23,6 +23,7 @@ public class MilitaryProperty extends Property implements Military {
     }
 
     public void setArmy(Army army) {
+        this.army.clearResources(); // destroy the army made by constructor
         this.army = army;
     }
 

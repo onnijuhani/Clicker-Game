@@ -21,7 +21,7 @@ public class SpecialEventsManager {
 
         player.getWallet().addResources(bonusPackage);
 
-        PopUpMessageTracker.sendMessage("Your nation's leader " + authority + " has granted you a bonus: " + bonusPackage);
+        PopUpMessageTracker.sendMessage("Your nation's leader " + authority + " has granted you a bonus:\n" + bonusPackage);
     }
 
 

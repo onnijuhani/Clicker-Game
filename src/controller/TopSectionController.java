@@ -11,6 +11,8 @@ import model.stateSystem.EventTracker;
 import model.time.Speed;
 import model.time.Time;
 
+import static model.Settings.formatNumber;
+
 
 public class TopSectionController extends BaseController {
     @FXML
@@ -56,10 +58,12 @@ public class TopSectionController extends BaseController {
 
     void updateWallet() {
         int[] values = model.getPlayerCharacter().getPerson().getWallet().getWalletValues();
-        foodLabel.setText(String.valueOf(values[0]));
-        alloysLabel.setText(String.format(String.valueOf(values[1])));
-        goldLabel.setText(String.format(String.valueOf(values[2])));
+        foodLabel.setText(formatNumber(values[0]));
+        alloysLabel.setText(formatNumber(values[1]));
+        goldLabel.setText(formatNumber(values[2]));
     }
+
+
 
     @FXML
     void startTime(MouseEvent event) {

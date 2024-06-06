@@ -10,7 +10,6 @@ import model.stateSystem.EventTracker;
 public class WorkWallet extends Wallet implements PaymentTracker {
     private boolean taxedOrNot;
     private final Wallet mainWallet;
-
     private TransferPackage lastSalaryAmount;
     private int lastSalaryDay;
 

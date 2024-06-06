@@ -13,6 +13,7 @@ import model.stateSystem.EventTracker;
 import model.stateSystem.GameEvent;
 import model.time.EventManager;
 import model.time.PropertyManager;
+import model.war.Military;
 import model.worldCreation.Quarter;
 
 public class Construct {
@@ -94,6 +95,14 @@ public class Construct {
         newHouse.setDefense(oldHouse.getDefenceStats());
         PropertyManager.unsubscribe(oldHouse);
         person.setProperty(newHouse);
+
+        if(oldHouse instanceof Military military){
+            Military newMilitary = (Military) newHouse;
+            newMilitary.setArmy(military.getArmy());
+        }
+
+
+
     }
 
     public static Properties getNextProperty(Person person) {

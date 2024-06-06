@@ -9,7 +9,11 @@ public class StrikesTracker {
         this.strikes = maxStrikes; // Start with max Strikes
     }
 
-    public void loseStrike() {
+
+    /**
+     * Method to lose a strike, should be called only from Person class!
+     */
+    void loseStrike() {
         if (strikes > 0) {
             strikes--;
         }

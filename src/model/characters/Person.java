@@ -76,6 +76,10 @@ public class Person implements Ownable {
             }
         }, 1, TimeUnit.SECONDS); // Delay before executing the task
     }
+
+    /**
+     * Only method that should ever be called to lose strikes
+     */
     public void loseStrike(){
         getStrikesTracker().loseStrike();
         int strikesLeft = getStrikesTracker().getStrikes();
@@ -86,6 +90,21 @@ public class Person implements Ownable {
         }
         decreasePersonalPower();
     }
+
+    private void triggerGameOver(){
+        if(character.getPerson().isPlayer()) {
+            getEventTracker().addEvent(EventTracker.Message("Major","GAME OVER. No Strikes left."));
+            Time.setGameOver(true);
+            PopUpMessageTracker.sendMessage("ALL STRIKES LOST\n\nGAME OVER");
+            PopUpMessageTracker.sendGameOver();
+        }else{
+            getStrikesTracker().gainStrike(20);
+            for(int i = 0; i < 5; i++){
+                decreasePersonalPower();
+            }
+        }
+    }
+
 
     private void decreasePersonalPower() {
         if(!character.getPerson().isPlayer){
@@ -104,19 +123,7 @@ public class Person implements Ownable {
      * Player loses all strikes triggers game over and simulation stops.
      * NPC's gain back 20 strikes and lose attack and defence points instead weakening them.
      */
-    private void triggerGameOver(){
-        if(character.getPerson().isPlayer()) {
-            getEventTracker().addEvent(EventTracker.Message("Major","GAME OVER. No Strikes left."));
-            Time.setGameOver(true);
-            PopUpMessageTracker.sendMessage("ALL STRIKES LOST\n\nGAME OVER");
-            PopUpMessageTracker.sendGameOver();
-        }else{
-            getStrikesTracker().gainStrike(20);
-            for(int i = 0; i < 5; i++){
-                decreasePersonalPower();
-            }
-        }
-    }
+
     public void decreasePersonalOffence(int x) {
         for(int i = 0; i < x; i++) {
             combatStats.decreaseOffense();

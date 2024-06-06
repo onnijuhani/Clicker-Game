@@ -122,7 +122,7 @@ public class Character implements NpcObserver, Details, Ownable {
                         // Case where neither gold nor alloys are sufficient
                         String errorMessage = EventTracker.Message("Error", "Not enough resources to cover food consumption.");
                         character.getPerson().getEventTracker().addEvent(errorMessage);
-                        character.getPerson().getStrikesTracker().loseStrike();
+                        character.getPerson().loseStrike();
                         return;
                     }
                 }

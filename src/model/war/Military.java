@@ -7,4 +7,5 @@ public interface Military {
 
     Army getArmy();
 
+    void setArmy(Army army);
 }

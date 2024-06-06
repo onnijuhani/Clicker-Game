@@ -2,6 +2,7 @@ package model.characters;
 
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.WorkWallet;
+import model.stateSystem.EventTracker;
 
 import java.util.Random;
 
@@ -39,9 +40,14 @@ public class Employment {
         int bonusAlloy = (int) (alloy * bonusAlloyRate);
         int bonusGold = (int) (gold * bonusGoldRate);
 
+
         TransferPackage transfer = new TransferPackage(bonusFood, bonusAlloy, bonusGold);
         workWallet.addResources(transfer);
+
+
+        workWallet.getOwner().getEventTracker().addEvent(EventTracker.Message("Clicker", "Labor generated: " +transfer ));
     }
+
 
     public TransferPackage getFullSalary() {
         int bonusFood = (int) (food * bonusFoodRate);

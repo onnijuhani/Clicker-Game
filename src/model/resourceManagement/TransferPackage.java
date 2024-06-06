@@ -1,5 +1,7 @@
 package model.resourceManagement;
 
+import static model.Settings.formatNumber;
+
 public record TransferPackage(int food, int alloy, int gold) {
     public int[] getAll() {
         return new int[]{food, alloy, gold};
@@ -23,10 +25,10 @@ public record TransferPackage(int food, int alloy, int gold) {
     }
     @Override
     public String toString() {
-        return "Food: "+food+" Alloys: "+alloy+" Gold: "+gold;
+        return "Food: "+formatNumber(food)+" Alloys: "+formatNumber(alloy)+" Gold: "+formatNumber(gold);
     }
     public String toShortString() {
-        return "F:"+food+" A:"+alloy+" G:"+gold;
+        return "F:"+formatNumber(food)+" A:"+formatNumber(alloy)+" G:"+formatNumber(gold);
     }
     public int food() {
         return food;

@@ -8,14 +8,13 @@ import model.stateSystem.EventTracker;
 
 public class CombatStats {
 
-    /* Tried using Composition over Inheritance here to reduce code */
     private final UpgradeSystem offense;
     private final UpgradeSystem defense;
     private final Person person;
 
     public CombatStats(int offenseBasePrice, int defenseBasePrice, Person person) {
-        this.offense = new UpgradeSystem(offenseBasePrice,2000);
-        this.defense = new UpgradeSystem(defenseBasePrice,2000);
+        this.offense = new UpgradeSystem(offenseBasePrice,2000, 1.5);
+        this.defense = new UpgradeSystem(defenseBasePrice,2000,1.5);
         this.person = person;
     }
 

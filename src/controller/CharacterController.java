@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -17,11 +18,14 @@ import model.buildings.properties.MilitaryProperty;
 import model.characters.Character;
 import model.characters.Person;
 import model.characters.combat.CombatService;
+import model.characters.combat.CombatSystem;
 import model.stateSystem.Event;
 import model.stateSystem.GameEvent;
 import model.stateSystem.State;
 
 import java.util.*;
+
+import static model.Settings.formatNumber;
 
 public class CharacterController extends BaseController  {
 
@@ -76,6 +80,33 @@ public class CharacterController extends BaseController  {
     @FXML
     private VBox opponentsBox;
 
+    @FXML
+    private Tooltip duelToolTip;
+    @FXML
+    private Tooltip challengeToolTip;
+
+
+    public void updateCharacterTab(){
+        propertyController.setCurrentProperty(currentCharacter.getPerson().getProperty());
+        updateCharacterName();
+        updateCharacterStatus();
+        propertyController.updatePropertyTab();
+        updateWalletInfo();
+        updateAuthority();
+        updateHomeQuarter();
+        differentiatePlayer();
+        updateCombatStats();
+        main.resetBtn.setDisable(currentCharacter.getPerson() == Model.getPlayerAsPerson());
+        disableArmyTab();
+        getCurrentStates();
+    }
+
+    void setUpToolTips(){
+        Person player = Model.getPlayerAsPerson();
+        duelToolTip.setText("Winning Chance: " + String.format("%.2f", (CombatSystem.calculateWinningChance(Event.DUEL, player, currentCharacter.getPerson()))   * 100) + "%");
+        challengeToolTip.setText("Winning Chance: " + String.format("%.2f", (CombatSystem.calculateWinningChance(Event.AuthorityBattle, player, currentCharacter.getPerson()))   * 100) + "%");
+    }
+
     void getCurrentStates(){
 
         Person currentPerson = currentCharacter.getPerson();
@@ -129,7 +160,7 @@ public class CharacterController extends BaseController  {
             int[] timeLeft = onGoingEvent.timeLeftUntilExecution();
             stateTimeLeft.setText(String.format("%d days, %d months, %d years left", timeLeft[2], timeLeft[1], timeLeft[0]));
 
-            currentState.setText("On Going "+onGoingEvent.getEvent());
+            currentState.setText("OnGoing "+onGoingEvent.getEvent());
 
         }
         else{
@@ -149,20 +180,7 @@ public class CharacterController extends BaseController  {
         walletInfo.setText(currentCharacter.getPerson().getWallet().toStringValuesRows());
     }
 
-    public void updateCharacterTab(){
-        propertyController.setCurrentProperty(currentCharacter.getPerson().getProperty());
-        updateCharacterName();
-        updateCharacterStatus();
-        propertyController.updatePropertyTab();
-        updateWalletInfo();
-        updateAuthority();
-        updateHomeQuarter();
-        differentiatePlayer();
-        updateCombatStats();
-        main.resetBtn.setDisable(currentCharacter.getPerson() == Model.getPlayerAsPerson());
-        disableArmyTab();
-        getCurrentStates();
-    }
+
 
     public void disableArmyTab(){
         main.armyTab.setDisable(!(currentCharacter.getPerson().getProperty() instanceof MilitaryProperty));
@@ -173,8 +191,8 @@ public class CharacterController extends BaseController  {
         attackLevelLabel.setText("Level: "+currentCharacter.getPerson().getCombatStats().getOffenseLevel());
         defenseLevelLabel.setText("Level: "+currentCharacter.getPerson().getCombatStats().getDefenseLevel());
 
-        attackTrainBtn.setText(currentCharacter.getPerson().getCombatStats().getOffense().getUpgradePrice()+" Gold");
-        defenseTrainBtn.setText(currentCharacter.getPerson().getCombatStats().getDefense().getUpgradePrice()+" Gold");
+        attackTrainBtn.setText(formatNumber(currentCharacter.getPerson().getCombatStats().getOffense().getUpgradePrice())+" Gold");
+        defenseTrainBtn.setText(formatNumber(currentCharacter.getPerson().getCombatStats().getDefense().getUpgradePrice())+" Gold");
     }
     public void updateCharacterName(){
         characterName.setText(currentCharacter.getName());
@@ -214,7 +232,7 @@ public class CharacterController extends BaseController  {
     void printEvents(ActionEvent event) {
         System.out.println(currentCharacter.getPerson().getEventTracker());
         System.out.println("Current Aspirations: "+currentCharacter.getPerson().getAspirations());
-        System.out.println("On Going Events : "+currentCharacter.getPerson().getOngoingEvents());
+        System.out.println("Ongoing Events : "+currentCharacter.getPerson().getOngoingEvents());
         System.out.println("Current States : "+currentCharacter.getPerson().getStates());
         System.out.println((currentCharacter.getPerson().getWallet().isEmpty() || currentCharacter.getPerson().getWallet().isLowBalance()));
 
@@ -274,6 +292,8 @@ public class CharacterController extends BaseController  {
         updateCharacterTab();
         updatePreviousButtonState();
         main.getRelationsController().resetEverything();
+        setUpToolTips();
+        main.updateCurrentlyViewing();
     }
 
     void updateAuthority(){

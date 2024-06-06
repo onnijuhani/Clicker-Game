@@ -140,6 +140,10 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
 
         int amountSpendGold = netCash.gold();
 
+        if(!(netCash.gold() > person.getWallet().getGold() * 1.5)){
+            return; // return if there isn't a lot of gold available.
+        }
+
         if(monthlyGoldFood.isSelected()){
             int amountSpend = amountSpendGold / (monthlyGoldAlloys.isSelected() ? 2 : 1);
             int amountBuy = amountSpend * 10;

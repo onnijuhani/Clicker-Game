@@ -19,6 +19,9 @@ public class Army implements ArmyObserver, PaymentTracker {
     @Override
     public void armyUpdate(int day) {
         if(day == expenseDay) {
+            if(owner.isPlayer()){
+                System.out.println("wtf "+getRunningCost());
+            }
             payRunningCosts();
             updatePaymentCalendar(owner.getPaymentManager());
         }
@@ -35,7 +38,7 @@ public class Army implements ArmyObserver, PaymentTracker {
     private void payRunningCosts() {
         if(!wallet.subtractResources(getRunningCost())){
             owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army expenses not paid"));
-            owner.getStrikesTracker().loseStrike();
+            owner.loseStrike();
         }else{
             owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army expenses paid: " + getRunningCost()));
         }
@@ -47,10 +50,12 @@ public class Army implements ArmyObserver, PaymentTracker {
     private final int expenseDay = Settings.getInt("armyExpense");
     private int defencePower = 1;
     private Military military;
-    private final Wallet wallet;
-    private final Person owner;
+    private Wallet wallet;
+    private Person owner;
     private boolean recruitingInProcess = false;
     private boolean trainingInProcess = false;
+
+
 
     public Army(Military military, Person owner) {
         this.military = military;
@@ -58,6 +63,13 @@ public class Army implements ArmyObserver, PaymentTracker {
         this.wallet = owner.getWallet();
         ArmyManager.subscribe(this);
         updatePaymentCalendar(owner.getPaymentManager());
+    }
+
+    public void clearResources() {
+        this.military = null;
+        this.owner = null;
+        this.wallet = null;
+        ArmyManager.unsubscribe(this);
     }
 
 
@@ -76,7 +88,7 @@ public class Army implements ArmyObserver, PaymentTracker {
         GameEvent gameEvent = new GameEvent(Event.ArmyTraining, owner);
         owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army Defence Training Started"));
 
-        int daysUntilEvent = 30;
+        int daysUntilEvent = 15;
 
         EventManager.scheduleEvent(this::finishDefenceIncrease, daysUntilEvent, gameEvent);
 
@@ -105,7 +117,7 @@ public class Army implements ArmyObserver, PaymentTracker {
         GameEvent gameEvent = new GameEvent(Event.ArmyTraining, owner);
         owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army Offence Training Started"));
 
-        int daysUntilEvent = 30;
+        int daysUntilEvent = 15;
 
         EventManager.scheduleEvent(this::finishAttackIncrease, daysUntilEvent, gameEvent);
 
@@ -139,7 +151,7 @@ public class Army implements ArmyObserver, PaymentTracker {
         GameEvent gameEvent = new GameEvent(Event.RecruitSoldier, owner);
         owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Recruiting campaign started"));
 
-        int daysUntilEvent = 30 * amount;
+        int daysUntilEvent = 30 + amount*3;
 
         EventManager.scheduleEvent(() -> finishSoldierRecruit(amount), daysUntilEvent, gameEvent);
 

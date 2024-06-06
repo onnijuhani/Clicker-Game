@@ -15,6 +15,6 @@ public class ArmyCost {
 
 
     public static TransferPackage getRecruitingCost() {
-        return new TransferPackage(ArmyCost.hireSoldierFood,ArmyCost.hireSoldierAlloy, ArmyCost.hireSoldierGold);
+        return new TransferPackage(0,0, ArmyCost.hireSoldierGold);
     }
 }

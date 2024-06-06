@@ -10,6 +10,8 @@ import model.stateSystem.EventTracker;
 import java.util.Arrays;
 import java.util.OptionalInt;
 
+import static model.Settings.formatShortNumber;
+
 /**
  * This class is a complete mess now
  * TODO simplify and refactor
@@ -229,7 +231,7 @@ public class Exchange extends ShopComponents {
         double cost = calculateExchangeCost(amountToBuy, buyType, sellType);
         long roundedCost = Math.max(Math.round(cost), 1);
         long roundedAmountToBuy = Math.round(amountToBuy);
-        return new String[]{roundedCost + " " + sellType, roundedAmountToBuy + " " + buyType};
+        return new String[]{formatShortNumber(roundedCost) + " " + sellType, formatShortNumber(roundedAmountToBuy) + " " + buyType};
     }
     public void increaseDefaultPrices() {
         // Doubles the default amounts while maintaining the ratio 100:50:10

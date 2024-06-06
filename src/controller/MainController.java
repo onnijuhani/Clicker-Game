@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import model.Model;
+import model.characters.Character;
 import model.characters.player.clicker.Clicker;
 import model.resourceManagement.TransferPackage;
 import model.stateSystem.EventTracker;
@@ -86,6 +87,8 @@ public class MainController extends BaseController {
     @FXML
     protected Tab armyTab;
     @FXML
+    protected Tab relationsTab;
+    @FXML
     protected Button settingsBtn;
 
     @FXML
@@ -101,6 +104,8 @@ public class MainController extends BaseController {
 
     @FXML
     private CheckBox pausePopBtn;
+    @FXML
+    private Label currentlyViewing;
 
 
 
@@ -216,13 +221,21 @@ public class MainController extends BaseController {
     }
 
     public void Reset() {
+        // Save the currently selected tab
+        Tab selectedTab = mainTabPane.getSelectionModel().getSelectedItem();
+
+        // Perform the reset operations
         characterController.setCurrentCharacter(model.getPlayerCharacter());
         characterController.updateCharacterTab();
         model.accessCurrentView().setCurrentView(model.accessWorld().getSpawnQuarter());
         relationsController.resetEverything();
         clickMeButton.requestFocus();
         relationsController.setCurrentCharacter(Model.getPlayerAsCharacter());
-        mainTabPane.getSelectionModel().select(characterTab);
+
+        // Switch back to characterTab only if relationsTab was selected
+        if (selectedTab == relationsTab) {
+            mainTabPane.getSelectionModel().select(characterTab);
+        }
     }
 
 
@@ -415,8 +428,20 @@ public class MainController extends BaseController {
 
     @FXML
     void cheat(ActionEvent event) {
-        TransferPackage transferPackage = new TransferPackage(1000000,1000000, 1000000);
+        TransferPackage transferPackage = new TransferPackage(10000,10000, 100000);
         model.getPlayerPerson().getWallet().addResources(transferPackage);
+    }
+    public void updateCurrentlyViewing() {
+        Character currentCharacter = characterController.getCurrentCharacter();
+        Character playerCharacter = Model.getPlayerAsCharacter();
+
+        if (currentCharacter != null && currentCharacter.equals(playerCharacter)) {
+            currentlyViewing.setText("Currently Viewing Yourself");
+        } else if (currentCharacter != null) {
+            currentlyViewing.setText("Currently Viewing: " + currentCharacter);
+        } else {
+            currentlyViewing.setText("Currently Viewing: Unknown");
+        }
     }
 
 

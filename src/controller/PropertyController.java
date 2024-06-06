@@ -29,6 +29,9 @@ import model.time.Time;
 import java.util.HashMap;
 import java.util.Map;
 
+import static model.Settings.formatNumber;
+import static model.Settings.formatShortNumber;
+
 // UPDATED BY CHARACTER CONTROLLER
 public class PropertyController extends BaseController {
     @FXML
@@ -175,6 +178,8 @@ public class PropertyController extends BaseController {
     private VBox playerVaultBox;
 
 
+
+
     public void updatePropertyTab(){
         updatePropertyName();
         updatePropertyType();
@@ -218,7 +223,7 @@ public class PropertyController extends BaseController {
 
 
 
-            playerVaultSliderAmount.setText(percentage + "%\t F:" + foodAmount + " A:" + alloyAmount + " G:" + goldAmount);
+            playerVaultSliderAmount.setText(percentage + "%\t F:" + formatShortNumber(foodAmount) + " A:" + formatShortNumber(alloyAmount) + " G:" + formatShortNumber(goldAmount));
         });
 
         vaultDepositBtn.setOnAction(e -> vaultDeposit());
@@ -281,12 +286,12 @@ public class PropertyController extends BaseController {
     }
 
     void updatePrices() {
-        utilityPrice.setText(Settings.getInt("meadowLandsCost") + " Gold");
-        utilityPrice1.setText(Settings.getInt("alloyMineCost") + " Gold");
-        utilityPrice2.setText(Settings.getInt("goldMineCost") + " Gold");
-        utilityPrice3.setText(Settings.getInt("slaveFacilityCost") + " Gold");
-        utilityPrice4.setText(Settings.getInt("mysticMineCost") + " Gold");
-        utilityPrice5.setText(Settings.getInt("workerCenterCost") + " Gold");
+        utilityPrice.setText(formatNumber(Settings.getInt("meadowLandsCost")) + " Gold");
+        utilityPrice1.setText(formatNumber(Settings.getInt("alloyMineCost")) + " Gold");
+        utilityPrice2.setText(formatNumber(Settings.getInt("goldMineCost")) + " Gold");
+        utilityPrice3.setText(formatNumber(Settings.getInt("slaveFacilityCost")) + " Gold");
+        utilityPrice4.setText(formatNumber(Settings.getInt("mysticMineCost")) + " Gold");
+        utilityPrice5.setText(formatNumber(Settings.getInt("workerCenterCost")) + " Gold");
 
     }
 
@@ -301,7 +306,7 @@ public class PropertyController extends BaseController {
     private void updateUIForBuilding(UtilityBuildings building) {
         UtilityBuildingUI ui = buildingUIs.get(building);
         if (property.getUtilitySlot().isUtilityBuildingOwned(building)) {
-            ui.upgradeButton.setText(property.getUtilitySlot().getUtilityBuilding(building).getUpgradePrice() + " Gold");
+            ui.upgradeButton.setText(formatNumber(property.getUtilitySlot().getUtilityBuilding(building).getUpgradePrice()) + " Gold");
             ui.upgradeButton.setVisible(true);
             ui.buyView.setVisible(false);
             ui.infoView.setVisible(true);
@@ -405,7 +410,7 @@ public class PropertyController extends BaseController {
             robVaultBtn.setVisible(false);
             playerVaultBox.setVisible(true);
             upgradeDefBtn.setVisible(true);
-            upgradeDefBtn.setText(property.getDefenceStats().getUpgradePrice()+" Alloys");
+            upgradeDefBtn.setText(formatNumber(property.getDefenceStats().getUpgradePrice())+" Alloys");
             upgradeDefLabel.setVisible(true);
         }else{
             if(Time.year != 0) {robVaultBtn.setVisible(true);};
@@ -428,7 +433,7 @@ public class PropertyController extends BaseController {
     }
 
     void updateMaintenance(){
-        maintenanceCost.setText(property.getMaintenance().toString());
+        maintenanceCost.setText(formatShortNumber(property.getMaintenance().toString()));
     }
     public void updatePropertyName(){
         propertyName.setText(property.getName());

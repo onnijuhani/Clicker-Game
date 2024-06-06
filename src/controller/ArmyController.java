@@ -4,7 +4,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -18,12 +20,14 @@ import model.stateSystem.GameEvent;
 import model.war.Army;
 import model.war.ArmyCost;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class ArmyController extends BaseController {
     @Override
     public void initialize() {
-        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateArmyTab()));
+        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.25), e -> updateArmyTab()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
     }
@@ -82,11 +86,18 @@ public class ArmyController extends BaseController {
     private Button switchButton;
     @FXML
     private VBox trainingBox;
+
+    @FXML
+    private CheckBox autoTraining;
+    @FXML
+    private CheckBox autoRecruit;
+
     private boolean isShowing = true;
 
     protected CharacterController characterController;
     private Character currentCharacter;
     private Army army;
+    private String latestUpgrade = "Defence";
 
     private void updateArmyTab() {
         timerUpdate();
@@ -109,19 +120,22 @@ public class ArmyController extends BaseController {
         }
     }
 
-    void differentiatePlayer(){
-        if(currentCharacter == model.getPlayerCharacter()){
-            increaseAttackBtn.setDisable(false);
-            increaseDefBtn.setDisable(false);
-            minusSoldierBtn.setDisable(false);
-            plusSoldierBtn.setDisable(false);
-            recruitSoldiersBtn.setDisable(false);
-        }else{
-            increaseAttackBtn.setDisable(true);
-            increaseDefBtn.setDisable(true);
-            minusSoldierBtn.setDisable(true);
-            plusSoldierBtn.setDisable(true);
-            recruitSoldiersBtn.setDisable(true);
+    void differentiatePlayer() {
+        boolean isPlayer = currentCharacter.getPerson() == model.getPlayerPerson();
+
+        List<Node> controls = Arrays.asList(
+                increaseAttackBtn,
+                increaseDefBtn,
+                minusSoldierBtn,
+                plusSoldierBtn,
+                recruitSoldiersBtn,
+                autoTraining,
+                trainingBox,
+                autoRecruit
+        );
+
+        for (Node control : controls) {
+            control.setDisable(!isPlayer);
         }
     }
 
@@ -143,6 +157,9 @@ public class ArmyController extends BaseController {
         if (currentCharacter == null) {
             return;
         }
+        if(!(currentCharacter.getPerson() == model.getPlayerPerson())) {
+            return;
+        }
 
         Optional<GameEvent> armyTrainingEvent = Optional.ofNullable(currentCharacter.getPerson().getAnyOnGoingEvent(Event.ArmyTraining));
         Optional<GameEvent> recruitSoldierEvent = Optional.ofNullable(currentCharacter.getPerson().getAnyOnGoingEvent(Event.RecruitSoldier));
@@ -153,17 +170,40 @@ public class ArmyController extends BaseController {
                     trainingBox.setVisible(true);
                 },
                 () -> {
-                    trainingBox.setVisible(false);
-                    increaseDefBtn.setDisable(false);
-                    increaseAttackBtn.setDisable(false);
+                    if(autoTraining.isSelected()){
+                        if(currentCharacter.getPerson().getWallet().getAlloy() > 10_000) {
+                            if (latestUpgrade == "Defence") {
+                                increaseAttackFunction();
+                                latestUpgrade = "Attack";
+                            } else {
+                                increaseDefFunction();
+                                latestUpgrade = "Defence";
+                            }
+                        }
+                    }else {
+                        trainingBox.setVisible(false);
+                        increaseDefBtn.setDisable(false);
+                        increaseAttackBtn.setDisable(false);
+                    }
+
                 }
         );
 
         recruitSoldierEvent.ifPresentOrElse(
                 event -> recruitTimeLeft.setText(event.getTimeLeftShortString()),
                 () -> {
-                    recruitTimeLeft.setText("");
-                    recruitSoldiersBtn.setDisable(false);
+                    if(autoRecruit.isSelected()){
+                        if(currentCharacter
+                                .getPerson()
+                                .getWallet()
+                                .hasEnoughResources(ArmyCost.getRecruitingCost().multiply(Double.parseDouble(soldierAmountToTrain.getText())))) {
+
+                            recruitSoldiersFunction();
+                        }
+                    }else {
+                        recruitTimeLeft.setText("");
+                        recruitSoldiersBtn.setDisable(false);
+                    }
                 }
         );
     }
@@ -187,6 +227,8 @@ public class ArmyController extends BaseController {
         increaseDefBtn.setText(ArmyCost.increaseArmyDefence+ " Alloys");
         increaseAttackBtn.setText(ArmyCost.increaseArmyAttack+ " Alloys");
 
+        updateRecruitCost();
+
 
 
 
@@ -194,13 +236,17 @@ public class ArmyController extends BaseController {
 
 
     void updateRecruitCost(){
-        recruitSoldiersBtn.setText(ArmyCost.getRecruitingCost().multiply(Double.parseDouble(soldierAmountToTrain.getText())).toShortString());
+        recruitSoldiersBtn.setText(ArmyCost.getRecruitingCost().multiply(Double.parseDouble(soldierAmountToTrain.getText())).gold()+" Gold");
     }
 
 
 
     @FXML
     void increaseAtt(ActionEvent event) {
+        increaseAttackFunction();
+    }
+
+    private void increaseAttackFunction() {
         if(army.increaseAttackPower()){
             increaseAttackBtn.setDisable(true);
             increaseDefBtn.setDisable(true);
@@ -209,6 +255,10 @@ public class ArmyController extends BaseController {
 
     @FXML
     void increaseDef(ActionEvent event) {
+        increaseDefFunction();
+    }
+
+    private void increaseDefFunction() {
         if(army.increaseDefencePower()){
             increaseAttackBtn.setDisable(true);
             increaseDefBtn.setDisable(true);
@@ -237,10 +287,14 @@ public class ArmyController extends BaseController {
 
     @FXML
     void recruitSoldiers(ActionEvent event) {
+        recruitSoldiersFunction();
+
+    }
+
+    private void recruitSoldiersFunction() {
         if(army.recruitSoldier(Integer.parseInt(soldierAmountToTrain.getText()))){
             recruitSoldiersBtn.setDisable(true);
         }
-
     }
 
     @FXML
@@ -250,6 +304,6 @@ public class ArmyController extends BaseController {
 
 
 
-
-
 }
+
+

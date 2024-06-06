@@ -4,6 +4,8 @@ import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
 import model.shop.Ownable;
 
+import static model.Settings.formatNumber;
+
 public class Wallet {
     private int food;
     private int alloy;
@@ -122,17 +124,17 @@ public class Wallet {
     }
     @Override
     public String toString() {
-        return "Food: "+food + " Alloys: "+alloy + " Gold: "+gold;
+        return "Food: "+formatNumber(food) + " Alloys: "+formatNumber(alloy) + " Gold: "+formatNumber(gold);
     }
 
     public String toShortString() {
-        return "F:"+food + " A:"+alloy + " G:"+gold;
+        return "F:"+formatNumber(food) + " A:"+formatNumber(alloy) + " G:"+formatNumber(gold);
     }
 
     public String toStringValuesRows() {
-        return "Food: " + food +
-                "\nAlloys: " + alloy +
-                "\nGold: " + gold;
+        return "Food: " + formatNumber(food) +
+                "\nAlloys: " + formatNumber(alloy) +
+                "\nGold: " + formatNumber(gold);
     }
 
     public void setOwner(Ownable owner) {

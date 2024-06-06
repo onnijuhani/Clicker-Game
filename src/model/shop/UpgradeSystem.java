@@ -26,6 +26,20 @@ public class UpgradeSystem {
         this.value = 1;
         this.PRICE_CEILING = basePrice * price_ceiling_coef;
     }
+    public UpgradeSystem(int basePrice, double priceIncreaseAmount) {
+        this.level = 1;
+        this.basePrice = basePrice;
+        this.value = 1;
+        this.PRICE_CEILING = basePrice * 5000;
+        this.priceIncreaseAmount = priceIncreaseAmount;
+    }
+    public UpgradeSystem(int basePrice, int price_ceiling_coef, double priceIncreaseAmount) {
+        this.level = 1;
+        this.basePrice = basePrice;
+        this.value = 1;
+        this.PRICE_CEILING = basePrice * price_ceiling_coef;
+        this.priceIncreaseAmount = priceIncreaseAmount;
+    }
 
     public void addBonus(String bonusName, double percentage){
         this.bonus.put(bonusName, percentage);

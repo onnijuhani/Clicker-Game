@@ -11,6 +11,8 @@ import model.resourceManagement.Resource;
 import model.shop.ClickerShop;
 import model.shop.Shop;
 
+import static model.Settings.formatNumber;
+
 public class ClickerShopController extends BaseController {
     @FXML private Button buyAlloyClickerButton;
     @FXML private Button buyGoldClickerButton;
@@ -97,12 +99,12 @@ public class ClickerShopController extends BaseController {
     private void updateClickerPrice(Resource resource, Button buyButton, Button upgradeButton) {
         setShop(Model.getPlayerRole().getNation().getShop());
         int basePrice = Settings.getInt(resource.name().toLowerCase() + "Clicker");
-        buyButton.setText(basePrice + " Gold");
+        buyButton.setText(formatNumber(basePrice) + " Gold");
 
         ClickerTools tool = Clicker.getInstance().getClickerTool(resource);
         if (tool != null) {
             int upgradePrice = tool.getUpgradePrice();
-            upgradeButton.setText(upgradePrice + " Gold");
+            upgradeButton.setText(formatNumber(upgradePrice) + " Gold");
         }
     }
 
