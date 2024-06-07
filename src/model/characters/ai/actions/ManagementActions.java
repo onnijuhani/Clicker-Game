@@ -38,16 +38,18 @@ public class ManagementActions extends BaseActions {
 
     @Override
     protected void createAllActions() {
-        EvaluateNeeds evaluateNeeds = new EvaluateNeeds(person, npcActionLogger,5,profile);
+        EvaluateNeeds evaluateNeeds = new EvaluateNeeds(person, npcActionLogger,1,profile);
         TakeActionOnNeeds takeActionOnNeeds = new TakeActionOnNeeds(person, npcActionLogger,5,profile);
-        BalanceResources balanceResources = new BalanceResources(person, npcActionLogger,5,profile);
+        BalanceWallet balanceWallet = new BalanceWallet(person, npcActionLogger,5,profile);
         TradeMarket tradeMarket = new TradeMarket(person, npcActionLogger,5,profile);
+        EvaluateRoleSpecificNeeds evaluateRoleSpecificNeeds = new EvaluateRoleSpecificNeeds(person, npcActionLogger,5,profile);
 
 
         allActions.add(evaluateNeeds);
         allActions.add(takeActionOnNeeds);
-        allActions.add(balanceResources);
+        allActions.add(balanceWallet);
         allActions.add(tradeMarket);
+        allActions.add(evaluateRoleSpecificNeeds);
     }
 
 
@@ -55,22 +57,20 @@ public class ManagementActions extends BaseActions {
      * Main class that attempts to balance the market.
      */
     class TradeMarket extends WeightedObject {
-
-
         public TradeMarket(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
             super(person, npcActionLogger, weight, profile);
         }
-
         @Override
         public void execute(){
             defaultAction();
         }
         @Override
         public void defaultAction() {
-
             if(wallet.isLowBalance()){
                 return;
             }
+
+            if(!person.hasAspiration(Aspiration.TRADE_MARKET)) return;
 
 
             int gold = wallet.getGold();
@@ -90,18 +90,17 @@ public class ManagementActions extends BaseActions {
             double fRatio = foodRatioInMarket / (foodRatioInMarket + alloyRatioInMarket);
             double aRatio = alloyRatioInMarket / (foodRatioInMarket + alloyRatioInMarket);
 
-                int amountGoldToSpend = gold - (gold / 4);
-
+            int amountGoldToSpend = gold - (gold / 4);
 
             if (fRatio > 0.35 && amountGoldToSpend > 0){
                 if(exchange.exchangeResources(amountGoldToSpend*10, Resource.Food, Resource.Gold, person.getCharacter())) {
-                    person.getEventTracker().addEvent(EventTracker.Message("Major", "bought food and spent " + amountGoldToSpend));
+                    logAction(String.format("Bought %d food to balance the market", amountGoldToSpend*10));
                 }
             }
 
             if (aRatio > 0.35 && amountGoldToSpend > 0){
                 if(exchange.exchangeResources(amountGoldToSpend*5, Resource.Alloy, Resource.Gold, person.getCharacter())) {
-                    person.getEventTracker().addEvent(EventTracker.Message("Major", "bought alloys and spent " + amountGoldToSpend));
+                    logAction(String.format("Bought %d alloys to balance the market", amountGoldToSpend*5));
                 }
             }
         }
@@ -110,16 +109,15 @@ public class ManagementActions extends BaseActions {
     /**
      * This is the main class to balance out the wallet, only called max once per month.
      */
-    class BalanceResources extends WeightedObject{
+    class BalanceWallet extends WeightedObject{
         private int foodBoughtCounter = 0;
         private int alloyBoughtCounter = 0;
         private int goldBoughtCounter = 0;
         private int lastCheck;
 
-        public BalanceResources(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+        public BalanceWallet(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
             super(person, npcActionLogger, weight, profile);
         }
-
 
         @Override
         public void execute(){
@@ -137,9 +135,6 @@ public class ManagementActions extends BaseActions {
             }else{
                 lastCheck = currentMonth;
             }
-
-
-
             double[] currentRatio = person.getWallet().getBalanceRatio();
             double total = currentRatio[0] + currentRatio[1] + currentRatio[2];
 
@@ -153,15 +148,19 @@ public class ManagementActions extends BaseActions {
             int food = wallet.getFood();
             int alloy = wallet.getAlloy();
 
-
             if(food > ( desiredRatio[0] + food/3) ){
-                exchange.sellResource((food - desiredRatio[0]) / 2, Resource.Food, person.getCharacter());
+                int amountBefore = wallet.getGold();
+                int amountToSell = (food - desiredRatio[0]) / 2;
+                exchange.sellResource(amountToSell, Resource.Food, person.getCharacter());
                 
                 foodBoughtCounter--;
                 goldBoughtCounter++;
                 if(goldBoughtCounter > 4){
                     person.addAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION);
                 }
+
+                int amountBought = amountBefore - wallet.getGold();
+                logAction(String.format("Sold %d food for %d gold", amountToSell, amountBought));
                 
             }else{
                 exchange.forceBuy((desiredRatio[0]-food) / 2, Resource.Food, person);
@@ -171,18 +170,25 @@ public class ManagementActions extends BaseActions {
                 if(foodBoughtCounter > 4){
                     person.addAspiration(Aspiration.INVEST_IN_FOOD_PRODUCTION);
                 }
-            }
-            checkFood result = new checkFood(desiredRatio, alloy);
 
+                logAction(String.format("Force bought %d food", (desiredRatio[0]-food) / 2));
+
+            }
+            CheckBalanceNow result = new CheckBalanceNow(desiredRatio, alloy);
 
             if(result.alloy() > ( result.desiredRatio()[1] + result.alloy() /3) ){
-                exchange.sellResource((result.alloy() - result.desiredRatio()[1]) / 2,Resource.Alloy, person.getCharacter());
+                int amountBefore = wallet.getGold();
+                int amountToSell = (result.alloy() - result.desiredRatio()[1]) / 2;
+                exchange.sellResource(amountToSell,Resource.Alloy, person.getCharacter());
 
                 alloyBoughtCounter--;
                 goldBoughtCounter++;
                 if(goldBoughtCounter > 4){
                     person.addAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION);
                 }
+
+                int amountBought = amountBefore - wallet.getGold();
+                logAction(String.format("Sold %d alloys for %d gold", amountToSell, amountBought));
                 
             }else {
                 exchange.forceBuy((result.desiredRatio()[1] - result.alloy()) / 2, Resource.Alloy, person);
@@ -192,10 +198,11 @@ public class ManagementActions extends BaseActions {
                 if (alloyBoughtCounter > 4) {
                     person.addAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION);
                 }
+                logAction(String.format("Force bought %d alloys", (result.desiredRatio()[1] - result.alloy()) / 2));
             }
 
         }
-        private record checkFood(int[] desiredRatio, int alloy) {
+        private record CheckBalanceNow(int[] desiredRatio, int alloy) {
         }
     }
 
@@ -227,14 +234,10 @@ public class ManagementActions extends BaseActions {
 
             switch (status) {
                 case Farmer:
-                    person.addAspiration(Aspiration.INVEST_IN_FOOD_PRODUCTION);
 
                 case Miner:
-                    person.addAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION);
-                    person.addAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION);
 
                 case Merchant:
-
                     person.addAspiration(Aspiration.DEPOSIT_TO_VAULT);
 
                 case Captain:
@@ -245,7 +248,6 @@ public class ManagementActions extends BaseActions {
                         }
                     }
 
-
                 case Mayor:
 
                     if(!evaluateExtremeTaxPolicy()){
@@ -253,7 +255,6 @@ public class ManagementActions extends BaseActions {
                             person.addAspiration(Aspiration.SET_STANDARD_TAX);
                         }
                     }
-
 
                 case Governor:
 
@@ -264,7 +265,6 @@ public class ManagementActions extends BaseActions {
                     }
 
                 case Mercenary:
-
 
 
                 case King:
@@ -422,7 +422,7 @@ public class ManagementActions extends BaseActions {
                     case GET_GOLD_INSTANTLY:
 
                         exchange.forceBuy(gold_need_threshold * 2, Resource.Gold, person);
-                        // gold is so important that is need is removed only by the Evaluate Needs method
+                        person.removeAspiration(Aspiration.GET_GOLD_INSTANTLY);
                         break;
 
                     case GET_FOOD_INSTANTLY:
@@ -495,17 +495,17 @@ public class ManagementActions extends BaseActions {
                 return; // quick return in early game to allow some generate ramp up
             }
 
-            if(!(person.getProperty() instanceof Fortress) && counter < 2) {  // fortress cannot be upgraded
+            if(!(person.getProperty() instanceof Fortress) && counter < 1) {  // fortress cannot be upgraded
                 evaluatePropertyNeed();
             }
-
             evaluateMinimumResourceNeeds();
-
 
             counter++; // property shouldn't be checked every time, every 10th time is just fine to prevent AI advancing too greedily
             if(counter > 10){
                 counter = 0;
             }
+
+            evaluateOptimalResourceNeeds();
 
         }
 
@@ -524,64 +524,119 @@ public class ManagementActions extends BaseActions {
                 TransferPackage netCash = person.getPaymentManager().getNetBalance();
                 if(netCash.food() > 1100 && netCash.alloy() > 300 && netCash.gold() > 100){
                     person.addAspiration(Aspiration.UPGRADE_PROPERTY);
+                    person.addAspiration(Aspiration.SAVE_RESOURCES);
+                    logAction(String.format("Evaluated a need to upgrade current home %s and a need to save resources for that", person.getProperty()));
                 }
 
             }else if(usedSlotAmount == property.getUtilitySlot().getSlotAmount()) {
                 if (property.getUtilitySlot().getTotalUpgradeLevels() > 3 * usedSlotAmount){ // idea here is to upgrade some of the utility buildings first before the property
                     person.addAspiration(Aspiration.UPGRADE_PROPERTY); // remember to remove this need after new property is created.
                     person.addAspiration(Aspiration.SAVE_RESOURCES); // remove this one too
+                    logAction(String.format("Evaluated a need to upgrade current home %s and a need to save resources for that", person.getProperty()));
                 }
             }
         }
 
         private void evaluateMinimumResourceNeeds() {
+            try {
+                int food = wallet.getFood();
+                TransferPackage expenses = person.getPaymentManager().getFullExpense();
 
-            int food = wallet.getFood();
+                food_need_threshold = expenses.food();
+                alloy_need_threshold = expenses.alloy();
+                gold_need_threshold = expenses.gold();
 
-            TransferPackage netCash = person.getPaymentManager().getNetCash();
-
-            food_need_threshold = netCash.food();
-            alloy_need_threshold = netCash.alloy();
-            gold_need_threshold = netCash.gold();
-
-            if( food < food_need_threshold ) {
-                person.addAspiration(Aspiration.GET_FOOD_INSTANTLY);
-                if (food < food_need_threshold / 2){
-                    person.addAspiration(Aspiration.INVEST_IN_FOOD_PRODUCTION);
-                } else{
+                if( food < food_need_threshold ) {
+                    logAction("MinimumResourceNeeds", String.format("Evaluated a lack of food as current balance is below threshold of %d", food_need_threshold));
+                    person.addAspiration(Aspiration.GET_FOOD_INSTANTLY);
+                    if (food < food_need_threshold / 2){
+                        person.addAspiration(Aspiration.INVEST_IN_FOOD_PRODUCTION);
+                    } else{
+                        person.removeAspiration(Aspiration.INVEST_IN_FOOD_PRODUCTION);
+                    }
+                } else {
                     person.removeAspiration(Aspiration.INVEST_IN_FOOD_PRODUCTION);
+                    person.removeAspiration(Aspiration.GET_FOOD_INSTANTLY);
+                    logAction("MinimumResourceNeeds", String.format("Evaluated excess of food as current balance is above threshold of %d", food_need_threshold));
                 }
-            } else {
-                person.removeAspiration(Aspiration.INVEST_IN_FOOD_PRODUCTION);
-                person.removeAspiration(Aspiration.GET_FOOD_INSTANTLY);
-            }
 
-            int alloy = wallet.getAlloy();
+                int alloy = wallet.getAlloy();
 
-            if( alloy < alloy_need_threshold ) {
-                person.addAspiration(Aspiration.GET_ALLOYS_INSTANTLY);
-                if (alloy < alloy_need_threshold / 2){
-                    person.addAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION);
-                } else{
+                if( alloy < alloy_need_threshold ) {
+                    logAction("MinimumResourceNeeds", String.format("Evaluated a lack of alloys as current balance is below threshold of %d", alloy_need_threshold));
+                    person.addAspiration(Aspiration.GET_ALLOYS_INSTANTLY);
+                    if (alloy < alloy_need_threshold / 2){
+                        person.addAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION);
+                    } else{
+                        person.removeAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION);
+                    }
+                } else {
                     person.removeAspiration(Aspiration.GET_ALLOYS_INSTANTLY);
+                    person.removeAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION);
+                    logAction("MinimumResourceNeeds", String.format("Evaluated excess of alloys as current balance is above threshold of %d", alloy_need_threshold));
                 }
-            } else {
-                person.removeAspiration(Aspiration.GET_ALLOYS_INSTANTLY);
-                person.removeAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION);
-            }
 
-            int gold = wallet.getGold();
+                int gold = wallet.getGold();
 
-            if( gold < gold_need_threshold ) {
-                person.addAspiration(Aspiration.GET_GOLD_INSTANTLY);
-                if (gold < food_need_threshold / 2){
-                    person.addAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION);
-                } else{
+                if( gold < gold_need_threshold ) {
+                    logAction("MinimumResourceNeeds", String.format("Evaluated a lack of gold as current balance is below threshold of %d", gold_need_threshold));
+                    person.addAspiration(Aspiration.GET_GOLD_INSTANTLY);
+                    if (gold < food_need_threshold / 2){
+                        person.addAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION);
+                    } else{
+                        person.removeAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION);
+                    }
+                } else {
+                    person.removeAspiration(Aspiration.GET_GOLD_INSTANTLY);
                     person.removeAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION);
+                    logAction("MinimumResourceNeeds", String.format("Evaluated excess of gold as current balance is above threshold of %d", gold_need_threshold));
                 }
-            } else {
-                person.removeAspiration(Aspiration.GET_GOLD_INSTANTLY);
-                person.removeAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private void evaluateOptimalResourceNeeds() {
+
+            try {
+                TransferPackage netBalance = person.getPaymentManager().getNetBalance();
+
+                int food_need_optimal = netBalance.food();
+                int alloy_need_optimal = netBalance.alloy();
+                int gold_need_optimal = netBalance.gold();
+
+                if( food_need_optimal < 1000 ) {
+                    logAction("OptimalResourceNeeds", String.format("Evaluated need to invest in the production of food as current balance is negative %d", food_need_optimal));
+                    person.addAspiration(Aspiration.INVEST_IN_FOOD_PRODUCTION);
+                } else {
+                    person.removeAspiration(Aspiration.INVEST_IN_FOOD_PRODUCTION);
+                    logAction("OptimalResourceNeeds", String.format("No need to invest in food production as current balance is positive %d", food_need_optimal));
+                }
+
+
+                if( alloy_need_optimal < 100 ) {
+                    logAction("OptimalResourceNeeds", String.format("Evaluated need to invest in the production of alloys as current balance is negative %d", alloy_need_optimal));
+                    person.addAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION);
+                }else{
+                    person.removeAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION);
+                    logAction("OptimalResourceNeeds", String.format("No need to invest in alloys production as current balance is positive %d", alloy_need_optimal));
+                }
+
+                if( gold_need_optimal < 20 ) {
+                    logAction("OptimalResourceNeeds", String.format("Evaluated need to invest in the production of gold as current balance is negative %d", gold_need_optimal));
+                    person.addAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION);
+                }else{
+                    person.removeAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION);
+                    logAction("OptimalResourceNeeds", String.format("No need to invest in gold production as current balance is positive %d", gold_need_optimal));
+                }
+
+                if (hasImmediateResourceAspirations()) {
+                    person.addAspiration(Aspiration.TRADE_MARKET);
+                    logAction("OptimalResourceNeeds", "Good resource balance achieved. Ready to trade the market");
+                }
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
     }
@@ -593,5 +648,11 @@ public class ManagementActions extends BaseActions {
      */
     public List<WeightedObject> getAllActions() {
         return allActions;
+    }
+
+    public boolean hasImmediateResourceAspirations() {
+        return person.getAspirations().contains(Aspiration.GET_GOLD_INSTANTLY) ||
+                person.getAspirations().contains(Aspiration.GET_FOOD_INSTANTLY) ||
+                person.getAspirations().contains(Aspiration.GET_ALLOYS_INSTANTLY);
     }
 }
