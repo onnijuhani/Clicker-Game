@@ -102,7 +102,7 @@ public class CombatActions {
 
             if (defaultCounter > 5) {
 
-                Random random = new Random();
+                Random random = Settings.getRandom();
                 int randomNumber = random.nextInt(3);
 
 

@@ -18,6 +18,10 @@ public abstract class Area implements Details, HasContents {
     public String toString() {
         return getName();
     }
+    public String toAreaString() {
+        return this.getClass().getSimpleName() +" - "+ getName();
+    }
+
     public void addHomeToName() {
         this.name += " (Home)";
     }

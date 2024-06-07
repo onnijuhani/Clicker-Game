@@ -60,9 +60,13 @@ public class CombatSystem {
             return;
         }
 
-        eligibleSupporters = getGovernorSupporters(defender, attacker);
+        if (defender.getCharacter() instanceof Governor) {
+            eligibleSupporters.addAll(getGovernorSupporters(defender, attacker));
+        }
 
-        eligibleSupporters = getKingSupporters(defender, attacker);
+        if (defender.getCharacter() instanceof King) {
+            eligibleSupporters.addAll(getKingSupporters(defender, attacker));
+        }
 
         makeEnemies();
 
@@ -92,8 +96,16 @@ public class CombatSystem {
 
         if (defender.isPlayer()) {
             double winningChance = calculateWinningChance(Event.AuthorityBattle, attacker, defender);
-            PopUpMessageTracker.sendMessage("Your Authority is being challenged by your subordinate " + attacker.getCharacter() + "\n\n" +
-                    "Your chance of winning: " + String.format("%.2f", (1-winningChance)   * 100) + "%");
+
+            PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(
+                    "Authority Challenge",
+                    "Your Authority is being challenged by your subordinate " + attacker.getCharacter() + "\n\n" +
+                            "Your chance of winning is " + String.format("%.2f", (1-winningChance)   * 100) + "%",
+                    "Properties/authorityChallenged.jpg",
+                    "Stand Firm"
+            );
+            PopUpMessageTracker.sendMessage(message);
+
         }
 
     }
@@ -165,15 +177,8 @@ public class CombatSystem {
                         " " + defender.getCharacter() + "\n" + attacker.getProperty().getLocation().getFullHierarchyInfo());
             }
 
-            // these 2 must be done before switching positions. Otherwise, role information will be wrong.
-            if(attacker.isPlayer()){
-                PopUpMessageTracker.sendMessage( "You have won the Authority Battle against " + defender + "\n\n"+
-                        "You are now "+ defender.getRole() + " in the " + defender.getRole().getPosition().getAreaUnderAuthority());
-            }
-            if(defender.isPlayer()){
-                PopUpMessageTracker.sendMessage( "You have lost the Authority Battle against " + attacker + "\n\n"+
-                        "You are now "+ attacker .getRole() + " in the " + defender.getRole().getPosition().getAreaUnderAuthority());
-            }
+            // this must be done before switching positions. Otherwise, role information will be wrong.
+            triggerAuthorityPopUp(true);
 
             switchPositions();
 
@@ -209,13 +214,7 @@ public class CombatSystem {
 
             defender.getRelationsManager().processResults(attacker);
 
-            if(attacker.isPlayer()){
-                PopUpMessageTracker.sendMessage( "You have Lost the Authority Battle against " + defender);
-            }
-            if(defender.isPlayer()){
-                PopUpMessageTracker.sendMessage( "Successfully defended against the Authority challenge by  " + attacker);
-            }
-
+            triggerAuthorityPopUp(false);
 
             // TODO remove this
             if(Settings.DB) {
@@ -231,6 +230,70 @@ public class CombatSystem {
         resetBattleStatesAuthorityBattle();
 
     }
+
+
+    public void triggerAuthorityPopUp(boolean victory) {
+        String headline;
+        String mainText;
+        String imagePath;
+        String buttonText;
+
+        List<String> winButtonTextsVictory = Arrays.asList("More victories to come", "Victory is sweet", "Another one bites the dust", "Onward to glory!", "Onwards!");
+        List<String> loseButtonTextsVictory = Arrays.asList("Well..", "A setback, not the end", "Power up and strike back", "We will try again", "...", "What?!");
+
+        List<String> winButtonTextsDefeat = Arrays.asList("They should never try again", "Victory is sweet", "Another one bites the dust", "Onward to glory!", "Should remain loyal..");
+        List<String> loseButtonTextsDefeat = Arrays.asList("They will be avenged...", "A setback, not the end", "Power up and strike back", "We shall rise again", "...", "Ouch..");
+
+
+        if (victory) {
+            if (attacker.isPlayer()) {
+
+                Character authority = defender.getRole().getAuthority().getCharacterInThisPosition();
+                String name;
+                if(authority == attacker.getCharacter()){
+                    name = "Yourself";
+                }else{
+                    name = authority.toString();
+                }
+
+                headline = "Authority Position Gained";
+                mainText = "You have won the Authority Battle against " + defender + "\n\n" +
+                        "You are now " + defender.getRole() + " in the " + defender.getRole().getPosition().getAreaUnderAuthority().toAreaString()+
+                        " and under the authority of:\n" + name;
+                imagePath = "Properties/authorityChallengeWon.jpg";
+                buttonText = PopUpMessageTracker.getRandomButtonText(winButtonTextsVictory);
+            } else if (defender.isPlayer()) {
+                headline = "Authority Position Lost";
+                mainText = "You have lost the Authority Battle against " + attacker + "\n\n" +
+                        "You are now under their authority as " + attacker.getRole() + " in the " + attacker.getRole().getPosition().getAreaUnderAuthority().toAreaString();
+                imagePath = "Properties/authorityChallengeLost.jpg";
+                buttonText = PopUpMessageTracker.getRandomButtonText(loseButtonTextsVictory);
+            } else {
+                return;
+            }
+        } else {
+            if (attacker.isPlayer()) {
+                headline = "Authority Challenge Failed";
+                mainText = "You have failed to claim the Authority position in the " + defender.getRole().getPosition().getAreaUnderAuthority().toAreaString() +
+                        " against " + defender.getCharacter() + "\n\nYou remain under their authority.";
+                imagePath = "Properties/authorityChallengeLost.jpg";
+                buttonText = PopUpMessageTracker.getRandomButtonText(loseButtonTextsDefeat);
+            } else if (defender.isPlayer()) {
+                headline = "Authority Position Defended";
+                mainText = "You have won the Authority Battle against " + attacker + "\n\n" +
+                        "They remain as "+ attacker.getRole() + " under your authority";
+                imagePath = "Properties/authorityChallengeWon.jpg";
+                buttonText = PopUpMessageTracker.getRandomButtonText(winButtonTextsDefeat);
+            } else {
+                return;
+            }
+        }
+        PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(headline, mainText, imagePath, buttonText);
+        PopUpMessageTracker.sendMessage(message);
+    }
+
+
+
     private void switchPositions() {
         /*
         ALL THE CONNECTIONS NEED TO BE CHANGED. !!! DO NOT CHANGE THE ORDER OF THESE SETTERS !!!
@@ -497,7 +560,7 @@ public class CombatSystem {
 
         boolean attackerWins = battle(effectiveAttackerOffense, effectiveDefenderDefense);
 
-        Random random = new Random();
+        Random random = Settings.getRandom();
 
         if (attackerWins) { // Usually nothing happens as duel doesn't really have a price, only defeat/victory
 

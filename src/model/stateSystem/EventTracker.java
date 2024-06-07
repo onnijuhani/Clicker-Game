@@ -40,9 +40,9 @@ public class EventTracker {
         if (isNpc) {
             // NPC's have lower amounts stored
             maxErrorEvents = 0;
-            maxMajorEvents = Settings.getInt("maxMajorEvents");;
+            maxMajorEvents = Settings.getInt("maxMajorEvents") / 2;;
             maxClickerEvents = 0;
-            maxMinorEvents = 0;
+            maxMinorEvents = 50;
             maxShopEvents = 0;
             maxUtilityEvents = 0;
         } else {
@@ -83,6 +83,7 @@ public class EventTracker {
         StringBuilder sb = new StringBuilder();
 
         majorEvents.forEach(message -> sb.append(message).append("\n"));
+        minorEvents.forEach(message -> sb.append(message).append("\n"));
 
         return sb.toString();
 

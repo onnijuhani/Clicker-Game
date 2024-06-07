@@ -42,7 +42,7 @@ public class Model {
         return playerPerson;
     }
     public static Character getPlayerAsCharacter() {
-        return playerCharacter;
+        return getPlayerAsPerson().getCharacter();
     }
     public static void setPlayerRole(Role playerRole) {
         Model.playerRole = playerRole;

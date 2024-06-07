@@ -82,12 +82,29 @@ public class Authority implements TaxObserver, Ownable {
 
 
     public void paySupporters(){
+        updateSalary();
         for (Support support : getSupporters()) {
             Salary salary = support.getSalary();
             TransferPackage transfer = TransferPackage.fromArray(salary.getAll());
             support.getPerson().getWallet().deposit(workWallet, transfer);
+            support.getEventTracker().addEvent(EventTracker.Message("Minor", "Salary received: " + transfer));
         }
     }
+
+    private void updateSalary() {
+        int supporterAmount = getSupporters().size();
+
+        if(workWallet.getLastSalaryAmount() == null){
+            return;
+        }
+        TransferPackage fullSalaryPayment = workWallet.getLastSalaryAmount().divide(2);
+
+        TransferPackage individualSalaryPayment = fullSalaryPayment.divide(supporterAmount);
+        for (Support support : getSupporters()) {
+            support.getSalary().updateSalary(individualSalaryPayment);
+        }
+    }
+
     @Override
     public String toString(){
         String characterName = this.characterPositionedHere.getName();

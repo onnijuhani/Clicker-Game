@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Properties;
+import java.util.Random;
 
 public class Settings {
 
@@ -11,7 +12,11 @@ public class Settings {
     public static final boolean DB = false;
 
 
+    private static final Random random = new Random(5);
 
+    public static Random getRandom(){
+        return random;
+    }
 
 
     static {
@@ -26,9 +31,9 @@ public class Settings {
 
     public static String formatNumber(int value) {
         if (value >= 1_000_000) {
-            return String.format("%.2fM", value / 1_000_000.0);
+            return String.format("%.1fM", value / 1_000_000.0);
         } else if (value >= 1_000) {
-            return String.format("%.2fK", value / 1_000.0);
+            return String.format("%.1fK", value / 1_000.0);
         } else {
             NumberFormat numberFormat = NumberFormat.getNumberInstance();
             return numberFormat.format(value);
@@ -36,9 +41,9 @@ public class Settings {
     }
     public static String formatNumber(double value) {
         if (value >= 1_000_000) {
-            return String.format("%.2fM", value / 1_000_000.0);
+            return String.format("%.1fM", value / 1_000_000.0);
         } else if (value >= 1_000) {
-            return String.format("%.2fK", value / 1_000.0);
+            return String.format("%.1fK", value / 1_000.0);
         } else {
             NumberFormat numberFormat = NumberFormat.getNumberInstance();
             return numberFormat.format(value);

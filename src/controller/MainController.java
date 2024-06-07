@@ -7,6 +7,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -24,6 +27,8 @@ import model.worldCreation.Quarter;
 
 import java.util.HashSet;
 import java.util.List;
+
+import static model.stateSystem.SpecialEventsManager.triggerStartingMessage;
 
 public class MainController extends BaseController {
 
@@ -101,11 +106,18 @@ public class MainController extends BaseController {
     private GridPane topSection;
     @FXML
     protected Button closePopUpBtn;
+    @FXML
+    private ImageView popUpImage;
+    @FXML
+    private Label popUpHeadline;
+
 
     @FXML
     private CheckBox pausePopBtn;
     @FXML
     private Label currentlyViewing;
+
+
 
 
 
@@ -210,7 +222,7 @@ public class MainController extends BaseController {
         PopUpMessageTracker.gameOverProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 openPopUp();
-                closePopUpBtn.setVisible(false);
+                closePopUpBtn.setDisable(true);
             }
         });
     }
@@ -266,6 +278,7 @@ public class MainController extends BaseController {
 
 
    void generateStartingMessage(){
+        triggerStartingMessage();
         EventTracker tracker = model.getPlayerCharacter().getEventTracker();
         tracker.addEvent(EventTracker.Message("Major","New Game Started"));
 
@@ -360,6 +373,7 @@ public class MainController extends BaseController {
         PopUpMessageTracker.resetMessage();
         popUpBox.setVisible(false);
         mainLayout.setDisable(false);
+        mainLayout.setBlendMode(BlendMode.SRC_OVER);
         topSection.setDisable(false);
         clickMeButton.requestFocus();
         if(Time.isFirstDay){
@@ -375,10 +389,27 @@ public class MainController extends BaseController {
     private void openPopUp() {
         mainLayout.setDisable(true);
         topSectionController.stopTimeFunction();
-        String message = PopUpMessageTracker.getMessage();
-        popUpMessage.setText(message);
-        popUpBox.setVisible(true);
-        topSection.setDisable(true);
+        PopUpMessageTracker.PopUpMessage message = PopUpMessageTracker.getMessage();
+
+        if (message != null) {
+            popUpHeadline.setText(message.getHeadline());
+            popUpMessage.setText(message.getMainText());
+            closePopUpBtn.setText(message.getButtonText());
+
+            if (message.getImagePath() != null && !message.getImagePath().isEmpty()) {
+                Image image = new Image(message.getImagePath());
+                popUpImage.setImage(image);
+                popUpImage.setVisible(true);
+                popUpImage.setManaged(true);
+            } else {
+                popUpImage.setImage(null);
+                popUpImage.setVisible(false);
+                popUpImage.setManaged(false);
+            }
+
+            popUpBox.setVisible(true);
+            topSection.setDisable(true);
+        }
     }
 
 

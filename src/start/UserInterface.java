@@ -9,12 +9,9 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import model.Model;
 
-import java.net.URL;
 import java.util.Objects;
 
 public class UserInterface extends Application {
@@ -30,7 +27,7 @@ public class UserInterface extends Application {
 
             Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pics/icon.png")));
             primaryStage.getIcons().add(icon);
-
+            primaryStage.setTitle("Territorial Clickers");
 
             Scene scene = new Scene(mainRoot);
             String css = Objects.requireNonNull(this.getClass().getResource("/characterStyle.css")).toExternalForm();

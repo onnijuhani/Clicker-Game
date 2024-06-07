@@ -1,5 +1,6 @@
 package model.characters;
 
+import model.Settings;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.WorkWallet;
 import model.stateSystem.EventTracker;
@@ -19,7 +20,7 @@ public class Employment {
     }
 
     private WorkWallet workWallet;
-    private static final Random random = new Random();
+    private final Random random = Settings.getRandom();
 
     public Employment(int foodBaseRate, int alloyBaseRate, int goldBaseRate, WorkWallet workWallet) {
         this.food = generateRandomValue(foodBaseRate);

@@ -98,7 +98,7 @@ public class Quarter extends ControlledArea implements Details {
             return;
         }
 
-        Random random = new Random();
+        Random random = Settings.getRandom();
         Quarter rivalQuarter = otherQuarters.get(random.nextInt(otherQuarters.size()));
 
         List<Person> thisPersons = populationMap.values().stream()
@@ -255,7 +255,7 @@ public class Quarter extends ControlledArea implements Details {
     }
 
     private void peasantFactory(QuarterAuthority quarterCaptain, LinkedList<Person> farmers, LinkedList<Person> miners, LinkedList<Person> merchants) {
-        Random random = new Random();
+        Random random = Settings.getRandom();
         int numberOfFarmers = random.nextInt(Settings.getInt("farmerAmountMax")) + Settings.getInt("farmerAmountMin");
         numOfPeasants += numberOfFarmers;
         baseEconomy += numberOfFarmers;

@@ -14,7 +14,7 @@ public class UtilityShop extends ShopComponents {
         super(wallet);
     }
 
-    public boolean upgradeBuilding(UtilityBuildings type, Person person) {
+    public static boolean upgradeBuilding(UtilityBuildings type, Person person) {
         Property property = person.getProperty();
         UtilitySlot slot = property.getUtilitySlot();
         UtilityBuilding building = slot.getUtilityBuilding(type);
@@ -46,7 +46,7 @@ public class UtilityShop extends ShopComponents {
         }
     }
 
-    public boolean buyBuilding(UtilityBuildings type, Person person) {
+    public static boolean buyBuilding(UtilityBuildings type, Person person) {
 
         // Prevent purchasing both SlaveFacility and WorkerCenter
         UtilitySlot slot = person.getProperty().getUtilitySlot();
@@ -93,7 +93,7 @@ public class UtilityShop extends ShopComponents {
         return true;
     }
 
-    private int getBuildingPrice(UtilityBuildings type) {
+    public static int getBuildingPrice(UtilityBuildings type) {
         return switch (type) {
             case MeadowLands -> Settings.getInt("meadowLandsCost");
             case AlloyMine -> Settings.getInt("alloyMineCost");
@@ -105,7 +105,7 @@ public class UtilityShop extends ShopComponents {
         };
     }
 
-    private UtilityBuilding createBuilding(UtilityBuildings type, int price, Character character) {
+    public static UtilityBuilding createBuilding(UtilityBuildings type, int price, Character character) {
         return switch (type) {
             case MeadowLands -> new Meadowlands(price, character.getPerson());
             case AlloyMine -> new AlloyMine(price, character.getPerson());

@@ -1,6 +1,7 @@
 package model.worldCreation;
 
 import model.NameCreation;
+import model.Settings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 public class World extends Area implements Details {
-    private String name;
+    private final String name;
     @Override
     public String getName() {
         return this.name;
@@ -36,7 +37,7 @@ public class World extends Area implements Details {
 
     // Method to create random number of continents
     private void createContinents() {
-        Random random = new Random();
+        Random random = Settings.getRandom();
         int numberOfContinents = size == size.SMALL ? 2 : size == size.MEDIUM ? 4 : size == size.LARGE ? 6 : -1;
         continents = new Continent[numberOfContinents];
         for (int i = 0; i < numberOfContinents; i++) {

@@ -99,6 +99,7 @@ public class CharacterController extends BaseController  {
         main.resetBtn.setDisable(currentCharacter.getPerson() == Model.getPlayerAsPerson());
         disableArmyTab();
         getCurrentStates();
+        main.updateCurrentlyViewing();
     }
 
     void setUpToolTips(){
@@ -160,7 +161,7 @@ public class CharacterController extends BaseController  {
             int[] timeLeft = onGoingEvent.timeLeftUntilExecution();
             stateTimeLeft.setText(String.format("%d days, %d months, %d years left", timeLeft[2], timeLeft[1], timeLeft[0]));
 
-            currentState.setText("OnGoing "+onGoingEvent.getEvent());
+            currentState.setText("Currently in "+onGoingEvent.getEvent());
 
         }
         else{

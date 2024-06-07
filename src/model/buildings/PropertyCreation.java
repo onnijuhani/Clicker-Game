@@ -1,5 +1,6 @@
 package model.buildings;
 
+import model.Settings;
 import model.buildings.properties.*;
 import model.characters.Peasant;
 import model.characters.Person;
@@ -13,7 +14,7 @@ public class PropertyCreation {
 
     public static Property createProperty(String name, String area, Person owner) {
 
-        Random random = new Random();
+        Random random = Settings.getRandom();
         double randomValue = random.nextDouble();
 
         return switch (area) {
@@ -63,7 +64,7 @@ public class PropertyCreation {
 
     public static Property createSupportProperty(Person support){
 
-        Random random = new Random();
+        Random random = Settings.getRandom();
         double randomValue = random.nextDouble();
 
         if (support.getCharacter() instanceof Noble){
@@ -89,7 +90,7 @@ public class PropertyCreation {
     public static Property createPeasantProperty(Person person) {
 
         if (person.getCharacter() instanceof Merchant) {
-            Random random = new Random();
+            Random random = Settings.getRandom();
             double randomValue = random.nextDouble();
             if (randomValue < 0.05) {
                 Mansion mansion = new Mansion(person.getName(), person.getPerson());

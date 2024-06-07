@@ -43,11 +43,15 @@ public class CombatStats {
         }
     }
 
-    public void increaseOffence(){
-        getOffense().increaseLevel();
+    public void increaseOffence(int amount){
+        for(int i = 0; i<amount; i++) {
+            getOffense().increaseLevel();
+        }
     }
-    public void increaseDefence(){
-        getDefense().increaseLevel();
+    public void increaseDefence(int amount){
+        for(int i = 0; i<amount; i++) {
+            getDefense().increaseLevel();
+        }
     }
 
     public void decreaseOffense(){

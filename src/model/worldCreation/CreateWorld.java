@@ -1,10 +1,10 @@
 package model.worldCreation;
 
+import model.Settings;
 import model.characters.Character;
 import model.characters.Peasant;
 import model.characters.Status;
 import model.characters.authority.Authority;
-import model.resourceManagement.TransferPackage;
 import model.time.GenerateManager;
 
 import java.util.List;
@@ -18,8 +18,7 @@ public class CreateWorld {
     private Character initialPlayer;
 
     public CreateWorld() {
-        Size size = Size.MEDIUM;
-        this.world = new World(generateWorldName(), size);
+        this.world = new World(generateWorldName(), Size.MEDIUM);
         this.spawnQuarter = createSpawn();
         changeSpawnName();
         createPlayer();
@@ -34,7 +33,7 @@ public class CreateWorld {
      }
 
     private Quarter createSpawn() {
-        Random random = new Random();
+        Random random = Settings.getRandom();
         Area currentLevel = this.world; // Starting from the world
 
         while (true) {

@@ -12,6 +12,7 @@ import model.characters.authority.NationAuthority;
 import model.characters.npc.King;
 import model.characters.npc.Noble;
 import model.characters.npc.Vanguard;
+import model.resourceManagement.TransferPackage;
 
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class Continent extends Area implements Details {
 
     private void createNations() {
 
-        Random random = new Random();
+        Random random = Settings.getRandom();
         int numberOfNations = random.nextInt(Settings.getInt("nationAmountMax")) + Settings.getInt("nationAmountMin");
         nations = new Nation[numberOfNations];
 
@@ -115,10 +116,10 @@ public class Continent extends Area implements Details {
     }
 
     private void supportFactory(Nation nation, Authority authority, Random random, Quarter home) {
-        int nationAmount = nations.length;
+        int nationAmount = nations.length; // doesnt work
         int provinceAmount = nation.getContents().size();
 
-        for (int nob = 0; nob < nationAmount; nob++) {
+        for (int nob = 0; nob < 4; nob++) {
             Noble noble = new Noble(authority);
             noble.getRole().setNation(nation);
 
@@ -127,6 +128,9 @@ public class Continent extends Area implements Details {
             noble.getPerson().getProperty().setLocation(home);
             home.propertyTracker.addProperty(noble.getPerson().getProperty());
             home.addCitizen(Status.Noble,noble.getPerson());
+
+
+            nobleBonus(noble);
 
         }
 
@@ -146,6 +150,10 @@ public class Continent extends Area implements Details {
             quarter.propertyTracker.addProperty(vanguard.getPerson().getProperty());
             quarter.addCitizen(Status.Vanguard, vanguard.getPerson());
             NameCreation.generateMajorQuarterName(quarter);
+
+            // vanguards get bonus
+            vanguardBonus(vanguard);
+
         }
 
 
@@ -158,6 +166,22 @@ public class Continent extends Area implements Details {
         home.propertyTracker.addProperty(vanguard.getPerson().getProperty());
         home.addCitizen(Status.Vanguard, vanguard.getPerson());
 
+        vanguardBonus(vanguard);
+
+    }
+
+    private static void nobleBonus(Noble noble) {
+        noble.getPerson().getProperty().getUtilitySlot().addRandomUtilityBuilding(noble);
+        TransferPackage bonus = new TransferPackage(1000,1000,1000);
+        noble.getPerson().getWallet().addResources(bonus);
+    }
+
+    private static void vanguardBonus(Vanguard vanguard) {
+        vanguard.getPerson().getCombatStats().increaseOffence(4);
+        vanguard.getPerson().getCombatStats().increaseDefence(14);
+        vanguard.getPerson().getProperty().getUtilitySlot().addRandomUtilityBuilding(vanguard);
+        TransferPackage bonus = new TransferPackage(10000,5000,10000);
+        vanguard.getPerson().getWallet().addResources(bonus);
     }
 
 

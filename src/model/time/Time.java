@@ -40,6 +40,7 @@ public class Time {
     }
 
     public static void incrementDay() {
+
         day++;
         if (day > 30) {
             day = 1;
@@ -88,9 +89,11 @@ public class Time {
             }
         }
 
-        startingBonusTrigger(); // early game resource bonus
 
         executeMonthlyTrades(); // players monthly trades
+
+
+        startingBonusTrigger(); // early game resource bonus
 
     }
 

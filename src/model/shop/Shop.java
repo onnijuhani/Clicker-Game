@@ -19,7 +19,7 @@ public class Shop implements Ownable {
 
     private void initializeWallet(){
         this.wallet = new Wallet(this);
-        TransferPackage startingBalance = new TransferPackage(1_000_000,1_000_00,20_000);
+        TransferPackage startingBalance = new TransferPackage(500_000,100_000,100_000);
         wallet.addResources(startingBalance);
     }
 

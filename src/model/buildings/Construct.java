@@ -11,6 +11,7 @@ import model.resourceManagement.wallets.Wallet;
 import model.stateSystem.Event;
 import model.stateSystem.EventTracker;
 import model.stateSystem.GameEvent;
+import model.stateSystem.PopUpMessageTracker;
 import model.time.EventManager;
 import model.time.PropertyManager;
 import model.war.Military;
@@ -54,7 +55,7 @@ public class Construct {
             assert newType != null;
 
             GameEvent gameEvent = new GameEvent(Event.CONSTRUCTION, person);
-            person.getEventTracker().addEvent(EventTracker.Message("Major", "Construction of "+newType+ " started"));
+            person.getEventTracker().addEvent(EventTracker.Message("Minor", "Construction of "+newType+ " started"));
 
             int daysUntilEvent = getDaysUntilEvent(newType);
 
@@ -82,7 +83,54 @@ public class Construct {
         person.getEventTracker().addEvent(EventTracker.Message("Major", "New property constructed"));
 
         newHouse.maintenance.updatePaymentCalendar(person.getPaymentManager());
+
+
+        if(person.isPlayer()) {
+            triggerConstructionPopUp(newType);
+        }
+
+
     }
+
+    private static void triggerConstructionPopUp(Properties type) {
+        String headline = "Construction Ready";
+        String mainText = "";
+        String imagePath;
+        String buttonText = "Great";
+
+        switch (type) {
+            case Cottage -> mainText = "Cottage Constructed!\nThis humble home adds a new utility slot, allowing you to harness more resources from the land. It also comes with higher maintenance costs.";
+            case Villa -> mainText = "Your new Villa stands proud!\nThis elegant structure adds another utility slot, increasing your ability to gather resources.";
+            case Mansion -> mainText = "Behold the Mansion!\nWith its grandeur, it adds another utility slot to your domain, further boosting your resource gathering.";
+            case Manor -> mainText = "The newly constructed noble Manor is a testament to your growing influence.\nIt adds the final utility slot, maximizing your resource collection potential.";
+            case Castle -> mainText = """
+                    After all this time...
+                    The Castle marks a brand new era in your reign. As the majestic structure rises from the ground, its formidable walls offer unparalleled protection.
+                    Now, you command an army, ready to defend your lands and conquer new territories. Military mechanics are now at your disposal, allowing you to train soldiers,
+                    fortify defenses, and expand your influence. Your journey to greatness takes a significant leap forward as you transform from a mere ruler to a strategic commander.""";
+            case Citadel -> mainText = "Your Citadel is a symbol of unmatched strength.\nIt's devastating power surpasses your old Castle and takes you to new dimension.";
+            case Fortress -> mainText = "The Fortress is the pinnacle of your territorial might. Standing tall and impregnable, it is a testament to your unyielding power and strategic brilliance. "
+                    + "The reinforced walls and state-of-the-art defenses make it the most formidable structure in your domain. With the Fortress, your ability to withstand sieges and "
+                    + "launch powerful counterattacks is unmatched. Your influence over the land is now solidified, and you are recognized as a dominant force, capable of shaping the fate of kingdoms. "
+                    + "This monumental achievement marks the zenith of your architectural and military prowess, securing your legacy as an unassailable ruler.";
+        }
+
+        imagePath = switch (type) {
+            case Cottage -> "Properties/cottagePop.jpg";
+            case Villa -> "Properties/villaPop.jpg";
+            case Mansion -> "Properties/mansionPop.jpg";
+            case Manor -> "Properties/manorPop.jpg";
+            case Castle -> "Properties/castlePop.jpg";
+            case Citadel -> "Properties/citadelPop.jpg";
+            case Fortress -> "Properties/fortressPop.jpg";
+            default -> null;
+        };
+
+        PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(headline, mainText, imagePath, buttonText);
+        PopUpMessageTracker.sendMessage(message);
+    }
+
+
 
     private static void switchPropertyAttributes(Person person, Property newHouse, Quarter location, Property oldHouse, UtilitySlot oldUtilitySlot) {
         newHouse.setLocation(location);

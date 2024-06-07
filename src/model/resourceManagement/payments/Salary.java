@@ -1,5 +1,7 @@
 package model.resourceManagement.payments;
 
+import model.resourceManagement.TransferPackage;
+
 public class Salary{
 
     private int food;
@@ -11,6 +13,14 @@ public class Salary{
         this.alloy = alloy;
         this.gold = gold;
     }
+
+    public void updateSalary(TransferPackage transferPackage){
+        food = transferPackage.food();
+        alloy = transferPackage.alloy();
+        gold = transferPackage.gold();
+    }
+
+
     public int[] getAll(){
         return new int[]{food, alloy, gold};
     }

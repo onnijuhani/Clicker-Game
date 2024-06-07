@@ -10,6 +10,9 @@ import model.stateSystem.EventTracker;
 public class WorkWallet extends Wallet implements PaymentTracker {
     private boolean taxedOrNot;
     private final Wallet mainWallet;
+
+
+
     private TransferPackage lastSalaryAmount;
     private int lastSalaryDay;
 
@@ -46,6 +49,9 @@ public class WorkWallet extends Wallet implements PaymentTracker {
     }
     public void setTaxedOrNot(Boolean state){
         taxedOrNot = state;
+    }
+    public TransferPackage getLastSalaryAmount() {
+        return lastSalaryAmount;
     }
 
 

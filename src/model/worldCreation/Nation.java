@@ -5,12 +5,13 @@ import model.Settings;
 import model.buildings.Property;
 import model.buildings.PropertyCreation;
 import model.buildings.PropertyTracker;
-import model.characters.*;
 import model.characters.Character;
+import model.characters.*;
 import model.characters.authority.Authority;
 import model.characters.authority.ProvinceAuthority;
 import model.characters.npc.Governor;
 import model.characters.npc.Mercenary;
+import model.resourceManagement.TransferPackage;
 import model.shop.Shop;
 
 import java.util.*;
@@ -95,7 +96,7 @@ public class Nation extends ControlledArea implements Details {
     }
 
     private void createProvinces() {
-        Random random = new Random();
+        Random random = Settings.getRandom();
         int numberOfProvinces = random.nextInt(Settings.getInt("provinceAmountMax")) + Settings.getInt("provinceAmountMin");
         provinces = new Province[numberOfProvinces];
 
@@ -199,7 +200,19 @@ public class Nation extends ControlledArea implements Details {
             quarter.propertyTracker.addProperty(mercenary.getPerson().getProperty());
             quarter.addCitizen(Status.Mercenary,mercenary.getPerson());
             NameCreation.generateMajorQuarterName(quarter);
+
+
+            mercenaryBonus(mercenary);
+
         }
+    }
+
+    private static void mercenaryBonus(Mercenary mercenary) {
+        mercenary.getPerson().getCombatStats().increaseOffence(3);
+        mercenary.getPerson().getCombatStats().increaseDefence(3);
+        mercenary.getPerson().getProperty().getUtilitySlot().addRandomUtilityBuilding(mercenary);
+        TransferPackage bonus = new TransferPackage(500,5000,500);
+        mercenary.getPerson().getWallet().addResources(bonus);
     }
 
     @Override

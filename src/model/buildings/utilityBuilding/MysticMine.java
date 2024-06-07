@@ -14,7 +14,7 @@ public class MysticMine extends UtilityBuilding {
 
     private int alloyProduction;
     private int goldProduction;
-    private final Random random = new Random();
+    private final Random random = Settings.getRandom();
 
     public MysticMine(int basePrice, Person owner) {
         super(basePrice, owner);

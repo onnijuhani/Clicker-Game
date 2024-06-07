@@ -1,9 +1,16 @@
 package model.buildings.utilityBuilding;
 
+import model.Settings;
+import model.buildings.Property;
+import model.characters.Character;
 import model.characters.payments.PaymentManager;
 import model.characters.payments.PaymentTracker;
+import model.shop.UtilityShop;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 public class UtilitySlot implements PaymentTracker {
 
@@ -60,6 +67,31 @@ public class UtilitySlot implements PaymentTracker {
         ownedUtilityBuildings.forEach((key, building) -> {
             building.updatePaymentCalendar(calendar);
         });
+    }
+
+    public void addRandomUtilityBuilding(Character character) {
+        UtilityBuildings randomType = getRandomUtilityBuildingType();
+        if (randomType != null) {
+            createUtilityBuilding(randomType, character);
+        }
+
+    }
+    private UtilityBuildings getRandomUtilityBuildingType() {
+        List<UtilityBuildings> eligibleTypes = Arrays.stream(UtilityBuildings.values())
+                .filter(type -> type != UtilityBuildings.SlaveFacility && type != UtilityBuildings.WorkerCenter)
+                .toList();
+
+        if (eligibleTypes.isEmpty()) {
+            return null;
+        }
+
+        Random random = Settings.getRandom();
+        return eligibleTypes.get(random.nextInt(eligibleTypes.size()));
+    }
+    private void createUtilityBuilding(UtilityBuildings type, Character character) {
+        UtilityBuilding newBuilding = UtilityShop.createBuilding(type,UtilityShop.getBuildingPrice(type), character);
+        Property property = character.getPerson().getProperty();
+        property.getUtilitySlot().addUtilityBuilding(type, newBuilding);
     }
 }
 

@@ -85,7 +85,7 @@ public class City extends ControlledArea implements Details {
     }
 
     private void createQuarters() {
-        Random random = new Random();
+        Random random = Settings.getRandom();
         int numberOfQuarters = random.nextInt(Settings.getInt("quarterAmountMax")) + Settings.getInt("quarterAmountMin");
         List<String> names = NameCreation.generateQuarterNames(numberOfQuarters);
         quarters = new Quarter[numberOfQuarters];

@@ -41,7 +41,7 @@ public class Province extends ControlledArea implements Details {
     }
 
     private void createCities() {
-        Random random = new Random();
+        Random random = Settings.getRandom();
         int numberOfCities = random.nextInt(Settings.getInt("cityAmountMax")) + Settings.getInt("cityAmountMin");
         cities = new City[numberOfCities];
 

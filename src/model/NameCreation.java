@@ -34,7 +34,7 @@ public class NameCreation {
                 "Sacred", "Forbidden", "Enchanted", "Infinite", "Timeless"
         };
 
-        Random random = new Random();
+        Random random = Settings.getRandom();
         String prefix = prefixes[random.nextInt(prefixes.length)];
         String suffix = suffixes[random.nextInt(suffixes.length)];
         String flair = random.nextDouble() < 0.6 ? extraFlair[random.nextInt(extraFlair.length)] + " " : ""; // 60% chance for extra flair
@@ -43,7 +43,7 @@ public class NameCreation {
     }
 
     public static String generateNationName() {
-        Random random = new Random();
+        Random random = Settings.getRandom();
         String newName;
 
         do {
@@ -103,7 +103,7 @@ public class NameCreation {
                 "Glade", "Highlands", "Enclave", "Haven", "Valley", "Basin", "Shire", "Falls", "Meadowlands"
         };
 
-        Random random = new Random();
+        Random random = Settings.getRandom();
         String first = prefix[random.nextInt(prefix.length)];
         String second = suffix[random.nextInt(suffix.length)];
 
@@ -128,7 +128,7 @@ public class NameCreation {
                     "Capital", "Deep", "Springside", "Sunshine", "Fallsburg", "Waterside"
             };
 
-            Random random = new Random();
+            Random random = Settings.getRandom();
             String first = prefix[random.nextInt(prefix.length)];
             String second = suffix[random.nextInt(suffix.length)];
 
@@ -151,7 +151,7 @@ public class NameCreation {
     }
 
     public static String generateContinentName() {
-        Random random = new Random();
+        Random random = Settings.getRandom();
         String newName;
 
         do {
@@ -197,7 +197,7 @@ public class NameCreation {
         String[] quarters = {
                 "Quarter", "District", "Zone", "Area", "Block", "Neighborhood",
         };
-        Random random = new Random();
+        Random random = Settings.getRandom();
         String name = quarters[random.nextInt(quarters.length)];
         ArrayList<String> names = new ArrayList<>();
         for (int i = 0; i < numberOfQuarters; i++){
@@ -222,7 +222,7 @@ public class NameCreation {
             String[] lastSuffixes = {"heart", "thorn", "shadow", "bane", "crest", "wind", "forge", "blade",
                     "breaker", "warden", "seeker", "striker", "reaver", "bane", "hunter", "shaper", "keeper", "bearer"};
 
-            Random random = new Random();
+            Random random = Settings.getRandom();
 
             String firstName = prefixes[random.nextInt(prefixes.length)] + suffixes[random.nextInt(suffixes.length)];
             String lastName = lastPrefixes[random.nextInt(lastPrefixes.length)] + lastSuffixes[random.nextInt(lastSuffixes.length)];
@@ -255,7 +255,7 @@ public class NameCreation {
 
         String[] suffixes = {"Haven", "Domain", "Lair", "Territory", "Estate", "Sanctum", "Gardens", "Hold", "Quarters", "Landing", "Imperative"};
 
-        Random random = new Random();
+        Random random = Settings.getRandom();
 
         boolean hasKing = populationList.containsKey(Status.King) && !populationList.get(Status.King).isEmpty();
         boolean hasVanguard = populationList.containsKey(Status.Vanguard) && !populationList.get(Status.Vanguard).isEmpty();

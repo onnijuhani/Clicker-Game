@@ -1,9 +1,13 @@
 package model.characters.ai;
 
+import model.Settings;
 import model.characters.Person;
 import model.characters.Trait;
 import model.characters.ai.actionCircle.WeightedCircle;
-import model.characters.ai.actions.*;
+import model.characters.ai.actions.CombatActions;
+import model.characters.ai.actions.ManagementActions;
+import model.characters.ai.actions.UtilityActions;
+import model.characters.ai.actions.WarActions;
 
 import java.util.*;
 
@@ -38,7 +42,7 @@ public class AiEngine {
         actionCircle.addAll(utilityActions.getAllActions());
         actionCircle.addAll(combatActions.getAllActions());
         actionCircle.addAll(managementActions.getAllActions());
-        actionCircle.addAll(warActions.getAllActions());
+//        actionCircle.addAll(warActions.getAllActions());
     }
 
     /**
@@ -46,7 +50,7 @@ public class AiEngine {
      * adds between 2-4 personality traits and weight for them
      */
     protected void generatePersonalityProfile() {
-        Random random = new Random();
+        Random random = Settings.getRandom();
         Map<Trait, Integer> profile = new HashMap<>();
 
         int numberOfTraits = random.nextInt(10) < 1 ? 2 : random.nextInt(4) < 3 ? 3 : 4;
