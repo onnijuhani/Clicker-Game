@@ -61,7 +61,7 @@ public class Vault extends Wallet implements Ownable {
         TransferPackage interestTransfer = TransferPackage.fromArray(interestValues);
         addResources(interestTransfer);
 
-        getOwner().getEventTracker().addEvent(EventTracker.Message("Minor","Interest gained "+ interestTransfer + this));
+        getOwner().getEventTracker().addEvent(EventTracker.Message("Minor","Vault interest gained "+ interestTransfer));
 
     }
 

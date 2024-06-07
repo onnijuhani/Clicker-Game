@@ -5,6 +5,8 @@ import model.Settings;
 import model.buildings.Property;
 import model.characters.ai.AiEngine;
 import model.characters.ai.Aspiration;
+import model.characters.ai.actions.NPCAction;
+import model.characters.ai.actions.NPCActionLogger;
 import model.characters.combat.CombatStats;
 import model.characters.payments.PaymentManager;
 import model.resourceManagement.wallets.Wallet;
@@ -89,9 +91,10 @@ public class Person implements Ownable {
         if (strikesLeft < 1) {
             triggerGameOver();
         }else {
-            getEventTracker().addEvent(EventTracker.Message("Major", "Lost a Strike! Strikes left: " + strikesLeft));
+            if(isPlayer) {
+                getEventTracker().addEvent(EventTracker.Message("Major", "Lost a Strike! Strikes left: " + strikesLeft));
+            }
         }
-        decreasePersonalPower();
     }
 
     private void triggerGameOverWarning() {
@@ -118,7 +121,8 @@ public class Person implements Ownable {
             PopUpMessageTracker.sendMessage(gameOverMessage);
             PopUpMessageTracker.sendGameOver();
         }else{
-            getStrikesTracker().gainStrike(20);
+            getStrikesTracker().gainStrike(10);
+            getEventTracker().addEvent(EventTracker.Message("Major", "Bankrupt"));
             for(int i = 0; i < 5; i++){
                 decreasePersonalPower();
             }
@@ -130,6 +134,7 @@ public class Person implements Ownable {
         if(!character.getPerson().isPlayer){
             character.getPerson().getCombatStats().decreaseOffense();
             character.getPerson().getCombatStats().decreaseDefence();
+
         }
     }
 
@@ -233,6 +238,21 @@ public class Person implements Ownable {
         return this;
     }
 
+    /**
+     * @param npc NPC Person that executed the method
+     * @param action Class that the method belongs to. Should always be "this"
+     * @param trait Type of the method, slaver ambitious etc
+     * @param details The actual action and relevant information
+     */
+    public void logAction(Person npc, NPCAction action, Trait trait, String details){
+        getAiEngine().getNpcActionLogger().logAction(npc, action, trait, details);
+    }
 
+    public NPCActionLogger getNpcLogger() {
+        return getAiEngine().getNpcActionLogger();
+    }
+    public List<String> getLoggerMessages(){
+        return getAiEngine().getNpcActionLogger().getLogs();
+    }
 }
 

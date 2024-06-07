@@ -4,10 +4,7 @@ import model.Settings;
 import model.characters.Person;
 import model.characters.Trait;
 import model.characters.ai.actionCircle.WeightedCircle;
-import model.characters.ai.actions.CombatActions;
-import model.characters.ai.actions.ManagementActions;
-import model.characters.ai.actions.UtilityActions;
-import model.characters.ai.actions.WarActions;
+import model.characters.ai.actions.*;
 
 import java.util.*;
 
@@ -19,20 +16,21 @@ public class AiEngine {
     private final Person person;
     private Map<Trait, Integer> profile;
     private final WeightedCircle actionCircle = new WeightedCircle(25,1);
+    private final NPCActionLogger npcActionLogger = new NPCActionLogger();
 
     public AiEngine(Person person) {
         this.person = person;
         generatePersonalityProfile();
 
-        this.combatActions = new CombatActions(person, profile);
-        this.utilityActions = new UtilityActions(person, profile);
-        this.warActions = new WarActions(person, profile);
-        this.managementActions = new ManagementActions(person, profile);
-
-
+        this.combatActions = new CombatActions(person, npcActionLogger ,profile);
+        this.utilityActions = new UtilityActions(person, npcActionLogger, profile);
+        this.warActions = new WarActions(person, npcActionLogger, profile);
+        this.managementActions = new ManagementActions(person, npcActionLogger, profile);
 
         setUpActionLoop();
     }
+
+
 
     public void executeAiEngine() {
         actionCircle.executeLoop();
@@ -42,7 +40,7 @@ public class AiEngine {
         actionCircle.addAll(utilityActions.getAllActions());
         actionCircle.addAll(combatActions.getAllActions());
         actionCircle.addAll(managementActions.getAllActions());
-//        actionCircle.addAll(warActions.getAllActions());
+        actionCircle.addAll(warActions.getAllActions());
     }
 
     /**
@@ -157,6 +155,10 @@ public class AiEngine {
 
     public Person getPerson() {
         return person;
+    }
+
+    public NPCActionLogger getNpcActionLogger() {
+        return npcActionLogger;
     }
 
 }

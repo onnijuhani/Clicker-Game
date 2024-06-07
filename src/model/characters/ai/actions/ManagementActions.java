@@ -2,7 +2,6 @@ package model.characters.ai.actions;
 
 import customExceptions.InsufficientResourcesException;
 import model.buildings.Construct;
-import model.war.Military;
 import model.buildings.Property;
 import model.buildings.properties.Fortress;
 import model.buildings.utilityBuilding.UtilityBuildings;
@@ -19,37 +18,30 @@ import model.shop.Exchange;
 import model.shop.UtilityShop;
 import model.stateSystem.EventTracker;
 import model.time.Time;
+import model.war.Military;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class ManagementActions {
-    private final Person person;
-    private final Wallet wallet;
-    private final Exchange exchange;
-    private final UtilityShop utilityShop;
-    private final List<WeightedObject> allActions = new LinkedList<>();
-
-    private final Map<Trait, Integer> profile;
-
+public class ManagementActions extends BaseActions {
     private int gold_need_threshold = 20;
     private int alloy_need_threshold = 100;
     private int food_need_threshold = 200;
 
-    public ManagementActions(Person person, final Map<Trait, Integer> profile) {
-        this.person = person;
-        this.wallet = person.getWallet();
-        this.exchange = person.getRole().getNation().getShop().getExchange();
-        this.utilityShop = person.getRole().getNation().getShop().getUtilityShop();
-        this.profile = profile;
-        createAllActions();
+    private final Wallet wallet = person.getWallet();
+    private final Exchange exchange = person.getRole().getNation().getShop().getExchange();
+
+    public ManagementActions(Person person, NPCActionLogger npcActionLogger, Map<Trait, Integer> profile) {
+        super(person, npcActionLogger, profile);
     }
-    private void createAllActions() {
-        EvaluateNeeds evaluateNeeds = new EvaluateNeeds(10, profile);
-        TakeActionOnNeeds takeActionOnNeeds = new TakeActionOnNeeds(10, profile);
-        BalanceResources balanceResources = new BalanceResources(10,profile);
-        TradeMarket tradeMarket = new TradeMarket(10, profile);
+
+
+    @Override
+    protected void createAllActions() {
+        EvaluateNeeds evaluateNeeds = new EvaluateNeeds(person, npcActionLogger,5,profile);
+        TakeActionOnNeeds takeActionOnNeeds = new TakeActionOnNeeds(person, npcActionLogger,5,profile);
+        BalanceResources balanceResources = new BalanceResources(person, npcActionLogger,5,profile);
+        TradeMarket tradeMarket = new TradeMarket(person, npcActionLogger,5,profile);
 
 
         allActions.add(evaluateNeeds);
@@ -64,8 +56,9 @@ public class ManagementActions {
      */
     class TradeMarket extends WeightedObject {
 
-        public TradeMarket(int weight, Map<Trait, Integer> profile) {
-            super(weight, profile);
+
+        public TradeMarket(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
         }
 
         @Override
@@ -78,6 +71,7 @@ public class ManagementActions {
             if(wallet.isLowBalance()){
                 return;
             }
+
 
             int gold = wallet.getGold();
             double foodRatioInMarket = exchange.getWallet().getBalanceRatio()[0];
@@ -121,9 +115,12 @@ public class ManagementActions {
         private int alloyBoughtCounter = 0;
         private int goldBoughtCounter = 0;
         private int lastCheck;
-        public BalanceResources(int weight, Map<Trait, Integer> profile) {
-            super(weight, profile);
+
+        public BalanceResources(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
         }
+
+
         @Override
         public void execute(){
             defaultAction();
@@ -140,6 +137,8 @@ public class ManagementActions {
             }else{
                 lastCheck = currentMonth;
             }
+
+
 
             double[] currentRatio = person.getWallet().getBalanceRatio();
             double total = currentRatio[0] + currentRatio[1] + currentRatio[2];
@@ -207,8 +206,9 @@ public class ManagementActions {
 
     class EvaluateRoleSpecificNeeds extends WeightedObject {
 
-        public EvaluateRoleSpecificNeeds(int weight, Map<Trait, Integer> profile) {
-            super(weight, profile);
+
+        public EvaluateRoleSpecificNeeds(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
         }
 
         @Override
@@ -240,7 +240,7 @@ public class ManagementActions {
                 case Captain:
 
                     if(!evaluateExtremeTaxPolicy()){
-                        if(!evaluateLowTaxPolicy()){
+                        if(evaluateLowTaxPolicy()){
                             person.addAspiration(Aspiration.SET_STANDARD_TAX);
                         }
                     }
@@ -249,7 +249,7 @@ public class ManagementActions {
                 case Mayor:
 
                     if(!evaluateExtremeTaxPolicy()){
-                        if(!evaluateLowTaxPolicy()){
+                        if(evaluateLowTaxPolicy()){
                             person.addAspiration(Aspiration.SET_STANDARD_TAX);
                         }
                     }
@@ -258,7 +258,7 @@ public class ManagementActions {
                 case Governor:
 
                     if(!evaluateExtremeTaxPolicy()){
-                        if(!evaluateLowTaxPolicy()){
+                        if(evaluateLowTaxPolicy()){
                             person.addAspiration(Aspiration.SET_STANDARD_TAX);
                         }
                     }
@@ -270,10 +270,12 @@ public class ManagementActions {
                 case King:
 
                     if(!evaluateExtremeTaxPolicy()){
-                        if(!evaluateLowTaxPolicy()){
+                        if(evaluateLowTaxPolicy()){
                             person.addAspiration(Aspiration.SET_STANDARD_TAX);
                         }
                     }
+                    person.removeAspiration(Aspiration.ACHIEVE_HIGHER_POSITION);
+
 
                 case Noble:
 
@@ -322,15 +324,16 @@ public class ManagementActions {
             if (loyal != null && unambitious != null && liberal != null) {
                 if (loyal > 10 && unambitious > 10 && liberal > 10) {
                     person.addAspiration(Aspiration.SET_LOW_TAXES);
-                    return true;
+                    return false;
                 }
                 if (loyal > 50 || unambitious > 70 || liberal > 40) {
                     person.addAspiration(Aspiration.SET_MEDIUM_TAXES);
-                    return true;
+                    return false;
                 }
             }
-            return false;
+            return true;
         }
+
 
     }
 
@@ -339,9 +342,11 @@ public class ManagementActions {
      */
     class TakeActionOnNeeds extends WeightedObject{
         int counter = 0;
-        public TakeActionOnNeeds(int weight, Map<Trait, Integer> profile) {
-            super(weight, profile);
+
+        public TakeActionOnNeeds(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
         }
+
 
         @Override
         public void execute(){
@@ -434,27 +439,29 @@ public class ManagementActions {
 
                     case INVEST_IN_GOLD_PRODUCTION:
                         if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
-                        utilityShop.upgradeBuilding(UtilityBuildings.GoldMine, person);
+                        UtilityShop.upgradeBuilding(UtilityBuildings.GoldMine, person);
                         break;
 
                     case INVEST_IN_ALLOY_PRODUCTION:
                         if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
-                        utilityShop.upgradeBuilding(UtilityBuildings.AlloyMine, person);
+                        UtilityShop.upgradeBuilding(UtilityBuildings.AlloyMine, person);
                         break;
 
                     case INVEST_IN_FOOD_PRODUCTION:
                         if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
-                        utilityShop.upgradeBuilding(UtilityBuildings.MeadowLands, person);
+                        UtilityShop.upgradeBuilding(UtilityBuildings.MeadowLands, person);
                         break;
 
                     default:// if there are no aspirations, make a deposit to vault and upgrade defence if they are passive or unambitious. Others do nothing
 
                         if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) break;
-                        if (counter < 1000) {counter++;break;}
+                        if (counter < 500) {counter++;break;}
                         if(profile.containsKey(Trait.Passive) || profile.containsKey(Trait.Unambitious)) {
-                            TransferPackage vaultDeposit = new TransferPackage(food_need_threshold / 2, alloy_need_threshold / 2, gold_need_threshold / 2);
+                            TransferPackage netCash = person.getPaymentManager().getNetCash();
+                            TransferPackage vaultDeposit = new TransferPackage(netCash.food(), netCash.alloy(), netCash.gold());
                             property.getVault().deposit(wallet, vaultDeposit);
                             person.getEventTracker().addEvent(EventTracker.Message("Major","Adding resources to vault " + vaultDeposit));
+                            person.addAspiration(Aspiration.INCREASE_PROPERTY_DEFENCE);
                         }
                         break;
                 }
@@ -468,9 +475,11 @@ public class ManagementActions {
     class EvaluateNeeds extends WeightedObject {
         int counter = 0;
 
-        public EvaluateNeeds(int weight, Map<Trait, Integer> profile) {
-            super(weight, profile);
+        public EvaluateNeeds(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
         }
+
+
         @Override
         public void execute(){
             defaultAction();
@@ -511,7 +520,11 @@ public class ManagementActions {
 
             //evaluate need for new property
             if(property.getUtilitySlot().getSlotAmount() == 5){
-                //TODO add something here eventually to upgrade into military properties
+                // make sure they have net cash high enough to sustain the default army before attempting to update into military buildings
+                TransferPackage netCash = person.getPaymentManager().getNetBalance();
+                if(netCash.food() > 1100 && netCash.alloy() > 300 && netCash.gold() > 100){
+                    person.addAspiration(Aspiration.UPGRADE_PROPERTY);
+                }
 
             }else if(usedSlotAmount == property.getUtilitySlot().getSlotAmount()) {
                 if (property.getUtilitySlot().getTotalUpgradeLevels() > 3 * usedSlotAmount){ // idea here is to upgrade some of the utility buildings first before the property
@@ -524,6 +537,12 @@ public class ManagementActions {
         private void evaluateMinimumResourceNeeds() {
 
             int food = wallet.getFood();
+
+            TransferPackage netCash = person.getPaymentManager().getNetCash();
+
+            food_need_threshold = netCash.food();
+            alloy_need_threshold = netCash.alloy();
+            gold_need_threshold = netCash.gold();
 
             if( food < food_need_threshold ) {
                 person.addAspiration(Aspiration.GET_FOOD_INSTANTLY);

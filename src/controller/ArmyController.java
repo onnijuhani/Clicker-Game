@@ -22,6 +22,7 @@ import model.war.ArmyCost;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ArmyController extends BaseController {
@@ -157,7 +158,10 @@ public class ArmyController extends BaseController {
         if (currentCharacter == null) {
             return;
         }
-        if(!(currentCharacter.getPerson() == model.getPlayerPerson())) {
+        if(!(currentCharacter.getPerson() == model.getPlayerPerson()) || !currentCharacter.getPerson().isPlayer()) {
+            return;
+        }
+        if(army == null){
             return;
         }
 
@@ -172,7 +176,7 @@ public class ArmyController extends BaseController {
                 () -> {
                     if(autoTraining.isSelected()){
                         if(currentCharacter.getPerson().getWallet().getAlloy() > 10_000) {
-                            if (latestUpgrade == "Defence") {
+                            if (Objects.equals(latestUpgrade, "Defence")) {
                                 increaseAttackFunction();
                                 latestUpgrade = "Attack";
                             } else {

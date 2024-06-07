@@ -145,6 +145,9 @@ public class Exchange extends ShopComponents {
 
         int totalCost = Math.max( (int) (costWithoutFee * (1 + marketFee)), 1);
 
+        if(!character.getPerson().isPlayer()){
+            TransferPackage netCash = character.getPerson().getPaymentManager().getNetCash();
+        }
 
         if (!character.getPerson().getWallet().hasEnoughResource(sellType, totalCost)) {
             if(character.getPerson().isPlayer()) {
@@ -165,7 +168,7 @@ public class Exchange extends ShopComponents {
             character.getPerson().getWallet().addResources(purchasePackage);
 
 
-            String message = EventTracker.Message("Major", "Exchanged " +totalCost +"-"+ sellType + " for " + amountToBuy +"-"+ buyType);
+            String message = EventTracker.Message("Shop", "Exchanged " +totalCost +"-"+ sellType + " for " + amountToBuy +"-"+ buyType);
             character.getEventTracker().addEvent(message);
 
 
@@ -415,11 +418,11 @@ public class Exchange extends ShopComponents {
 
 
         public double getRate(Resource sell, Resource buy) {
-            if (sell.equals(Resource.Food) && buy.equals(Resource.Gold)) {
+            if (sell.equals(model.resourceManagement.Resource.Food) && buy.equals(model.resourceManagement.Resource.Gold)) {
                 return getFoodToGold();
-            } else if (sell.equals(Resource.Alloy) && buy.equals(Resource.Gold)) {
+            } else if (sell.equals(model.resourceManagement.Resource.Alloy) && buy.equals(model.resourceManagement.Resource.Gold)) {
                 return getAlloyToGold();
-            } else if (sell.equals(Resource.Gold) && buy.equals(Resource.Food)) {
+            } else if (sell.equals(model.resourceManagement.Resource.Gold) && buy.equals(Resource.Food)) {
                 return getGoldToFood();
             } else if (sell.equals(Resource.Gold) && buy.equals(Resource.Alloy)) {
                 return getGoldToAlloy();

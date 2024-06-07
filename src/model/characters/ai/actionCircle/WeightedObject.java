@@ -1,8 +1,10 @@
 package model.characters.ai.actionCircle;
 
 import model.Settings;
+import model.characters.Person;
 import model.characters.Trait;
 import model.characters.ai.actions.NPCAction;
+import model.characters.ai.actions.NPCActionLogger;
 
 import java.util.Map;
 import java.util.Random;
@@ -12,11 +14,26 @@ public class WeightedObject implements NPCAction {
     protected int importance; // Importance affects the speed in which weight is changed
     protected Map<Trait, Integer> profile;
 
-    public WeightedObject(int weight, Map<Trait, Integer> profile) {
+    protected final Person person;
+    protected final NPCActionLogger logger;
+
+
+    public WeightedObject(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+        this.person = person;
+        this.logger = npcActionLogger;
         this.weight = weight;
         this.importance = weight;
         this.profile = profile;
     }
+
+
+    protected void logAction(Trait trait, String details) {
+        logger.logAction(person, this, trait, details);
+    }
+    protected void logAction(String details) {
+        logger.logAction(person, this, "Default", details);
+    }
+
 
     @Override
     public int compareTo(NPCAction other) {
@@ -27,14 +44,6 @@ public class WeightedObject implements NPCAction {
     }
 
 
-    public WeightedObject() {
-        this.weight = 1;
-        this.importance = 1;
-    }
-    public WeightedObject(int weight, int importance) {
-        this.weight = weight;
-        this.importance = importance;
-    }
 
     public int getWeight(){
         return weight;
@@ -116,6 +125,12 @@ public class WeightedObject implements NPCAction {
                 break;
         }
     }
+
+    @Override
+    public void getNpcLogger() {
+
+    }
+
     @Override
     public void defaultAction()  {
     }

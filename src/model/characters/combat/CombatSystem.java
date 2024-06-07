@@ -19,6 +19,8 @@ import model.worldCreation.Area;
 
 import java.util.*;
 
+import static model.stateSystem.SpecialEventsManager.getFirstAuthorityPositionMessage;
+
 public class CombatSystem {
     private final Person attacker;
     private final CombatStats attackerStats;
@@ -241,7 +243,7 @@ public class CombatSystem {
         List<String> winButtonTextsVictory = Arrays.asList("More victories to come", "Victory is sweet", "Another one bites the dust", "Onward to glory!", "Onwards!");
         List<String> loseButtonTextsVictory = Arrays.asList("Well..", "A setback, not the end", "Power up and strike back", "We will try again", "...", "What?!");
 
-        List<String> winButtonTextsDefeat = Arrays.asList("They should never try again", "Victory is sweet", "Another one bites the dust", "Onward to glory!", "Should remain loyal..");
+        List<String> winButtonTextsDefeat = Arrays.asList("They should never try again", "Victory is sweet", "Another one bites the dust", "Onward to glory!", "They should remain loyal..");
         List<String> loseButtonTextsDefeat = Arrays.asList("They will be avenged...", "A setback, not the end", "Power up and strike back", "We shall rise again", "...", "Ouch..");
 
 
@@ -249,6 +251,7 @@ public class CombatSystem {
             if (attacker.isPlayer()) {
 
                 Character authority = defender.getRole().getAuthority().getCharacterInThisPosition();
+                Authority authorityPos = defender.getRole().getPosition();
                 String name;
                 if(authority == attacker.getCharacter()){
                     name = "Yourself";
@@ -259,7 +262,7 @@ public class CombatSystem {
                 headline = "Authority Position Gained";
                 mainText = "You have won the Authority Battle against " + defender + "\n\n" +
                         "You are now " + defender.getRole() + " in the " + defender.getRole().getPosition().getAreaUnderAuthority().toAreaString()+
-                        " and under the authority of:\n" + name;
+                        " and under the authority of:\n" + name + getFirstAuthorityPositionMessage(authorityPos);
                 imagePath = "Properties/authorityChallengeWon.jpg";
                 buttonText = PopUpMessageTracker.getRandomButtonText(winButtonTextsVictory);
             } else if (defender.isPlayer()) {

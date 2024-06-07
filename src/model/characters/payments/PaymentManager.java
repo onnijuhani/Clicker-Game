@@ -10,6 +10,7 @@ public class PaymentManager {
 
 
 
+
     // A class to hold payment information
     public class PaymentInfo {
         public Payment name;
@@ -63,7 +64,6 @@ public class PaymentManager {
 
     private boolean netBalanceNeedsUpdate = true;
     private TransferPackage cachedNetBalance;
-
     private boolean combineUtilities = false;
 
     public PaymentManager(Wallet wallet) {
@@ -71,6 +71,9 @@ public class PaymentManager {
     }
 
 
+    /**
+     * @return Returns the wallet balance minus expenses
+     */
     public TransferPackage getNetCash() {
         return wallet.getBalance().subtract(getFullExpense());
     }
@@ -95,6 +98,9 @@ public class PaymentManager {
         netBalanceNeedsUpdate = true;
     }
 
+    /**
+     * @return Returns the difference between income and expenses
+     */
     public TransferPackage getNetBalance() {
         if (netBalanceNeedsUpdate) {
             cachedNetBalance = calculateNetBalance();

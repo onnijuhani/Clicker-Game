@@ -1,6 +1,7 @@
 package model.resourceManagement;
 
 import static model.Settings.formatNumber;
+import static model.Settings.formatShortNumber;
 
 public record TransferPackage(int food, int alloy, int gold) {
     public int[] getAll() {
@@ -28,7 +29,7 @@ public record TransferPackage(int food, int alloy, int gold) {
         return "Food: "+formatNumber(food)+" Alloys: "+formatNumber(alloy)+" Gold: "+formatNumber(gold);
     }
     public String toShortString() {
-        return "F:"+formatNumber(food)+" A:"+formatNumber(alloy)+" G:"+formatNumber(gold);
+        return "F:"+formatShortNumber(food)+" A:"+formatShortNumber(alloy)+" G:"+formatShortNumber(gold);
     }
     public int food() {
         return food;
@@ -59,5 +60,13 @@ public record TransferPackage(int food, int alloy, int gold) {
         return new TransferPackage((int) (food / divisor), (int) (alloy / divisor), (int) (gold / divisor));
     }
 
+    public boolean isPositive(){
+        if(food > 0 && alloy > 0 && gold > 0){
+            return true;
+        }else{
+            System.out.println(this+" returned negative wallet balance");
+            return false;
+        }
+    }
 
 }

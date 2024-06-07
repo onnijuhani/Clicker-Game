@@ -4,41 +4,37 @@ import model.buildings.properties.MilitaryProperty;
 import model.characters.Person;
 import model.characters.Trait;
 import model.characters.ai.actionCircle.WeightedObject;
+import model.resourceManagement.TransferPackage;
 import model.stateSystem.EventTracker;
 import model.war.Army;
+import model.war.ArmyCost;
+import model.war.Military;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class WarActions {
-    private final Person person;
-    private final Map<Trait, Integer> profile;
+public class WarActions extends BaseActions {
 
-    private final List<WeightedObject> allActions = new LinkedList<>();
-
-
-
-
-    public WarActions(Person person, Map<Trait, Integer> profile) {
-        this.person = person;
-        this.profile = profile;
-        createAllActions();
+    public WarActions(Person person, NPCActionLogger npcActionLogger, Map<Trait, Integer> profile) {
+        super(person, npcActionLogger, profile);
     }
 
-    private void createAllActions() {
-        HireSoldiers hireSoldiers = new HireSoldiers(5,profile);
+    @Override
+    protected void createAllActions() {
+        HireSoldiers hireSoldiers = new HireSoldiers(person, npcActionLogger,5,profile);
+        TrainAttack trainAttack = new TrainAttack(person, npcActionLogger,5,profile);
+        TrainDefence trainDefence = new TrainDefence(person, npcActionLogger,5,profile);
 
         allActions.add(hireSoldiers);
-
+        allActions.add(trainAttack);
+        allActions.add(trainDefence);
     }
 
     class HireSoldiers extends WeightedObject{
 
-        public HireSoldiers(int weight, Map<Trait, Integer> profile) {
-            super(weight, profile);
+        public HireSoldiers(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
         }
-
 
         @Override
         public void defaultAction(){
@@ -48,26 +44,89 @@ public class WarActions {
             MilitaryProperty property = (MilitaryProperty) person.getProperty();
             Army army = property.getArmy();
 
-            if(army.recruitSoldier(2)){ //todo add logic to determine the amount
-                person.getEventTracker().addEvent(EventTracker.Message("Major", "Recruited new Soldier(s)"));
+
+            TransferPackage netBalance = person.getPaymentManager().getNetBalance();
+
+            if(!(netBalance.food() > ArmyCost.runningFood)){
+                return;
+            }
+
+            // amount of soldiers to hire
+            int amount =  Math.max(netBalance.food() / ArmyCost.runningFood - 1, 1) ;
+
+            if(army.recruitSoldier(amount)){
+                person.getEventTracker().addEvent(EventTracker.Message("Major", "Recruited " + amount + " new Soldier(s)"));
+
+
+                logAction(String.format("Recruited %d new soldiers", amount));
+
             }else{
                 person.getEventTracker().addEvent(EventTracker.Message("Major", "Recruiting new Soldiers went wrong"));
             }
 
+
+
+        }
+    }
+    class TrainAttack extends WeightedObject {
+
+        public TrainAttack(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
         }
 
+        @Override
+        public void defaultAction() {
+            if (notMilitaryProperty()) {
+                return;
+            }
+
+            TransferPackage netBalance = person.getPaymentManager().getNetBalance();
+
+            if (!(netBalance.alloy() > ArmyCost.runningAlloy)) {
+                return;
+            }
+
+            Army army = getCurrentArmy();
+
+            army.increaseAttackPower();
+
+
+        }
+    }
+
+    class TrainDefence extends WeightedObject {
+
+        public TrainDefence(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
+        }
+
+        @Override
+        public void defaultAction() {
+            if (notMilitaryProperty()) {
+                return;
+            }
+
+            TransferPackage netBalance = person.getPaymentManager().getNetBalance();
+
+            if (!(netBalance.alloy() > ArmyCost.runningAlloy)) {
+                return;
+            }
+
+            Army army = getCurrentArmy();
+
+            army.increaseDefencePower();
+        }
+    }
+
+    private Army getCurrentArmy() {
+        Military military = (Military)person.getProperty();
+        return military.getArmy();
     }
 
     private boolean notMilitaryProperty() {
-        if(!(person.getProperty() instanceof MilitaryProperty)){
-            return true;
-        }
-        return false;
+        return !(person.getProperty() instanceof MilitaryProperty);
     }
-
     public List<WeightedObject> getAllActions() {
         return allActions;
     }
-
-
 }

@@ -1,6 +1,5 @@
 package model.characters.ai.actions;
 
-import model.buildings.Property;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.buildings.utilityBuilding.UtilitySlot;
 import model.characters.Person;
@@ -10,39 +9,33 @@ import model.characters.ai.Aspiration;
 import model.characters.ai.actionCircle.WeightedObject;
 import model.shop.UtilityShop;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 /**
  * THE IMPORTANCE OF THESE SHOULD BE VERY LOW.
  */
-public class UtilityActions {
-    private final Person person;
-    private final UtilitySlot utilitySlot;
-    private final UtilityShop utilityShop;
-    private final List<WeightedObject> allActions = new LinkedList<>();
-    private final Map<Trait, Integer> profile;
+public class UtilityActions extends BaseActions{
+
 
     private int counter = 0; // the point of this counter is to make sure every utility building gets upgraded slowly even if no other method does it.
     private int counterTarget = 1; // getting the year from Time makes the Target higher so that later levels these "forced" upgrades happen more rarely
-    public UtilityActions(Person person, Map<Trait, Integer> profile ) {
-        this.person = person;
-        Property property = person.getProperty();
-        this.utilitySlot = property.getUtilitySlot();
-        this.utilityShop = property.getLocation().getNation().getShop().getUtilityShop();
-        this.profile = profile;
-        createAllActions();
+
+    UtilitySlot utilitySlot;
+
+    public UtilityActions(Person person, NPCActionLogger npcActionLogger, Map<Trait, Integer> profile) {
+        super(person, npcActionLogger, profile);
+        this.utilitySlot = person.getProperty().getUtilitySlot();
     }
 
-
-    private void createAllActions() {
-        Meadowlands meadowlands = new Meadowlands(5, profile);
-        AlloyMine alloyMine = new AlloyMine(10, profile);
-        GoldMine goldMine = new GoldMine(15, profile);
-        MysticMine mysticMine = new MysticMine(10, profile);
-        SlaveFacility slaveFacility = new SlaveFacility(10, profile);
-        WorkerCenter workerCenter = new WorkerCenter(10, profile);
+    @Override
+    protected void createAllActions() {
+        Meadowlands meadowlands = new Meadowlands(person, npcActionLogger,5,profile);
+        AlloyMine alloyMine = new AlloyMine(person, npcActionLogger,5,profile);
+        GoldMine goldMine = new GoldMine(person, npcActionLogger,5,profile);
+        MysticMine mysticMine = new MysticMine(person, npcActionLogger,5,profile);
+        SlaveFacility slaveFacility = new SlaveFacility(person, npcActionLogger,5,profile);
+        WorkerCenter workerCenter = new WorkerCenter(person, npcActionLogger,5,profile);
 
         allActions.add(meadowlands);
         allActions.add(alloyMine);
@@ -68,8 +61,9 @@ public class UtilityActions {
 
     class GoldMine extends WeightedObject {
 
-        public GoldMine(int weight, Map<Trait, Integer> profile) {
-            super(weight, profile);
+
+        public GoldMine(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
         }
 
         @Override
@@ -86,12 +80,12 @@ public class UtilityActions {
             if (lowBalanceReturn()) return;
 
             if (!utilitySlot.isUtilityBuildingOwned(UtilityBuildings.GoldMine)) {
-                utilityShop.buyBuilding(UtilityBuildings.GoldMine, person);
+                UtilityShop.buyBuilding(UtilityBuildings.GoldMine, person);
             } else {
                 if(counter > counterTarget) {
                     counter = 0;
                     counterTarget = 15;
-                    utilityShop.upgradeBuilding(UtilityBuildings.GoldMine, person);
+                    UtilityShop.upgradeBuilding(UtilityBuildings.GoldMine, person);
                 }
             }
 
@@ -101,10 +95,14 @@ public class UtilityActions {
 
 
     class Meadowlands extends WeightedObject {
-        public Meadowlands(int weight, Map<Trait, Integer> profile) {
-            super(weight, profile);
-        }
+
         private int amountsReached = 0;
+
+        public Meadowlands(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
+        }
+
+
         @Override
         public void execute() {
 
@@ -128,22 +126,26 @@ public class UtilityActions {
             if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
 
             if (!utilitySlot.isUtilityBuildingOwned(UtilityBuildings.MeadowLands)) {
-                utilityShop.buyBuilding(UtilityBuildings.MeadowLands, person);
+                UtilityShop.buyBuilding(UtilityBuildings.MeadowLands, person);
             } else {
                 if (counter > counterTarget) {
                     counter = 0;
-                    counterTarget = 15;counterTarget = 15;
-                    utilityShop.upgradeBuilding(UtilityBuildings.MeadowLands, person);
+                    counterTarget = 15;
+                    UtilityShop.upgradeBuilding(UtilityBuildings.MeadowLands, person);
                 }
             }
         }
     }
 
     class AlloyMine extends WeightedObject {
-        public AlloyMine(int weight, Map<Trait, Integer> profile) {
-            super(weight, profile);
-        }
+
         private int amountsReached = 0;
+
+        public AlloyMine(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
+        }
+
+
         @Override
         public void execute(){
 
@@ -166,20 +168,23 @@ public class UtilityActions {
             if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
 
             if (!utilitySlot.isUtilityBuildingOwned(UtilityBuildings.AlloyMine)) {
-                utilityShop.buyBuilding(UtilityBuildings.AlloyMine, person);
+                UtilityShop.buyBuilding(UtilityBuildings.AlloyMine, person);
             } else {
                 if(counter > counterTarget) {
                     counter = 0;
                     counterTarget = 15;
-                    utilityShop.upgradeBuilding(UtilityBuildings.AlloyMine, person);
+                    UtilityShop.upgradeBuilding(UtilityBuildings.AlloyMine, person);
                 }
             }
         }
     }
     class MysticMine extends WeightedObject {
-        public MysticMine(int weight, Map<Trait, Integer> profile) {
-            super(weight, profile);
+
+
+        public MysticMine(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
         }
+
         @Override
         public void execute(){
             defaultAction();
@@ -194,22 +199,23 @@ public class UtilityActions {
             if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
 
             if (!utilitySlot.isUtilityBuildingOwned(UtilityBuildings.MysticMine)) {
-                utilityShop.buyBuilding(UtilityBuildings.MysticMine, person);
+                UtilityShop.buyBuilding(UtilityBuildings.MysticMine, person);
             } else {
                 if(counter > counterTarget) {
                     counter = 0;
                     counterTarget = 15;
-                    utilityShop.upgradeBuilding(UtilityBuildings.MysticMine, person);
+                    UtilityShop.upgradeBuilding(UtilityBuildings.MysticMine, person);
                 }
             }
         }
     }
 
     class SlaveFacility extends WeightedObject {
-        public SlaveFacility(int weight, Map<Trait, Integer> profile) {
-            super(weight, profile);
-        }
 
+
+        public SlaveFacility(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
+        }
 
         /**
          * default is to buy or upgrade the building. Default Skip is to do nothing.
@@ -226,12 +232,12 @@ public class UtilityActions {
             }
 
             if (!utilitySlot.isUtilityBuildingOwned(UtilityBuildings.SlaveFacility)) {
-                utilityShop.buyBuilding(UtilityBuildings.SlaveFacility, person);
+                UtilityShop.buyBuilding(UtilityBuildings.SlaveFacility, person);
             } else {
                 if(counter > counterTarget) {
                     counter = 0;
                     counterTarget = 15;
-                    utilityShop.upgradeBuilding(UtilityBuildings.SlaveFacility, person);
+                    UtilityShop.upgradeBuilding(UtilityBuildings.SlaveFacility, person);
 
                     // non slavers join the guild after level 5
                     if (utilitySlot.getUtilityBuilding(UtilityBuildings.SlaveFacility).getUpgradeLevel() > 5) {
@@ -256,8 +262,9 @@ public class UtilityActions {
 
     class WorkerCenter extends WeightedObject {
 
-        public WorkerCenter(int weight, Map<Trait, Integer> profile) {
-            super(weight, profile);
+
+        public WorkerCenter(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
         }
 
         /**
@@ -275,12 +282,12 @@ public class UtilityActions {
             }
 
             if (!utilitySlot.isUtilityBuildingOwned(UtilityBuildings.WorkerCenter)) {
-                utilityShop.buyBuilding(UtilityBuildings.WorkerCenter, person);
+                UtilityShop.buyBuilding(UtilityBuildings.WorkerCenter, person);
             } else {
                 if(counter > counterTarget) {
                     counter = 0;
                     counterTarget = 15;
-                    utilityShop.upgradeBuilding(UtilityBuildings.WorkerCenter, person);
+                    UtilityShop.upgradeBuilding(UtilityBuildings.WorkerCenter, person);
 
                     // non liberals join the guild after level 5
                     if (utilitySlot.getUtilityBuilding(UtilityBuildings.WorkerCenter).getUpgradeLevel() > 5) {

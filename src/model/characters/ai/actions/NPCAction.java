@@ -19,6 +19,8 @@ public interface NPCAction extends Comparable<NPCAction> {
 
     void execute();
 
+    void getNpcLogger();
+
     /**
      * if the NPC executes literally what the class name says it's then called defaultAction
      */

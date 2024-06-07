@@ -45,7 +45,6 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
     private Label marketFee;
     @FXML
     private Label shopWalletBalance;
-    private MainController main;
 
     @FXML
     private CheckBox monthlyAlloys;

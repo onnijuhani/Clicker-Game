@@ -18,12 +18,16 @@ public class Army implements ArmyObserver, PaymentTracker {
 
     @Override
     public void armyUpdate(int day) {
-        if(day == expenseDay) {
-            if(owner.isPlayer()){
-                System.out.println("wtf "+getRunningCost());
+        try {
+            if(day == expenseDay) {
+                if(owner.isPlayer()){
+                    System.out.println("wtf "+getRunningCost());
+                }
+                payRunningCosts();
+                updatePaymentCalendar(owner.getPaymentManager());
             }
-            payRunningCosts();
-            updatePaymentCalendar(owner.getPaymentManager());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
 
@@ -36,11 +40,15 @@ public class Army implements ArmyObserver, PaymentTracker {
 
 
     private void payRunningCosts() {
-        if(!wallet.subtractResources(getRunningCost())){
-            owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army expenses not paid"));
-            owner.loseStrike();
-        }else{
-            owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army expenses paid: " + getRunningCost()));
+        try {
+            if(!wallet.subtractResources(getRunningCost())){
+                owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army expenses not paid"));
+                owner.loseStrike();
+            }else{
+                owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army expenses paid: " + getRunningCost().toShortString()));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -74,26 +82,29 @@ public class Army implements ArmyObserver, PaymentTracker {
 
 
     public boolean increaseDefencePower(){
-        if(trainingInProcess){
-            return false;
+        try {
+            if (trainingInProcess) {
+                return false;
+            }
+            if (wallet == null) {
+                return false;
+            }
+            if (!wallet.subtractResources(new TransferPackage(0, ArmyCost.increaseArmyDefence, 0))) {
+                return false;
+            }
+            trainingInProcess = true;
+
+            GameEvent gameEvent = new GameEvent(Event.ArmyTraining, owner);
+            owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army Defence Training Started"));
+
+            int daysUntilEvent = 15;
+
+            EventManager.scheduleEvent(this::finishDefenceIncrease, daysUntilEvent, gameEvent);
+
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        if(wallet == null){
-            return false;
-        }
-        if(!wallet.subtractResources(new TransferPackage(0, ArmyCost.increaseArmyDefence,0))){
-            return false;
-        }
-        trainingInProcess = true;
-
-        GameEvent gameEvent = new GameEvent(Event.ArmyTraining, owner);
-        owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army Defence Training Started"));
-
-        int daysUntilEvent = 15;
-
-        EventManager.scheduleEvent(this::finishDefenceIncrease, daysUntilEvent, gameEvent);
-
-
-        return true;
     }
 
     private void finishDefenceIncrease() {
@@ -102,26 +113,34 @@ public class Army implements ArmyObserver, PaymentTracker {
         updatePaymentCalendar(owner.getPaymentManager());
         owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army Defence Training Finished"));
     }
-    public boolean increaseAttackPower(){
-        if(trainingInProcess){
-            return false;
+
+    public boolean increaseAttackPower() {
+        try {
+            if (trainingInProcess) {
+                return false;
+            }
+
+            if (wallet == null) {
+                return false;
+            }
+
+            if (!wallet.subtractResources(new TransferPackage(0, ArmyCost.increaseArmyAttack, 0))) {
+                return false;
+            }
+            trainingInProcess = true;
+
+            GameEvent gameEvent = new GameEvent(Event.ArmyTraining, owner);
+            owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army Offence Training Started"));
+
+            int daysUntilEvent = 15;
+
+            EventManager.scheduleEvent(this::finishAttackIncrease, daysUntilEvent, gameEvent);
+
+            return true;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        if(wallet == null){
-            return false;
-        }
-        if(!wallet.subtractResources(new TransferPackage(0,ArmyCost.increaseArmyAttack,0))){
-            return false;
-        }
-        trainingInProcess = true;
-
-        GameEvent gameEvent = new GameEvent(Event.ArmyTraining, owner);
-        owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army Offence Training Started"));
-
-        int daysUntilEvent = 15;
-
-        EventManager.scheduleEvent(this::finishAttackIncrease, daysUntilEvent, gameEvent);
-
-        return true;
     }
 
     private void finishAttackIncrease() {
@@ -133,29 +152,33 @@ public class Army implements ArmyObserver, PaymentTracker {
 
 
     public boolean recruitSoldier(int amount){
-        if(recruitingInProcess){
-            return false;
+        try {
+            if(recruitingInProcess){
+                return false;
+            }
+            if(wallet == null){
+                return false;
+            }
+
+            TransferPackage cost = ArmyCost.getRecruitingCost().multiply(amount);
+
+            if(!wallet.subtractResources(cost)){
+                return false;
+            }
+
+            recruitingInProcess = true;
+
+            GameEvent gameEvent = new GameEvent(Event.RecruitSoldier, owner);
+            owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Recruiting campaign started"));
+
+            int daysUntilEvent = 30 + amount*3;
+
+            EventManager.scheduleEvent(() -> finishSoldierRecruit(amount), daysUntilEvent, gameEvent);
+
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        if(wallet == null){
-            return false;
-        }
-
-        TransferPackage cost = ArmyCost.getRecruitingCost().multiply(amount);
-
-        if(!wallet.subtractResources(cost)){
-            return false;
-        }
-
-        recruitingInProcess = true;
-
-        GameEvent gameEvent = new GameEvent(Event.RecruitSoldier, owner);
-        owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Recruiting campaign started"));
-
-        int daysUntilEvent = 30 + amount*3;
-
-        EventManager.scheduleEvent(() -> finishSoldierRecruit(amount), daysUntilEvent, gameEvent);
-
-        return true;
 
     }
 

@@ -17,27 +17,21 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class CombatActions {
-    private final Random random;
-    private final Person person;
+public class CombatActions extends BaseActions {
+
     private Character mainTarget;
     private final Predicate<Person> isInBattle = person -> person.hasState(State.IN_BATTLE);
-    private final List<WeightedObject> allActions = new LinkedList<>();
-    private final Map<Trait, Integer> profile;
+    private final Random random = Settings.getRandom();
 
-
-    public CombatActions(Person person, final Map<Trait, Integer> profile) {
-        this.person = person;
-        this.random = new Random();
-        this.profile = profile;
-        createAllActions();
+    public CombatActions(Person person, NPCActionLogger npcActionLogger, Map<Trait, Integer> profile) {
+        super(person, npcActionLogger, profile);
     }
-
-    private void createAllActions() {
-        Duel duel = new Duel(2, profile);
-        Robbery robbery = new Robbery(5, profile);
-        EvaluateNeeds evaluateNeeds = new EvaluateNeeds(5, profile);
-        TakeActionOnNeeds takeActionOnNeeds = new TakeActionOnNeeds(5, profile);
+    @Override
+    protected void createAllActions() {
+        Duel duel = new Duel(person, npcActionLogger,5,profile);
+        Robbery robbery = new Robbery(person, npcActionLogger,5,profile);
+        EvaluateNeeds evaluateNeeds = new EvaluateNeeds(person, npcActionLogger,5,profile);
+        TakeActionOnNeeds takeActionOnNeeds = new TakeActionOnNeeds(person, npcActionLogger,5,profile);
 
         allActions.add(duel);
         allActions.add(robbery);
@@ -51,9 +45,11 @@ public class CombatActions {
 
     class TakeActionOnNeeds extends WeightedObject{
         int defaultCounter = 0;
-        public TakeActionOnNeeds(int weight, Map<Trait, Integer> profile) {
-            super(weight, profile);
+
+        public TakeActionOnNeeds(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
         }
+
         @Override
         public void execute(){
             if (resourceAbort()) return;
@@ -133,8 +129,9 @@ public class CombatActions {
     class EvaluateNeeds extends WeightedObject{
 
         int testCounter = 0;
-        public EvaluateNeeds(int weight, Map<Trait, Integer> profile) {
-            super(weight, profile);
+
+        public EvaluateNeeds(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
         }
 
 
@@ -231,10 +228,9 @@ public class CombatActions {
     class Duel extends WeightedObject{
 
 
-        public Duel(int weight, Map<Trait, Integer> profile) {
-            super(weight, profile);
+        public Duel(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
         }
-
 
         @Override
         public void execute() {
@@ -427,6 +423,10 @@ public class CombatActions {
     class AuthorityBattle extends WeightedObject{
 
 
+        public AuthorityBattle(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
+        }
+
         @Override
         public void defaultAction() {
 
@@ -454,8 +454,9 @@ public class CombatActions {
      */
     class Robbery extends WeightedObject {
 
-        public Robbery(int weight, Map<Trait, Integer> profile) {
-            super(weight, profile);
+
+        public Robbery(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
+            super(person, npcActionLogger, weight, profile);
         }
 
         @Override
