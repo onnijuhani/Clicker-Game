@@ -7,18 +7,18 @@ import java.util.Map;
 public class UpgradeSystem {
     protected int level;
     protected int basePrice;
-    protected int MAX_LEVEL = 6;
-    protected int increaseDivider = 2;
+    protected int MAX_LEVEL = 8;
+    protected int increaseDivider = 3;
     protected int value;
     protected final int PRICE_CEILING;
     protected final Map<String, Double> bonus = new HashMap<>();
-    protected double priceIncreaseAmount = 3;
+    protected double priceIncreaseAmount = 2.5;
 
     public UpgradeSystem(int basePrice) {
         this.level = 1;
         this.basePrice = basePrice;
         this.value = 1;
-        this.PRICE_CEILING = basePrice * 5000;
+        this.PRICE_CEILING = basePrice * 4000;
     }
     public UpgradeSystem(int basePrice, int price_ceiling_coef) {
         this.level = 1;
@@ -78,7 +78,7 @@ public class UpgradeSystem {
         if (level <= MAX_LEVEL) {
             value *= 2;
         } else {
-            int minAdjustment = (int) (value * 0.1);
+            int minAdjustment = (int) (value * 0.001);
             value += Math.max(minAdjustment, value / (increaseDivider * (level - MAX_LEVEL)));
         }
         return true;

@@ -74,7 +74,6 @@ public class UtilitySlot implements PaymentTracker {
         if (randomType != null) {
             createUtilityBuilding(randomType, character);
         }
-
     }
     private UtilityBuildings getRandomUtilityBuildingType() {
         List<UtilityBuildings> eligibleTypes = Arrays.stream(UtilityBuildings.values())
@@ -92,6 +91,10 @@ public class UtilitySlot implements PaymentTracker {
         UtilityBuilding newBuilding = UtilityShop.createBuilding(type,UtilityShop.getBuildingPrice(type), character);
         Property property = character.getPerson().getProperty();
         property.getUtilitySlot().addUtilityBuilding(type, newBuilding);
+    }
+
+    public int getAnyLevel(UtilityBuildings  type){
+        return getUtilityBuilding(type).getUpgradeLevel();
     }
 }
 

@@ -67,6 +67,7 @@ public class Wallet {
         if (transfer == null) {
             throw new IllegalArgumentException("TransferPackage cannot be null.");
         }
+        if(!transfer.isPositive()) throw new IllegalArgumentException("Negative value in transferPackage");
         if (limitReached()) return;
         this.food += transfer.food();
         this.alloy += transfer.alloy();
@@ -91,6 +92,7 @@ public class Wallet {
     }
 
     public boolean deposit(Wallet depositFromWallet, TransferPackage transfer){
+        if(!transfer.isPositive()) return false;
         if (limitReached()) return false;
         if(!depositFromWallet.hasEnoughResources(transfer)){
             return false; // quick return if there isn't enough resources, should never happen tho.
@@ -160,12 +162,16 @@ public class Wallet {
     public double[] getBalanceRatio() {
         double total = food + alloy + gold;
         if (total == 0) return new double[]{0, 0, 0};
-        return new double[]{(food / total) * 100, (alloy / total) * 100, (gold / total) * 100};
+        return new double[]{(food / total), (alloy / total), (gold / total)};
+    }
+
+    public int getCombinedAmount() {
+        return food + alloy + gold;
     }
 
     public String getRatioString() {
         double[] ratios = getBalanceRatio();
-        return String.format("Food: %.0f%% Alloys: %.0f%% Gold: %.0f%%", ratios[0], ratios[1], ratios[2]);
+        return String.format("Food: %.0f%% Alloys: %.0f%% Gold: %.0f%%", ratios[0]*100, ratios[1]*100, ratios[2]*100);
     }
 
     public TransferPackage getBalance(){
@@ -190,19 +196,19 @@ public class Wallet {
         return food;
     }
     public void setFood(int food) {
-        this.food = food;
+        this.food = Math.max(food, 0);
     }
     public int getAlloy() {
         return alloy;
     }
     public void setAlloy(int alloy) {
-        this.alloy = alloy;
+        this.alloy = Math.max(alloy, 0);
     }
     public int getGold() {
         return gold;
     }
     public void setGold(int gold) {
-        this.gold = gold;
+        this.gold = Math.max(gold, 0);
     }
 
 }

@@ -31,7 +31,6 @@ public class AiEngine {
     }
 
 
-
     public void executeAiEngine() {
         actionCircle.executeLoop();
     }
@@ -41,6 +40,8 @@ public class AiEngine {
         actionCircle.addAll(combatActions.getAllActions());
         actionCircle.addAll(managementActions.getAllActions());
         actionCircle.addAll(warActions.getAllActions());
+
+
     }
 
     /**

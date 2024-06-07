@@ -61,10 +61,9 @@ public record TransferPackage(int food, int alloy, int gold) {
     }
 
     public boolean isPositive(){
-        if(food > 0 && alloy > 0 && gold > 0){
+        if(food >= 0 && alloy >= 0 && gold >= 0){
             return true;
         }else{
-            System.out.println(this+" returned negative wallet balance");
             return false;
         }
     }

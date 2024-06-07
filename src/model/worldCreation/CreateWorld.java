@@ -5,6 +5,7 @@ import model.characters.Character;
 import model.characters.Peasant;
 import model.characters.Status;
 import model.characters.authority.Authority;
+import model.resourceManagement.TransferPackage;
 import model.time.GenerateManager;
 
 import java.util.List;
@@ -86,8 +87,8 @@ public class CreateWorld {
         GenerateManager.unSubscribe(initialPlayer);
 
 
-//        TransferPackage cheatPackage = new TransferPackage(500,500,5000000);
-//        initialPlayer.getPerson().getWallet().addResources(cheatPackage);
+        TransferPackage cheatPackage = new TransferPackage(500,500,500);
+        initialPlayer.getPerson().getWallet().addResources(cheatPackage);
 //        initialPlayer.getPerson().getProperty().getVault().addResources(cheatPackage);
 //        initialPlayer.getPerson().getWorkWallet().addResources(cheatPackage);
 

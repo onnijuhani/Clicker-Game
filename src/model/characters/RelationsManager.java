@@ -194,10 +194,14 @@ public class RelationsManager {
         return allies.contains(person);
     }
     public Set<Person> getAllies() {
-        return new HashSet<>(allies); // Return a copy to prevent external modifications
+        synchronized (this) {
+            return new HashSet<>(allies);
+        }
     }
     public Set<Person> getEnemies() {
-        return new HashSet<>(enemies); // Same here
+        synchronized (this) {
+            return new HashSet<>(enemies);
+        }
     }
 
     public Set<Person> getListOfDefeatedPersons() {
