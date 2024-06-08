@@ -99,16 +99,18 @@ public class Property implements PropertyObserver, Details, Ownable {
         owner.setProperty(this);
     }
 
-    public void upgradeDefenceWithGold(){
+    public boolean upgradeDefenceWithAlloys(){
         int price = getDefenceStats().getUpgradePrice();
         if(owner.getWallet().hasEnoughResource(Resource.Alloy,price)){
             owner.getWallet().subtractAlloy(price);
             getDefenceStats().increaseLevel();
             owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName()+"'s defence was increased"));
+            return true;
         }else{
             if(owner.isPlayer()){
                 owner.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough alloys to increase property defence"));
             }
+            return false;
         }
     }
     public Quarter getLocation() {

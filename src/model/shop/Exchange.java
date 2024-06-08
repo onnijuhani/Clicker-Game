@@ -133,8 +133,13 @@ public class Exchange extends ShopComponents {
     }
 
 
-
-
+    /**
+     * @param amountToBuy Amount you wish to buy
+     * @param buyType Resource you want to buy
+     * @param sellType Resourse you want to sell
+     * @param character Character doing the trade
+     * @return is trade was successful
+     */
     public boolean exchangeResources(int amountToBuy, Resource buyType, Resource sellType, Character character) {
 
         updateExchangeRates(); // Update rates based on current wallet status
@@ -151,12 +156,10 @@ public class Exchange extends ShopComponents {
 
         if (!character.getPerson().getWallet().hasEnoughResource(sellType, totalCost)) {
             if(character.getPerson().isPlayer()) {
-                String errorMessage = EventTracker.Message("error", "Insufficient resources for the exchange.");
+                String errorMessage = EventTracker.Message("Error", "Insufficient resources for the exchange.");
                 character.getEventTracker().addEvent(errorMessage);
-
             }
             return false;
-
         }
 
         TransferPackage costPackage = TransferPackage.fromEnum(sellType, totalCost);

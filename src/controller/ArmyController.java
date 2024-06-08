@@ -218,8 +218,8 @@ public class ArmyController extends BaseController {
             return;
         }
 
-        defPower.setText(""+army.totalDefencePower());
-        attackPower.setText(""+army.totalAttackPower());
+        defPower.setText(""+army.getTotalDefencePower());
+        attackPower.setText(""+army.getTotalAttackPower());
         numOfSoldiers.setText(""+army.getNumOfSoldiers());
 
         TransferPackage runningCost = army.getRunningCost();

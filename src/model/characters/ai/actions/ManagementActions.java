@@ -52,7 +52,7 @@ public class ManagementActions extends BaseActions {
     @Override
     protected void createAllActions() {
         EvaluateNeeds evaluateNeeds = new EvaluateNeeds(person, npcActionLogger,1,profile);
-        TakeActionOnNeeds takeActionOnNeeds = new TakeActionOnNeeds(person, npcActionLogger,5,profile);
+        TakeActionOnNeeds takeActionOnNeeds = new TakeActionOnNeeds(person, npcActionLogger,10,profile);
         TradeMarket tradeMarket = new TradeMarket(person, npcActionLogger,5,profile);
         EvaluateRoleSpecificNeeds evaluateRoleSpecificNeeds = new EvaluateRoleSpecificNeeds(person, npcActionLogger,5,profile);
 

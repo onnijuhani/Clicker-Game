@@ -9,6 +9,8 @@ import model.characters.ai.actionCircle.WeightedObject;
 import model.characters.combat.CombatService;
 import model.characters.combat.CombatStats;
 import model.resourceManagement.Resource;
+import model.shop.UpgradeSystem;
+import model.stateSystem.Event;
 import model.stateSystem.State;
 import model.time.Time;
 import model.worldCreation.Nation;
@@ -16,27 +18,38 @@ import model.worldCreation.Nation;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
+@SuppressWarnings("CallToPrintStackTrace")
 public class CombatActions extends BaseActions {
 
     private Character mainTarget;
     private final Predicate<Person> isInBattle = person -> person.hasState(State.IN_BATTLE);
     private final Random random = Settings.getRandom();
 
+
+    private int attackPowerLevel;
+    private int defencePowerLevel;
+    private UpgradeSystem propertyDefence;
+    private CombatStats combatStats;
+    Property property;
+
+
+
     public CombatActions(Person person, NPCActionLogger npcActionLogger, Map<Trait, Integer> profile) {
         super(person, npcActionLogger, profile);
     }
     @Override
     protected void createAllActions() {
-        Duel duel = new Duel(person, npcActionLogger,5,profile);
-        Robbery robbery = new Robbery(person, npcActionLogger,5,profile);
-        EvaluateNeeds evaluateNeeds = new EvaluateNeeds(person, npcActionLogger,5,profile);
-        TakeActionOnNeeds takeActionOnNeeds = new TakeActionOnNeeds(person, npcActionLogger,5,profile);
+        Duel duel = new Duel(person, npcActionLogger,3,profile);
+        Robbery robbery = new Robbery(person, npcActionLogger,2,profile);
+        EvaluateNeeds evaluateNeeds = new EvaluateNeeds(person, npcActionLogger,3,profile);
+        TakeActionOnNeeds takeActionOnNeeds = new TakeActionOnNeeds(person, npcActionLogger,10,profile);
+        AuthorityBattle authorityBattle = new AuthorityBattle(person, npcActionLogger,1, profile);
 
         allActions.add(duel);
         allActions.add(robbery);
         allActions.add(evaluateNeeds);
         allActions.add(takeActionOnNeeds);
+        allActions.add(authorityBattle);
     }
 
     public List getAllActions() {
@@ -52,108 +65,100 @@ public class CombatActions extends BaseActions {
 
         @Override
         public void execute(){
-            if (resourceAbort()) return;
+            update();
+            if (saveResourceAbort()) return;
 
-            defaultUpgrade();
+            defaultPowerUpgrade();
 
             super.execute();
 
         }
         @Override
         public void defaultAction(){
-
-            CombatStats combatStats = person.getCombatStats();
-            Property property = person.getProperty();
-
-            for (Aspiration aspiration : person.getAspirations()) {
-                switch (aspiration) {
-                    case INCREASE_PERSONAL_OFFENCE:
-                        combatStats.upgradeOffenseWithGold();
-                        person.removeAspiration(Aspiration.INCREASE_PERSONAL_OFFENCE);
-                        break;
-                    case INCREASE_PERSONAL_DEFENCE:
-                        combatStats.upgradeDefenceWithGold();
-                        person.removeAspiration(Aspiration.INCREASE_PERSONAL_DEFENCE);
-                        break;
-                    case INCREASE_PROPERTY_DEFENCE:
-                        property.upgradeDefenceWithGold();
-                        person.removeAspiration(Aspiration.INCREASE_PROPERTY_DEFENCE);
-                        break;
+            try {
+                for (Aspiration aspiration : person.getAspirations()) {
+                    switch (aspiration) {
+                        case INCREASE_PERSONAL_OFFENCE:
+                            if (combatStats.upgradeOffenseWithGold()) {
+                                person.removeAspiration(Aspiration.INCREASE_PERSONAL_OFFENCE);
+                                logAction("Increased personal offence to level " + attackPowerLevel);
+                                break;
+                            }
+                        case INCREASE_PERSONAL_DEFENCE:
+                            if(combatStats.upgradeDefenceWithGold()){
+                            person.removeAspiration(Aspiration.INCREASE_PERSONAL_DEFENCE);
+                                logAction("Increased personal defence to level " + defencePowerLevel);
+                            break;
+                            }
+                        case INCREASE_PROPERTY_DEFENCE:
+                            if (property.upgradeDefenceWithAlloys()) {
+                                person.removeAspiration(Aspiration.INCREASE_PROPERTY_DEFENCE);
+                                logAction("Increased personal defence to level " + propertyDefence.getUpgradeLevel());
+                                break;
+                            }
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();throw new RuntimeException(e);
             }
-
-
-
         }
 
 
         /**
          * Default counter makes sure all stats get upgraded at least slowly but randomly
          */
-        private void defaultUpgrade() {
+        private void defaultPowerUpgrade() {
 
-
-            CombatStats combatStats = person.getCombatStats();
-            Property property = person.getProperty();
-
-            if (defaultCounter > 5) {
-
-                Random random = Settings.getRandom();
+            if (defaultCounter > 10) {
                 int randomNumber = random.nextInt(3);
-
 
                 switch (randomNumber) {
                     case 0:
                         combatStats.upgradeOffenseWithGold();
+                        logAction("Default increase personal offence to level " + attackPowerLevel);
                         break;
                     case 1:
                         combatStats.upgradeDefenceWithGold();
+                        logAction("Default increase personal defence to level " + attackPowerLevel);
                         break;
                     case 2:
-                        property.upgradeDefenceWithGold();
+                        property.upgradeDefenceWithAlloys();
+                        logAction("Default increase property defence to level " + attackPowerLevel);
                         break;
                     default:
                         break;
                 }
-
-
                 defaultCounter = 0;
             } else {
-
                 defaultCounter++;
             }
         }
-
     }
 
     class EvaluateNeeds extends WeightedObject{
-
         int testCounter = 0;
-
         public EvaluateNeeds(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
             super(person, npcActionLogger, weight, profile);
         }
 
+        @Override
+        public void execute(){
+            update();
+            super.execute();
 
+        }
         // default is to compare against the minimum
         @Override
         public void defaultAction() {
-
-            CombatStats combatStats = person.getCombatStats();
             EnumSet<Aspiration> aspirations = person.getAspirations();
-            Property property = person.getProperty();
-
             considerMinimumLevels(combatStats, aspirations, property);
             testCounter++;
         }
-
         @Override
         public void ambitiousAction(){
-            int authorityDefenceLevel = person.getRole().getAuthority().getCharacterInThisPosition().getPerson().getCombatStats().getDefenseLevel();
-            int authorityPropertyDefenceLevel = person.getRole().getAuthority().getCharacterInThisPosition().getPerson().getProperty().getDefenceStats().getUpgradeLevel();
-            int totalAuthorityLevel = authorityDefenceLevel + authorityPropertyDefenceLevel;
+            int totalAuthorityLevel = person.getRole().getAuthority().getCharacterInThisPosition().getPerson().getCombatStats().getDefenseLevel();
 
-            if(totalAuthorityLevel >= person.getCombatStats().getOffenseLevel()){
+            if(totalAuthorityLevel >= attackPowerLevel){
                 person.addAspiration(Aspiration.INCREASE_PERSONAL_OFFENCE);
             }
         }
@@ -167,6 +172,9 @@ public class CombatActions extends BaseActions {
             person.addAspiration(Aspiration.INCREASE_PROPERTY_DEFENCE);
         }
 
+        /**
+         * Aggressive finds the strongest enemy he has to compare
+         */
         @Override
         public void aggressiveAction(){
 
@@ -197,6 +205,12 @@ public class CombatActions extends BaseActions {
 
         }
 
+        /**
+         * Tests the minimum power levels.
+         * @param combatStats npc combat stats
+         * @param aspirations current aspirations
+         * @param property their current property
+         */
         private static void considerMinimumLevels(CombatStats combatStats, EnumSet<Aspiration> aspirations, Property property) {
             int currentYear = Time.getYear() + 1;
             if(currentYear > 20 ) {
@@ -217,7 +231,7 @@ public class CombatActions extends BaseActions {
         }
     }
 
-    private boolean resourceAbort() {
+    private boolean saveResourceAbort() {
         return person.getAspirations().contains(Aspiration.SAVE_RESOURCES) || person.getWallet().isLowBalance();
     }
 
@@ -226,17 +240,16 @@ public class CombatActions extends BaseActions {
      * select a Set of possible targets, then call executeDuel method.
      */
     class Duel extends WeightedObject{
-
-
+        Person latestDuel;
         public Duel(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
             super(person, npcActionLogger, weight, profile);
         }
-
         @Override
         public void execute() {
             if(isInBattle.test(person)){
                 return;
             }
+            update();
             super.execute();
         }
         /**
@@ -251,7 +264,7 @@ public class CombatActions extends BaseActions {
                     .filter(enemy -> !person.getRelationsManager().getListOfDefeatedPersons().contains(enemy))
                     .collect(Collectors.toSet());
 
-            executeDuel(listOfPossibleTargets);
+            executeDuel(listOfPossibleTargets, latestDuel, this);
         }
 
         /**
@@ -259,7 +272,7 @@ public class CombatActions extends BaseActions {
          */
         public void liberalAction(){
             Set<Person> listOfPossibleTargets = person.getRole().getNation().getSlaverGuild();
-            executeDuel(listOfPossibleTargets);
+            executeDuel(listOfPossibleTargets, latestDuel, this);
         }
         public void passiveAction(){
             defaultSkip();
@@ -280,119 +293,15 @@ public class CombatActions extends BaseActions {
                 return;
             }
 
-            mainTarget = person.getRole().getAuthority().getCharacterInThisPosition();
-            if(mainTarget.getPerson() == person){
-                return; // Cannot attack self
-            }
-            if(!(mainTarget instanceof AuthorityCharacter)){
-                return; // quick return if there is a problem with the targets role
-            }
-            roadToAchieveHigherPosition();
+            if (setAuthorityToMainTarget()) return; // Cannot attack self
+            roadToAchieveHigherPosition(latestDuel, this);
 
         }
-
-        private void roadToAchieveHigherPosition(){
-            if (mainTarget == null) {
-                return;
-            }
-            Status mainTargetStatus = mainTarget.getRole().getStatus();
-
-
-            switch (mainTargetStatus) {
-                case Captain, Mayor:
-//                     Increase offense if target is Captain or Mayor
-                    CombatService.executeAuthorityBattle(person.getCharacter(),mainTarget);
-                    break;
-
-                case Governor, King:
-
-                    // Defeat all sentinels if target is Governor or King before attempting the Authority battle
-                    if (defeatAllSentinels()) {
-
-
-                        int defensePower = mainTarget.getPerson().getCombatStats().getDefenseLevel() + mainTarget.getPerson().getProperty().getDefenceStats().getUpgradeLevel();
-                        int attackPower = person.getCombatStats().getOffenseLevel() + person.getCombatStats().getDefenseLevel();
-
-                        // Must be 2 levels higher unless they have trait Aggressive. Aggressive always attacks.
-                        if (attackPower >= defensePower+2){
-                            if(!(attackPower <= defensePower && person.getAiEngine().getProfile().containsKey(Trait.Aggressive))) {
-                                return;
-                            }
-                        }
-
-                        CombatService.executeAuthorityBattle(person.getCharacter(),mainTarget);
-
-                    }
-                    break;
-
-                default:
-                    System.out.println("No specific action for " + mainTargetStatus);
-                    break;
-            }
-        }
-        private boolean defeatAllSentinels() {
-            // Get all sentinels of the main target
-            Set<Person> sentinels = mainTarget.getPerson().getRelationsManager().getListOfSentinels();
-
-            Set<Person> sentinelsCopy = new HashSet<>(sentinels); // prevent ConcurrentModificationException
-
-            Set<Person> undefeatedSentinels = new HashSet<>(); // sentinels that still need to be defeated
-
-            for (Person sentinel : sentinelsCopy) {
-                if(!person.getRelationsManager().getListOfDefeatedPersons().contains(sentinel)){
-                    undefeatedSentinels.add(sentinel);
-                }
-            }
-            if(!undefeatedSentinels.isEmpty()) {
-                executeDuel(undefeatedSentinels);
-            }
-
-
-            return undefeatedSentinels.isEmpty(); // return true if all sentinels have been defeated already
-
         }
 
 
-        // remember: both offense and defense are included in DUEL. Not in other combats.
-        private void executeDuel(Set<Person> listOfPossibleTargets) {
-            if (listOfPossibleTargets.isEmpty()) {
-                return;
-            }
-
-            // Find the minimum sum of defense and offense levels among undefeated enemies
-            int minCombatSum = listOfPossibleTargets.stream()
-                    .mapToInt(enemy -> enemy.getCombatStats().getDefenseLevel() + enemy.getCombatStats().getOffenseLevel())
-                    .min()
-                    .orElse(Integer.MAX_VALUE);
-
-            int attackPower = person.getCombatStats().getOffenseLevel() + person.getCombatStats().getDefenseLevel();
-
-            // Must be 2 levels higher unless they have trait Aggressive
-            if (attackPower >= minCombatSum+2){
-                if(!(attackPower <= minCombatSum && person.getAiEngine().getProfile().containsKey(Trait.Aggressive))) {
-                    return;
-                }
-            }
-
-            // Filter undefeated enemies to those with the minimum sum of defense and offense levels
-            List<Person> weakestTargets = listOfPossibleTargets.stream()
-                    .filter(enemy -> (enemy.getCombatStats().getDefenseLevel() + enemy.getCombatStats().getOffenseLevel()) == minCombatSum)
-                    .collect(Collectors.toList());
-
-            if (weakestTargets.isEmpty()) {
-                return;
-            }
-
-            // Shuffle the list of weakest undefeated enemies and pick the first one
-            Collections.shuffle(weakestTargets);
-            Person randomlySelectedEnemy = weakestTargets.get(0);
 
 
-
-            // Execute duel against the selected weakest undefeated enemy
-            CombatService.executeDuel(person.getCharacter(), randomlySelectedEnemy.getCharacter());
-        }
-    }
 
 
     private Person getRandomPersonFromSet() {
@@ -428,13 +337,21 @@ public class CombatActions extends BaseActions {
         }
 
         @Override
-        public void defaultAction() {
+        public void execute() {
+            if(isInBattle.test(person)){
+                return;
+            }
+            update();
+            super.execute();
+        }
 
+        @Override
+        public void defaultAction() {
+            roadToAchieveHigherPosition(null, this);
         }
 
         @Override
         public void defaultSkip() {
-
         }
 
         @Override
@@ -454,22 +371,19 @@ public class CombatActions extends BaseActions {
      */
     class Robbery extends WeightedObject {
 
-
         public Robbery(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
             super(person, npcActionLogger, weight, profile);
         }
 
         @Override
         public void execute() {
-
             if(Time.year < 2){
                 return;
             }
-
             if(isInBattle.test(person)){
                 return;
             }
-
+            update();
             super.execute();
         }
 
@@ -634,6 +548,156 @@ public class CombatActions extends BaseActions {
                 resource = Resource.Gold;
             }
             return resource;
+        }
+
+    }
+
+    /**
+     * Updates variables that might change. Must be called in execute() methdods.
+     */
+    private void update(){
+        try {
+            attackPowerLevel = person.getCombatStats().getOffenseLevel();
+            defencePowerLevel = person.getCombatStats().getDefenseLevel();
+            propertyDefence = person.getProperty().getDefenceStats();
+            combatStats = person.getCombatStats();
+            property = person.getProperty();
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
+    }
+
+    private void roadToAchieveHigherPosition(Person latestTarget, WeightedObject action){
+        try {
+            if (mainTarget == null && action instanceof Robbery) {
+                return;
+            }
+            if(action instanceof AuthorityBattle) {
+                if (setAuthorityToMainTarget())
+                    return; // quick return if there is a problem with the targets role
+            }
+
+            assert mainTarget != null;
+            Status mainTargetStatus = mainTarget.getRole().getStatus();
+
+            switch (mainTargetStatus) {
+                case Captain, Mayor:
+    //                     Increase offense if target is Captain or Mayor
+                    CombatService.executeAuthorityBattle(person.getCharacter(),mainTarget);
+                    if (person.getAnyOnGoingEvent(Event.AuthorityBattle) != null) {
+                        action.logAction(String.format("Started authority battle against %s", mainTarget));
+                    }
+                    break;
+
+                case Governor, King:
+
+                    // Defeat all sentinels if target is Governor or King before attempting the Authority battle
+                    if (defeatAllSentinels(latestTarget, action)) {
+
+                        int defensePower = mainTarget.getPerson().getCombatStats().getDefenseLevel() + mainTarget.getPerson().getProperty().getDefenceStats().getUpgradeLevel();
+                        int attackPower = person.getCombatStats().getOffenseLevel() + person.getCombatStats().getDefenseLevel();
+
+                        // Must be 2 levels higher unless they have trait Aggressive. Aggressive always attacks.
+                        if (attackPower >= defensePower+2){
+                            if(!(attackPower <= defensePower && person.getAiEngine().getProfile().containsKey(Trait.Aggressive))) {
+                                return;
+                            }
+                        }
+                        CombatService.executeAuthorityBattle(person.getCharacter(),mainTarget);
+                        if (person.getAnyOnGoingEvent(Event.AuthorityBattle) != null) {
+                            action.logAction(String.format("Started authority battle against %s", mainTarget));
+                        }
+                    }
+                    break;
+
+                default:
+                    System.out.println("No specific action for " + mainTargetStatus);
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
+    }
+
+    private boolean setAuthorityToMainTarget() {
+        mainTarget = person.getRole().getAuthority().getCharacterInThisPosition();
+        if (mainTarget.getPerson() == person) {
+            return true;
+        }
+        return !(mainTarget instanceof AuthorityCharacter);
+    }
+
+    private boolean defeatAllSentinels(Person latestTarget, WeightedObject action) {
+        try {
+            // Get all sentinels of the main target
+            Set<Person> sentinels = mainTarget.getPerson().getRelationsManager().getListOfSentinels();
+
+            Set<Person> sentinelsCopy = new HashSet<>(sentinels); // prevent ConcurrentModificationException
+
+            Set<Person> undefeatedSentinels = new HashSet<>(); // sentinels that still need to be defeated
+
+            for (Person sentinel : sentinelsCopy) {
+                if(!person.getRelationsManager().getListOfDefeatedPersons().contains(sentinel)){
+                    undefeatedSentinels.add(sentinel);
+                }
+            }
+            if(!undefeatedSentinels.isEmpty()) {
+                executeDuel(undefeatedSentinels, latestTarget, action);
+            }
+
+            return undefeatedSentinels.isEmpty(); // return true if all sentinels have been defeated already
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
+
+    }
+
+    // both offense and defense are included in DUEL. Not in other combats.
+    private void executeDuel(Set<Person> listOfPossibleTargets, Person latestTarget, WeightedObject action) {
+        try {
+            if (listOfPossibleTargets.isEmpty()) {
+                return;
+            }
+
+            // Find the minimum sum of defense and offense levels among undefeated enemies
+            int minCombatSum = listOfPossibleTargets.stream()
+                    .mapToInt(enemy -> enemy.getCombatStats().getDefenseLevel() + enemy.getCombatStats().getOffenseLevel())
+                    .min()
+                    .orElse(Integer.MAX_VALUE);
+
+            int attackPower = person.getCombatStats().getOffenseLevel() + person.getCombatStats().getDefenseLevel();
+
+            // Must be 2 levels higher unless they have trait Aggressive
+            if (attackPower >= minCombatSum + 2) {
+                if (!(attackPower <= minCombatSum && profile.containsKey(Trait.Aggressive))) {
+                    return;
+                }
+            }
+
+            // Filter undefeated enemies to those with the minimum sum of defense and offense levels
+            List<Person> weakestTargets = listOfPossibleTargets.stream()
+                    .filter(enemy -> (enemy.getCombatStats().getDefenseLevel() + enemy.getCombatStats().getOffenseLevel()) == minCombatSum)
+                    .collect(Collectors.toList());
+
+            if (weakestTargets.isEmpty()) {
+                return;
+            }
+
+            // Shuffle the list of weakest undefeated enemies and pick the first one
+            Collections.shuffle(weakestTargets);
+            Person randomlySelectedEnemy = weakestTargets.get(0);
+
+            if (randomlySelectedEnemy == latestTarget) {
+                return; // don't duel the same person all the time
+            }
+            // Execute duel against the selected weakest undefeated enemy
+            CombatService.executeDuel(person.getCharacter(), randomlySelectedEnemy.getCharacter());
+
+            if (person.getAnyOnGoingEvent(Event.DUEL) != null) {
+                action.logAction(String.format("Started duel against %s", randomlySelectedEnemy.getCharacter()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
         }
 
     }

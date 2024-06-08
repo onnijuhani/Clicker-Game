@@ -281,11 +281,11 @@ public class UtilityActions extends BaseActions{
                 // slavers join guild immediately
                 if (profile.containsKey(Trait.Slaver) && !joinedSlaverGuild) {
                     person.getRole().getNation().joinSlaverGuild(person);
-                    this.setImportance(10);
+//                    this.setImportance(10);
                     logAction("Joined Slaver Guild");
                     joinedSlaverGuild = true;
                     if (profile.containsKey(Trait.Liberal)) {
-                        this.setImportance(0);
+//                        this.setImportance(0);
                     }
                 }
 
@@ -349,11 +349,11 @@ public class UtilityActions extends BaseActions{
                 // liberals join immediately
                 if (profile.containsKey(Trait.Liberal) && !joinedLiberalGuild) {
                         person.getRole().getNation().joinLiberalGuild(person);
-                        this.setImportance(10);
+//                        this.setImportance(10);
                         logAction("Joined Liberal Guild");
                         joinedLiberalGuild = true;
                     if (profile.containsKey(Trait.Slaver)) {
-                        this.setImportance(0);
+//                        this.setImportance(0);
                     }
                 }
                 defaultAction();

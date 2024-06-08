@@ -20,7 +20,7 @@ import model.worldCreation.Area;
 import java.util.*;
 
 import static model.stateSystem.SpecialEventsManager.getFirstAuthorityPositionMessage;
-
+@SuppressWarnings("CallToPrintStackTrace")
 public class CombatSystem {
     private final Person attacker;
     private final CombatStats attackerStats;
@@ -60,6 +60,18 @@ public class CombatSystem {
                         "Error", "You may only challenge your direct authority"));
             }
             return;
+        }
+
+        try {
+            if(defender.hasState(State.TRUCE)){
+                if(attacker.isPlayer()) {
+                    attacker.getEventTracker().addEvent(EventTracker.Message(
+                            "Error", "Person you are trying to attack has truce protection"));
+                }
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
         }
 
         if (defender.getCharacter() instanceof Governor) {
@@ -159,78 +171,113 @@ public class CombatSystem {
 
     private void decideAuthorityBattle() {
 
-        int totalAttackerOffense = calculateEffectiveAttackerOffense(Event.AuthorityBattle, attacker);
-        int totalDefenderDefense = calculateEffectiveDefenderDefense(Event.AuthorityBattle, defender, attacker);
+        try {
+            int totalAttackerOffense = calculateEffectiveAttackerOffense(Event.AuthorityBattle, attacker);
+            int totalDefenderDefense = calculateEffectiveDefenderDefense(Event.AuthorityBattle, defender, attacker);
 
-        boolean attackerWins = battle(totalAttackerOffense, totalDefenderDefense);
+            boolean attackerWins = battle(totalAttackerOffense, totalDefenderDefense);
 
-        if (attackerWins) {
+            Person winner = attackerWins ? attacker: defender;
+            handleTruce(winner);
 
-            attacker.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Authority of " + defender.getCharacter() + " has been overtaken."));
-            defender.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "Your Authority has been overtaken by " + attacker.getCharacter()));
+            if (attackerWins) {
+                handleAuthorityBattleAttackerWin();
 
-            attacker.getRelationsManager().processResults(defender);
-
-            // TODO remove this
-            if(Settings.DB) {
-                System.out.println("Attacker won " + attacker.getCharacter() +
-                        " " + defender.getCharacter() + "\n" + attacker.getProperty().getLocation().getFullHierarchyInfo());
+            } else {
+                handleAuthorityBattleDefenderWin();
             }
 
-            // this must be done before switching positions. Otherwise, role information will be wrong.
-            triggerAuthorityPopUp(true);
+            makeEnemies();
 
-            switchPositions();
+            // Reset states
+            resetBattleStatesAuthorityBattle();
 
-            attacker.addAspiration(Aspiration.INCREASE_PERSONAL_DEFENCE);
-
-
-        } else {
-
-                attacker.getEventTracker().addEvent(EventTracker.Message(
-                        "Major", "Failed to challenge the Authority of \n" + defender.getCharacter() + ". Your power has been decreased."));
-                defender.getEventTracker().addEvent(EventTracker.Message(
-                        "Major", "Successfully defended against\nthe Authority challenge by " + attacker.getCharacter()));
-
-
-            String compensationFromWallet = TransferPackage.fromArray(attacker.getWallet().getWalletValues()).toString();
-
-            defender.getWallet().depositAll(attacker.getWallet());
-            TransferPackage halfVaultBalance = TransferPackage.fromArray(attacker.getProperty().getVault().getHalfValues());
-            defender.getProperty().getVault().subtractResources(halfVaultBalance);
-            defender.getWallet().addResources(halfVaultBalance);
-
-            attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Paid entire wallet (" +
-                    compensationFromWallet +
-                    ")\nand 50% from the vault ("
-                    + halfVaultBalance +
-                    ")\nas compensation for disloyalty."
-            ));
-
-            attacker.decreasePersonalOffence(3);
-            attacker.addAspiration(Aspiration.INCREASE_PERSONAL_OFFENCE);
-
-            attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Offense decreased by 3 levels"));
-
-            defender.getRelationsManager().processResults(attacker);
-
-            triggerAuthorityPopUp(false);
-
-            // TODO remove this
-            if(Settings.DB) {
-                System.out.println("Defender won " + attacker.getCharacter() + " " +
-                        defender.getCharacter() + "\n" + attacker.getProperty().getLocation().getFullHierarchyInfo());
-            }
-
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
         }
 
-        makeEnemies();
+    }
 
-        // Reset states
-        resetBattleStatesAuthorityBattle();
+    private void handleAuthorityBattleDefenderWin() {
+        attacker.getEventTracker().addEvent(EventTracker.Message(
+                "Major", "Failed to challenge the Authority of \n" + defender.getCharacter() + ". Your power has been decreased."));
+        defender.getEventTracker().addEvent(EventTracker.Message(
+                "Major", "Successfully defended against\nthe Authority challenge by " + attacker.getCharacter()));
 
+
+        String compensationFromWallet = TransferPackage.fromArray(attacker.getWallet().getWalletValues()).toString();
+
+        defender.getWallet().depositAll(attacker.getWallet());
+        TransferPackage halfVaultBalance = TransferPackage.fromArray(attacker.getProperty().getVault().getHalfValues());
+        defender.getProperty().getVault().subtractResources(halfVaultBalance);
+        defender.getWallet().addResources(halfVaultBalance);
+
+        attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Paid entire wallet (" +
+                compensationFromWallet +
+                ")\nand 50% from the vault ("
+                + halfVaultBalance +
+                ")\nas compensation for disloyalty."
+        ));
+
+        attacker.decreasePersonalOffence(3);
+        attacker.addAspiration(Aspiration.INCREASE_PERSONAL_OFFENCE);
+
+        attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Offense decreased by 3 levels"));
+
+        defender.getRelationsManager().processResults(attacker);
+
+        triggerAuthorityPopUp(false);
+
+        // TODO remove this
+        if(Settings.DB) {
+            System.out.println("Defender won " + attacker.getCharacter() + " " +
+                    defender.getCharacter() + "\n" + attacker.getProperty().getLocation().getFullHierarchyInfo());
+        }
+    }
+
+    private void handleAuthorityBattleAttackerWin() {
+        attacker.getEventTracker().addEvent(EventTracker.Message(
+                "Major", "Authority of " + defender.getCharacter() + " has been overtaken."));
+        defender.getEventTracker().addEvent(EventTracker.Message(
+                "Major", "Your Authority has been overtaken by " + attacker.getCharacter()));
+
+        attacker.getRelationsManager().processResults(defender);
+
+        // TODO remove this
+        if(Settings.DB) {
+            System.out.println("Attacker won " + attacker.getCharacter() +
+                    " " + defender.getCharacter() + "\n" + attacker.getProperty().getLocation().getFullHierarchyInfo());
+        }
+
+        // this must be done before switching positions. Otherwise, role information will be wrong.
+        triggerAuthorityPopUp(true);
+
+        switchPositions();
+
+        attacker.addAspiration(Aspiration.INCREASE_PERSONAL_DEFENCE);
+    }
+
+    private static void handleTruce(Person winner) {
+        try {
+            GameEvent truceEvent;
+
+            // Add truce
+            truceEvent = new GameEvent(Event.TRUCE, winner);
+            winner.addState(State.TRUCE);
+
+            EventManager.scheduleEvent(() -> removeTruce(winner), 30, truceEvent);
+
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
+    }
+
+    private static void removeTruce(Person person) {
+        try {
+            person.removeState(State.TRUCE);
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
     }
 
 
@@ -246,7 +293,6 @@ public class CombatSystem {
         List<String> winButtonTextsDefeat = Arrays.asList("They should never try again", "Victory is sweet", "Another one bites the dust", "Onward to glory!", "They should remain loyal..");
         List<String> loseButtonTextsDefeat = Arrays.asList("They will be avenged...", "A setback, not the end", "Power up and strike back", "We shall rise again", "...", "Ouch..");
 
-
         if (victory) {
             if (attacker.isPlayer()) {
 
@@ -258,6 +304,7 @@ public class CombatSystem {
                 }else{
                     name = authority.toString();
                 }
+                System.out.println(defender.getCharacter());
 
                 headline = "Authority Position Gained";
                 mainText = "You have won the Authority Battle against " + defender + "\n\n" +
@@ -301,100 +348,112 @@ public class CombatSystem {
         /*
         ALL THE CONNECTIONS NEED TO BE CHANGED. !!! DO NOT CHANGE THE ORDER OF THESE SETTERS !!!
          */
-        rearrangeConnections();
+        try {
+            rearrangeConnections();
 
-        Role attackerRole = attacker.getRole();
-        Role defenderRole = defender.getRole();
+            Role attackerRole = attacker.getRole();
+            Role defenderRole = defender.getRole();
 
-        // WORK WALLET MUST BE UPDATED.
-        attackerRole.getPosition().setWorkWallet(attacker.getWorkWallet());
-        if(!(defender.getCharacter() instanceof Peasant)){
-            defenderRole.getPosition().setWorkWallet(defender.getWorkWallet());
-        }
+            // WORK WALLET MUST BE UPDATED.
+            attackerRole.getPosition().setWorkWallet(attacker.getWorkWallet());
+            if(!(defender.getCharacter() instanceof Peasant)){
+                defenderRole.getPosition().setWorkWallet(defender.getWorkWallet());
+            }
 
-        // MODEL MUST BE UPDATED TO KNOW THE INSTANCES OF PLAYER.
-        if(attacker.isPlayer() || defender.isPlayer()){
-            Model.updatePlayer();
-        }
+            // MODEL MUST BE UPDATED TO KNOW THE INSTANCES OF PLAYER.
+            if(attacker.isPlayer() || defender.isPlayer()){
+                Model.updatePlayer();
+            }
 
-        //QUARTER MUST BE UPDATED
-        attacker.getProperty().getLocation().updateEverything();
-        defender.getProperty().getLocation().updateEverything();
+            //QUARTER MUST BE UPDATED
+            attacker.getProperty().getLocation().updateEverything();
+            defender.getProperty().getLocation().updateEverything();
 
-        //GENERALS MUST BE UPDATED
-        attackerRole.getNation().updateGenerals();
-        defenderRole.getNation().updateGenerals();
+            //GENERALS MUST BE UPDATED
+            attackerRole.getNation().updateGenerals();
+            defenderRole.getNation().updateGenerals();
 
-        //RELATIONS MUST BE UPDATED
-        attacker.getPerson().getRelationsManager().updateSets();
-        defender.getPerson().getRelationsManager().updateSets();
+            //RELATIONS MUST BE UPDATED
+            attacker.getPerson().getRelationsManager().updateSets();
+            defender.getPerson().getRelationsManager().updateSets();
 
-        attacker.getEventTracker().addEvent(EventTracker.Message(
-                "Major", "You are now the " +
-                        attackerRole.getStatus() +
-                        " in the \n"+
-                        attackerRole.getPosition().getAreaUnderAuthority()+ " "+
-                        attackerRole.getPosition().getAreaUnderAuthority().getClass().getSimpleName()
-                ));
-
-        Area area;
-        if(!(defender.getCharacter() instanceof Peasant)){
-            area = defenderRole.getPosition().getAreaUnderAuthority();
-            defender.getEventTracker().addEvent(EventTracker.Message(
+            attacker.getEventTracker().addEvent(EventTracker.Message(
                     "Major", "You are now the " +
-                            defenderRole.getStatus() +
+                            attackerRole.getStatus() +
                             " in the \n"+
-                            area+ " "+
-                            area.getClass().getSimpleName()
-            ));
-        }else {
-            area = defender.getProperty().getLocation();
-            defender.getEventTracker().addEvent(EventTracker.Message(
-                    "Major", "You are now " +
-                            defenderRole.getStatus() +
-                            " in the \n"+
-                            area+ " "+
-                            area.getClass().getSimpleName()
-            ));
+                            attackerRole.getPosition().getAreaUnderAuthority()+ " "+
+                            attackerRole.getPosition().getAreaUnderAuthority().getClass().getSimpleName()
+                    ));
+
+            Area area;
+            if(!(defender.getCharacter() instanceof Peasant)){
+                area = defenderRole.getPosition().getAreaUnderAuthority();
+                defender.getEventTracker().addEvent(EventTracker.Message(
+                        "Major", "You are now the " +
+                                defenderRole.getStatus() +
+                                " in the \n"+
+                                area+ " "+
+                                area.getClass().getSimpleName()
+                ));
+            }else {
+                area = defender.getProperty().getLocation();
+                defender.getEventTracker().addEvent(EventTracker.Message(
+                        "Major", "You are now " +
+                                defenderRole.getStatus() +
+                                " in the \n"+
+                                area+ " "+
+                                area.getClass().getSimpleName()
+                ));
+            }
+            loseAuthorityPosition();
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
         }
-        loseAuthorityPosition();
     }
 
     private void rearrangeConnections() {
         /*
         NEVER CHANGE THE ORDER OF THESE SETTERS
          */
-        attacker.setCharacter(defender.getCharacter());
-        defender.setCharacter(attacker.getRole().getCharacter());
+        try {
+            attacker.setCharacter(defender.getCharacter());
+            defender.setCharacter(attacker.getRole().getCharacter());
 
-        attacker.setRole(attacker.getCharacter().getRole());
-        defender.setRole(defender.getCharacter().getRole());
+            attacker.setRole(attacker.getCharacter().getRole());
+            defender.setRole(defender.getCharacter().getRole());
 
-        attacker.getRole().setCharacter(attacker.getCharacter());
-        defender.getRole().setCharacter(defender.getCharacter());
+            attacker.getRole().setCharacter(attacker.getCharacter());
+            defender.getRole().setCharacter(defender.getCharacter());
 
-        attacker.getCharacter().setRole(attacker.getRole());
-        attacker.getCharacter().setPerson(attacker);
+            attacker.getCharacter().setRole(attacker.getRole());
+            attacker.getCharacter().setPerson(attacker);
 
-        defender.getCharacter().setRole(defender.getRole());
-        defender.getCharacter().setPerson(defender);
+            defender.getCharacter().setRole(defender.getRole());
+            defender.getCharacter().setPerson(defender);
 
-        attacker.getRole().setPerson(attacker);
-        defender.getRole().setPerson(defender);
+            attacker.getRole().setPerson(attacker);
+            defender.getRole().setPerson(defender);
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
     }
     private void loseAuthorityPosition() {
-        if (defender.getCharacter() instanceof Peasant peasantCharacter) {
+        try {
+            if (defender.getCharacter() instanceof Peasant peasantCharacter) {
 
-            Employment employment = peasantCharacter.getEmployment();
-            if (employment == null) {
-                new Employment(100, 100, 50, defender.getWorkWallet());
-                return;
+                Employment employment = peasantCharacter.getEmployment();
+                if (employment == null) {
+                    new Employment(100, 100, 50, defender.getWorkWallet());
+                    return;
+                }
+                WorkWallet defenderWorkWallet = defender.getWorkWallet();
+                if (defenderWorkWallet == null) {
+                    return;
+                }
+                employment.setWorkWallet(defenderWorkWallet);
             }
-            WorkWallet defenderWorkWallet = defender.getWorkWallet();
-            if (defenderWorkWallet == null) {
-                return;
-            }
-            employment.setWorkWallet(defenderWorkWallet);
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
         }
     }
     private void resetBattleStatesAuthorityBattle() {
@@ -403,6 +462,9 @@ public class CombatSystem {
         venue.removeState(State.IN_BATTLE);
         eligibleSupporters.forEach(support -> support.removeState(State.IN_BATTLE));
         attacker.removeAspiration(Aspiration.ACHIEVE_HIGHER_POSITION);
+
+
+
     }
 
     /**
@@ -617,23 +679,27 @@ public class CombatSystem {
     }
 
     private boolean battle(int effectiveAttackerOffense, int effectiveDefenderDefense) {
-        // Initialize a Random object for generating Gaussian distributed values
-        Random rand = new Random();
+        try {
+            // Initialize a Random object for generating Gaussian distributed values
+            Random rand = new Random();
 
-        // Base success chance starts at 0.5
-        double baseSuccessChance = 0.5;
+            // Base success chance starts at 0.5
+            double baseSuccessChance = 0.5;
 
-        // Calculate stat difference
-        double successChanceModifier = getSuccessChanceModifier(effectiveAttackerOffense, effectiveDefenderDefense);
+            // Calculate stat difference
+            double successChanceModifier = getSuccessChanceModifier(effectiveAttackerOffense, effectiveDefenderDefense);
 
-        // Incorporate a Gaussian distribution based random modifier
-        double randomModifier = rand.nextGaussian() * 0.1; // Standard deviation of 0.1 for randomness
+            // Incorporate a Gaussian distribution based random modifier
+            double randomModifier = rand.nextGaussian() * 0.1; // Standard deviation of 0.1 for randomness
 
-        // Calculate final success chance with applied non-linear modifiers
-        double finalSuccessChance = calculateFinalSuccessChance(baseSuccessChance, successChanceModifier, randomModifier);
+            // Calculate final success chance with applied non-linear modifiers
+            double finalSuccessChance = calculateFinalSuccessChance(baseSuccessChance, successChanceModifier, randomModifier);
 
-        // Determine the battle outcome
-        return Math.random() < finalSuccessChance;
+            // Determine the battle outcome
+            return Math.random() < finalSuccessChance;
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
     }
 
     private static double getSuccessChanceModifier(int effectiveAttackerOffense, int effectiveDefenderDefense) {
@@ -695,37 +761,48 @@ public class CombatSystem {
      * @return returns int value of the total power
      */
     private static int calculateEffectiveDefenderDefense(Event event, Person defender, Person attacker) {
-        switch (event){
-            case AuthorityBattle -> {
-                return defender.getCombatStats().getDefenseLevel() +
-                        getKingSupporters(defender, attacker).stream()
-                                .mapToInt(support -> support.getCombatStats().getDefenseLevel())
-                                .sum()
-                        +
-                        getGovernorSupporters(defender, attacker).stream()
-                                .mapToInt(support -> support.getCombatStats().getDefenseLevel())
-                                .sum();
-            }
-            case DUEL -> {
-                return defender.getCombatStats().getOffenseLevel() + defender.getCombatStats().getDefenseLevel();
-            }
-            case ROBBERY -> { return defender.getProperty().getDefenceStats().getUpgradeLevel();
+        try {
+            switch (event){
+                case AuthorityBattle -> {
+                    return defender.getCombatStats().getDefenseLevel() + 1 +
+                            getKingSupporters(defender, attacker).stream()
+                                    .mapToInt(support -> support.getCombatStats().getDefenseLevel())
+                                    .sum()
+                            +
+                            getGovernorSupporters(defender, attacker).stream()
+                                    .mapToInt(support -> support.getCombatStats().getDefenseLevel())
+                                    .sum();
+                }
+                case DUEL -> {
+                    return defender.getCombatStats().getOffenseLevel() + defender.getCombatStats().getDefenseLevel();
+                }
+                case ROBBERY -> { return defender.getProperty().getDefenceStats().getUpgradeLevel();
 
+                }
+                default -> {
+                    return 0;
+                }
             }
-            default -> {
-                return 0;
-            }
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
         }
     }
 
     private static int calculateEffectiveAttackerOffense(Event event, Person attacker) {
-        switch (event){
-            case AuthorityBattle, DUEL, ROBBERY -> {
-                return attacker.getCombatStats().getOffenseLevel();
+        try {
+            switch (event){
+                case AuthorityBattle, ROBBERY -> {
+                    return attacker.getCombatStats().getOffenseLevel();
+                }
+                case DUEL -> {
+                    return attacker.getCombatStats().getOffenseLevel() + attacker.getCombatStats().getDefenseLevel();
+                }
+                default -> {
+                    return 0;
+                }
             }
-            default -> {
-                return 0;
-            }
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
         }
     }
 

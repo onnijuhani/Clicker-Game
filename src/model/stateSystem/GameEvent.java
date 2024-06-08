@@ -26,6 +26,10 @@ public class GameEvent {
 
 
 
+
+
+
+
     public int[] timeLeftUntilExecution() {
         // get current time
         int currentDay = Time.day;
@@ -85,4 +89,14 @@ public class GameEvent {
     }
 
 
+    @Override
+    public String toString() {
+        return "GameEvent{" +
+                "event=" + event +
+                ", executionDay=" + executionDay +
+                ", executionMonth=" + executionMonth +
+                ", executionYear=" + executionYear +
+                ", participants=" + participants +
+                '}';
+    }
 }

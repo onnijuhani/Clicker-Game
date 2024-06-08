@@ -20,37 +20,16 @@ public class Army implements ArmyObserver, PaymentTracker {
     public void armyUpdate(int day) {
         try {
             if(day == expenseDay) {
-                if(owner.isPlayer()){
-                    System.out.println("wtf "+getRunningCost());
-                }
                 payRunningCosts();
                 updatePaymentCalendar(owner.getPaymentManager());
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            e.printStackTrace();throw new RuntimeException(e);
         }
 
-
     }
 
-    @Override
-    public void updatePaymentCalendar(PaymentManager calendar) {
-        calendar.addPayment(PaymentManager.PaymentType.EXPENSE, Payment.ARMY_EXPENSE, getRunningCost(), expenseDay);
-    }
-
-
-    private void payRunningCosts() {
-        try {
-            if(!wallet.subtractResources(getRunningCost())){
-                owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army expenses not paid"));
-                owner.loseStrike();
-            }else{
-                owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army expenses paid: " + getRunningCost().toShortString()));
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     private int numOfSoldiers = 1;
     private int attackPower = 1;
@@ -71,6 +50,25 @@ public class Army implements ArmyObserver, PaymentTracker {
         this.wallet = owner.getWallet();
         ArmyManager.subscribe(this);
         updatePaymentCalendar(owner.getPaymentManager());
+    }
+
+    @Override
+    public void updatePaymentCalendar(PaymentManager calendar) {
+        calendar.addPayment(PaymentManager.PaymentType.EXPENSE, Payment.ARMY_EXPENSE, getRunningCost(), expenseDay);
+    }
+
+
+    private void payRunningCosts() {
+        try {
+            if(!wallet.subtractResources(getRunningCost())){
+                owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army expenses not paid"));
+                owner.loseStrike();
+            }else{
+                owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army expenses paid: " + getRunningCost().toShortString()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
     }
 
     public void clearResources() {
@@ -103,7 +101,7 @@ public class Army implements ArmyObserver, PaymentTracker {
 
             return true;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();throw new RuntimeException(e);
         }
     }
 
@@ -139,7 +137,7 @@ public class Army implements ArmyObserver, PaymentTracker {
             return true;
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();throw new RuntimeException(e);
         }
     }
 
@@ -177,7 +175,7 @@ public class Army implements ArmyObserver, PaymentTracker {
 
             return true;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();throw new RuntimeException(e);
         }
 
     }
@@ -201,11 +199,11 @@ public class Army implements ArmyObserver, PaymentTracker {
     }
 
 
-    public int totalAttackPower(){
+    public int getTotalAttackPower(){
         return numOfSoldiers * attackPower;
     }
 
-    public int totalDefencePower(){
+    public int getTotalDefencePower(){
         return numOfSoldiers * defencePower;
     }
 
@@ -222,13 +220,7 @@ public class Army implements ArmyObserver, PaymentTracker {
         return numOfSoldiers;
     }
 
-    public int getAttackPower() {
-        return attackPower;
-    }
 
-    public int getDefencePower() {
-        return defencePower;
-    }
 
     public Military getMilitary() {
         return military;

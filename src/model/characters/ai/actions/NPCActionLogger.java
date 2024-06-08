@@ -4,7 +4,6 @@ import model.characters.Person;
 import model.characters.Trait;
 import model.time.Time;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +24,8 @@ public class NPCActionLogger {
         if (logs.size() >= MAX_LOG_ENTRIES) {
             logs.poll();
         }
-        String logEntry = String.format("%s: [%s] [%s] %s-Action %s - %s", LocalDateTime.now(), npc.getName(), npc.getRole(), trait ,action.getClass().getSimpleName(), details);
+        String logEntry = String.format("%s: [%s] [%s] [%s-Action] [%s] | %s | [%s]",
+                Time.getClock(), npc.getName(), npc.getRole(), trait , action.getClass().getSimpleName(), details, npc.getWallet().toShortString());
         logs.add(logEntry);
     }
 
@@ -33,8 +33,8 @@ public class NPCActionLogger {
         if (logs.size() >= MAX_LOG_ENTRIES) {
             logs.poll();
         }
-        String logEntry = String.format("%s: [%s] [%s] [%s-Action] %s | %s | [%s]",
-                Time.getClock(), npc.getName(), npc.getRole(), trait ,action.getClass().getSimpleName(), details, npc.getWallet().toShortString());
+        String logEntry = String.format("%s: [%s] [%s] [%s-Action] [%s] | %s | [%s]",
+                Time.getClock(), npc.getName(), npc.getRole(), trait , action.getClass().getSimpleName(), details, npc.getWallet().toShortString());
         logs.add(logEntry);
     }
 

@@ -23,6 +23,6 @@ public enum Aspiration {
     SET_EXTREME_TAXES,
     SET_LOW_TAXES,
     SET_MEDIUM_TAXES,
-    SET_STANDARD_TAX,
+    SET_STANDARD_TAX, TRADE_MARKET,
 
 }

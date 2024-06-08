@@ -152,7 +152,7 @@ public class Time {
             milliseconds = 500;
         }
         if (speed.equals(Speed.Fast)) {
-            milliseconds = 100;
+            milliseconds = 200;
         }
         if (speed.equals(Speed.Slow)) {
             milliseconds = 1000;

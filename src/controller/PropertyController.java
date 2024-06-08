@@ -422,7 +422,7 @@ public class PropertyController extends BaseController {
 
     @FXML
     void upgradeDef(){
-        property.upgradeDefenceWithGold();
+        property.upgradeDefenceWithAlloys();
         updatePropertyTab();
     }
     void updateVaultValue() {

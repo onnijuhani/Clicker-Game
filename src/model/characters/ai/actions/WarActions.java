@@ -57,8 +57,7 @@ public class WarActions extends BaseActions {
             if(army.recruitSoldier(amount)){
                 person.getEventTracker().addEvent(EventTracker.Message("Major", "Recruited " + amount + " new Soldier(s)"));
 
-
-                logAction(String.format("Recruited %d new soldiers", amount));
+                logAction(String.format("Recruited %d new soldiers. Now total of %d soldiers", amount, army.getNumOfSoldiers()));
 
             }else{
                 person.getEventTracker().addEvent(EventTracker.Message("Major", "Recruiting new Soldiers went wrong"));
@@ -88,8 +87,10 @@ public class WarActions extends BaseActions {
 
             Army army = getCurrentArmy();
 
-            army.increaseAttackPower();
+            if(army.increaseAttackPower()){
 
+            logAction(String.format("Increased army attack power, total power now %d", army.getTotalAttackPower()));
+            }
 
         }
     }
@@ -114,7 +115,10 @@ public class WarActions extends BaseActions {
 
             Army army = getCurrentArmy();
 
-            army.increaseDefencePower();
+            if(army.increaseDefencePower()) {
+
+                logAction(String.format("Increased army defence power, total power now %d", army.getTotalDefencePower()));
+            }
         }
     }
 
@@ -129,4 +133,5 @@ public class WarActions extends BaseActions {
     public List<WeightedObject> getAllActions() {
         return allActions;
     }
+
 }

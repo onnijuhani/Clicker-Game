@@ -7,6 +7,6 @@ public enum State {
     IN_DEFENCE,
     UNDER_CONSTRUCTION,
     MEMBER_OF_SLAVER,
-    MEMBER_OF_FREEDOM,
+    MEMBER_OF_FREEDOM, TRUCE,
 
 }

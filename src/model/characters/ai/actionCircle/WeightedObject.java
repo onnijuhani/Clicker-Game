@@ -17,21 +17,34 @@ public class WeightedObject implements NPCAction {
     protected final Person person;
     protected final NPCActionLogger logger;
 
+    private static final int MIN_VALUE = 1;
+    private static final int MAX_VARIATION = 6;
+
 
     public WeightedObject(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
         this.person = person;
         this.logger = npcActionLogger;
-        this.weight = weight;
-        this.importance = weight;
+        this.weight = adjustValue(weight);
+        this.importance = adjustValue(weight);
         this.profile = profile;
+    }
+
+    private int adjustValue(int value) {
+        Random random = Settings.getRandom();
+        int variation = random.nextInt(2 * MAX_VARIATION + 1) - MAX_VARIATION;
+        int adjustedValue = value + variation;
+        return Math.max(MIN_VALUE, adjustedValue);
     }
 
 
     protected void logAction(Trait trait, String details) {
         logger.logAction(person, this, trait, details);
     }
-    protected void logAction(String details) {
+    public void logAction(String details) {
         logger.logAction(person, this, "Default", details);
+    }
+    protected void logAction(String trait, String details) {
+        logger.logAction(person, this, trait, details);
     }
 
 
@@ -62,67 +75,76 @@ public class WeightedObject implements NPCAction {
      */
     public void execute()  {
 
-        if(Settings.DB) {System.out.println("execute 1");}
-        Trait trait = pickTrait(profile);
+        Trait trait = null;
+        try {
+            if(Settings.DB) {System.out.println("execute 1");}
+            trait = pickTrait(profile);
 
-        if(Settings.DB) {System.out.println("execute 2");}
-        if(trait == null){
-            defaultSkip();
-            if(Settings.DB) {System.out.println("execute 3");}
-            return;
+            if(Settings.DB) {System.out.println("execute 2");}
+            if(trait == null){
+                defaultSkip();
+                if(Settings.DB) {System.out.println("execute 3");}
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
         }
 
-        if(Settings.DB) {System.out.println("execute 4");}
-        switch (trait) {
-            case Ambitious:
-                if(Settings.DB) {System.out.println("ambitious 1" + this.getClass().getSimpleName());}
-                ambitiousAction();
-                if(Settings.DB) {System.out.println("ambitious 2" + this.getClass().getSimpleName());}
-                break;
-            case Unambitious:
-                if(Settings.DB) {System.out.println("unambitious 1" + this.getClass().getSimpleName());}
-                unambitiousAction();
-                if(Settings.DB) {System.out.println("unambitious 2" + this.getClass().getSimpleName());}
-                break;
-            case Slaver:
-                if(Settings.DB) {System.out.println("slaver 1" + this.getClass().getSimpleName());}
-                slaverAction();
-                if(Settings.DB) {System.out.println("slaver 2" + this.getClass().getSimpleName());}
-                break;
-            case Liberal:
-                if(Settings.DB) {System.out.println("liberal 1" + this.getClass().getSimpleName());}
-                liberalAction();
-                if(Settings.DB) {System.out.println("liberal 2" + this.getClass().getSimpleName());}
-                break;
-            case Aggressive:
-                if(Settings.DB) {System.out.println("aggressivr1!!" + this.getClass().getSimpleName());}
-                aggressiveAction();
-                if(Settings.DB) {System.out.println("aggressiv2" + this.getClass().getSimpleName());}
-                break;
-            case Passive:
-                if(Settings.DB) {System.out.println("passive " + this.getClass().getSimpleName());}
-                passiveAction();
-                break;
-            case Loyal:
-                if(Settings.DB) {System.out.println("loyal " + this.getClass().getSimpleName());}
-                loyalAction();
-                break;
-            case Disloyal:
-                if(Settings.DB) {System.out.println("disloyal " + this.getClass().getSimpleName());}
-                disloyalAction();
-                break;
-            case Attacker:
-                if(Settings.DB) {System.out.println("attacker " + this.getClass().getSimpleName());}
-                attackerAction();
-                break;
-            case Defender:
-                if(Settings.DB) {System.out.println("defender" + this.getClass().getSimpleName());}
-                defenderAction();
-                break;
-            default:
-                if(Settings.DB) {System.out.println("default" + this.getClass().getSimpleName());}
-                defaultSkip();
-                break;
+        try {
+            if(Settings.DB) {System.out.println("execute 4");}
+            switch (trait) {
+                case Ambitious:
+                    if(Settings.DB) {System.out.println("ambitious 1" + this.getClass().getSimpleName());}
+                    ambitiousAction();
+                    if(Settings.DB) {System.out.println("ambitious 2" + this.getClass().getSimpleName());}
+                    break;
+                case Unambitious:
+                    if(Settings.DB) {System.out.println("unambitious 1" + this.getClass().getSimpleName());}
+                    unambitiousAction();
+                    if(Settings.DB) {System.out.println("unambitious 2" + this.getClass().getSimpleName());}
+                    break;
+                case Slaver:
+                    if(Settings.DB) {System.out.println("slaver 1" + this.getClass().getSimpleName());}
+                    slaverAction();
+                    if(Settings.DB) {System.out.println("slaver 2" + this.getClass().getSimpleName());}
+                    break;
+                case Liberal:
+                    if(Settings.DB) {System.out.println("liberal 1" + this.getClass().getSimpleName());}
+                    liberalAction();
+                    if(Settings.DB) {System.out.println("liberal 2" + this.getClass().getSimpleName());}
+                    break;
+                case Aggressive:
+                    if(Settings.DB) {System.out.println("aggressivr1!!" + this.getClass().getSimpleName());}
+                    aggressiveAction();
+                    if(Settings.DB) {System.out.println("aggressiv2" + this.getClass().getSimpleName());}
+                    break;
+                case Passive:
+                    if(Settings.DB) {System.out.println("passive " + this.getClass().getSimpleName());}
+                    passiveAction();
+                    break;
+                case Loyal:
+                    if(Settings.DB) {System.out.println("loyal " + this.getClass().getSimpleName());}
+                    loyalAction();
+                    break;
+                case Disloyal:
+                    if(Settings.DB) {System.out.println("disloyal " + this.getClass().getSimpleName());}
+                    disloyalAction();
+                    break;
+                case Attacker:
+                    if(Settings.DB) {System.out.println("attacker " + this.getClass().getSimpleName());}
+                    attackerAction();
+                    break;
+                case Defender:
+                    if(Settings.DB) {System.out.println("defender" + this.getClass().getSimpleName());}
+                    defenderAction();
+                    break;
+                default:
+                    if(Settings.DB) {System.out.println("default" + this.getClass().getSimpleName());}
+                    defaultSkip();
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
         }
     }
 

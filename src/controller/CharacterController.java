@@ -231,7 +231,6 @@ public class CharacterController extends BaseController  {
 
     @FXML
     void printEvents(ActionEvent event) {
-        System.out.println("Current Aspirations: "+currentCharacter.getPerson().getAspirations());
         System.out.println("Ongoing Events : "+currentCharacter.getPerson().getOngoingEvents());
         System.out.println("Current States : "+currentCharacter.getPerson().getStates());
         System.out.println("Traits: "+ currentCharacter.getPerson().getAiEngine().getProfile());
@@ -239,6 +238,8 @@ public class CharacterController extends BaseController  {
         for(String string : currentCharacter.getPerson().getLoggerMessages()){
             System.out.println(string);
         }
+
+        System.out.println("Current Aspirations: "+currentCharacter.getPerson().getAspirations());
     }
 
     @FXML

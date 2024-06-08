@@ -18,28 +18,29 @@ public class CombatStats {
         this.person = person;
     }
 
-    public void upgradeOffenseWithGold(){
+    public boolean upgradeOffenseWithGold(){
         int price = getOffense().getUpgradePrice();
         if(person.getWallet().hasEnoughResource(Resource.Gold,price)){
             person.getWallet().subtractGold(price);
-            if(getOffense().increaseLevel()) {
-                person.getEventTracker().addEvent(EventTracker.Message("Utility", "Offence was increased"));
-            }else{ // useless because UI doesn't allow the button to be pressed anyway. // even more useless now
-                person.getEventTracker().addEvent(EventTracker.Message("Error", "Offence is already at max level"));
-            }
+            getOffense().increaseLevel();
+            person.getEventTracker().addEvent(EventTracker.Message("Utility", "Offence was increased"));
+            return true;
         }else{
             person.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough Gold to increase offence"));
+            return false;
         }
     }
 
-    public void upgradeDefenceWithGold(){
+    public boolean upgradeDefenceWithGold(){
         int price = getDefense().getUpgradePrice();
         if(person.getWallet().hasEnoughResource(Resource.Gold,price)){
             person.getWallet().subtractGold(price);
             getDefense().increaseLevel();
             person.getEventTracker().addEvent(EventTracker.Message("Utility",  "Defence was increased"));
+            return true;
         }else{
             person.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough Gold to increase defence"));
+            return false;
         }
     }
 
