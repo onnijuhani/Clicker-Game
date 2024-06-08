@@ -62,9 +62,9 @@
                   <Insets left="15.0" right="15.0" top="3.0" />
                </VBox.margin>
             </AnchorPane>
-            <ImageView fx:id="characterPicture" fitHeight="417.0" fitWidth="234.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="characterPicture" fitHeight="417.0" fitWidth="234.0" pickOnBounds="true">
                <image>
-                  <Image url="@../pics/testii.png" />
+                  <Image url="@../Properties/file%20(1).png" />
                </image>
             </ImageView>
          </children>

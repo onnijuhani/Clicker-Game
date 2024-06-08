@@ -265,7 +265,10 @@ public class CombatSystem {
             truceEvent = new GameEvent(Event.TRUCE, winner);
             winner.addState(State.TRUCE);
 
-            EventManager.scheduleEvent(() -> removeTruce(winner), 30, truceEvent);
+            int baseTruce = winner.getProperty().getPower();
+            int daysUntilEvent = Math.min(100, baseTruce + winner.getProperty().getDefenceStats().getUpgradeLevel());
+
+            EventManager.scheduleEvent(() -> removeTruce(winner), daysUntilEvent, truceEvent);
 
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);
@@ -304,7 +307,6 @@ public class CombatSystem {
                 }else{
                     name = authority.toString();
                 }
-                System.out.println(defender.getCharacter());
 
                 headline = "Authority Position Gained";
                 mainText = "You have won the Authority Battle against " + defender + "\n\n" +
@@ -315,7 +317,7 @@ public class CombatSystem {
             } else if (defender.isPlayer()) {
                 headline = "Authority Position Lost";
                 mainText = "You have lost the Authority Battle against " + attacker + "\n\n" +
-                        "You are now under their authority as " + attacker.getRole() + " in the " + attacker.getRole().getPosition().getAreaUnderAuthority().toAreaString();
+                        "You are now under their authority as " + attacker.getRole() + " in the " + defender.getRole().getPosition().getAreaUnderAuthority().toAreaString();
                 imagePath = "Properties/authorityChallengeLost.jpg";
                 buttonText = PopUpMessageTracker.getRandomButtonText(loseButtonTextsVictory);
             } else {
@@ -331,7 +333,7 @@ public class CombatSystem {
             } else if (defender.isPlayer()) {
                 headline = "Authority Position Defended";
                 mainText = "You have won the Authority Battle against " + attacker + "\n\n" +
-                        "They remain as "+ attacker.getRole() + " under your authority";
+                        "They remain as "+ defender.getRole() + " under your authority";
                 imagePath = "Properties/authorityChallengeWon.jpg";
                 buttonText = PopUpMessageTracker.getRandomButtonText(winButtonTextsDefeat);
             } else {
@@ -605,6 +607,15 @@ public class CombatSystem {
             return; // Abort the duel because the defender is an ally and attacker is not disloyal
         }
 
+        if(defender.hasState(State.TRUCE)){
+            if(attacker.isPlayer()) {
+                String daysLeft = defender.getAnyOnGoingEvent(Event.TRUCE).getTimeLeftShortString();
+                attacker.getEventTracker().addEvent(EventTracker.Message(
+                        "Error", "Person you are trying to attack has truce protection. " + daysLeft));
+            }
+            return;
+        }
+
         makeEnemies();
         attacker.addState(State.IN_BATTLE);
         defender.addState(State.IN_BATTLE);
@@ -736,22 +747,26 @@ public class CombatSystem {
      * @return winning chance from attackers perspective
      */
     public static double calculateWinningChance(Event event, Person attacker, Person defender) {
-        // Base success chance starts at 0.5
-        double baseSuccessChance = 0.5;
+        try {
+            // Base success chance starts at 0.5
+            double baseSuccessChance = 0.5;
 
-        // Calculate stat difference
-        int effectiveAttackerOffense = calculateEffectiveAttackerOffense(event, attacker);
-        int effectiveDefenderDefense = calculateEffectiveDefenderDefense(event, defender, attacker);
-        double successChanceModifier = getSuccessChanceModifier(effectiveAttackerOffense, effectiveDefenderDefense);
+            // Calculate stat difference
+            int effectiveAttackerOffense = calculateEffectiveAttackerOffense(event, attacker);
+            int effectiveDefenderDefense = calculateEffectiveDefenderDefense(event, defender, attacker);
+            double successChanceModifier = getSuccessChanceModifier(effectiveAttackerOffense, effectiveDefenderDefense);
 
-        // Calculate final success chance with applied non-linear modifiers
-        double finalSuccessChance = calculateFinalSuccessChance(baseSuccessChance, successChanceModifier, 0);
+            // Calculate final success chance with applied non-linear modifiers
+            double finalSuccessChance = calculateFinalSuccessChance(baseSuccessChance, successChanceModifier, 0);
 
-        // Ensure the final success chance is between 0 and 1
-        finalSuccessChance = Math.max(0, Math.min(finalSuccessChance, 1)); // Clamp between 0 and 1
+            // Ensure the final success chance is between 0 and 1
+            finalSuccessChance = Math.max(0, Math.min(finalSuccessChance, 1)); // Clamp between 0 and 1
 
-        // Return the calculated chance of winning
-        return finalSuccessChance;
+            // Return the calculated chance of winning
+            return finalSuccessChance;
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
     }
 
     /**

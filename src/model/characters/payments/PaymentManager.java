@@ -8,9 +8,6 @@ import java.util.*;
 
 public class PaymentManager {
 
-
-
-
     // A class to hold payment information
     public class PaymentInfo {
         public Payment name;

@@ -3,7 +3,7 @@ package model.worldCreation;
 import model.NameCreation;
 import model.Settings;
 import model.buildings.Property;
-import model.buildings.PropertyCreation;
+import model.buildings.PropertyFactory;
 import model.buildings.PropertyTracker;
 import model.characters.Character;
 import model.characters.*;
@@ -139,7 +139,7 @@ public class Nation extends ControlledArea implements Details {
         Governor governor = new Governor(authorityHere);
         governor.getRole().setAuthority(getAuthorityHere());
         governor.getRole().setNation(nation);
-        Property property = PropertyCreation.createProperty(provinceName, "Province", governor.getPerson());
+        Property property = PropertyFactory.createProperty(provinceName, "Province", governor.getPerson());
         propertyTracker.addProperty(property);
         return governor;
     }

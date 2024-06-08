@@ -39,6 +39,8 @@ public class Time {
         executorService = Executors.newSingleThreadScheduledExecutor();
     }
 
+    public static int fastSpeed = 250;
+
     public static void incrementDay() {
 
         day++;
@@ -93,7 +95,8 @@ public class Time {
         executeMonthlyTrades(); // players monthly trades
 
 
-        startingBonusTrigger(); // early game resource bonus
+        handleSpecialEvents(); // early game resource bonus
+
 
     }
 
@@ -103,9 +106,12 @@ public class Time {
         }
     }
 
-    private static void startingBonusTrigger() {
+    private static void handleSpecialEvents() {
         if(day == 1 && month == 2 && year == 0){
             SpecialEventsManager.triggerStartingBonus();
+        }
+        if(day == 15 && month == 0 && year == 0){
+            SpecialEventsManager.triggerEarlyGameInfo();
         }
     }
 
@@ -152,7 +158,7 @@ public class Time {
             milliseconds = 500;
         }
         if (speed.equals(Speed.Fast)) {
-            milliseconds = 200;
+            milliseconds = fastSpeed;
         }
         if (speed.equals(Speed.Slow)) {
             milliseconds = 1000;

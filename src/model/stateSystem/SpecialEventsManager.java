@@ -121,6 +121,167 @@ public class SpecialEventsManager {
 
 
 
+    public static void triggerFirstSlaveFacilityMessage(){
+        PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(
+                "Slave Facility Established",
+                "You have opened a section of your own at the local slave facility. " +
+                        "This will significantly enhance your ability to obtain resources, but it comes with high moral and social costs. " +
+                        "You may later join the Slaver Guild that runs the facility to team up with other citizens who hold slaves there. " +
+                        "Be aware that you are now a target for citizens who believe in the liberal rights of everyone. " +
+                        "Additionally, you will not be able to construct a Worker Center anymore.",
+                "Properties/slaveFacility.jpg",
+                "Understood"
+        );
+
+        PopUpMessageTracker.sendMessage(message);
+    }
+
+    public static void triggerFirstWorkerFacilityMessage(){
+        PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(
+                "Worker Center Established",
+                "You have opened a section of your own at the local Worker Center. " +
+                        "This will significantly improve your resource production by providing a structured and efficient environment for workers. " +
+                        "Your liberal stance will attract citizens who value fair treatment and equal rights, increasing your influence among like-minded individuals. " +
+                        "However, be aware that you will not be able to construct a Slave Facility, as holding slaves is incompatible with your commitment to fair labor.",
+                "Properties/workerCenter.jpg",
+                "Progress"
+        );
+
+        PopUpMessageTracker.sendMessage(message);
+    }
+
+    public static void triggerFirstMysticMineMessage(){
+        PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(
+                "Mystical Mine Constructed",
+                "You have constructed a Mystical Mine." +
+                        " This mysterious facility generates random amounts of alloys and gold, harnessing the arcane energies hidden beneath the earth." +
+                        " The unpredictable output of the mine can lead to unexpected windfalls, providing a unique edge in your resource management." +
+                        " However, be prepared for the occasional dry spell, as the mystical forces at play can be capricious.",
+                "Properties/mysticMine.jpg",
+                "Intriguing"
+        );
+
+        PopUpMessageTracker.sendMessage(message);
+    }
+
+    public static void triggerFirstGameOverWarning(){
+        PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(
+                "Strike Lost",
+                "You have missed a payment and lost a strike. Ensure you have sufficient resources to cover all monthly expenses." +
+                        " There will be no further warnings when strikes are lost. If you lose all your strikes, the game will end." +
+                        " You can view your cash flow, including incomes and expenses, in the overview tab. Take immediate action to secure your position.",
+                "Properties/gameOverFirstWarning.jpg",
+                "Understood"
+        );
+
+        PopUpMessageTracker.sendMessage(message);
+    }
+
+    public static void triggerGameOverWarning() {
+        PopUpMessageTracker.PopUpMessage gameOverMessage = new PopUpMessageTracker.PopUpMessage(
+                "Warning",
+                "Only 1 strike left\n\nYour journey will end soon..\n\n",
+                "Properties/gameOverWarning.jpg",
+                "No room for errors..."
+        );
+        PopUpMessageTracker.sendMessage(gameOverMessage);
+    }
+
+    private static boolean sentinelsInfoSent = false;
+    public static void triggerSentinelsInfo() {
+        if(sentinelsInfoSent){
+            return;
+        }
+        sentinelsInfoSent = true;
+        PopUpMessageTracker.PopUpMessage gameOverMessage = new PopUpMessageTracker.PopUpMessage(
+                "Who are the Sentinels?",
+                "Sentinels are elite citizens dedicated to protecting the highest authorities. " +
+                        "They will rally to their Master's defense whenever their authority is challenged. " +
+                        "To weaken these guardians, duel them individually and remove them from the Authority battle before challenging Governor or King." +
+                        "\n\nGovernors are protected by their Mercenaries, fierce attackers who relentlessly harass any potential threats to their master." +
+                        " Kings are defended by Nobles, who wield strategic power against rivaling Nations, and the formidable Vanguards," +
+                        " whose devastating strength makes dethroning the King a nearly impossible task.",
+                "Properties/sentinels.jpg",
+                "Understood"
+        );
+        PopUpMessageTracker.sendMessage(gameOverMessage);
+
+    }
+
+    public static void triggerEarlyGameInfo() {
+        PopUpMessageTracker.PopUpMessage gameOverMessage = new PopUpMessageTracker.PopUpMessage(
+                "Getting Started",
+                "At the top of the screen is your main wallet, which is currently empty. " +
+                        "Resources you generate with the clicker will be added to your work wallet." +
+                        "Every 27th day, your work wallet will be taxed by your local Captain, your direct authority. " +
+                        "After taxation, the remaining resources are automatically transferred to your main wallet, where they can be freely spent." +
+                        "You have the opportunity to overthrow the Captain, gaining the power to collect tax payments from other Peasants in your area. " +
+                        "Ensure you have sufficient resources in your main wallet to cover basic food and maintenance costs." +
+                        "\n\nPlan wisely and build your wealth to rise in power!",
+                "Properties/earlyGameInfo.jpg",
+                "Glory Awaits"
+        );
+        PopUpMessageTracker.sendMessage(gameOverMessage);
+    }
+
+    private static boolean exploreMapInfoSent = false;
+    public static void triggerExploreMapInfo() {
+        if(exploreMapInfoSent){
+            return;
+        }
+        exploreMapInfoSent = true;
+        PopUpMessageTracker.PopUpMessage gameOverMessage = new PopUpMessageTracker.PopUpMessage(
+                "Explore the Map",
+                "The world of Territorial Clickers is vast and layered. It spans from the overarching World, down through Continents," +
+                        " Nations led by Kings, Provinces governed by Governors, Cities overseen by Mayors, and finally, Districts commanded by Captains." +
+                        "\n\nThe land is teeming with others just like you, all striving to expand their territorial power. You have the freedom to explore the map and uncover vital information about each area." +
+                        "Discover who resides there, assess their wealth and military strength, and use this knowledge to your advantage.",
+                "Properties/exploreMapInfo.jpg",
+                "Let's Explore"
+        );
+        PopUpMessageTracker.sendMessage(gameOverMessage);
+    }
+
+    private static boolean vaultInfoSent = false;
+    public static void triggerVaultInfo() {
+        if (vaultInfoSent) {
+            return;
+        }
+        vaultInfoSent = true;
+        PopUpMessageTracker.PopUpMessage gameOverMessage = new PopUpMessageTracker.PopUpMessage(
+                "Vault",
+                "The Vault is a secure place to store your resources, locking them until the end of the current year. " +
+                        "After this period, your stored wealth will start earning a 15% interest annually. " +
+                        "However, beware that your vault can be a target for robbers. " +
+                        "Upgrade the defense of your property to safeguard your accumulated wealth. " +
+                        "You can withdraw available resources from your vault to your main wallet at any time.",
+                "Properties/vaultInfo.jpg",
+                "He who understands it, earns it…"
+        );
+        PopUpMessageTracker.sendMessage(gameOverMessage);
+    }
+
+
+    public static void triggerMarketInfo() {
+
+
+        PopUpMessageTracker.PopUpMessage gameOverMessage = new PopUpMessageTracker.PopUpMessage(
+                "Exchange",
+                "You can buy and sell resources at the exchange. Be mindful of the high fees associated with every trade. " +
+                        "You are trading in the same market as everyone else in your Nation, so take advantage of fluctuating prices. " +
+                        "You can also automate the buying and selling of resources. This feature will sell all selected resources you have, leaving enough to cover your mandatory expenses.",
+                "Properties/market.jpg",
+                "Understood"
+        );
+        PopUpMessageTracker.sendMessage(gameOverMessage);
+    }
+
+
+
+
+
+
+
 
 
 }

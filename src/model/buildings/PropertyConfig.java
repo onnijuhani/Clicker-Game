@@ -3,6 +3,12 @@ package model.buildings;
 import model.Settings;
 
 public class PropertyConfig {
+
+    public static int getPower(PropertyValues type){
+        return type.getPower();
+    }
+
+
     public static final PropertyValues FORTRESS = new PropertyValues(
             Settings.getInt("fortressFood"),
             Settings.getInt("fortressAlloy"),
@@ -48,15 +54,13 @@ public class PropertyConfig {
             Settings.getInt("shackAlloy"),
             Settings.getInt("shackGold"),
             Settings.getInt("shackPower"));
+
+
     public static class PropertyValues {
         int food;
         int alloy;
         int gold;
-
-
-
         int power;
-
 
         public PropertyValues(int food, int alloy, int gold, int power) {
             this.food = food;

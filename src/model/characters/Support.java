@@ -1,6 +1,6 @@
 package model.characters;
 
-import model.buildings.PropertyCreation;
+import model.buildings.PropertyFactory;
 import model.characters.authority.Authority;
 import model.resourceManagement.payments.Salary;
 
@@ -16,7 +16,7 @@ public class Support extends Character {
     }
 
     public void createProperty() {
-        person.setProperty(PropertyCreation.createSupportProperty(person));
+        person.setProperty(PropertyFactory.createSupportProperty(person));
         person.getProperty().setOwner(this.getPerson());
     }
 

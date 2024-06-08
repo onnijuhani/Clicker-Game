@@ -63,7 +63,14 @@ public class Property implements PropertyObserver, Details, Ownable {
     protected UtilitySlot utilitySlot;
     private final EnumSet<State> states;
 
+    public int getPower() {
+        return power;
+    }
+
+    private int power;
+
     public Property(PropertyConfig.PropertyValues propertyValues, String name, Person owner) {
+        this.power = propertyValues.power;
         this.defense = new UpgradeSystem(10,2000, 1.5);
         this.vault = new Vault(this);
 

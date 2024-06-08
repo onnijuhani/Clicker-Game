@@ -36,10 +36,10 @@ public class AiEngine {
     }
 
     private void setUpActionLoop() {
-//        actionCircle.addAll(utilityActions.getAllActions());
-//        actionCircle.addAll(combatActions.getAllActions());
-//        actionCircle.addAll(managementActions.getAllActions());
-//        actionCircle.addAll(warActions.getAllActions());
+        actionCircle.addAll(utilityActions.getAllActions());
+        actionCircle.addAll(combatActions.getAllActions());
+        actionCircle.addAll(managementActions.getAllActions());
+        actionCircle.addAll(warActions.getAllActions());
 
 
     }

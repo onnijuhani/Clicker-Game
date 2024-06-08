@@ -18,6 +18,9 @@ import model.worldCreation.Nation;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static model.characters.combat.CombatSystem.calculateWinningChance;
+
 @SuppressWarnings("CallToPrintStackTrace")
 public class CombatActions extends BaseActions {
 
@@ -30,7 +33,8 @@ public class CombatActions extends BaseActions {
     private int defencePowerLevel;
     private UpgradeSystem propertyDefence;
     private CombatStats combatStats;
-    Property property;
+    private Property property;
+    private double winningChanceRequirement;
 
 
 
@@ -264,7 +268,7 @@ public class CombatActions extends BaseActions {
                     .filter(enemy -> !person.getRelationsManager().getListOfDefeatedPersons().contains(enemy))
                     .collect(Collectors.toSet());
 
-            executeDuel(listOfPossibleTargets, latestDuel, this);
+            executeDuel(listOfPossibleTargets, latestDuel, this, winningChanceRequirement);
         }
 
         /**
@@ -272,7 +276,7 @@ public class CombatActions extends BaseActions {
          */
         public void liberalAction(){
             Set<Person> listOfPossibleTargets = person.getRole().getNation().getSlaverGuild();
-            executeDuel(listOfPossibleTargets, latestDuel, this);
+            executeDuel(listOfPossibleTargets, latestDuel, this, winningChanceRequirement);
         }
         public void passiveAction(){
             defaultSkip();
@@ -287,17 +291,15 @@ public class CombatActions extends BaseActions {
 
         @Override
         public void ambitiousAction() {
-
             if(random.nextInt(6) > 2) { //ambitious duels, but has small chance to road to achieve higher Position
                 defaultAction();
                 return;
             }
 
-            if (setAuthorityToMainTarget()) return; // Cannot attack self
+            if (testAuthority()) return; // Cannot attack self
             roadToAchieveHigherPosition(latestDuel, this);
-
         }
-        }
+    }
 
 
 
@@ -341,6 +343,7 @@ public class CombatActions extends BaseActions {
             if(isInBattle.test(person)){
                 return;
             }
+            mainTarget = person.getRole().getAuthority().getCharacterInThisPosition();
             update();
             super.execute();
         }
@@ -562,50 +565,120 @@ public class CombatActions extends BaseActions {
             propertyDefence = person.getProperty().getDefenceStats();
             combatStats = person.getCombatStats();
             property = person.getProperty();
+
+            updateWinningChanceRequirement();
+
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);
         }
     }
 
-    private void roadToAchieveHigherPosition(Person latestTarget, WeightedObject action){
+    private void updateWinningChanceRequirement() {
         try {
-            if (mainTarget == null && action instanceof Robbery) {
+            if (mainTarget == null) {
+                winningChanceRequirement = 0.65;
                 return;
             }
-            if(action instanceof AuthorityBattle) {
-                if (setAuthorityToMainTarget())
-                    return; // quick return if there is a problem with the targets role
+
+            Trait trait = WeightedObject.pickTrait(profile);
+            if(trait == null){
+                winningChanceRequirement = 0.65;
+                return;
             }
+
+            switch ((trait)) {
+                case Ambitious:
+                    if (mainTarget == person.getRole().getAuthority().getCharacterInThisPosition()) {
+                        winningChanceRequirement = 0.5;
+                    } else {
+                        winningChanceRequirement = 0.55;
+                    }
+                    break;
+                case Unambitious:
+                    winningChanceRequirement = 0.85;
+                    break;
+                case Slaver:
+                    if (mainTarget.getPerson().getAiEngine().getProfile().containsKey(Trait.Liberal)) {
+                        winningChanceRequirement = 0.4;
+                    } else {
+                        winningChanceRequirement = 0.6;
+                    }
+                    break;
+                case Liberal:
+                    if (mainTarget.getPerson().getAiEngine().getProfile().containsKey(Trait.Slaver)) {
+                        int i = profile.getOrDefault(Trait.Liberal, 0);
+                        winningChanceRequirement = Math.max(0.3, Math.min(0.55, 0.5 - i * 0.02));
+                    } else {
+                        winningChanceRequirement = 0.6;
+                    }
+                    break;
+                case Defender:
+                    winningChanceRequirement = 0.65;
+                    break;
+                case Aggressive:
+                    int i = profile.getOrDefault(Trait.Aggressive, 0);
+                    winningChanceRequirement = Math.max(0.25, Math.min(0.5, 0.5 - i * 0.02));
+                    break;
+                case Passive:
+                    winningChanceRequirement = 0.8;
+                    break;
+                case Loyal:
+                    if (mainTarget == person.getRole().getAuthority().getCharacterInThisPosition()) {
+                        winningChanceRequirement = 1;
+                    } else {
+                        winningChanceRequirement = 0.80;
+                    }
+                    break;
+                case Disloyal:
+                    if (mainTarget == person.getRole().getAuthority().getCharacterInThisPosition()) {
+                        winningChanceRequirement = 0.40;
+                    } else {
+                        winningChanceRequirement = 0.50;
+                    }
+                    break;
+                case Attacker:
+                    winningChanceRequirement = 0.60;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unexpected trait: " + trait);
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void roadToAchieveHigherPosition(Person latestTarget, WeightedObject action){
+        try {
+            if (action instanceof Robbery) {
+                return;
+            }
+            if (testAuthority())
+                return; // quick return if there is a problem with the targets role
 
             assert mainTarget != null;
             Status mainTargetStatus = mainTarget.getRole().getStatus();
 
             switch (mainTargetStatus) {
                 case Captain, Mayor:
-    //                     Increase offense if target is Captain or Mayor
+
+                    if (abortForLowWinningChance(mainTarget.getPerson(), winningChanceRequirement, Event.AuthorityBattle))
+                        return; // abort since winning chance is too low
+
                     CombatService.executeAuthorityBattle(person.getCharacter(),mainTarget);
                     if (person.getAnyOnGoingEvent(Event.AuthorityBattle) != null) {
-                        action.logAction(String.format("Started authority battle against %s", mainTarget));
+                        action.logAction(String.format("Started authority battle against %s with winning chance %f", mainTarget, winningChanceRequirement));
                     }
                     break;
 
                 case Governor, King:
-
                     // Defeat all sentinels if target is Governor or King before attempting the Authority battle
                     if (defeatAllSentinels(latestTarget, action)) {
-
-                        int defensePower = mainTarget.getPerson().getCombatStats().getDefenseLevel() + mainTarget.getPerson().getProperty().getDefenceStats().getUpgradeLevel();
-                        int attackPower = person.getCombatStats().getOffenseLevel() + person.getCombatStats().getDefenseLevel();
-
-                        // Must be 2 levels higher unless they have trait Aggressive. Aggressive always attacks.
-                        if (attackPower >= defensePower+2){
-                            if(!(attackPower <= defensePower && person.getAiEngine().getProfile().containsKey(Trait.Aggressive))) {
-                                return;
-                            }
-                        }
+                        if (abortForLowWinningChance(mainTarget.getPerson(), winningChanceRequirement, Event.AuthorityBattle))
+                            return; // abort since winning chance is too low
                         CombatService.executeAuthorityBattle(person.getCharacter(),mainTarget);
                         if (person.getAnyOnGoingEvent(Event.AuthorityBattle) != null) {
-                            action.logAction(String.format("Started authority battle against %s", mainTarget));
+                            action.logAction(String.format("Started authority battle against %s with winning chance at least %2f", mainTarget, winningChanceRequirement));
                         }
                     }
                     break;
@@ -619,8 +692,16 @@ public class CombatActions extends BaseActions {
         }
     }
 
-    private boolean setAuthorityToMainTarget() {
-        mainTarget = person.getRole().getAuthority().getCharacterInThisPosition();
+    private boolean abortForLowWinningChance(Person mainTarget, double winningChanceRequirement, Event type) {
+        double winningChance = calculateWinningChance(type, person, mainTarget);
+        return winningChance <= winningChanceRequirement;
+    }
+
+
+    private boolean testAuthority() {
+        if(mainTarget == null){
+            return true;
+        }
         if (mainTarget.getPerson() == person) {
             return true;
         }
@@ -642,7 +723,7 @@ public class CombatActions extends BaseActions {
                 }
             }
             if(!undefeatedSentinels.isEmpty()) {
-                executeDuel(undefeatedSentinels, latestTarget, action);
+                executeDuel(undefeatedSentinels, latestTarget, action, winningChanceRequirement);
             }
 
             return undefeatedSentinels.isEmpty(); // return true if all sentinels have been defeated already
@@ -652,8 +733,14 @@ public class CombatActions extends BaseActions {
 
     }
 
+    /**
+     * @param listOfPossibleTargets list of targets that are considered targets
+     * @param latestTarget last person attacked to make sure npc doesn't constantly attack the same person
+     * @param action the class that made the call
+     * @param winningChanceRequirement whatever the minimum chance of victory to enter into battle should be
+     */
     // both offense and defense are included in DUEL. Not in other combats.
-    private void executeDuel(Set<Person> listOfPossibleTargets, Person latestTarget, WeightedObject action) {
+    private void executeDuel(Set<Person> listOfPossibleTargets, Person latestTarget, WeightedObject action, double winningChanceRequirement) {
         try {
             if (listOfPossibleTargets.isEmpty()) {
                 return;
@@ -690,6 +777,10 @@ public class CombatActions extends BaseActions {
             if (randomlySelectedEnemy == latestTarget) {
                 return; // don't duel the same person all the time
             }
+
+            if (abortForLowWinningChance(randomlySelectedEnemy, winningChanceRequirement, Event.DUEL))
+                return; // abort since winning chance is too low
+
             // Execute duel against the selected weakest undefeated enemy
             CombatService.executeDuel(person.getCharacter(), randomlySelectedEnemy.getCharacter());
 
@@ -701,6 +792,9 @@ public class CombatActions extends BaseActions {
         }
 
     }
+
+
+
 
 }
 

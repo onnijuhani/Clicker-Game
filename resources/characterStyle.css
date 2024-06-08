@@ -125,4 +125,22 @@
     -fx-padding: 10;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 5);
 }
+.marketBox {
+    -fx-background-color: linear-gradient(from 15% 15% to 100% 100%, #7B4A12, #B0A040);
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-border-color: #4A2F12;
+    -fx-border-width: 2;
+    -fx-padding: 5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 10, 0, 0, 5);
+}
+.marketBox2 {
+    -fx-background-color: linear-gradient(from 15% 15% to 100% 100%, #5C3A1E, #3B2A1A);
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-border-color: #D4AF37;
+    -fx-border-width: 2;
+    -fx-padding: 2,10,2,10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 10, 0, 0, 5);
+}
 

@@ -8,6 +8,7 @@ import model.characters.Person;
 import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Wallet;
 import model.stateSystem.EventTracker;
+import model.stateSystem.SpecialEventsManager;
 
 public class UtilityShop extends ShopComponents {
     public UtilityShop(Wallet wallet) {
@@ -90,6 +91,19 @@ public class UtilityShop extends ShopComponents {
         }
         property.getUtilitySlot().increaseTotalLevels();
         newBuilding.updatePaymentCalendar(person.getPaymentManager());
+
+        if(person.isPlayer()){
+            if(type == UtilityBuildings.SlaveFacility){
+                SpecialEventsManager.triggerFirstSlaveFacilityMessage();
+            }
+            if(type == UtilityBuildings.WorkerCenter){
+                SpecialEventsManager.triggerFirstWorkerFacilityMessage();
+            }
+            if(type == UtilityBuildings.MysticMine){
+                SpecialEventsManager.triggerFirstMysticMineMessage();
+            }
+        }
+
         return true;
     }
 

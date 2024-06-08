@@ -57,7 +57,7 @@
                <children>
                   <VBox alignment="CENTER_RIGHT">
                      <children>
-                        <TabPane prefHeight="330.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE">
+                        <TabPane fx:id="informationTabPane" prefHeight="330.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE">
                            <tabs>
                               <Tab text="Overview">
                                  <content>
@@ -86,7 +86,7 @@
                                     </AnchorPane>
                                  </content>
                               </Tab>
-                              <Tab text="Explore Map">
+                              <Tab fx:id="exploreMapTab" onSelectionChanged="#exploreMapOpen" text="Explore Map">
                                  <content>
                                     <AnchorPane style="-fx-background-color: white;">
                                        <children>
@@ -291,6 +291,11 @@
                   </HBox>
                   <VBox alignment="CENTER" layoutY="470.0" prefWidth="120.0" AnchorPane.bottomAnchor="2.0">
                      <children>
+                        <CheckBox mnemonicParsing="false" onAction="#setFastSpeed" text="ExtraSpeed">
+                           <VBox.margin>
+                              <Insets bottom="2.0" />
+                           </VBox.margin>
+                        </CheckBox>
                         <Button mnemonicParsing="false" onAction="#cheat" text="Cheat">
                            <VBox.margin>
                               <Insets bottom="5.0" />

@@ -77,6 +77,20 @@ public class Settings {
         }
     }
 
+    public static String removeYouAndKing(String i){
+        String name = i;
+        if (i.contains("(you)")) {
+            name = i.replace("(you)", "").trim();
+        }
+        if (i.contains("(King)")) {
+            name = i.replace("(King)", "").trim();
+        }
+        if (i.contains("(Home)")) {
+            name = i.replace("(Home)", "").trim();
+        }
+        return name;
+    }
+
 
     public static int getInt(String key) {
         return Integer.parseInt(settings.getProperty(key, "0")); // Default value if key not found

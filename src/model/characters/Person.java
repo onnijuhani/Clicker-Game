@@ -22,6 +22,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static model.stateSystem.SpecialEventsManager.triggerFirstGameOverWarning;
+import static model.stateSystem.SpecialEventsManager.triggerGameOverWarning;
+
 public class Person implements Ownable {
     private final String name;
     private final Wallet wallet;
@@ -85,6 +88,9 @@ public class Person implements Ownable {
     public void loseStrike(){
         getStrikesTracker().loseStrike();
         int strikesLeft = getStrikesTracker().getStrikes();
+        if (strikesLeft == 9 && isPlayer){
+            triggerFirstGameOverWarning();
+        }
         if (strikesLeft == 1 && isPlayer){
             triggerGameOverWarning();
         }
@@ -97,15 +103,7 @@ public class Person implements Ownable {
         }
     }
 
-    private void triggerGameOverWarning() {
-        PopUpMessageTracker.PopUpMessage gameOverMessage = new PopUpMessageTracker.PopUpMessage(
-                "Warning",
-                "Only 1 strike left\n\nYour journey will end soon..\n\n",
-                "Properties/gameOverWarning.jpg",
-                "No room for errors..."
-        );
-        PopUpMessageTracker.sendMessage(gameOverMessage);
-    }
+
 
     private void triggerGameOver(){
         if(character.getPerson().isPlayer()) {

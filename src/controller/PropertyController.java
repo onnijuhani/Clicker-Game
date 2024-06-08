@@ -24,6 +24,7 @@ import model.resourceManagement.wallets.Wallet;
 import model.shop.Shop;
 import model.stateSystem.Event;
 import model.stateSystem.GameEvent;
+import model.stateSystem.SpecialEventsManager;
 import model.time.Time;
 
 import java.util.HashMap;
@@ -232,11 +233,16 @@ public class PropertyController extends BaseController {
     }
 
     private void vaultDeposit() {
+        SpecialEventsManager.triggerVaultInfo();
         int percentage = (int) vaultSlider.getValue();
         if (percentage == 0){
             return;
         }
+        if(character.getPerson().getWallet().isEmpty()){
+            return;
+        }
         int[] walletBalance = character.getPerson().getWallet().getWalletValues();
+
         executeVaultDeposit(percentage, walletBalance, character.getPerson().getProperty().getVault(), character.getPerson().getWallet());
         updatePropertyTab();
     }
@@ -245,6 +251,7 @@ public class PropertyController extends BaseController {
     }
 
     private void vaultWithdraw() {
+        SpecialEventsManager.triggerVaultInfo();
         int percentage = (int) vaultSlider.getValue();
         if (percentage == 0){
             return;

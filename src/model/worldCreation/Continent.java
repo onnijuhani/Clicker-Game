@@ -3,7 +3,7 @@ package model.worldCreation;
 import model.NameCreation;
 import model.Settings;
 import model.buildings.Property;
-import model.buildings.PropertyCreation;
+import model.buildings.PropertyFactory;
 import model.buildings.PropertyTracker;
 import model.characters.RelationsManager;
 import model.characters.Status;
@@ -104,7 +104,7 @@ public class Continent extends Area implements Details {
 
     private King kingFactory() {
         King king = new King();
-        Property property = PropertyCreation.createProperty(name, "Nation", king.getPerson());
+        Property property = PropertyFactory.createProperty(name, "Nation", king.getPerson());
         propertyTracker.addProperty(property);
         return king;
     }

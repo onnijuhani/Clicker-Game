@@ -225,7 +225,7 @@ public class WeightedObject implements NPCAction {
      * @param profile personality/trait profile
      * @return returns random trait
      */
-    public Trait pickTrait(Map<Trait, Integer> profile) {
+    public static Trait pickTrait(Map<Trait, Integer> profile) {
 
 
         if(Settings.DB) {System.out.println("traitPick 1");}

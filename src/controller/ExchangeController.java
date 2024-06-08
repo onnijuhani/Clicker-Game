@@ -3,6 +3,7 @@ package controller;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -14,6 +15,7 @@ import model.characters.Person;
 import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
 import model.shop.Exchange;
+import model.stateSystem.SpecialEventsManager;
 import model.time.MonthlyTradeExecutor;
 import model.time.Time;
 
@@ -76,7 +78,10 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
         updateExchangePrices();
     }
 
-
+    @FXML
+    void triggerInfo(ActionEvent event) {
+        SpecialEventsManager.triggerMarketInfo();
+    }
 
     @FXML
     void increasePrices(MouseEvent event) {

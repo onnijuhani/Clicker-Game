@@ -3,7 +3,7 @@ package model.worldCreation;
 import model.NameCreation;
 import model.Settings;
 import model.buildings.Property;
-import model.buildings.PropertyCreation;
+import model.buildings.PropertyFactory;
 import model.buildings.PropertyTracker;
 import model.characters.Character;
 import model.characters.Status;
@@ -113,7 +113,7 @@ public class City extends ControlledArea implements Details {
         Captain captain = new Captain(authorityHere);
         captain.getRole().setNation(nation);
         captain.getRole().setAuthority(getAuthorityHere());
-        Property property = PropertyCreation.createProperty(quarterName, "Quarter", captain.getPerson()); //owner is set in the method
+        Property property = PropertyFactory.createProperty(quarterName, "Quarter", captain.getPerson()); //owner is set in the method
         propertyTracker.addProperty(property);
         return captain;
     }

@@ -3,7 +3,7 @@ package model.worldCreation;
 import model.NameCreation;
 import model.Settings;
 import model.buildings.Property;
-import model.buildings.PropertyCreation;
+import model.buildings.PropertyFactory;
 import model.buildings.PropertyTracker;
 import model.characters.Character;
 import model.characters.Status;
@@ -69,7 +69,7 @@ public class Province extends ControlledArea implements Details {
         Mayor mayor = new Mayor(authorityHere);
         mayor.getRole().setNation(nation);
         mayor.getRole().setAuthority(getAuthorityHere());
-        Property property = PropertyCreation.createProperty(cityName, "City", mayor.getPerson());
+        Property property = PropertyFactory.createProperty(cityName, "City", mayor.getPerson());
         propertyTracker.addProperty(property);
         return mayor;
     }

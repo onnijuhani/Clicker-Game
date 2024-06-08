@@ -116,6 +116,7 @@ public class CharacterController extends BaseController  {
 
         if(states.contains(State.IN_BATTLE) || states.contains(State.IN_DEFENCE)){
             stateBox.setVisible(true);
+            CombatBox.setVisible(false);
 
             GameEvent authorityEvent = currentPerson.getAnyOnGoingEvent(Event.AuthorityBattle);
             GameEvent duelEvent = currentPerson.getAnyOnGoingEvent(Event.DUEL);
@@ -163,9 +164,9 @@ public class CharacterController extends BaseController  {
 
             currentState.setText("Currently in "+onGoingEvent.getEvent());
 
-        }
-        else{
+        }else{
             stateBox.setVisible(false);
+            CombatBox.setVisible(true);
         }
 
     }
@@ -245,11 +246,13 @@ public class CharacterController extends BaseController  {
     @FXML
     void executeDuel(){
         CombatService.executeDuel(model.getPlayerCharacter(), currentCharacter);
+        main.updateEventList();
     }
 
     @FXML
     void executeAuthorityBattle(){
         CombatService.executeAuthorityBattle(model.getPlayerCharacter(), currentCharacter);
+        main.updateEventList();
     }
 
     @FXML
@@ -320,6 +323,7 @@ public class CharacterController extends BaseController  {
     void openHomeQuarter(ActionEvent event) {
         model.accessCurrentView().setCurrentView(currentCharacter.getPerson().getProperty().getLocation());
         main.exploreMapController.updateExploreTab();
+        main.openExploreMapTab();
     }
 
     private void openCharacterProfile(Character character) {

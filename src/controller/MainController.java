@@ -22,6 +22,7 @@ import model.characters.player.clicker.Clicker;
 import model.resourceManagement.TransferPackage;
 import model.stateSystem.EventTracker;
 import model.stateSystem.PopUpMessageTracker;
+import model.stateSystem.SpecialEventsManager;
 import model.time.Time;
 import model.worldCreation.Quarter;
 
@@ -87,6 +88,10 @@ public class MainController extends BaseController {
 
     @FXML
     protected TabPane mainTabPane;
+    @FXML
+    protected TabPane informationTabPane;
+    @FXML
+    protected Tab exploreMapTab;
     @FXML
     protected Tab characterTab;
     @FXML
@@ -250,6 +255,10 @@ public class MainController extends BaseController {
         }
     }
 
+    public void openExploreMapTab(){
+        informationTabPane.getSelectionModel().select(exploreMapTab);
+    }
+
 
     public void generateResourcesAction() {
         if (!model.accessTime().isSimulationRunning()) {
@@ -314,6 +323,8 @@ public class MainController extends BaseController {
     }
 
 
+
+
     @FXML
     void updateExchange(){
         exchangeController.updateExchange();
@@ -329,6 +340,11 @@ public class MainController extends BaseController {
         armyController.setCurrentCharacter();
         armyController.differentiatePlayer();
     }
+
+    @FXML
+    void exploreMapOpen() {
+        SpecialEventsManager.triggerExploreMapInfo();
+    }
     @FXML
     void setUpPropertyTab() {
         propertyController.updatePropertyTab();
@@ -342,7 +358,6 @@ public class MainController extends BaseController {
 
         topSectionController.stopTimeBtn.setDisable(true); // Disable the stop button
         topSectionController.startTimeBtn.setDisable(false); // Enable the start button
-
 
     }
     public void toggleSimulation() {
@@ -462,6 +477,14 @@ public class MainController extends BaseController {
         TransferPackage transferPackage = new TransferPackage(10000,10000, 100000);
         model.getPlayerPerson().getWallet().addResources(transferPackage);
     }
+
+    @FXML
+    void setFastSpeed(ActionEvent event) {
+        Time.fastSpeed = 50;
+    }
+
+
+
     public void updateCurrentlyViewing() {
         Character currentCharacter = characterController.getCurrentCharacter();
         Character playerCharacter = Model.getPlayerAsCharacter();

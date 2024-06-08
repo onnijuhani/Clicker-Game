@@ -17,6 +17,7 @@ import model.characters.Character;
 import model.characters.Person;
 import model.characters.RelationsManager;
 import model.characters.combat.CombatService;
+import model.stateSystem.SpecialEventsManager;
 
 import java.util.Set;
 
@@ -185,6 +186,7 @@ public class RelationsController extends BaseController {
     }
     @FXML
     void getSentinels(ActionEvent event) {
+        SpecialEventsManager.triggerSentinelsInfo();
         currentCharacter.getPerson().getRelationsManager().updateSets();
         Set<Person> persons = relations.getListOfSentinels();
         ObservableList<Node> items = FXCollections.observableArrayList();

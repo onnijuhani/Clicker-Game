@@ -1,5 +1,6 @@
 package model.resourceManagement.wallets;
 
+import model.characters.Person;
 import model.characters.payments.Payment;
 import model.characters.payments.PaymentManager;
 import model.characters.payments.PaymentTracker;
@@ -32,6 +33,11 @@ public class WorkWallet extends Wallet implements PaymentTracker {
             lastSalaryAmount = amount;
             lastSalaryDay = day;
 
+            if(getOwner() instanceof Person person){
+                if(person.isPlayer()){
+                    return;
+                }
+            }
             updatePaymentCalendar(getOwner().getPaymentManager());
 
         }
