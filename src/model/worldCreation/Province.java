@@ -56,6 +56,9 @@ public class Province extends ControlledArea implements Details {
 
             City city = new City(cityName, this, authority);
 
+            // add into claimed area
+            nation.addClaimedArea(city);
+
             authority.setAreaUnderAuthority(city);
 
             cities[i] = city;
@@ -121,7 +124,8 @@ public class Province extends ControlledArea implements Details {
         return cities;
     }
 
-    public void setCities(City[] cities) {
-        this.cities = cities;
+    @Override
+    public void setNation(Nation nation){
+        this.nation = nation;
     }
 }

@@ -464,9 +464,6 @@ public class CombatSystem {
         venue.removeState(State.IN_BATTLE);
         eligibleSupporters.forEach(support -> support.removeState(State.IN_BATTLE));
         attacker.removeAspiration(Aspiration.ACHIEVE_HIGHER_POSITION);
-
-
-
     }
 
     /**

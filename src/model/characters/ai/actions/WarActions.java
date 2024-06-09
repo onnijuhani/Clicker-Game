@@ -110,17 +110,8 @@ public class WarActions extends BaseActions {
     }
 
     private void increaseOffence(WeightedObject action) {
-        if (notMilitaryProperty()) {
-            return;
-        }
-        TransferPackage netBalance = person.getPaymentManager().getNetBalance();
-
-        if (!(netBalance.alloy() > ArmyCost.runningAlloy)) {
-            person.addAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION);
-            return;
-        }
-
-        Army army = getCurrentArmy();
+        Army army = getArmyAfterPowerChecks();
+        if (army == null) return;
 
         if(army.increaseAttackPower()){
 
@@ -128,19 +119,32 @@ public class WarActions extends BaseActions {
         }
     }
 
+
     private void increaseDefence(WeightedObject action) {
-        if (notMilitaryProperty()) {
-            return;
-        }
-        TransferPackage netBalance = person.getPaymentManager().getNetBalance();
-        if (!(netBalance.alloy() > ArmyCost.runningAlloy)) {
-            person.addAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION);
-            return;
-        }
-        Army army = getCurrentArmy();
+        Army army = getArmyAfterPowerChecks();
+        if (army == null) return;
         if(army.increaseDefencePower()) {
             action.logAction(String.format("Increased army defence power, total power now %d", army.getTotalDefencePower()));
         }
+    }
+
+    private Army getArmyAfterPowerChecks() {
+        if (notMilitaryProperty()) {
+            return null;
+        }
+        TransferPackage currentExpenses = person.getPaymentManager().getFullExpense();
+        TransferPackage currentBalance = person.getWallet().getBalance();
+        if (!currentBalance.isGreaterThanOrEqualTo(currentExpenses)) {
+            return null;
+        }
+        TransferPackage netBalance = person.getPaymentManager().getNetBalance();
+
+        if (!(netBalance.alloy() > ArmyCost.runningAlloy)) {
+            person.addAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION);
+            return null;
+        }
+
+        return getCurrentArmy();
     }
 
     private void hireSoldiers(WeightedObject action) {
@@ -150,6 +154,12 @@ public class WarActions extends BaseActions {
         Army army = property.getArmy();
 
         TransferPackage netBalance = person.getPaymentManager().getNetBalance();
+
+        TransferPackage currentExpenses = person.getPaymentManager().getFullExpense();
+        TransferPackage currentBalance = person.getWallet().getBalance();
+        if (!currentBalance.isGreaterThanOrEqualTo(currentExpenses)) {
+            return;
+        }
 
         if(!(netBalance.food() > ArmyCost.runningFood)){
             action.logAction(String.format("Didn't recruit new soldiers. Net food is: %d, required: %d", netBalance.food(), ArmyCost.runningFood));

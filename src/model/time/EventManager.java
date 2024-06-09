@@ -51,8 +51,12 @@ public class EventManager {
         }
 
         for (ScheduledEvent event : eventsToExecute) {
-            event.action().run();
-            event.gameEvent().endEvent(); // Ends the event and removes it from Character
+            if (!event.gameEvent().isAborted()) {
+                event.action().run();
+                event.gameEvent().endEvent();
+            } else {
+                event.gameEvent().resetBattleStatesAuthorityBattle();
+            }
         }
 
     }

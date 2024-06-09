@@ -25,6 +25,7 @@ public abstract class ControlledArea extends Area implements Details {
     public Nation getNation(){
         return nation;
     }
+    public abstract void setNation(Nation nation);
 
     @Override
     public String getName() {

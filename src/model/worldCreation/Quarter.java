@@ -158,6 +158,11 @@ public class Quarter extends ControlledArea implements Details {
         return sb.toString();
     }
 
+    @Override
+    public void setNation(Nation nation){
+        this.nation = nation;
+    }
+
     /**
      Citizens are only calculated the first time they are needed
      and whenever the character list changes. List is stored at citizenCache
@@ -232,7 +237,7 @@ public class Quarter extends ControlledArea implements Details {
         populationMap.put(Status.Peasant, peasantList);
     }
 
-    public LinkedList<Person> getCharacterList(Status status) {
+    private LinkedList<Person> getCharacterList(Status status) {
         return populationMap.getOrDefault(status, new LinkedList<>());
     }
 
@@ -313,21 +318,6 @@ public class Quarter extends ControlledArea implements Details {
 
         quarterCaptain.addPeasant(peasant);
     }
-
-    public void removeCitizen(Status status, Person person) {
-        getPopulationMap().get(status).remove(person);
-        isPopulationChanged = true;
-    }
-
-    public void forceAddAnyCitizen(Person person) {
-        addCitizen(person.getRole().getStatus(),person);
-    }
-
-    public void changeCitizenPosition(Person person, Status oldStatus){
-        removeCitizen(oldStatus, person);
-        forceAddAnyCitizen(person);
-    }
-
     public HashMap<Status,LinkedList<Person>> getPopulationMap() {
         return populationMap;
     }
@@ -337,26 +327,15 @@ public class Quarter extends ControlledArea implements Details {
     public void addProperty(Property property){
         allProperties.addProperty(property);
     }
-
     public int getNumOfPeasants() {
         return numOfPeasants;
     }
-
     public City getCity() {
         return city;
     }
-
-    public int getBaseEconomy() {
-        return baseEconomy;
-    }
-
     public void setCity(City city) {
         this.city = city;
     }
-    public boolean isPopulationChanged() {
-        return isPopulationChanged;
-    }
-
     public void setPopulationChanged(boolean populationChanged) {
         isPopulationChanged = populationChanged;
     }

@@ -101,6 +101,9 @@ public class City extends ControlledArea implements Details {
 
             Quarter quarter = new Quarter(quarterName, this, authority);
 
+            // add into claimed area
+            nation.addClaimedArea(quarter);
+
             authority.setAreaUnderAuthority(quarter);
 
             quarters[i] = quarter;
@@ -135,6 +138,11 @@ public class City extends ControlledArea implements Details {
 
     public Quarter[] getQuarters() {
         return quarters;
+    }
+
+    @Override
+    public void setNation(Nation nation){
+        this.nation = nation;
     }
 
 

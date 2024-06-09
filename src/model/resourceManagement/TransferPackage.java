@@ -3,7 +3,7 @@ package model.resourceManagement;
 import static model.Settings.formatNumber;
 import static model.Settings.formatShortNumber;
 
-public record TransferPackage(int food, int alloy, int gold) {
+public record TransferPackage(int food, int alloy, int gold) implements Comparable<TransferPackage> {
     public int[] getAll() {
         return new int[]{food, alloy, gold};
     }
@@ -61,11 +61,17 @@ public record TransferPackage(int food, int alloy, int gold) {
     }
 
     public boolean isPositive(){
-        if(food >= 0 && alloy >= 0 && gold >= 0){
-            return true;
-        }else{
-            return false;
-        }
+        return food >= 0 && alloy >= 0 && gold >= 0;
+    }
+
+    @Override
+    public int compareTo(TransferPackage other) {
+        int totalThis = (this.food * 9) + (this.alloy * 5) + this.gold;
+        int totalOther = (other.food * 9) + (other.alloy * 5) + other.gold;
+        return Integer.compare(totalThis, totalOther);
+    }
+    public boolean isGreaterThanOrEqualTo(TransferPackage other) {
+        return this.food >= other.food && this.alloy >= other.alloy && this.gold >= other.gold;
     }
 
 }

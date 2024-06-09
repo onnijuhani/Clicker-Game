@@ -16,7 +16,7 @@ import model.shop.Shop;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
+@SuppressWarnings("CallToPrintStackTrace")
 public class Nation extends ControlledArea implements Details {
     private Province[] provinces;
     private final Continent continent;
@@ -27,6 +27,14 @@ public class Nation extends ControlledArea implements Details {
     private boolean isGeneralsCacheValid = false;
     private final Set<Person> slaverGuild = new HashSet<>();
     private final Set<Person> freedomFighters = new HashSet<>();
+
+
+    private final Set<Area> claimedAreas = new HashSet<>();
+    private final Set<Area> areasUnderEnemyOccupation = new HashSet<>();
+
+    private boolean isAtWar = false;
+    private Nation enemy = null;
+
 
     public Nation(String name, Continent continent, Authority authority) {
         this.name = name;
@@ -114,6 +122,8 @@ public class Nation extends ControlledArea implements Details {
             // new province is created
             Province province = new Province(provinceName, this, authority);
 
+            // add into claimed area
+            this.addClaimedArea(province);
 
             // authority position should know the area its controlling
             authority.setAreaUnderAuthority(province);
@@ -236,6 +246,11 @@ public class Nation extends ControlledArea implements Details {
 
 
     @Override
+    public void setNation(Nation nation) {
+        throw new RuntimeException("Attempted to set nation into nation");
+    }
+
+    @Override
     public List<Status> getImportantStatusRank() {
         return List.of(
                 Status.King,
@@ -270,5 +285,131 @@ public class Nation extends ControlledArea implements Details {
     public void addQuarterToNation(Quarter quarter){
         getAllQuarters().add(quarter);
         numberOfQuarters++;
+    }
+
+    public Nation getEnemy() {
+        return enemy;
+    }
+
+    public static void handleStartWar(Nation nation1, Nation nation2) {
+        try {
+            if(nation1.isAtWar) {
+                System.out.println(nation1 + " is already at war");
+                return;
+            }
+            if(nation2.isAtWar) {
+                System.out.println(nation2 + " is already at war");
+                return;
+            }
+            if(nation1 == nation2){
+                System.out.println("Cannot go to war against yourself");
+                String e = nation1 + " attempted to enter war against itself.";
+                throw new RuntimeException(e);
+            }
+
+            // set enemies
+            nation1.enemy = nation2;
+            nation2.enemy = nation1;
+
+            // set war flag
+            nation1.setAtWar(true);
+            nation2.setAtWar(true);
+
+
+            // set up AreaStateManagers for claimed areas
+            for(Area claimedArea : nation1.claimedAreas){
+                Person defendingCommander = claimedArea.getHighestAuthority();
+                claimedArea.getAreaStateManager().startWar(nation2, defendingCommander);
+            }
+
+            // set Nations War Generals (Kings)
+            Person warGeneral1 = nation1.getHighestAuthority();
+            nation1.getAreaStateManager().startWar(nation2, warGeneral1);
+
+            Person warGeneral2 = nation2.getHighestAuthority();
+            nation1.getAreaStateManager().startWar(nation2, warGeneral2);
+
+
+        } catch (RuntimeException e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
+    }
+
+    public Set<Area> getClaimedAreas() {
+        return claimedAreas;
+    }
+    public Set<Area> getAreasUnderEnemyOccupation() {
+        return areasUnderEnemyOccupation;
+    }
+    public void addClaimedArea(Area claimedArea){
+        try {
+            if(isAtWar){
+                String error = "Cannot claim area during a war. Use the handleAreaOwnershipChange method instead.";
+                throw new RuntimeException(error);
+            }
+            claimedArea.getAreaStateManager().setClaimingNation(this);
+            claimedAreas.add(claimedArea);
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
+    }
+    private void addClaimedAreaWar(Area claimedArea){
+        try {
+            claimedArea.getAreaStateManager().setClaimingNation(this);
+            claimedAreas.add(claimedArea);
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
+    }
+    public static void handleAreaOwnershipChange(Area claimedArea, Nation newOwner, Nation oldOwner){
+        try {
+            if(!newOwner.isAtWar || !oldOwner.isAtWar){
+                System.out.println("Cannot switch area claims if not at war");
+                return;
+            }
+            if(oldOwner.claimedAreas.contains(claimedArea)){
+                oldOwner.claimedAreas.remove(claimedArea);
+                newOwner.addClaimedAreaWar(claimedArea);
+
+                claimedArea.getAreaStateManager().triggerClaimChange();
+
+                if(claimedArea instanceof ControlledArea controlledArea){
+                    controlledArea.setNation(newOwner);
+                }
+
+            } else {
+                System.out.println("Cannot switch area claims " + oldOwner + " doesn't claim the area.");
+                return;
+            }
+            if(oldOwner.claimedAreas.isEmpty()){
+                triggerTheEndOfTheNation(oldOwner);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
+    }
+
+    private static void triggerTheEndOfTheNation(Nation nation) {
+        System.out.println(nation + " has been destroyed by it's enemies");
+    }
+
+    public void addEnemyOccupiedArea(Area occupiedArea){
+        if(isAtWar) {
+            if(claimedAreas.contains(occupiedArea)) {
+                areasUnderEnemyOccupation.add(occupiedArea);
+            }else{
+                System.out.println("Cannot add area to be in enemy occupation since " + this + " doesn't claim the area.");
+            }
+        }else{
+            System.out.println("Cannot add area to be in enemy occupation since " + this + " is not at war.");
+        }
+    }
+
+    private void setAtWar(boolean atWar) {
+        this.isAtWar = atWar;
+    }
+
+    public boolean isAtWar() {
+        return isAtWar;
     }
 }
