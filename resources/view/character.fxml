@@ -15,6 +15,11 @@
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="700.0" styleClass="mainColorRight" stylesheets="@../characterStyle.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CharacterController">
   
    <children>
+      <ImageView fitHeight="600.0" fitWidth="700.0" pickOnBounds="true" visible="false">
+         <image>
+            <Image url="@../Properties/main.jpg" />
+         </image>
+      </ImageView>
       <VBox alignment="CENTER" layoutX="466.0" layoutY="104.0" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="46.0">
          <children>
             <HBox fx:id="CombatBox" alignment="CENTER" prefHeight="52.0" prefWidth="174.0" styleClass="charbox">
@@ -80,14 +85,23 @@
                      <children>
                         <VBox>
                            <children>
-                              <Label fx:id="characterStatus" text="Status" textFill="WHITE">
-                                 <font>
-                                    <Font size="20.0" />
-                                 </font>
+                              <HBox alignment="CENTER_LEFT">
                                  <VBox.margin>
                                     <Insets left="20.0" />
                                  </VBox.margin>
-                              </Label>
+                                 <children>
+                                    <Label fx:id="characterStatus" text="Status" textFill="WHITE">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <Button mnemonicParsing="false" onAction="#triggerStatusInfo" styleClass="invisible-button" text="?" textFill="#fff4f4">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Button>
+                                 </children>
+                              </HBox>
                               <Label fx:id="characterName" text="Character Name" textFill="WHITE">
                                  <font>
                                     <Font size="26.0" />

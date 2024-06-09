@@ -137,6 +137,8 @@ public class Nation extends ControlledArea implements Details {
 
     private Governor governorFactory(String provinceName) {
         Governor governor = new Governor(authorityHere);
+        TransferPackage startingPackage = new TransferPackage(400, 800, 1200);
+        governor.getPerson().getWallet().addResources(startingPackage);
         governor.getRole().setAuthority(getAuthorityHere());
         governor.getRole().setNation(nation);
         Property property = PropertyFactory.createProperty(provinceName, "Province", governor.getPerson());

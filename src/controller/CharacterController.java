@@ -16,11 +16,14 @@ import javafx.util.Duration;
 import model.Model;
 import model.buildings.properties.MilitaryProperty;
 import model.characters.Character;
+import model.characters.Peasant;
 import model.characters.Person;
+import model.characters.Support;
 import model.characters.combat.CombatService;
 import model.characters.combat.CombatSystem;
 import model.stateSystem.Event;
 import model.stateSystem.GameEvent;
+import model.stateSystem.SpecialEventsManager;
 import model.stateSystem.State;
 
 import java.util.*;
@@ -330,6 +333,20 @@ public class CharacterController extends BaseController  {
         setCurrentCharacter(character);
         updateCharacterTab();
         main.clickMeButton.requestFocus();
+    }
+
+    @FXML
+    private void triggerStatusInfo(ActionEvent event) {
+        if(currentCharacter instanceof Peasant){
+            SpecialEventsManager.triggerPeasantInfo();
+        } else {
+            if(currentCharacter instanceof Support){
+                SpecialEventsManager.sentinelsInfoSent = false;
+                SpecialEventsManager.triggerSentinelsInfo();
+            } else {
+                SpecialEventsManager.triggerAuthorityInfo();
+            }
+        }
     }
 
     private void updatePreviousButtonState() {

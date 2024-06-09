@@ -59,7 +59,7 @@ public class RelationsController extends BaseController {
         attackLevelLabel.setText("Level: "+currentPerson.getCombatStats().getOffense().getUpgradeLevel());
         defenseLevelLabel.setText("Level: "+currentPerson.getCombatStats().getDefense().getUpgradeLevel());
         characterStatus.setText(current.getRole().getStatus().toString());
-        property.setText(currentPerson.getProperty().toString());
+        property.setText(currentPerson.getProperty().getClass().getSimpleName());
         propertyDefenceLevel.setText("Defence: "+currentPerson.getProperty().getDefenceStats().getUpgradeLevel());
         vaultValue.setText(currentPerson.getProperty().getVault().toShortString());
         walletInfo.setText(currentPerson.getWallet().toShortString());

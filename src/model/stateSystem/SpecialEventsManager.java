@@ -187,7 +187,7 @@ public class SpecialEventsManager {
         PopUpMessageTracker.sendMessage(gameOverMessage);
     }
 
-    private static boolean sentinelsInfoSent = false;
+    public static boolean sentinelsInfoSent = false;
     public static void triggerSentinelsInfo() {
         if(sentinelsInfoSent){
             return;
@@ -250,21 +250,20 @@ public class SpecialEventsManager {
         vaultInfoSent = true;
         PopUpMessageTracker.PopUpMessage gameOverMessage = new PopUpMessageTracker.PopUpMessage(
                 "Vault",
-                "The Vault is a secure place to store your resources, locking them until the end of the current year. " +
+                "The Vault is a place to invest your resources, locking them until the end of the current year. " +
                         "After this period, your stored wealth will start earning a 15% interest annually. " +
                         "However, beware that your vault can be a target for robbers. " +
                         "Upgrade the defense of your property to safeguard your accumulated wealth. " +
-                        "You can withdraw available resources from your vault to your main wallet at any time.",
+                        "You can withdraw available resources from your vault to your main wallet at any time. " +
+                        "Some mandatory payments might automatically be paid from your vault if your main wallet balance is too low.",
                 "Properties/vaultInfo.jpg",
-                "He who understands it, earns it…"
+                "Easy money…"
         );
         PopUpMessageTracker.sendMessage(gameOverMessage);
     }
 
 
     public static void triggerMarketInfo() {
-
-
         PopUpMessageTracker.PopUpMessage gameOverMessage = new PopUpMessageTracker.PopUpMessage(
                 "Exchange",
                 "You can buy and sell resources at the exchange. Be mindful of the high fees associated with every trade. " +
@@ -276,12 +275,34 @@ public class SpecialEventsManager {
         PopUpMessageTracker.sendMessage(gameOverMessage);
     }
 
+    public static void triggerPeasantInfo() {
+        PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(
+                "Who are the Peasants?",
+                "Peasants are the backbone of the economy, performing essential tasks and producing vital resources." +
+                        " Farmers generate monthly food supplies," +
+                        " Miners extract valuable alloys," +
+                        " and Merchants accumulate gold. " +
+                        "These hardworking citizens are under the authority of their local Captain, who collects taxes from them." +
+                        " Despite their crucial role, Peasants often feel dissatisfied with their lowly status and " +
+                        "aspire to rise in rank to lighten their burdens and improve their lives.",
+                "Properties/peasants.jpg",
+                "Understood"
+        );
+        PopUpMessageTracker.sendMessage(message);
+    }
 
 
-
-
-
-
-
-
+    public static void triggerAuthorityInfo() {
+        PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(
+                "Who are the Authorities?",
+                "Authorities are the leaders who govern different levels of the realm. " +
+                        "Captains oversee the Districts, Mayors govern the Cities, Governors rule the Provinces, " +
+                        "and the King commands the entire Nation. Each level of authority has its own responsibilities " +
+                        "and powers, from collecting taxes to enforcing laws and protecting their territories. " +
+                        "These positions are often contested, as everyone aspires to climb the hierarchy and wield greater power.",
+                "Properties/authorities.jpg",
+                "Understood"
+        );
+        PopUpMessageTracker.sendMessage(message);
+    }
 }

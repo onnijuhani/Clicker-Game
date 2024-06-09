@@ -104,6 +104,8 @@ public class Continent extends Area implements Details {
 
     private King kingFactory() {
         King king = new King();
+        TransferPackage startingPackage = new TransferPackage(5000, 5000, 5000);
+        king.getPerson().getWallet().addResources(startingPackage);
         Property property = PropertyFactory.createProperty(name, "Nation", king.getPerson());
         propertyTracker.addProperty(property);
         return king;
@@ -172,7 +174,7 @@ public class Continent extends Area implements Details {
 
     private static void nobleBonus(Noble noble) {
         noble.getPerson().getProperty().getUtilitySlot().addRandomUtilityBuilding(noble);
-        TransferPackage bonus = new TransferPackage(1000,1000,1000);
+        TransferPackage bonus = new TransferPackage(2000,2000,4000);
         noble.getPerson().getWallet().addResources(bonus);
     }
 

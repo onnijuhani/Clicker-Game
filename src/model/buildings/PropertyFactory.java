@@ -112,7 +112,7 @@ public class PropertyFactory {
             } else if (randomValue < 0.5){
                 return new Citadel("Vanguard's " +generateUniqueName(), support.getPerson());
             } else {
-                return new Castle("Vanguard's + " + generateUniqueName(), support.getPerson());
+                return new Castle("Vanguard's " + generateUniqueName(), support.getPerson());
             }
         } else
             if (randomValue < 0.15) {

@@ -10,6 +10,7 @@ import model.characters.Status;
 import model.characters.authority.Authority;
 import model.characters.authority.QuarterAuthority;
 import model.characters.npc.Captain;
+import model.resourceManagement.TransferPackage;
 
 
 import java.util.*;
@@ -111,6 +112,8 @@ public class City extends ControlledArea implements Details {
 
     private Captain captainFactory(String quarterName) {
         Captain captain = new Captain(authorityHere);
+        TransferPackage startingPackage = new TransferPackage(100, 200, 300);
+        captain.getPerson().getWallet().addResources(startingPackage);
         captain.getRole().setNation(nation);
         captain.getRole().setAuthority(getAuthorityHere());
         Property property = PropertyFactory.createProperty(quarterName, "Quarter", captain.getPerson()); //owner is set in the method

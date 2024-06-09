@@ -10,6 +10,7 @@ import model.characters.Status;
 import model.characters.authority.Authority;
 import model.characters.authority.CityAuthority;
 import model.characters.npc.Mayor;
+import model.resourceManagement.TransferPackage;
 
 
 import java.util.*;
@@ -67,6 +68,8 @@ public class Province extends ControlledArea implements Details {
 
     private Mayor mayorFactory(String cityName) {
         Mayor mayor = new Mayor(authorityHere);
+        TransferPackage startingPackage = new TransferPackage(200, 400, 600);
+        mayor.getPerson().getWallet().addResources(startingPackage);
         mayor.getRole().setNation(nation);
         mayor.getRole().setAuthority(getAuthorityHere());
         Property property = PropertyFactory.createProperty(cityName, "City", mayor.getPerson());

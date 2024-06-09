@@ -114,7 +114,9 @@ public class ClickerShopController extends BaseController {
         boolean purchaseSuccessful = shop.getClickerShop().buyClicker(Resource.Alloy, model.getPlayerPerson());
         buyAlloyClickerButton.setVisible(!purchaseSuccessful);
         alloyUpgradeBtn.setVisible(purchaseSuccessful);
-        alloyOwned.setText("Upgrade For:");
+        if (Clicker.getInstance().isAlloyClickerOwned()) {
+            alloyOwned.setText("Upgrade For:");
+        }
         alloyBox.setVisible(purchaseSuccessful);
         updateClickerShopPrices();
     }
@@ -125,7 +127,9 @@ public class ClickerShopController extends BaseController {
         boolean purchaseSuccessful = shop.getClickerShop().buyClicker(Resource.Gold, model.getPlayerPerson());
         buyGoldClickerButton.setVisible(!purchaseSuccessful);
         goldUpgradeBtn.setVisible(purchaseSuccessful);
-        goldOwned.setText("Upgrade For:");
+        if (Clicker.getInstance().isGoldClickerOwned()) {
+            goldOwned.setText("Upgrade For:");
+        }
         goldBox.setVisible(purchaseSuccessful);
         updateClickerShopPrices();
     }
