@@ -572,6 +572,11 @@ public class PropertyController extends BaseController {
         }
     }
 
+    @FXML
+    void triggerPropertyInfo(ActionEvent event) {
+
+    }
+
 
     public static class UtilityBuildingUI {
         public Label infoLabel;

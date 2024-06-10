@@ -42,8 +42,7 @@ public abstract class ControlledArea extends Area implements Details {
                 Status.King, Status.Noble, Status.Vanguard,
                 Status.Governor, Status.Mercenary,
                 Status.Mayor,
-                Status.Captain, Status.Merchant, Status.Miner,
-                Status.Farmer, Status.Peasant
+                Status.Captain, Status.Merchant, Status.Miner, Status.Farmer, Status.Peasant
         );
     }
 

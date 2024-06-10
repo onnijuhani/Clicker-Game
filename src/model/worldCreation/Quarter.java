@@ -192,6 +192,8 @@ public class Quarter extends ControlledArea implements Details {
                 .map(Person::getCharacter) // Map each Person to their Character
                 .forEachOrdered(citizens::add); // Add all Characters to the List
 
+
+
         return citizens;
     }
 
@@ -340,10 +342,20 @@ public class Quarter extends ControlledArea implements Details {
         isPopulationChanged = populationChanged;
     }
 
+    private void updateCitizenNationInfo(){
+        for(Character citizen : citizenCache){
+            citizen.getRole().setNation(nation);
+        }
+    }
+
+    /**
+     * This method cannot be called during the creation of the world
+     */
     public void updateEverything() {
         setPopulationChanged(true);
         onCitizenUpdate();
         calculateCitizens();
         calculateQuarterWealth();
+        updateCitizenNationInfo();
     }
 }

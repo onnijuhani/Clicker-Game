@@ -502,7 +502,7 @@
                   </Label>
                </children>
             </VBox>
-            <VBox fx:id="utilityBuyView51" alignment="CENTER" layoutX="12.0" layoutY="392.0" prefHeight="119.0" prefWidth="288.0" styleClass="property">
+            <VBox fx:id="utilityBuyView51" alignment="CENTER" layoutX="12.0" layoutY="392.0" prefHeight="119.0" prefWidth="288.0" styleClass="property" stylesheets="@../characterStyle.css">
                <children>
                   <Label alignment="CENTER" text="Vault" textFill="WHITE">
                      <font>
@@ -672,6 +672,7 @@
             </VBox>
          </children>
       </AnchorPane>
+      <Button layoutX="137.0" layoutY="555.0" mnemonicParsing="false" onAction="#triggerPropertyInfo" text="?" />
       <Button fx:id="showHideButton" layoutX="92.0" layoutY="555.0" mnemonicParsing="false" onAction="#showHideContent" text="Hide" />
    </children>
 </AnchorPane>

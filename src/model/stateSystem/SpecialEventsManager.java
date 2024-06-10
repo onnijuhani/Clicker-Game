@@ -290,8 +290,6 @@ public class SpecialEventsManager {
         );
         PopUpMessageTracker.sendMessage(message);
     }
-
-
     public static void triggerAuthorityInfo() {
         PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(
                 "Who are the Authorities?",
@@ -305,4 +303,19 @@ public class SpecialEventsManager {
         );
         PopUpMessageTracker.sendMessage(message);
     }
+
+    public static void triggerPropertyInfo() {
+        PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(
+                "Home Sweet Home",
+                "Property functions as a home for a citizen. There are monthly maintenance costs that must be paid." +
+                        "Property comes with utility slots, that can be used to generate resources automatically on monthly basis." +
+                        "You can construct larger property to open new utility slots but maintenance expeneses will also be increased." +
+                        "Having a Military property which allows you to start training your own army." +
+                        "Increasing property defence makes your property and vault stronger.",
+                "Properties/propertyInfo.jpg",
+                "Understood"
+        );
+        PopUpMessageTracker.sendMessage(message);
+    }
+
 }
