@@ -104,7 +104,7 @@ public class Continent extends Area implements Details {
 
     private King kingFactory() {
         King king = new King();
-        TransferPackage startingPackage = new TransferPackage(5000, 5000, 5000);
+        TransferPackage startingPackage = new TransferPackage(5000, 15000, 10000);
         king.getPerson().getWallet().addResources(startingPackage);
         Property property = PropertyFactory.createProperty(name, "Nation", king.getPerson());
         propertyTracker.addProperty(property);
@@ -182,7 +182,7 @@ public class Continent extends Area implements Details {
         vanguard.getPerson().getCombatStats().increaseOffence(4);
         vanguard.getPerson().getCombatStats().increaseDefence(14);
         vanguard.getPerson().getProperty().getUtilitySlot().addRandomUtilityBuilding(vanguard);
-        TransferPackage bonus = new TransferPackage(10000,5000,10000);
+        TransferPackage bonus = new TransferPackage(5000,15000,10000);
         vanguard.getPerson().getWallet().addResources(bonus);
     }
 
