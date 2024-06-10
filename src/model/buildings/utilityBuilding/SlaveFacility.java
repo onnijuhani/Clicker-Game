@@ -73,7 +73,8 @@ public class SlaveFacility extends UtilityBuilding {
             value *= 2;
             increaseProduction();
         } else {
-            value += Math.max(1, value / (increaseDivider * (level - MAX_LEVEL)));
+            int minAdjustment = (int) (value * 0.001);
+            value += Math.max(minAdjustment, value / (increaseDivider * (level - MAX_LEVEL)));
             increaseProductionAfterMaxReached();
         }
         return true;

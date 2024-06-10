@@ -91,7 +91,10 @@ public class UpgradeSystem {
     public void decreaseLevel() {
         if (level > 1) {
             level--;
+            value /= 2;
         }
     }
+
+
 
 }

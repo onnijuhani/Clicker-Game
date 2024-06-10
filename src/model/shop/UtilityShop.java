@@ -160,19 +160,17 @@ public class UtilityShop extends ShopComponents {
         int sabotagePower = saboteur.getCombatStats().getOffenseLevel();
         int defencePower = owner.getProperty().getDefenceStats().getUpgradeLevel();
 
-        int minimum = Settings.getRandom().nextInt(3,5);
+        int minimum = Settings.getRandom().nextInt(3,500);
 
         int sabotagePoints = Math.max(1, (int)Math.ceil((sabotagePower - 0.5 * defencePower) / 2.0));
         sabotagePoints = Math.max(Math.min(sabotagePoints, currentLevel), minimum);
+        sabotagePoints = Math.min(sabotagePoints, currentLevel);
 
         for(int i = 0; i < sabotagePoints; i++) {
-            utilityBuilding.decreaseLevel();
+            GameEvent gameEvent = new GameEvent(Event.SABOTEUR, owner);
+            int time = 5 * i + 5;
+            EventManager.scheduleEvent(() -> commitSabotage(utilityBuilding, owner.getEventTracker()), time , gameEvent);
         }
-
-
-        int level = utilityBuilding.getUpgradeLevel();
-        owner.getEventTracker().addEvent(EventTracker.Message("Major", String.format("Your %s has been sabotaged to level %d by %s", type, level, saboteur)));
-
 
         int days = 90;
 
@@ -182,9 +180,9 @@ public class UtilityShop extends ShopComponents {
 
         saboteur.addState(SABOTEUR);
         saboteur.getEventTracker().addEvent(EventTracker.Message("Minor",
-                String.format("Sabotage action committed against %s.\nTheir %s is now destroyed to level %d." +
+                String.format("Sabotage action committed against %s.\nTheir %s will be reduced by %d levels." +
                 "\nYou are unable to make new sabotage actions for next %s days",
-                        owner, type, level, days)));
+                        owner, type, sabotagePoints, days)));
 
     }
 
@@ -192,4 +190,11 @@ public class UtilityShop extends ShopComponents {
         saboteur.removeState(SABOTEUR);
         saboteur.getEventTracker().addEvent(EventTracker.Message("Minor", "Sabotage is now available."));
     }
+
+    public static void commitSabotage(UtilityBuilding sabotagedBuilding, EventTracker tracker){
+        sabotagedBuilding.decreaseLevel();
+        tracker.addEvent(EventTracker.Message("Minor", "Your " + sabotagedBuilding + " was sabotaged."));
+    }
+
+
 }
