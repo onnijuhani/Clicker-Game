@@ -169,7 +169,8 @@ public class SpecialEventsManager {
                 "Strike Lost",
                 "You have missed a payment and lost a strike. Ensure you have sufficient resources to cover all monthly expenses." +
                         " There will be no further warnings when strikes are lost. If you lose all your strikes, the game will end." +
-                        " You can view your cash flow, including incomes and expenses, in the overview tab. Take immediate action to secure your position.",
+                        " You can view your cash flow, including incomes and expenses, in the Financials tab." +
+                        "\nTake immediate action to secure your position.",
                 "Properties/gameOverFirstWarning.jpg",
                 "Understood"
         );
@@ -212,7 +213,7 @@ public class SpecialEventsManager {
         PopUpMessageTracker.PopUpMessage gameOverMessage = new PopUpMessageTracker.PopUpMessage(
                 "Getting Started",
                 "At the top of the screen is your main wallet, which is currently empty. " +
-                        "Resources you generate with the clicker will be added to your work wallet." +
+                        "Resources you generate with the clicker will be added to your work wallet. " +
                         "Every 27th day, your work wallet will be taxed by your local Captain, your direct authority. " +
                         "After taxation, the remaining resources are automatically transferred to your main wallet, where they can be freely spent." +
                         "You have the opportunity to overthrow the Captain, gaining the power to collect tax payments from other Peasants in your area. " +

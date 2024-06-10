@@ -7,8 +7,13 @@ import model.characters.Character;
 import model.characters.Person;
 import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Wallet;
+import model.stateSystem.Event;
 import model.stateSystem.EventTracker;
+import model.stateSystem.GameEvent;
 import model.stateSystem.SpecialEventsManager;
+import model.time.EventManager;
+
+import static model.stateSystem.State.SABOTEUR;
 
 public class UtilityShop extends ShopComponents {
     public UtilityShop(Wallet wallet) {
@@ -129,5 +134,62 @@ public class UtilityShop extends ShopComponents {
             case WorkerCenter -> new WorkerCenter(price, character.getPerson());
             default -> null; // Unknown type
         };
+    }
+
+    public static void sabotage(UtilityBuildings type, Person owner, Person saboteur) {
+        UtilityBuilding utilityBuilding = owner.getProperty().getUtilitySlot().getUtilityBuilding(type);
+
+        if(saboteur.hasState(SABOTEUR)){
+            String timeLeft = saboteur.getAnyOnGoingEvent(Event.SABOTEUR).getTimeLeftString();
+            saboteur.getEventTracker().addEvent(EventTracker.Message("Error", timeLeft +" until sabotage is available"));
+            return;
+        }
+
+        if(utilityBuilding == null){
+            saboteur.getEventTracker().addEvent(EventTracker.Message("Error", owner + " does not own " + type));
+            return;
+        }
+
+        int currentLevel = utilityBuilding.getUpgradeLevel();
+
+        if(currentLevel == 1){
+            saboteur.getEventTracker().addEvent(EventTracker.Message("Error", "Cannot sabotage level 1 " + type));
+            return;
+        }
+
+        int sabotagePower = saboteur.getCombatStats().getOffenseLevel();
+        int defencePower = owner.getProperty().getDefenceStats().getUpgradeLevel();
+
+        int minimum = Settings.getRandom().nextInt(3,5);
+
+        int sabotagePoints = Math.max(1, (int)Math.ceil((sabotagePower - 0.5 * defencePower) / 2.0));
+        sabotagePoints = Math.max(Math.min(sabotagePoints, currentLevel), minimum);
+
+        for(int i = 0; i < sabotagePoints; i++) {
+            utilityBuilding.decreaseLevel();
+        }
+
+
+        int level = utilityBuilding.getUpgradeLevel();
+        owner.getEventTracker().addEvent(EventTracker.Message("Major", String.format("Your %s has been sabotaged to level %d by %s", type, level, saboteur)));
+
+
+        int days = 90;
+
+        GameEvent gameEvent = new GameEvent(Event.SABOTEUR, saboteur);
+
+        EventManager.scheduleEvent(() -> removeSaboteur(saboteur), days, gameEvent);
+
+        saboteur.addState(SABOTEUR);
+        saboteur.getEventTracker().addEvent(EventTracker.Message("Minor",
+                String.format("Sabotage action committed against %s.\nTheir %s is now destroyed to level %d." +
+                "\nYou are unable to make new sabotage actions for next %s days",
+                        owner, type, level, days)));
+
+    }
+
+    public static void removeSaboteur(Person saboteur){
+        saboteur.removeState(SABOTEUR);
+        saboteur.getEventTracker().addEvent(EventTracker.Message("Minor", "Sabotage is now available."));
     }
 }

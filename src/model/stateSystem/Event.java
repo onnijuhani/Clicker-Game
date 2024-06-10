@@ -8,7 +8,9 @@ public enum Event {
     SupportBattle("Support Battle"),
     RecruitSoldier("Recruit Soldier"),
     ArmyTraining("Army Training"),
-    TRUCE("truce");
+    SABOTEUR("Saboteur"),
+    TRUCE("Truce");
+
 
     private final String displayName;
 

@@ -285,7 +285,6 @@ public class MainController extends BaseController {
         generateResourcesAction();
     }
 
-
    void generateStartingMessage(){
         triggerStartingMessage();
         EventTracker tracker = model.getPlayerCharacter().getEventTracker();
@@ -381,6 +380,7 @@ public class MainController extends BaseController {
     @FXML
     void pauseTime(MouseEvent event) {
         toggleSimulation();
+        updatePauseBtnText();
     }
 
     @FXML
@@ -396,7 +396,7 @@ public class MainController extends BaseController {
             return;
         }
         if(!pausePopBtn.isSelected()) {
-            topSectionController.startTimeFuntion();
+            topSectionController.startTimeFunction();
         }
         clickMeButton.requestFocus();
     }
@@ -481,6 +481,7 @@ public class MainController extends BaseController {
     @FXML
     void setFastSpeed(ActionEvent event) {
         Time.fastSpeed = 50;
+        topSectionController.startTimeFunction();
     }
 
 

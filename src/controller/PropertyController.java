@@ -8,10 +8,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import model.Model;
 import model.Settings;
 import model.buildings.Construct;
 import model.buildings.Property;
@@ -22,9 +24,11 @@ import model.characters.combat.CombatService;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.shop.Shop;
+import model.shop.UtilityShop;
 import model.stateSystem.Event;
 import model.stateSystem.GameEvent;
 import model.stateSystem.SpecialEventsManager;
+import model.stateSystem.State;
 import model.time.Time;
 
 import java.util.HashMap;
@@ -32,6 +36,7 @@ import java.util.Map;
 
 import static model.Settings.formatNumber;
 import static model.Settings.formatShortNumber;
+import static model.buildings.utilityBuilding.UtilityBuildings.*;
 
 // UPDATED BY CHARACTER CONTROLLER
 public class PropertyController extends BaseController {
@@ -48,10 +53,8 @@ public class PropertyController extends BaseController {
     @FXML
     private Label utilitySlots;
     private boolean isShowing = true;
-    private MainController main;
-    private CharacterController characterController;
+
     private Property property;
-    private Shop shop;
     private Character character;
     @FXML
     private Label maintenanceCost;
@@ -177,9 +180,18 @@ public class PropertyController extends BaseController {
 
     @FXML
     private VBox playerVaultBox;
-
-
-
+    @FXML
+    private Button sabotageButton;
+    @FXML
+    private Button sabotageButton1;
+    @FXML
+    private Button sabotageButton2;
+    @FXML
+    private Button sabotageButton3;
+    @FXML
+    private Button sabotageButton4;
+    @FXML
+    private Button sabotageButton5;
 
     public void updatePropertyTab(){
         updatePropertyName();
@@ -284,12 +296,12 @@ public class PropertyController extends BaseController {
     private final Map<UtilityBuildings, UtilityBuildingUI> buildingUIs = new HashMap<>();
 
     private void initializeUIMappings() {
-        buildingUIs.put(UtilityBuildings.MeadowLands, new UtilityBuildingUI(utilityInfo, utilityPrice, utilityUpgrade, utilityInfoView, utilityBuyView, utilityPlayerView));
-        buildingUIs.put(UtilityBuildings.AlloyMine, new UtilityBuildingUI(utilityInfo1, utilityPrice1, utilityUpgrade1, utilityInfoView1, utilityBuyView1, utilityPlayerView1));
-        buildingUIs.put(UtilityBuildings.GoldMine, new UtilityBuildingUI(utilityInfo2, utilityPrice2, utilityUpgrade2, utilityInfoView2, utilityBuyView2, utilityPlayerView2));
-        buildingUIs.put(UtilityBuildings.SlaveFacility, new UtilityBuildingUI(utilityInfo3, utilityPrice3, utilityUpgrade3, utilityInfoView3, utilityBuyView3, utilityPlayerView3));
-        buildingUIs.put(UtilityBuildings.MysticMine, new UtilityBuildingUI(utilityInfo4, utilityPrice4, utilityUpgrade4, utilityInfoView4, utilityBuyView4, utilityPlayerView4));
-        buildingUIs.put(UtilityBuildings.WorkerCenter, new UtilityBuildingUI(utilityInfo5, utilityPrice5, utilityUpgrade5, utilityInfoView5, utilityBuyView5, utilityPlayerView5));
+        buildingUIs.put(MeadowLands, new UtilityBuildingUI(MeadowLands, utilityInfo, utilityPrice, utilityUpgrade, utilityInfoView, utilityBuyView, utilityPlayerView, sabotageButton));
+        buildingUIs.put(AlloyMine, new UtilityBuildingUI(AlloyMine, utilityInfo1, utilityPrice1, utilityUpgrade1, utilityInfoView1, utilityBuyView1, utilityPlayerView1, sabotageButton1));
+        buildingUIs.put(GoldMine, new UtilityBuildingUI(GoldMine, utilityInfo2, utilityPrice2, utilityUpgrade2, utilityInfoView2, utilityBuyView2, utilityPlayerView2, sabotageButton2));
+        buildingUIs.put(SlaveFacility, new UtilityBuildingUI(SlaveFacility, utilityInfo3, utilityPrice3, utilityUpgrade3, utilityInfoView3, utilityBuyView3, utilityPlayerView3, sabotageButton3));
+        buildingUIs.put(MysticMine, new UtilityBuildingUI(MysticMine, utilityInfo4, utilityPrice4, utilityUpgrade4, utilityInfoView4, utilityBuyView4, utilityPlayerView4, sabotageButton4));
+        buildingUIs.put(WorkerCenter, new UtilityBuildingUI(WorkerCenter, utilityInfo5, utilityPrice5, utilityUpgrade5, utilityInfoView5, utilityBuyView5, utilityPlayerView5, sabotageButton5));
     }
 
     void updatePrices() {
@@ -325,6 +337,7 @@ public class PropertyController extends BaseController {
             ui.buyView.setVisible(true);
             ui.infoView.setVisible(false);
         }
+        ui.sabotageButton.setVisible(false);
 
     }
 
@@ -335,8 +348,15 @@ public class PropertyController extends BaseController {
         ui.infoView.setVisible(true);
         if (property.getUtilitySlot().isUtilityBuildingOwned(building)) {
             ui.infoLabel.setText(property.getUtilitySlot().getUtilityBuilding(building).getInfo());
+            ui.sabotageButton.setVisible(true);
+            if (Model.getPlayerAsPerson().hasState(State.SABOTEUR)) {
+                ui.sabotageButton.setBlendMode(BlendMode.SOFT_LIGHT);
+            } else {
+                ui.sabotageButton.setBlendMode(BlendMode.SRC_OVER);
+            }
         } else {
             ui.infoLabel.setText("Not Owned");
+            ui.sabotageButton.setVisible(false);
         }
         ui.priceButton.setVisible(false);
         ui.upgradeButton.setVisible(false);
@@ -464,18 +484,14 @@ public class PropertyController extends BaseController {
     }
 
 
-    public controller.CharacterController getCharacterController() {
-        return characterController;
-    }
 
     public void setCharacterController(controller.CharacterController characterController) {
-        this.characterController = characterController;
     }
 
     public void setCurrentProperty(Property property) {
         this.property = property;
         this.character = CharacterController.currentCharacter;
-        this.shop = character.getRole().getNation().getShop();
+        Shop shop = character.getRole().getNation().getShop();
         updatePropertyTab();
     }
 
@@ -483,14 +499,14 @@ public class PropertyController extends BaseController {
 
     @FXML
     void buyMysticMine(ActionEvent event) {
-        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.MysticMine, character.getPerson());
+        boolean wasPurchaseSuccessful = UtilityShop.buyBuilding(MysticMine, character.getPerson());
         if (wasPurchaseSuccessful) {
             differentiatePlayer();
         }
     }
     @FXML
     void upgradeMysticMine(ActionEvent event) {
-        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.MysticMine, character.getPerson());
+        boolean wasUpgradeSuccessful = UtilityShop.upgradeBuilding(MysticMine, character.getPerson());
         if (wasUpgradeSuccessful) {
             differentiatePlayer();
         }
@@ -498,14 +514,14 @@ public class PropertyController extends BaseController {
 
     @FXML
     void buyWorkerCenter(ActionEvent event) {
-        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.WorkerCenter, character.getPerson());
+        boolean wasPurchaseSuccessful = UtilityShop.buyBuilding(WorkerCenter, character.getPerson());
         if (wasPurchaseSuccessful) {
             differentiatePlayer();
         }
     }
     @FXML
     void upgradeWorkerCenter(ActionEvent event) {
-        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.WorkerCenter, character.getPerson());
+        boolean wasUpgradeSuccessful = UtilityShop.upgradeBuilding(WorkerCenter, character.getPerson());
         if (wasUpgradeSuccessful) {
             differentiatePlayer();
         }
@@ -513,21 +529,21 @@ public class PropertyController extends BaseController {
 
     @FXML
     void buySlaveFacility(ActionEvent event) {
-        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.SlaveFacility, character.getPerson());
+        boolean wasPurchaseSuccessful = UtilityShop.buyBuilding(SlaveFacility, character.getPerson());
         if (wasPurchaseSuccessful) {
             differentiatePlayer();
         }
     }
     @FXML
     void upgradeSlaveFacility(ActionEvent event) {
-        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.SlaveFacility, character.getPerson());
+        boolean wasUpgradeSuccessful = UtilityShop.upgradeBuilding(SlaveFacility, character.getPerson());
         if (wasUpgradeSuccessful) {
             differentiatePlayer();
         }
     }
     @FXML
     void buyGold(ActionEvent event) {
-        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.GoldMine, character.getPerson());
+        boolean wasPurchaseSuccessful = UtilityShop.buyBuilding(GoldMine, character.getPerson());
         if (wasPurchaseSuccessful) {
             differentiatePlayer();
         }
@@ -535,14 +551,14 @@ public class PropertyController extends BaseController {
 
     @FXML
     void upgradeGold(ActionEvent event) {
-        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.GoldMine, character.getPerson());
+        boolean wasUpgradeSuccessful = UtilityShop.upgradeBuilding(GoldMine, character.getPerson());
         if (wasUpgradeSuccessful) {
             differentiatePlayer();
         }
     }
     @FXML
     void buyAlloy(ActionEvent event) {
-        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.AlloyMine, character.getPerson());
+        boolean wasPurchaseSuccessful = UtilityShop.buyBuilding(AlloyMine, character.getPerson());
         if (wasPurchaseSuccessful) {
             differentiatePlayer();
         }
@@ -550,7 +566,7 @@ public class PropertyController extends BaseController {
 
     @FXML
     void upgradeAlloy(ActionEvent event) {
-        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.AlloyMine, character.getPerson());
+        boolean wasUpgradeSuccessful = UtilityShop.upgradeBuilding(AlloyMine, character.getPerson());
         if (wasUpgradeSuccessful) {
             differentiatePlayer();
         }
@@ -558,7 +574,7 @@ public class PropertyController extends BaseController {
 
     @FXML
     void buyMeadow(ActionEvent event) {
-        boolean wasPurchaseSuccessful = shop.getUtilityShop().buyBuilding(UtilityBuildings.MeadowLands, character.getPerson());
+        boolean wasPurchaseSuccessful = UtilityShop.buyBuilding(MeadowLands, character.getPerson());
         if (wasPurchaseSuccessful) {
             differentiatePlayer();
         }
@@ -566,7 +582,7 @@ public class PropertyController extends BaseController {
 
     @FXML
     void upgradeMeadow(ActionEvent event) {
-        boolean wasUpgradeSuccessful = shop.getUtilityShop().upgradeBuilding(UtilityBuildings.MeadowLands, character.getPerson());
+        boolean wasUpgradeSuccessful = UtilityShop.upgradeBuilding(MeadowLands, character.getPerson());
         if (wasUpgradeSuccessful) {
             differentiatePlayer();
         }
@@ -585,13 +601,21 @@ public class PropertyController extends BaseController {
         public VBox infoView;
         public VBox buyView;
         private final VBox utilityPlayerView;
-        public UtilityBuildingUI(Label infoLabel, Button priceButton, Button upgradeButton, VBox infoView, VBox buyView, VBox utilityPlayerView) {
+        public Button sabotageButton;
+        public UtilityBuildingUI(UtilityBuildings type, Label infoLabel, Button priceButton, Button upgradeButton, VBox infoView, VBox buyView, VBox utilityPlayerView, Button sabotageButton) {
             this.infoLabel = infoLabel;
             this.priceButton = priceButton;
             this.upgradeButton = upgradeButton;
             this.infoView = infoView;
             this.buyView = buyView;
             this.utilityPlayerView = utilityPlayerView;
+            this.sabotageButton = sabotageButton;
+
+            sabotageButton.setOnAction(event -> handleSabotageAction(type));
+        }
+
+        private void handleSabotageAction(UtilityBuildings type) {
+            UtilityShop.sabotage(type, CharacterController.currentCharacter.getPerson(), Model.getPlayerAsPerson());
         }
     }
 

@@ -67,11 +67,11 @@ public class TopSectionController extends BaseController {
 
     @FXML
     void startTime(MouseEvent event) {
-        startTimeFuntion();
+        startTimeFunction();
 
     }
 
-    public void startTimeFuntion() {
+    public void startTimeFunction() {
         main.incrementClicker.setDisable(true);
         main.incrementClicker.setSelected(false);
         Time.setManualSimulation(false);

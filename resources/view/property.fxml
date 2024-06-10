@@ -109,6 +109,11 @@
                                                 <Font size="16.0" />
                                              </font>
                                           </Label>
+                                          <Button fx:id="sabotageButton" mnemonicParsing="false" text="Sabotage">
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                          </Button>
                                           <VBox fx:id="utilityPlayerView" alignment="CENTER" prefHeight="66.0" prefWidth="156.0">
                                              <children>
                                                 <Label alignment="CENTER" prefHeight="25.0" prefWidth="82.0" text="Upgrade" textFill="WHITE">
@@ -179,6 +184,11 @@
                                                 <Font size="16.0" />
                                              </font>
                                           </Label>
+                                          <Button fx:id="sabotageButton1" mnemonicParsing="false" text="Sabotage">
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                          </Button>
                                           <VBox fx:id="utilityPlayerView1" alignment="CENTER" prefHeight="66.0" prefWidth="156.0">
                                              <children>
                                                 <Label alignment="CENTER" prefHeight="25.0" prefWidth="82.0" text="Upgrade" textFill="WHITE">
@@ -249,6 +259,11 @@
                                                 <Font size="16.0" />
                                              </font>
                                           </Label>
+                                          <Button fx:id="sabotageButton2" mnemonicParsing="false" text="Sabotage">
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                          </Button>
                                           <VBox fx:id="utilityPlayerView2" alignment="CENTER" prefHeight="66.0" prefWidth="156.0">
                                              <children>
                                                 <Label alignment="CENTER" prefHeight="25.0" prefWidth="82.0" text="Upgrade" textFill="WHITE">
@@ -319,6 +334,11 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Label>
+                                          <Button fx:id="sabotageButton3" mnemonicParsing="false" text="Sabotage">
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                          </Button>
                                           <VBox fx:id="utilityPlayerView3" alignment="CENTER" prefHeight="66.0" prefWidth="156.0">
                                              <children>
                                                 <Label alignment="CENTER" prefHeight="25.0" prefWidth="82.0" text="Upgrade" textFill="WHITE">
@@ -389,6 +409,11 @@
                                                 <Font size="16.0" />
                                              </font>
                                           </Label>
+                                          <Button fx:id="sabotageButton4" mnemonicParsing="false" text="Sabotage">
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                          </Button>
                                           <VBox fx:id="utilityPlayerView4" alignment="CENTER" prefHeight="66.0" prefWidth="156.0">
                                              <children>
                                                 <Label alignment="CENTER" prefHeight="25.0" prefWidth="82.0" text="Upgrade" textFill="WHITE">
@@ -459,6 +484,11 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Label>
+                                          <Button fx:id="sabotageButton5" mnemonicParsing="false" text="Sabotage">
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                          </Button>
                                           <VBox fx:id="utilityPlayerView5" alignment="CENTER" prefHeight="66.0" prefWidth="156.0">
                                              <children>
                                                 <Label alignment="CENTER" prefHeight="25.0" prefWidth="82.0" text="Upgrade" textFill="WHITE">
