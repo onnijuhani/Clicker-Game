@@ -324,6 +324,7 @@ public class PropertyController extends BaseController {
 
     private void updateUIForBuilding(UtilityBuildings building) {
         UtilityBuildingUI ui = buildingUIs.get(building);
+        ui.sabotageButton.setVisible(false);
         if (property.getUtilitySlot().isUtilityBuildingOwned(building)) {
             ui.upgradeButton.setText(formatNumber(property.getUtilitySlot().getUtilityBuilding(building).getUpgradePrice()) + " Gold");
             ui.upgradeButton.setVisible(true);
@@ -348,6 +349,7 @@ public class PropertyController extends BaseController {
         ui.infoView.setVisible(true);
         if (property.getUtilitySlot().isUtilityBuildingOwned(building)) {
             ui.infoLabel.setText(property.getUtilitySlot().getUtilityBuilding(building).getInfo());
+            ui.sabotageButton.setVisible(true);
             ui.sabotageButton.setVisible(true);
             if (Model.getPlayerAsPerson().hasState(State.SABOTEUR)) {
                 ui.sabotageButton.setBlendMode(BlendMode.SOFT_LIGHT);
@@ -590,7 +592,7 @@ public class PropertyController extends BaseController {
 
     @FXML
     void triggerPropertyInfo(ActionEvent event) {
-
+        SpecialEventsManager.triggerPropertyInfo();
     }
 
 

@@ -90,9 +90,9 @@ public class CombatActions extends BaseActions {
                             }
                         case INCREASE_PERSONAL_DEFENCE:
                             if(combatStats.upgradeDefenceWithGold()){
-                            person.removeAspiration(Aspiration.INCREASE_PERSONAL_DEFENCE);
+                                person.removeAspiration(Aspiration.INCREASE_PERSONAL_DEFENCE);
                                 logAction("Increased personal defence to level " + defencePowerLevel);
-                            break;
+                                break;
                             }
                         case INCREASE_PROPERTY_DEFENCE:
                             if (property.upgradeDefenceWithAlloys()) {
@@ -123,11 +123,11 @@ public class CombatActions extends BaseActions {
                         break;
                     case 1:
                         combatStats.upgradeDefenceWithGold();
-                        logAction("Default increase personal defence to level " + attackPowerLevel);
+                        logAction("Default increase personal defence to level " + defencePowerLevel);
                         break;
                     case 2:
                         property.upgradeDefenceWithAlloys();
-                        logAction("Default increase property defence to level " + attackPowerLevel);
+                        logAction("Default increase property defence to level " + propertyDefence);
                         break;
                     default:
                         break;

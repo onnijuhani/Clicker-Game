@@ -24,7 +24,7 @@ public class NPCActionLogger {
         if (logs.size() >= MAX_LOG_ENTRIES) {
             logs.poll();
         }
-        String logEntry = String.format("%s: [%s] [%s] [%s-Action] [%s] | %s | [%s]",
+        String logEntry = String.format("%s: [%s] [%s] [%s] [%s] | %s | [%s]",
                 Time.getClock(), npc.getName(), npc.getRole(), trait , action.getClass().getSimpleName(), details, npc.getWallet().toShortString());
         logs.add(logEntry);
     }
@@ -33,7 +33,7 @@ public class NPCActionLogger {
         if (logs.size() >= MAX_LOG_ENTRIES) {
             logs.poll();
         }
-        String logEntry = String.format("%s: [%s] [%s] [%s-Action] [%s] | %s | [%s]",
+        String logEntry = String.format("%s: [%s] [%s] [%s] [%s] | %s | [%s]",
                 Time.getClock(), npc.getName(), npc.getRole(), trait , action.getClass().getSimpleName(), details, npc.getWallet().toShortString());
         logs.add(logEntry);
     }

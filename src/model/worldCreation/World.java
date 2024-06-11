@@ -38,7 +38,7 @@ public class World extends Area implements Details {
     // Method to create random number of continents
     private void createContinents() {
         Random random = Settings.getRandom();
-        int numberOfContinents = size == size.SMALL ? 2 : size == size.MEDIUM ? 4 : size == size.LARGE ? 6 : -1;
+        int numberOfContinents = size == Size.SMALL ? 2 : size == Size.MEDIUM ? 4 : size == Size.LARGE ? 6 : -1;
         continents = new Continent[numberOfContinents];
         for (int i = 0; i < numberOfContinents; i++) {
             continents[i] = new Continent(NameCreation.generateContinentName(), this);

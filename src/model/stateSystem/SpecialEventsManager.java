@@ -38,7 +38,7 @@ public class SpecialEventsManager {
 
         PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(
                 "Gift From The King",
-                "Your nation's -" + nationName +"- leader " + authority + " has granted you a bonus:\n" + bonusPackage,
+                "Your nation's -" + nationName +"- leader " + authority + " has granted you a gift:\n" + bonusPackage,
                 "Properties/kingPic.png",
                 PopUpMessageTracker.getRandomButtonText(answers)
         );
@@ -313,7 +313,7 @@ public class SpecialEventsManager {
                         "You can construct larger property to open new utility slots but maintenance expeneses will also be increased." +
                         "Having a Military property which allows you to start training your own army." +
                         "Increasing property defence makes your property and vault stronger.",
-                "Properties/propertyInfo.jpg",
+                "Properties/manorPop.jpg",
                 "Understood"
         );
         PopUpMessageTracker.sendMessage(message);

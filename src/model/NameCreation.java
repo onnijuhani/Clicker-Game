@@ -210,7 +210,7 @@ public class NameCreation {
 
         String name;
         while (true) {
-            String[] prefixes = {"Al", "El", "Thor", "Le", "Ea", "Ma", "Ra", "Gla", "Zen",
+            String[] prefixes = {"Al", "El", "Thor", "Le", "Ea", "Ra", "Gla", "Zen",
                     "Xan", "Kyro", "Zephyr", "Astra", "Nyx", "Vortex", "Zara", "Jax"};
 
             String[] suffixes = {"on", "us", "ius", "ar", "zir", "reliux",

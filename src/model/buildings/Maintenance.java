@@ -39,7 +39,7 @@ public class Maintenance implements PaymentTracker {
                 property.getOwner().getEventTracker().addEvent(EventTracker.Message("Minor", message));
             }
         } else {
-            String errorMessage = "Maintenance not paid" + maintenanceCost;
+            String errorMessage = "Maintenance not paid " + maintenanceCost;
             if(isPlayer) {
                 property.getOwner().getEventTracker().addEvent(EventTracker.Message("Error", errorMessage));
             }

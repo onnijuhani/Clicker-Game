@@ -53,6 +53,8 @@ public class CharacterController extends BaseController  {
     @FXML
     private Button defenseTrainBtn;
 
+    @FXML
+    private ImageView characterImage;
 
 
     @FXML
@@ -103,6 +105,7 @@ public class CharacterController extends BaseController  {
         disableArmyTab();
         getCurrentStates();
         main.updateCurrentlyViewing();
+        updateCharacterImage();
     }
 
     void setUpToolTips(){
@@ -178,7 +181,14 @@ public class CharacterController extends BaseController  {
         openCharacterProfile(participant.getCharacter());
     }
 
-
+    private void updateCharacterImage(){
+        EnumSet<model.stateSystem.State> states = currentCharacter.getPerson().getStates();
+        String text = (states == null || states.isEmpty()) ? "None" : states.toString();
+        Tooltip tooltip = new Tooltip("Current States: " + text);
+        Tooltip tooltip2 = new Tooltip( currentCharacter + "\nCurrent States: " + text);
+        Tooltip.install(characterName, tooltip);
+        Tooltip.install(characterImage, tooltip2);
+    }
 
 
     private void updateWalletInfo(){

@@ -99,12 +99,12 @@
                                     </VBox>
                                     <VBox fx:id="utilityInfoView" alignment="CENTER" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" visible="false">
                                        <children>
-                                          <Label alignment="CENTER" prefHeight="34.0" prefWidth="158.0" text="Meadowlands" textAlignment="CENTER" textFill="WHITE">
+                                          <Label alignment="CENTER" text="Meadowlands" textAlignment="CENTER" textFill="WHITE">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="utilityInfo" alignment="CENTER" prefHeight="64.0" prefWidth="156.0" text="Description" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                          <Label fx:id="utilityInfo" alignment="CENTER" text="Description" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                              <font>
                                                 <Font size="16.0" />
                                              </font>
@@ -114,9 +114,9 @@
                                                 <Insets top="5.0" />
                                              </VBox.margin>
                                           </Button>
-                                          <VBox fx:id="utilityPlayerView" alignment="CENTER" prefHeight="66.0" prefWidth="156.0">
+                                          <VBox fx:id="utilityPlayerView" alignment="CENTER">
                                              <children>
-                                                <Label alignment="CENTER" prefHeight="25.0" prefWidth="82.0" text="Upgrade" textFill="WHITE">
+                                                <Label alignment="CENTER" text="Upgrade" textFill="WHITE">
                                                    <font>
                                                       <Font name="System Bold" size="16.0" />
                                                    </font>
@@ -174,12 +174,12 @@
                                     </VBox>
                                     <VBox fx:id="utilityInfoView1" alignment="CENTER" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" visible="false">
                                        <children>
-                                          <Label alignment="CENTER" prefHeight="34.0" prefWidth="158.0" text="Alloy Mine" textAlignment="CENTER" textFill="WHITE">
+                                          <Label alignment="CENTER" text="Alloy Mine" textAlignment="CENTER" textFill="WHITE">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="utilityInfo1" alignment="CENTER" prefHeight="64.0" prefWidth="156.0" text="Description" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                          <Label fx:id="utilityInfo1" alignment="CENTER" text="Description" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                              <font>
                                                 <Font size="16.0" />
                                              </font>
@@ -189,9 +189,9 @@
                                                 <Insets top="5.0" />
                                              </VBox.margin>
                                           </Button>
-                                          <VBox fx:id="utilityPlayerView1" alignment="CENTER" prefHeight="66.0" prefWidth="156.0">
+                                          <VBox fx:id="utilityPlayerView1" alignment="CENTER">
                                              <children>
-                                                <Label alignment="CENTER" prefHeight="25.0" prefWidth="82.0" text="Upgrade" textFill="WHITE">
+                                                <Label alignment="CENTER" text="Upgrade" textFill="WHITE">
                                                    <font>
                                                       <Font name="System Bold" size="16.0" />
                                                    </font>
@@ -249,12 +249,12 @@
                                     </VBox>
                                     <VBox fx:id="utilityInfoView2" alignment="CENTER" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" visible="false">
                                        <children>
-                                          <Label alignment="CENTER" prefHeight="34.0" prefWidth="158.0" text="Gold Mine" textAlignment="CENTER" textFill="WHITE">
+                                          <Label alignment="CENTER" text="Gold Mine" textAlignment="CENTER" textFill="WHITE">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="utilityInfo2" alignment="CENTER" prefHeight="64.0" prefWidth="156.0" text="Description" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                          <Label fx:id="utilityInfo2" alignment="CENTER" text="Description" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                              <font>
                                                 <Font size="16.0" />
                                              </font>
@@ -264,9 +264,9 @@
                                                 <Insets top="5.0" />
                                              </VBox.margin>
                                           </Button>
-                                          <VBox fx:id="utilityPlayerView2" alignment="CENTER" prefHeight="66.0" prefWidth="156.0">
+                                          <VBox fx:id="utilityPlayerView2" alignment="CENTER">
                                              <children>
-                                                <Label alignment="CENTER" prefHeight="25.0" prefWidth="82.0" text="Upgrade" textFill="WHITE">
+                                                <Label alignment="CENTER" text="Upgrade" textFill="WHITE">
                                                    <font>
                                                       <Font name="System Bold" size="16.0" />
                                                    </font>
@@ -322,14 +322,14 @@
                                           <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                                        </StackPane.margin>
                                     </VBox>
-                                    <VBox fx:id="utilityInfoView3" alignment="CENTER" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" visible="false">
+                                    <VBox fx:id="utilityInfoView3" alignment="CENTER" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;">
                                        <children>
-                                          <Label alignment="CENTER" prefHeight="34.0" prefWidth="158.0" text="Slave Facility" textAlignment="CENTER" textFill="WHITE">
+                                          <Label alignment="CENTER" text="Slave Facility" textAlignment="CENTER" textFill="WHITE">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="utilityInfo3" alignment="CENTER" prefHeight="64.0" prefWidth="156.0" text="Description" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP" wrapText="true">
+                                          <Label fx:id="utilityInfo3" alignment="CENTER" text="Description" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP" wrapText="true">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
@@ -339,9 +339,9 @@
                                                 <Insets top="5.0" />
                                              </VBox.margin>
                                           </Button>
-                                          <VBox fx:id="utilityPlayerView3" alignment="CENTER" prefHeight="66.0" prefWidth="156.0">
+                                          <VBox fx:id="utilityPlayerView3" alignment="CENTER">
                                              <children>
-                                                <Label alignment="CENTER" prefHeight="25.0" prefWidth="82.0" text="Upgrade" textFill="WHITE">
+                                                <Label alignment="CENTER" text="Upgrade" textFill="WHITE">
                                                    <font>
                                                       <Font name="System Bold" size="16.0" />
                                                    </font>
@@ -399,12 +399,12 @@
                                     </VBox>
                                     <VBox fx:id="utilityInfoView4" alignment="CENTER" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" visible="false">
                                        <children>
-                                          <Label alignment="CENTER" prefHeight="34.0" prefWidth="158.0" text="Mystic Mine" textAlignment="CENTER" textFill="WHITE">
+                                          <Label alignment="CENTER" text="Mystic Mine" textAlignment="CENTER" textFill="WHITE">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="utilityInfo4" alignment="CENTER" prefHeight="64.0" prefWidth="156.0" text="Description" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                          <Label fx:id="utilityInfo4" alignment="CENTER" text="Description" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                              <font>
                                                 <Font size="16.0" />
                                              </font>
@@ -414,9 +414,9 @@
                                                 <Insets top="5.0" />
                                              </VBox.margin>
                                           </Button>
-                                          <VBox fx:id="utilityPlayerView4" alignment="CENTER" prefHeight="66.0" prefWidth="156.0">
+                                          <VBox fx:id="utilityPlayerView4" alignment="CENTER">
                                              <children>
-                                                <Label alignment="CENTER" prefHeight="25.0" prefWidth="82.0" text="Upgrade" textFill="WHITE">
+                                                <Label alignment="CENTER" text="Upgrade" textFill="WHITE">
                                                    <font>
                                                       <Font name="System Bold" size="16.0" />
                                                    </font>
@@ -474,12 +474,12 @@
                                     </VBox>
                                     <VBox fx:id="utilityInfoView5" alignment="CENTER" style="-fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F2027, #203A43, #2C5364); -fx-background-radius: 25; -fx-border-color: white; -fx-border-radius: 25;" visible="false">
                                        <children>
-                                          <Label alignment="CENTER" prefHeight="34.0" prefWidth="158.0" text="Worker Center" textAlignment="CENTER" textFill="WHITE">
+                                          <Label alignment="CENTER" text="Worker Center" textAlignment="CENTER" textFill="WHITE">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="utilityInfo5" alignment="CENTER" prefHeight="64.0" prefWidth="156.0" text="Description" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP" wrapText="true">
+                                          <Label fx:id="utilityInfo5" alignment="CENTER" text="Description" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP" wrapText="true">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
@@ -489,9 +489,9 @@
                                                 <Insets top="5.0" />
                                              </VBox.margin>
                                           </Button>
-                                          <VBox fx:id="utilityPlayerView5" alignment="CENTER" prefHeight="66.0" prefWidth="156.0">
+                                          <VBox fx:id="utilityPlayerView5" alignment="CENTER">
                                              <children>
-                                                <Label alignment="CENTER" prefHeight="25.0" prefWidth="82.0" text="Upgrade" textFill="WHITE">
+                                                <Label alignment="CENTER" text="Upgrade" textFill="WHITE">
                                                    <font>
                                                       <Font name="System Bold" size="16.0" />
                                                    </font>
