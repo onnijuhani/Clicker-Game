@@ -263,7 +263,6 @@ public class SpecialEventsManager {
         PopUpMessageTracker.sendMessage(gameOverMessage);
     }
 
-
     public static void triggerMarketInfo() {
         PopUpMessageTracker.PopUpMessage gameOverMessage = new PopUpMessageTracker.PopUpMessage(
                 "Exchange",

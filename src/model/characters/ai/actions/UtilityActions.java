@@ -7,6 +7,7 @@ import model.characters.Trait;
 import model.characters.ai.Aspiration;
 import model.characters.ai.actionCircle.WeightedObject;
 import model.shop.UtilityShop;
+import model.stateSystem.State;
 import model.time.Time;
 
 import java.util.List;
@@ -264,6 +265,7 @@ public class UtilityActions extends BaseActions{
                                 person.getRole().getNation().joinSlaverGuild(person);
                                 logAction("Joined Slaver Guild");
                                 joinedSlaverGuild = true;
+                                person.addState(State.MEMBER_OF_SLAVER);
                             }
                         }
                     }
@@ -284,6 +286,7 @@ public class UtilityActions extends BaseActions{
 //                    this.setImportance(10);
                     logAction("Joined Slaver Guild");
                     joinedSlaverGuild = true;
+                    person.addState(State.MEMBER_OF_SLAVER);
                     if (profile.containsKey(Trait.Liberal)) {
 //                        this.setImportance(0);
                     }
@@ -333,6 +336,7 @@ public class UtilityActions extends BaseActions{
                                 person.getRole().getNation().joinLiberalGuild(person);
                                 logAction("Joined Liberal Guild");
                                 joinedLiberalGuild = true;
+                                person.addState(State.MEMBER_OF_FREEDOM);
                             }
                         }
                     }
@@ -352,6 +356,7 @@ public class UtilityActions extends BaseActions{
 //                        this.setImportance(10);
                         logAction("Joined Liberal Guild");
                         joinedLiberalGuild = true;
+                        person.addState(State.MEMBER_OF_FREEDOM);
                     if (profile.containsKey(Trait.Slaver)) {
 //                        this.setImportance(0);
                     }

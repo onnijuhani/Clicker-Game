@@ -138,8 +138,6 @@ public class NameCreation {
                 break;
             }
         }
-
-
         return name;
     }
 
@@ -192,7 +190,6 @@ public class NameCreation {
 
     }
 
-
     public static ArrayList generateQuarterNames(int numberOfQuarters) {
         String[] quarters = {
                 "Quarter", "District", "Zone", "Area", "Block", "Neighborhood",
@@ -205,7 +202,6 @@ public class NameCreation {
         }
         return names;
     }
-
     public static String generateCharacterName(Boolean isNpc){
 
         String name;
@@ -241,8 +237,6 @@ public class NameCreation {
 
         return name;
     }
-
-
     public static void generateMajorQuarterName(Quarter quarter) {
         HashMap<Status, java.util.LinkedList<model.characters.Person>> populationList = quarter.getPopulationMap();
 
@@ -251,7 +245,6 @@ public class NameCreation {
         String[] governorPrefixes = {"Governor's", "Provincial", "Territorial" };
         String[] mercenaryPrefixes = {"Mercenary's", "Warrior's", "Soldier's", "Devil's"};
         String[] mayorPrefixes = {"Mayor's", "Urban", "Township's", "Community's", "Citys" };
-
 
         String[] suffixes = {"Haven", "Domain", "Lair", "Territory", "Estate", "Sanctum", "Gardens", "Hold", "Quarters", "Landing", "Imperative"};
 
@@ -281,14 +274,7 @@ public class NameCreation {
         selectedPrefix = mayorPrefixes[random.nextInt(mayorPrefixes.length)];
         quarter.setName(selectedPrefix + " " + selectedSuffix);
     }
-
-
-
-
     }
-
-
-
 }
 
 
