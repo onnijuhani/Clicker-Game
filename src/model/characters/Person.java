@@ -8,6 +8,8 @@ import model.characters.ai.Aspiration;
 import model.characters.ai.actions.NPCAction;
 import model.characters.ai.actions.NPCActionLogger;
 import model.characters.combat.CombatStats;
+import model.characters.npc.King;
+import model.characters.npc.Vanguard;
 import model.characters.payments.PaymentManager;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
@@ -44,6 +46,12 @@ public class Person implements Ownable {
     private AiEngine aiEngine;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
+    public int getCharacterPic() {
+        return characterPic;
+    }
+
+    private int characterPic = 0;
+
     public Person(Boolean isNpc) {
         this.isPlayer = !isNpc;
         this.wallet = new Wallet(this);
@@ -58,6 +66,22 @@ public class Person implements Ownable {
         aspirations = EnumSet.noneOf(Aspiration.class);
 
         delayMethods();
+    }
+
+    public void generatePicture() {
+        if(isPlayer){
+            this.characterPic = 15;
+            return;
+        }
+        if(character instanceof King){
+            this.characterPic = 16;
+            return;
+        }
+        if(character instanceof Vanguard){
+            this.characterPic = 17;
+            return;
+        }
+        this.characterPic = Settings.getRandom().nextInt(6) + 1;
     }
 
     private void startingMsgAndAiEngine() {

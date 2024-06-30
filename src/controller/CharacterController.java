@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -106,6 +107,7 @@ public class CharacterController extends BaseController  {
         getCurrentStates();
         main.updateCurrentlyViewing();
         updateCharacterImage();
+        setCharacterPicture();
     }
 
     void setUpToolTips(){
@@ -359,6 +361,22 @@ public class CharacterController extends BaseController  {
         }
     }
 
+    private void setCharacterPicture(){
+
+        if(currentCharacter.getPerson().getCharacterPic() == 0){
+            currentCharacter.getPerson().generatePicture();
+        }
+
+        Image image;
+        String number = String.valueOf(currentCharacter.getPerson().getCharacterPic());
+        String imagePath = String.format("/characterImages/%s.png", number);
+        image = new Image(imagePath);
+
+        characterImage.setImage(image);
+    }
+
+
+
     private void updatePreviousButtonState() {
         previousBtn.setDisable(characterHistory.isEmpty());
     }
@@ -366,4 +384,7 @@ public class CharacterController extends BaseController  {
     public MainController getMain() {
         return main;
     }
+
+
+
 }

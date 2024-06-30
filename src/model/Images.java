@@ -18,26 +18,17 @@ public class Images {
         }
 
         public static Image getImage(Properties type) {
-            switch (type) {
-                case Shack:
-                    return shack;
-                case Cottage:
-                    return cottage;
-                case Villa:
-                    return villa;
-                case Mansion:
-                    return mansion;
-                case Manor:
-                    return manor;
-                case Castle:
-                    return castle;
-                case Citadel:
-                    return citadel;
-                case Fortress:
-                    return fortress;
-                default:
-                    throw new IllegalArgumentException("Unsupported property type: " + type);
-            }
+            return switch (type) {
+                case Shack -> shack;
+                case Cottage -> cottage;
+                case Villa -> villa;
+                case Mansion -> mansion;
+                case Manor -> manor;
+                case Castle -> castle;
+                case Citadel -> citadel;
+                case Fortress -> fortress;
+                default -> throw new IllegalArgumentException("Unsupported property type: " + type);
+            };
         }
     }
 
