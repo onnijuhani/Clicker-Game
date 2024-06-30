@@ -1,0 +1,34 @@
+tooltip delay.
+
+public class YourController {
+
+    @FXML
+    private Label upgradeLabel;
+
+    public void initialize() {
+        Tooltip tooltip = new Tooltip("Upgrading increases by 2");
+        
+        // Set the delay model.time to 500 milliseconds
+        tooltip.setShowDelay(Duration.millis(500));
+
+        upgradeLabel.setTooltip(tooltip);
+    }
+}
+
+public class YourController {
+
+    @FXML
+    private Label upgradeLabel;
+
+    public void initialize() {
+        Tooltip tooltip = new Tooltip("Päivitys lisää 2:lla");
+
+        // Aseta näytön viive 500 millisekunniksi
+        tooltip.setShowDelay(Duration.millis(500));
+
+        // Aseta piilotusviive 5000 millisekunniksi (5 sekuntia)
+        tooltip.setHideDelay(Duration.millis(5000));
+
+        upgradeLabel.setTooltip(tooltip);
+    }
+}
