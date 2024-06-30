@@ -5,6 +5,7 @@ import model.Settings;
 import model.buildings.Property;
 import model.buildings.PropertyFactory;
 import model.buildings.PropertyTracker;
+import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.Character;
 import model.characters.*;
 import model.characters.authority.Authority;
@@ -13,6 +14,7 @@ import model.characters.npc.Governor;
 import model.characters.npc.Mercenary;
 import model.resourceManagement.TransferPackage;
 import model.shop.Shop;
+import model.stateSystem.EventTracker;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -179,16 +181,22 @@ public class Nation extends ControlledArea implements Details {
         return slaverGuild;
     }
     public void joinSlaverGuild(Person person){
-        if(person.getAiEngine().getProfile().containsKey(Trait.Liberal)){
+        if(person.getAiEngine().getProfile().containsKey(Trait.Liberal) && !person.isPlayer()){
             return;
         }
+        if(!person.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.SlaveFacility)) return;
         slaverGuild.add(person);
+        person.getEventTracker().addEvent(EventTracker.Message("Minor", "Joined Slaver Guild"));
+        person.getProperty().getUtilitySlot().getUtilityBuilding(UtilityBuildings.SlaveFacility).addBonus("Slaver Guild Bonus", 1);
     }
     public void joinLiberalGuild(Person person){
-        if(person.getAiEngine().getProfile().containsKey(Trait.Slaver)){
+        if(person.getAiEngine().getProfile().containsKey(Trait.Slaver) && !person.isPlayer()){
             return;
         }
+        if(!person.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.WorkerCenter)) return;
         freedomFighters.add(person);
+        person.getEventTracker().addEvent(EventTracker.Message("Minor", "Joined Liberal Guild"));
+        person.getProperty().getUtilitySlot().getUtilityBuilding(UtilityBuildings.WorkerCenter).addBonus("Liberal Guild Bonus", 1);
     }
 
     public Set<Person> getFreedomFighters() {

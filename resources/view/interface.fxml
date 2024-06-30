@@ -60,6 +60,15 @@
                         <TabPane fx:id="informationTabPane" prefHeight="330.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE">
                            <tabs>
                               <Tab text="Overview">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <fx:include fx:id="overview" source="overview.fxml" />
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
+                              <Tab text="Financials">
                                  <content>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="340.0" prefWidth="773.0" style="-fx-background-color: white;">
                                        <children>

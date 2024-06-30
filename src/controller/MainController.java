@@ -50,6 +50,8 @@ public class MainController extends BaseController {
     @FXML
     private InformationController informationController;
     @FXML
+    private OverviewController overviewController;
+    @FXML
     private ArmyController armyController;
     @FXML
     private AnchorPane mainLayout;
@@ -201,6 +203,14 @@ public class MainController extends BaseController {
         }
         else {
             System.out.println("armyController is null");
+        }
+        if (overviewController != null) {
+            overviewController.setMain(this);
+            overviewController.setModel(model);
+            overviewController.setPlayer(Model.getPlayerAsPerson());
+        }
+        else {
+            System.out.println("overviewController is null");
         }
     }
 

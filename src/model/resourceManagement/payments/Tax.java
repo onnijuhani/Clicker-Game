@@ -1,10 +1,9 @@
 package model.resourceManagement.payments;
 
-import model.stateSystem.EventTracker;
-import model.resourceManagement.TransferPackage;
 import model.resourceManagement.Resource;
-import model.resourceManagement.wallets.Wallet;
+import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.WorkWallet;
+import model.stateSystem.EventTracker;
 
 import java.util.EnumMap;
 
@@ -13,67 +12,64 @@ public class Tax {
     private boolean isTaxRateChanged = true;
     private double taxRate;
 
-    private TransferPackage lastAmount;
+    public TaxRate getCurrentTaxRate() {
+        return currentTaxRate;
+    }
+
+    private TaxRate currentTaxRate;
+
+    public enum TaxRate {
+        LOW, MEDIUM, STANDARD, EXTREME
+    }
 
     public Tax() {
         taxInfoByResource = new EnumMap<>(Resource.class);
         for (Resource resource : Resource.values()) {
-            taxInfoByResource.put(resource, new TaxInfo(60)); // Default tax info
+            taxInfoByResource.put(resource, new TaxInfo(60));
         }
+        currentTaxRate = TaxRate.STANDARD;
     }
 
     public void setTaxInfo(Resource resource, int taxPercentage) {
         taxInfoByResource.get(resource).setTaxPercentage(taxPercentage);
-
-    }
-
-    public void setExtremeTaxRate(){
-        taxInfoByResource.get(Resource.Food).setTaxPercentage(80);
-        taxInfoByResource.get(Resource.Alloy).setTaxPercentage(80);
-        taxInfoByResource.get(Resource.Gold).setTaxPercentage(80);
         isTaxRateChanged = true;
     }
 
-    public void setStandardTaxRate(){taxInfoByResource.get(Resource.Food).setTaxPercentage(60);
-       taxInfoByResource.get(Resource.Alloy).setTaxPercentage(60);
-       taxInfoByResource.get(Resource.Food).setTaxPercentage(60);
-       taxInfoByResource.get(Resource.Gold).setTaxPercentage(60);
-       isTaxRateChanged = true;
+    public void setExtremeTaxRate() {
+        setTaxRate(80);
+        currentTaxRate = TaxRate.EXTREME;
     }
 
-    public void setMediumTaxRate(){
-        taxInfoByResource.get(Resource.Food).setTaxPercentage(40);
-        taxInfoByResource.get(Resource.Alloy).setTaxPercentage(40);
-        taxInfoByResource.get(Resource.Gold).setTaxPercentage(40);
+    public void setStandardTaxRate() {
+        setTaxRate(60);
+        currentTaxRate = TaxRate.STANDARD;
+    }
+
+    public void setMediumTaxRate() {
+        setTaxRate(40);
+        currentTaxRate = TaxRate.MEDIUM;
+    }
+
+    public void setLowTaxRate() {
+        setTaxRate(20);
+        currentTaxRate = TaxRate.LOW;
+    }
+
+    private void setTaxRate(int rate) {
+        taxInfoByResource.get(Resource.Food).setTaxPercentage(rate);
+        taxInfoByResource.get(Resource.Alloy).setTaxPercentage(rate);
+        taxInfoByResource.get(Resource.Gold).setTaxPercentage(rate);
         isTaxRateChanged = true;
     }
 
-    public void setLowTaxRate(){
-        taxInfoByResource.get(Resource.Food).setTaxPercentage(20);
-        taxInfoByResource.get(Resource.Alloy).setTaxPercentage(20);
-        taxInfoByResource.get(Resource.Gold).setTaxPercentage(20);
-        isTaxRateChanged = true;
-    }
-
-
-    /**
-     * Set custom tax rate between 20-80 to any resource
-     * @param type the resource type that taxRate is being changed
-     * @param intPercentage new tax rate, insert as integer
-     */
-    public void setAnyTaxRate(Resource type, int intPercentage){
-
-        if(intPercentage < 20 || intPercentage > 80){
-            return; // these are the limits
+    public void setAnyTaxRate(Resource type, int intPercentage) {
+        if (intPercentage < 20 || intPercentage > 80) {
+            return;
         }
 
         taxInfoByResource.get(type).setTaxPercentage(intPercentage);
-
         isTaxRateChanged = true;
-
     }
-
-
 
     public TaxInfo getTaxInfo(Resource resource) {
         return taxInfoByResource.get(resource);
@@ -90,7 +86,6 @@ public class Tax {
         return taxRate;
     }
 
-
     public void collectTax(WorkWallet fromWallet, EventTracker taxPayerTracker, WorkWallet toWallet, EventTracker taxManTracker, int day) {
         int foodTax = (int) taxInfoByResource.get(Resource.Food).calculateTax(fromWallet.getFood());
         int alloyTax = (int) taxInfoByResource.get(Resource.Alloy).calculateTax(fromWallet.getAlloy());
@@ -100,7 +95,6 @@ public class Tax {
         toWallet.deposit(fromWallet, transfer);
 
         fromWallet.setTaxedOrNot(true);
-
         fromWallet.cashOutSalary(day);
 
         String taxPaid = EventTracker.Message("Minor", "Tax paid " + transfer);
@@ -109,35 +103,57 @@ public class Tax {
         taxManTracker.addEvent(taxCollected);
     }
 
-
-    private int getResourceAmount(Wallet wallet, Resource resource) {
-        return switch (resource) {
-            case Food -> wallet.getFood();
-            case Alloy -> wallet.getAlloy();
-            case Gold -> wallet.getGold();
-            default -> 0;
-        };
-    }
     public String toStringTaxRates() {
         StringBuilder taxRatesBuilder = new StringBuilder();
         for (Resource resource : Resource.values()) {
             TaxInfo info = taxInfoByResource.get(resource);
-            taxRatesBuilder.append(resource.name()) // First letter of resource name
+            taxRatesBuilder.append(resource.name())
                     .append(": Tax ")
-                    .append(Math.round(info.getTaxPercentage())) // Rounded percentage
+                    .append(Math.round(info.getTaxPercentage()))
                     .append("%\n");
         }
-        return taxRatesBuilder.toString().trim(); // Trim to remove the last newline
+        return taxRatesBuilder.toString().trim();
     }
 
+    public void increaseTaxRate() {
+        switch (currentTaxRate) {
+            case LOW:
+                setMediumTaxRate();
+                break;
+            case MEDIUM:
+                setStandardTaxRate();
+                break;
+            case STANDARD:
+                setExtremeTaxRate();
+                break;
+            case EXTREME:
+                break;
+        }
+    }
 
+    public void decreaseTaxRate() {
+        switch (currentTaxRate) {
+            case LOW:
+                break;
+            case MEDIUM:
+                setLowTaxRate();
+                break;
+            case STANDARD:
+                setMediumTaxRate();
+                break;
+            case EXTREME:
+                setStandardTaxRate();
+                break;
+        }
+    }
 
     public static class TaxInfo {
         private double taxPercentage;
+
         public TaxInfo(double taxPercentage) {
             this.taxPercentage = taxPercentage;
-
         }
+
         public void setTaxPercentage(int taxPercentage) {
             this.taxPercentage = taxPercentage;
         }
@@ -149,8 +165,5 @@ public class Tax {
         public double getTaxPercentage() {
             return taxPercentage;
         }
-
-
     }
 }
-

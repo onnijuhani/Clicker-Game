@@ -3,31 +3,32 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="700.0" styleClass="mainColorLeft" stylesheets="@../characterStyle.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.InformationController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="700.0" styleClass="mainColorLeft" stylesheets="@../characterStyle.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.OverviewController">
    <children>
       <VBox alignment="CENTER" layoutX="530.0" layoutY="10.0" spacing="5.0">
          <children>
-            <VBox alignment="TOP_CENTER" spacing="5.0" styleClass="overviewBox">
+            <VBox fx:id="taxBox" alignment="TOP_CENTER" spacing="5.0" styleClass="overviewBox">
                <children>
                   <Label text="Taxes" textFill="WHITE">
                      <font>
                         <Font size="17.0" />
                      </font>
                   </Label>
-                  <Label text="Current Tax Percent" textFill="WHITE" />
+                  <Label fx:id="currentTaxPercent" text="Current Tax Percent" textFill="WHITE" />
                   <HBox alignment="CENTER">
                      <children>
-                        <Button mnemonicParsing="false" text="Lower">
+                        <Button fx:id="lowerTaxBtn" mnemonicParsing="false" onAction="#lowerTax" text="Lower">
                            <HBox.margin>
                               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                            </HBox.margin>
                         </Button>
-                        <Button mnemonicParsing="false" text="Increase">
+                        <Button fx:id="increaseTaxBtn" mnemonicParsing="false" onAction="#increaseTax" text="Increase">
                            <HBox.margin>
                               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                            </HBox.margin>
@@ -42,14 +43,17 @@
                   <Insets />
                </VBox.margin>
             </VBox>
-            <VBox alignment="TOP_CENTER" styleClass="overviewBox">
+            <VBox fx:id="guildBox" alignment="TOP_CENTER" styleClass="overviewBox">
                <children>
-                  <Label text="Guild" textFill="WHITE">
+                  <Label fx:id="guildName" text="Guild" textFill="WHITE">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <Button mnemonicParsing="false" text="Join" />
+                  <Button fx:id="joinGuildBtn" mnemonicParsing="false" onAction="#joinGuild" text="Join">
+                     <tooltip>
+                        <Tooltip text="Joining guild will increase the production of your utility building" />
+                     </tooltip></Button>
                </children>
                <VBox.margin>
                   <Insets />
@@ -72,7 +76,7 @@
                         <Insets left="5.0" />
                      </padding>
                   </Label>
-                  <Label text="Peasant" textFill="WHITE">
+                  <Label fx:id="currentPosition" text="Peasant" textFill="WHITE">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -95,7 +99,7 @@
                         <Insets left="5.0" />
                      </padding>
                   </Label>
-                  <Label text="1%" textFill="WHITE">
+                  <Label fx:id="currentTerritoryOwned" text="0%" textFill="WHITE">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -105,7 +109,7 @@
                   </Label>
                </children>
             </HBox>
-            <VBox spacing="2.0" styleClass="overviewBox">
+            <VBox fx:id="rivalingNationsBox" spacing="2.0" styleClass="overviewBox">
                <children>
                   <Label text="Rivaling Nations" textFill="WHITE">
                      <font>

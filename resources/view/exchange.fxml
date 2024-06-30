@@ -220,7 +220,7 @@
                                           <Font size="15.0" />
                                        </font>
                                        <VBox.margin>
-                                          <Insets bottom="5.0" />
+                                          <Insets top="5.0" />
                                        </VBox.margin>
                                     </Button>
                                  </children>
@@ -267,7 +267,7 @@
                                           <Font size="15.0" />
                                        </font>
                                        <VBox.margin>
-                                          <Insets bottom="5.0" />
+                                          <Insets top="5.0" />
                                        </VBox.margin>
                                     </Button>
                                  </children>

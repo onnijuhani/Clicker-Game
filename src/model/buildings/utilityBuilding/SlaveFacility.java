@@ -27,14 +27,6 @@ public class SlaveFacility extends UtilityBuilding {
         delayConsequence();
     }
 
-    public void setAsGuildMember(boolean isGuildMember) {
-        this.isGuildMember = isGuildMember;
-        if (isGuildMember) {
-            addBonus("Guild bonus", 0.2);
-        } else {
-            removeBonus("Guild bonus");
-        }
-    }
 
     private void delayConsequence() {
         // this is delayed because of eventTracker
@@ -121,9 +113,10 @@ public class SlaveFacility extends UtilityBuilding {
 
     @Override
     public String getInfo(){
+        int[] fullProduction = {production[0]*calculateBonus(), production[1]*calculateBonus(), production[2]*calculateBonus()};
         return (
                 "Level " + getUpgradeLevel() + "\n"+
-                        "Food, Alloys and Gold" + "\n" + Arrays.toString(production)
+                        "Food, Alloys and Gold" + "\n" + Arrays.toString(fullProduction)
         );
     }
     @Override

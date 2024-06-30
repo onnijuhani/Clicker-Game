@@ -24,7 +24,7 @@ public class Meadowlands extends UtilityBuilding {
     public String getInfo(){
         return (
                 "Level " + getUpgradeLevel() + "\n"+
-                        value + " Food"
+                        value*calculateBonus() + " Food"
                 );
     }
     @Override

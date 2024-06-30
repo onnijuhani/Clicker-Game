@@ -25,7 +25,7 @@ public class AlloyMine extends UtilityBuilding {
     public String getInfo(){
         return (
                 "Level " + getUpgradeLevel() + "\n"+
-                        value + " Alloys"
+                        value*calculateBonus() + " Alloys"
         );
     }
     @Override

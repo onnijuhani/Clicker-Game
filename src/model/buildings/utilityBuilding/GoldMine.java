@@ -24,7 +24,7 @@ public class GoldMine extends UtilityBuilding {
     public String getInfo(){
         return (
                 "Level " + getUpgradeLevel() + "\n"+
-                        value + " Gold"
+                        value*calculateBonus() + " Gold"
         );
     }
     @Override
