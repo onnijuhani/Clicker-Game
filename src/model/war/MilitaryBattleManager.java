@@ -7,6 +7,11 @@ public class MilitaryBattleManager {
 
     public static MilitaryBattle executeMilitaryBattle(Person attacker, Person defender) {
 
+        if(attacker == defender){
+            System.out.println("tried to attack self");
+            return null;
+        }
+
         if (attacker.getProperty() instanceof Military military && defender.getProperty() instanceof Military military2) {
 
             if(military.getArmy().getState() != null){
@@ -14,6 +19,7 @@ public class MilitaryBattleManager {
                 return null;
             }
             if(military2.getArmy().getState() != null){
+                System.out.println(military2.getArmy().getState());
                 attacker.getEventTracker().addEvent(EventTracker.Message("Error", "Cannot enter military battle, opponent's military is not in Neutral state"));
                 return null;
             }

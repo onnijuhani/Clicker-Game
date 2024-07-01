@@ -27,25 +27,44 @@ public class SiegeController extends BaseController {
     }
 
     private void updateEverything() {
+        checkState();
         updateStats();
         updateAvailableStats();
     }
 
+    private void checkState() {
+        if(militaryBattle == null){
+            return;
+        }
+        if(!militaryBattle.isOnGoing()){ // if battle is ended, set this null.
+            militaryBattle = null;
+            armyController.switchViewMethod();
+        }
+    }
 
-    public void setMilitaries(Military militaryLeft, Military militaryRight, MilitaryBattle militaryBattle, String left, String right) {
+
+    /**
+     * @param militaryLeft Set military to left side of the UI (Player)
+     * @param militaryRight Set military to right side of the ui (NPC)
+     * @param militaryBattle MilitaryBattle object
+     * @param uiLeftSideIsAttackerOrDefender Set if player is "Attacker" or "Defender" in this battle
+     */
+    public void setMilitaries(Military militaryLeft, Military militaryRight, MilitaryBattle militaryBattle, String uiLeftSideIsAttackerOrDefender) {
         this.militaryLeft = militaryLeft;
         this.militaryRight = militaryRight;
         this.militaryBattle = militaryBattle;
-        this.left = left;
-        this.right = right;
+        this.left = uiLeftSideIsAttackerOrDefender;
     }
 
     private Military militaryLeft; // right and left refers to the side in the UI
     private Military militaryRight;
-    private MilitaryBattle militaryBattle;
 
+    public MilitaryBattle getMilitaryBattle() {
+        return militaryBattle;
+    }
+
+    private MilitaryBattle militaryBattle;
     private String left;
-    private String right;
 
     public void setArmyController(ArmyController armyController) {
         this.armyController = armyController;
@@ -158,6 +177,8 @@ public class SiegeController extends BaseController {
 
         int amountOffence = militaryLeft.getArmy().getAttackPower();
         availableOffence.setText("Available: " + amountOffence);
+
+        System.out.println("avaibable offence:" +amountOffence);
     }
 
     private MilitaryBattle.ArmyStats getArmyStats() {

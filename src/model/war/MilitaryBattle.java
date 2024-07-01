@@ -26,12 +26,12 @@ public class MilitaryBattle implements WarObserver {
         }
 
         if(Objects.equals(currentTurn, "Attacker")){
-            performAttack(attackingArmyStats, defendingArmyStats, "Defender");
+            performAttack(attackingArmyStats, defendingArmyStats, "Attacker");
             setCurrentTurn("Defender");
             return;
         }
         if(Objects.equals(currentTurn, "Defender")){
-            performAttack(defendingArmyStats, attackingArmyStats, "Attacker");
+            performAttack(defendingArmyStats, attackingArmyStats, "Defender");
             setCurrentTurn("Attacker");
         }
 
@@ -44,11 +44,7 @@ public class MilitaryBattle implements WarObserver {
         attackingCommander.getPaymentManager().addPayment(PaymentManager.PaymentType.EXPENSE, Payment.WAR_EFFORT, attackingArmyStats.getWarCost(), 6);
         defendingCommander.getPaymentManager().addPayment(PaymentManager.PaymentType.EXPENSE, Payment.WAR_EFFORT, defendingArmyStats.getWarCost(), 6);
     }
-
     private String currentTurn = "Attacker"; // attacker starts
-
-
-
     private final Military attackingMilitary;
     private final Military defendingMilitary;
     private final ArmyStats attackingArmyStats;
@@ -58,8 +54,10 @@ public class MilitaryBattle implements WarObserver {
     Person defendingCommander;
     private final Random random = Settings.getRandom();
     private int days = 0; // tracks how many days have gone by
-
     private final List<String> battleLog = new ArrayList<>(); // Logging system
+
+
+    private boolean isOnGoing = true;
 
     public MilitaryBattle(Military attacker, Military defender) {
         this.attackingArmyStats = new ArmyStats(attacker.getArmy());
@@ -77,14 +75,11 @@ public class MilitaryBattle implements WarObserver {
         setStartingStates();
 
     }
-
-
     private void setStartingStates() {
         attackingMilitary.getArmy().setState(Army.ArmyState.ATTACKING);
         defendingMilitary.getArmy().setState(Army.ArmyState.DEFENDING);
         logEvent("Battle started. Attacker: " + attackingCommander.getName() + ", Defender: " + defendingCommander.getName());
     }
-
     private void performAttack(ArmyStats attacker, ArmyStats defender, String attackTurn) {
         try {
             int attackPower = attacker.getAttackPower();
@@ -95,8 +90,8 @@ public class MilitaryBattle implements WarObserver {
             }
 
             //calculate effective strengths
-            int attackStrength = attackPower * attacker.getNumOfSoldiers() + 1000;
-            int defenceStrength = defencePower * defender.getNumOfSoldiers() + 1000;
+            int attackStrength = attackPower * attacker.getNumOfSoldiers() + 10000;
+            int defenceStrength = defencePower * defender.getNumOfSoldiers() + 10000;
 
             // basic success chance is 60%
             boolean attackSucceeds = random.nextDouble() < 0.6; // 60% chance of attack success
@@ -114,9 +109,13 @@ public class MilitaryBattle implements WarObserver {
 
             if (attackSucceeds) {
                 if (effectivePower > rand) {
-                    if (random.nextDouble() < 0.8) { // 80% chance of soldier loss
+                    if (random.nextDouble() < 0.7) { // 70% chance of soldier loss
                         defender.loseSoldiers(1);
-                        logEvent( attackTurn + " lost a soldier.");
+                        if(attacker == attackingArmyStats){
+                            logEvent("Defender lost a soldier.");
+                        }else {
+                            logEvent("Attacker lost a soldier.");
+                        }
                     }
                 }
             }
@@ -126,10 +125,11 @@ public class MilitaryBattle implements WarObserver {
             double attackerLossRatio = (double) attackPower / totalDefenceAndAttack;
             double defenderLossRatio = (double) defencePower / totalDefenceAndAttack;
 
-            int attackerLoss = Math.max((int) (defenderLossRatio * days), 50);
-            int defenderLoss = Math.max((int) (attackerLossRatio * days), 50);
+            int attackerLoss = Math.min((int) (defenderLossRatio * (days+100)), 5000);
+            int defenderLoss = Math.min((int) (attackerLossRatio * (days+100)), 5000);
 
             // Debug prints
+            System.out.println("Who is attacking? (turn): " + attackTurn);
             System.out.println("Attack Power: " + attackPower);
             System.out.println("Defence Power: " + defencePower);
             System.out.println("Total Defence and Attack: " + totalDefenceAndAttack);
@@ -138,15 +138,17 @@ public class MilitaryBattle implements WarObserver {
             System.out.println("Days: " + days);
             System.out.println("Attacker Loss: " + attackerLoss);
             System.out.println("Defender Loss: " + defenderLoss);
+            System.out.println("Attacker soldiers" + attacker.getNumOfSoldiers());
+            System.out.println("Defender soldiers" + defender.getNumOfSoldiers());
 
             defender.loseDefencePower(defenderLoss);
             attacker.loseAttackPower(attackerLoss);
 
             // battle ends when 1 army runs out of soldiers
-            if (attacker.getNumOfSoldiers() == 0) {
+            if (attackingArmyStats.getNumOfSoldiers() == 0) {
                 settleBattle("Defender");
             }
-            if (defender.getNumOfSoldiers() == 0) {
+            if (defendingArmyStats.getNumOfSoldiers() == 0) {
                 settleBattle("Attacker");
             }
         } catch (Exception e) {
@@ -182,6 +184,9 @@ public class MilitaryBattle implements WarObserver {
                     defendingArmyStats.attackPower / ArmyCost.increaseArmyAttack,
                     defendingArmyStats.defencePower / ArmyCost.increaseArmyDefence);
             WarManager.unsubscribe(this);
+
+            isOnGoing = false;
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -287,11 +292,11 @@ public class MilitaryBattle implements WarObserver {
         }
 
         public int getAttackPower() {
-            return attackPower;
+            return attackPower + 10_000;
         }
 
         public int getDefencePower() {
-            return defencePower;
+            return defencePower + 10_000;
         }
 
         public TransferPackage getWarCost(){
@@ -328,6 +333,9 @@ public class MilitaryBattle implements WarObserver {
         return 0.5 * attackRatio / (1.0 + attackRatio);
     }
 
+    public boolean isOnGoing() {
+        return isOnGoing;
+    }
 
 
 }

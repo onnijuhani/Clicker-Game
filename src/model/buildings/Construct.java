@@ -167,7 +167,7 @@ public class Construct {
     private static Property initiateNewProperty(Properties type, String oldName, Person person) {
         return switch (type) {
             case Shack -> new Shack(oldName, person);
-            case Cottage -> new Cottage(oldName, person);
+            case Cottage -> new Castle(oldName, person); //TODO CORRECT THIS!!!!!!!!!!!!!!!!
             case Villa -> new Villa(oldName, person);
             case Mansion -> new Mansion(oldName, person);
             case Manor -> new Manor(oldName, person);

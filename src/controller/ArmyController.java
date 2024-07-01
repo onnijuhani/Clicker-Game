@@ -9,12 +9,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import model.Model;
 import model.buildings.Property;
-import model.buildings.properties.MilitaryProperty;
-import model.characters.Character;
+import model.characters.Person;
 import model.resourceManagement.TransferPackage;
 import model.stateSystem.Event;
 import model.stateSystem.GameEvent;
@@ -24,35 +24,41 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
+@SuppressWarnings("CallToPrintStackTrace")
 public class ArmyController extends BaseController {
     @Override
     public void initialize() {
-        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.25), e -> updateArmyTab()));
+        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateArmyTab()));
         updateTimeline.setCycleCount(Timeline.INDEFINITE);
         updateTimeline.play();
     }
 
     @FXML
     void startTestWar(ActionEvent event) {
-        switchButton.setVisible(true);
-        switchViewMethod();
-        MilitaryBattle militaryBattle = MilitaryBattleManager.executeMilitaryBattle(Model.getPlayerAsPerson(),currentCharacter.getPerson());
+        MilitaryBattle militaryBattle = MilitaryBattleManager.executeMilitaryBattle(Model.getPlayerAsPerson(),CharacterController.currentCharacter.getPerson());
         if(militaryBattle == null){
             return;
         }
         siegeController.setMilitaries((Military) Model.getPlayerAsPerson().getProperty(),
-                (Military) currentCharacter.getPerson().getProperty(),
+                (Military) CharacterController.currentCharacter.getPerson().getProperty(),
                 militaryBattle,
-                "Attacker", "Defender" );
-
-
+                "Attacker" );
+        main.Reset();
+        switchViewMethod();
     }
 
     public SiegeController getSiegeController() {
         return siegeController;
     }
 
+    @FXML
+    private HBox player1;
+    @FXML
+    private HBox player2;
+    @FXML
+    private HBox player3;
+    @FXML
+    private Label armyName;
     @FXML
     private SiegeController siegeController;
 
@@ -124,33 +130,22 @@ public class ArmyController extends BaseController {
     private boolean isShowing = true;
 
     protected CharacterController characterController;
-    private Character currentCharacter;
-    private Army army;
+
     private String latestUpgrade = "Defence";
 
     private void updateArmyTab() {
-        timerUpdate();
+        autoBuyUpdate();
         costAndPowerUpdate();
+        differentiatePlayer();
     }
 
-    public void setCurrentCharacter() {
-        if (currentCharacter == characterController.getCurrentCharacter()) {
-            return;
-        } else {
-            currentCharacter = characterController.getCurrentCharacter();
 
-            Property property = currentCharacter.getPerson().getProperty();
-
-            if (property instanceof MilitaryProperty militaryProperty) {
-                army = militaryProperty.getArmy();
-            } else {
-                army = null;
-            }
-        }
-    }
 
     void differentiatePlayer() {
-        boolean isPlayer = currentCharacter.getPerson() == model.getPlayerPerson();
+        if(CharacterController.currentCharacter == null){
+            return;
+        }
+        boolean isPlayer = CharacterController.currentCharacter.getPerson() == model.getPlayerPerson();
 
         List<Node> controls = Arrays.asList(
                 increaseAttackBtn,
@@ -160,12 +155,30 @@ public class ArmyController extends BaseController {
                 recruitSoldiersBtn,
                 autoTraining,
                 trainingBox,
-                autoRecruit
+                autoRecruit,
+                player1,
+                player2,
+                player3,
+                recruitTimeLeft
         );
 
         for (Node control : controls) {
-            control.setDisable(!isPlayer);
+            control.setVisible(isPlayer);
+
         }
+        if(armyManager.isVisible()){
+            if(siegeController.getMilitaryBattle() == null || !siegeController.getMilitaryBattle().isOnGoing()){
+                switchButton.setVisible(false);
+                return;
+            }
+        }
+
+        if(CharacterController.currentCharacter.getPerson().isPlayer()){
+            armyName.setText("Your Army");
+        }else {
+            armyName.setText(CharacterController.currentCharacter.getPerson() + "'s Army");
+        }
+
     }
 
     @FXML
@@ -181,20 +194,18 @@ public class ArmyController extends BaseController {
         }
     }
 
-    public void timerUpdate() {
+    public void autoBuyUpdate() {
 
-        if (currentCharacter == null) {
-            return;
-        }
-        if(!(currentCharacter.getPerson() == model.getPlayerPerson()) || !currentCharacter.getPerson().isPlayer()) {
-            return;
-        }
+        Person player = Model.getPlayerAsPerson();
+
+        Army army = getPlayerArmy();
+
         if(army == null){
             return;
         }
 
-        Optional<GameEvent> armyTrainingEvent = Optional.ofNullable(currentCharacter.getPerson().getAnyOnGoingEvent(Event.ArmyTraining));
-        Optional<GameEvent> recruitSoldierEvent = Optional.ofNullable(currentCharacter.getPerson().getAnyOnGoingEvent(Event.RecruitSoldier));
+        Optional<GameEvent> armyTrainingEvent = Optional.ofNullable(player.getAnyOnGoingEvent(Event.ArmyTraining));
+        Optional<GameEvent> recruitSoldierEvent = Optional.ofNullable(player.getAnyOnGoingEvent(Event.RecruitSoldier));
 
         armyTrainingEvent.ifPresentOrElse(
                 event -> {
@@ -203,7 +214,7 @@ public class ArmyController extends BaseController {
                 },
                 () -> {
                     if(autoTraining.isSelected()){
-                        if(currentCharacter.getPerson().getWallet().getAlloy() > 10_000) {
+                        if(player.getWallet().getAlloy() > 10_000) {
                             if (Objects.equals(latestUpgrade, "Defence")) {
                                 increaseAttackFunction();
                                 latestUpgrade = "Attack";
@@ -225,7 +236,7 @@ public class ArmyController extends BaseController {
                 event -> recruitTimeLeft.setText(event.getTimeLeftShortString()),
                 () -> {
                     if(autoRecruit.isSelected()){
-                        if(currentCharacter
+                        if(CharacterController.currentCharacter
                                 .getPerson()
                                 .getWallet()
                                 .hasEnoughResources(ArmyCost.getRecruitingCost().multiply(Double.parseDouble(soldierAmountToTrain.getText())))) {
@@ -240,15 +251,40 @@ public class ArmyController extends BaseController {
         );
     }
 
+    private static Army getPlayerArmy() {
+        try {
+            Person player = Model.getPlayerAsPerson();
+            if(player.getProperty() instanceof Military military) {
+                return military.getArmy();
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
+    }
+
 
     public void costAndPowerUpdate(){
+
+        if(CharacterController.currentCharacter == null){
+            return;
+        }
+
+        Property property = CharacterController.currentCharacter.getPerson().getProperty();
+        Army army;
+        if(property instanceof Military military){
+            army = military.getArmy();
+        }else{
+            army = null;
+        }
+
         if(army == null){
             return;
         }
 
-        defPower.setText(""+army.getTotalDefencePower());
-        attackPower.setText(""+army.getTotalAttackPower());
-        numOfSoldiers.setText(""+army.getNumOfSoldiers());
+        defPower.setText(""+ army.getTotalDefencePower());
+        attackPower.setText(""+ army.getTotalAttackPower());
+        numOfSoldiers.setText(""+ army.getNumOfSoldiers());
 
         TransferPackage runningCost = army.getRunningCost();
 
@@ -279,6 +315,8 @@ public class ArmyController extends BaseController {
     }
 
     private void increaseAttackFunction() {
+        Army army = getPlayerArmy();
+        assert army != null;
         if(army.increaseAttackPower()){
             increaseAttackBtn.setDisable(true);
             increaseDefBtn.setDisable(true);
@@ -291,6 +329,8 @@ public class ArmyController extends BaseController {
     }
 
     private void increaseDefFunction() {
+        Army army = getPlayerArmy();
+        assert army != null;
         if(army.increaseDefencePower()){
             increaseAttackBtn.setDisable(true);
             increaseDefBtn.setDisable(true);
@@ -324,6 +364,8 @@ public class ArmyController extends BaseController {
     }
 
     private void recruitSoldiersFunction() {
+        Army army = getPlayerArmy();
+        assert army != null;
         if(army.recruitSoldier(Integer.parseInt(soldierAmountToTrain.getText()))){
             recruitSoldiersBtn.setDisable(true);
         }
@@ -335,6 +377,13 @@ public class ArmyController extends BaseController {
     }
 
     protected void switchViewMethod() {
+        if(armyManager.isVisible()){
+            if(siegeController.getMilitaryBattle() == null || !siegeController.getMilitaryBattle().isOnGoing()){
+                switchButton.setVisible(false);
+                return;
+            }
+        }
+        switchButton.setVisible(true);
         armyManager.setVisible(!isArmyView);
         siegeManager.setVisible(isArmyView);
         isArmyView = !isArmyView;

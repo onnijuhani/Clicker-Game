@@ -360,7 +360,6 @@ public class MainController extends BaseController {
     }
     @FXML
     void setUpArmyTab() {
-        armyController.setCurrentCharacter();
         armyController.differentiatePlayer();
     }
 

@@ -28,7 +28,7 @@
                      <children>
                         <VBox alignment="TOP_CENTER" layoutX="50.0" prefHeight="600.0" prefWidth="600.0">
                            <children>
-                              <Label alignment="CENTER" contentDisplay="CENTER" styleClass="militaryBox2" text="    Army    " textAlignment="CENTER" textFill="WHITE">
+                              <Label fx:id="armyName" alignment="CENTER" contentDisplay="CENTER" styleClass="militaryBox2" text="    Army    " textAlignment="CENTER" textFill="WHITE">
                                  <font>
                                     <Font name="Serif Regular" size="30.0" />
                                  </font>
@@ -62,7 +62,7 @@
                                                 <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                                              </VBox.margin>
                                           </Label>
-                                          <HBox alignment="CENTER">
+                                          <HBox fx:id="player1" alignment="CENTER">
                                              <children>
                                                 <Label text="Increase" textFill="WHITE">
                                                    <HBox.margin>
@@ -102,7 +102,7 @@
                                                 <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                                              </VBox.margin>
                                           </Label>
-                                          <HBox alignment="CENTER">
+                                          <HBox fx:id="player2" alignment="CENTER">
                                              <children>
                                                 <Button fx:id="increaseAttackBtn" mnemonicParsing="false" onAction="#increaseAtt" text="100 gold">
                                                    <HBox.margin>
@@ -146,7 +146,7 @@
                                                 <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                                              </VBox.margin>
                                           </Label>
-                                          <HBox alignment="CENTER">
+                                          <HBox fx:id="player3" alignment="CENTER">
                                              <children>
                                                 <Label text="Recruit" textFill="WHITE">
                                                    <HBox.margin>
@@ -267,7 +267,7 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
                         </VBox>
-                        <VBox fx:id="trainingBox" alignment="CENTER" layoutX="100.0" layoutY="100.0" styleClass="militaryBox" AnchorPane.rightAnchor="480.0">
+                        <VBox fx:id="trainingBox" alignment="CENTER" layoutX="100.0" layoutY="100.0" styleClass="militaryBox" visible="false" AnchorPane.rightAnchor="480.0">
                            <children>
                               <Label text="Training" textFill="WHITE">
                                  <font>
