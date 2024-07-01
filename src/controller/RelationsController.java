@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -32,9 +33,6 @@ public class RelationsController extends BaseController {
     }
     private CharacterController characterController;
 
-    public Character getCurrentCharacter() {
-        return currentCharacter;
-    }
 
     private Character currentCharacter; // Character whose relations we are looking at. CURRENT CHARACTER ALWAYS REFERS TO THE ONE IN CHARACTER CONTROLLER
     protected Character current;  //Character that might be or is selected for inspection.
@@ -163,6 +161,7 @@ public class RelationsController extends BaseController {
         setCharacters(person.getCharacter());
         updateLabels();
         updatePlayersPerspective();
+        setCharacterPicture();
     }
 
     @FXML
@@ -241,4 +240,20 @@ public class RelationsController extends BaseController {
     public void setCharacterController(CharacterController characterController) {
         this.characterController = characterController;
     }
+
+
+    private void setCharacterPicture(){
+
+        if(current.getPerson().getCharacterPic() == 0){
+            current.getPerson().generatePicture();
+        }
+
+        Image image;
+        String number = String.valueOf(current.getPerson().getCharacterPic());
+        String imagePath = String.format("/characterImages/%s.png", number);
+        image = new Image(imagePath);
+
+        characterPicture.setImage(image);
+    }
+
 }

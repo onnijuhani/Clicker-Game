@@ -42,7 +42,15 @@ public class Army implements ArmyObserver, PaymentTracker {
     private boolean recruitingInProcess = false;
     private boolean trainingInProcess = false;
 
+    public ArmyState getState() {
+        return state;
+    }
 
+    private ArmyState state;
+
+    public enum ArmyState{
+        DEFENDING, ATTACKING, DEFEATED
+    }
 
     public Army(Military military, Person owner) {
         this.military = military;
@@ -205,6 +213,10 @@ public class Army implements ArmyObserver, PaymentTracker {
 
     public int getTotalDefencePower(){
         return numOfSoldiers * defencePower;
+    }
+
+    public int getTotalStrength(){
+        return getTotalAttackPower() + getTotalDefencePower();
     }
 
 

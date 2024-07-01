@@ -1,5 +1,6 @@
 package model.characters;
 
+import model.Model;
 import model.NameCreation;
 import model.Settings;
 import model.buildings.Property;
@@ -8,8 +9,7 @@ import model.characters.ai.Aspiration;
 import model.characters.ai.actions.NPCAction;
 import model.characters.ai.actions.NPCActionLogger;
 import model.characters.combat.CombatStats;
-import model.characters.npc.King;
-import model.characters.npc.Vanguard;
+import model.characters.npc.*;
 import model.characters.payments.PaymentManager;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
@@ -73,6 +73,20 @@ public class Person implements Ownable {
             this.characterPic = 15;
             return;
         }
+
+        if(Model.getPlayerAsPerson().getRole().getAuthority().getCharacterInThisPosition().getPerson() == this){
+            this.characterPic = 1;
+            return;
+        }
+        if(Model.getPlayerAsPerson().getRole().getAuthority().getSupervisor().getCharacterInThisPosition().getPerson() == this){
+            this.characterPic = 6;
+            return;
+        }
+        if(Model.getPlayerAsPerson().getRole().getAuthority().getSupervisor().getSupervisor().getCharacterInThisPosition().getPerson() == this){
+            this.characterPic = 2;
+            return;
+        }
+
         if(character instanceof King){
             this.characterPic = 16;
             return;
@@ -81,7 +95,15 @@ public class Person implements Ownable {
             this.characterPic = 17;
             return;
         }
-        this.characterPic = Settings.getRandom().nextInt(6) + 1;
+        if (character instanceof Miner || character instanceof Farmer) {
+            this.characterPic = Settings.getRandom().nextBoolean() ? 18 : 4;
+            return;
+        }
+        if(character instanceof Mercenary){
+            this.characterPic = 19;
+            return;
+        }
+        this.characterPic = Settings.getRandom().nextInt(5) + 1;
     }
 
     private void startingMsgAndAiEngine() {

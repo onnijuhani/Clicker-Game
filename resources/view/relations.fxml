@@ -328,7 +328,7 @@
                               <Insets bottom="4.0" left="8.0" right="8.0" top="4.0" />
                            </padding>
                         </Label>
-                        <ImageView fx:id="characterPicture" fitHeight="370.0" fitWidth="197.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="characterPicture" fitHeight="370.0" fitWidth="197.0" pickOnBounds="true">
                            <image>
                               <Image url="@../pics/testii.png" />
                            </image>

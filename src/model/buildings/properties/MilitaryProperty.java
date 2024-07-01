@@ -9,7 +9,6 @@ import model.war.Military;
 
 public class MilitaryProperty extends Property implements Military {
 
-
     protected Army army;
 
     public MilitaryProperty(PropertyConfig.PropertyValues propertyValues ,String name, Person owner) {
@@ -26,6 +25,7 @@ public class MilitaryProperty extends Property implements Military {
         this.army.clearResources(); // destroy the army made by constructor
         this.army = army;
     }
+
 
 
 }

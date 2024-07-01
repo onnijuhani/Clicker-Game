@@ -3,6 +3,7 @@ package model.worldCreation;
 import model.Settings;
 import model.buildings.Property;
 import model.buildings.PropertyTracker;
+import model.buildings.properties.MilitaryProperty;
 import model.characters.Character;
 import model.characters.Peasant;
 import model.characters.Person;
@@ -14,12 +15,13 @@ import model.characters.npc.Merchant;
 import model.characters.npc.Miner;
 import model.resourceManagement.wallets.Vault;
 import model.resourceManagement.wallets.Wallet;
+import model.war.Army;
 
 import java.util.*;
 
 public class Quarter extends ControlledArea implements Details {
     private final HashMap<Status, LinkedList<Person>> populationMap;
-    private final PropertyTracker allProperties;
+
     private City city;
     private int numOfPeasants;
     private boolean isPopulationChanged = true;
@@ -33,7 +35,6 @@ public class Quarter extends ControlledArea implements Details {
         this.nation = city.getNation();
         this.propertyTracker = new PropertyTracker();
         this.authorityHere = authority;
-        this.allProperties = new PropertyTracker();
         this.populationMap = new HashMap<>();
         initializePopulationMap();
         populateQuarter();
@@ -67,8 +68,62 @@ public class Quarter extends ControlledArea implements Details {
                 quarterWealth[2] += personsVault.getGold();
             }
         }
-
     }
+
+    public List<MilitaryProperty> getMilitaryProperties(){
+        ArrayList<MilitaryProperty> militaries = new ArrayList<>();
+        for (Property property : getPropertyTracker().getProperties()){
+            if (property instanceof MilitaryProperty militaryProperty){
+                militaries.add(militaryProperty);
+            }
+        }
+        return militaries;
+    }
+
+
+    public double getDefeatedMilitaryRatio(){
+        int defeated = 0;
+        for (MilitaryProperty militaryProperty : getMilitaryProperties()){
+            if(militaryProperty.getState() == Army.ArmyState.DEFEATED){
+                defeated++;
+            }
+        }
+        return (double) defeated / getMilitaryProperties().size();
+    }
+
+    public List<MilitaryProperty> getDefeatedMilitaries(){
+        ArrayList<MilitaryProperty> militaries = new ArrayList<>();
+        for (MilitaryProperty militaryProperty : getMilitaryProperties()){
+            if(militaryProperty.getState() == Army.ArmyState.DEFEATED){
+                militaries.add(militaryProperty);
+            }
+        }
+        return militaries;
+    }
+
+    public List<MilitaryProperty> getUndefeatedMilitaries(){
+        ArrayList<MilitaryProperty> militaries = new ArrayList<>();
+        for (MilitaryProperty militaryProperty : getMilitaryProperties()){
+            if(militaryProperty.getState() != Army.ArmyState.DEFEATED){
+                militaries.add(militaryProperty);
+            }
+        }
+        return militaries;
+    }
+
+
+    public int getTotalMilitaryStrength(){
+        int totalPower = 0;
+        for (MilitaryProperty militaryProperty : getMilitaryProperties()){
+            totalPower += militaryProperty.getMilitaryStrength();
+        }
+        return totalPower;
+    }
+
+
+
+
+
 
 
     public void createQuarterAlliances() {
@@ -128,7 +183,7 @@ public class Quarter extends ControlledArea implements Details {
     public String getDetails() {
         calculateQuarterWealth();
         int population = numOfPeasants;
-        int contents = allProperties.getProperties().size();
+        int contents = propertyTracker.getProperties().size();
 
         String popList = getCitizensAsString();
 
@@ -323,12 +378,8 @@ public class Quarter extends ControlledArea implements Details {
     public HashMap<Status,LinkedList<Person>> getPopulationMap() {
         return populationMap;
     }
-    public PropertyTracker getAllProperties() {
-        return allProperties;
-    }
-    public void addProperty(Property property){
-        allProperties.addProperty(property);
-    }
+
+
     public int getNumOfPeasants() {
         return numOfPeasants;
     }

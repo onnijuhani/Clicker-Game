@@ -37,6 +37,12 @@ public class Nation extends ControlledArea implements Details {
     private boolean isAtWar = false;
     private Nation enemy = null;
 
+    public List<Person> getWarGenerals() {
+        return warGenerals;
+    }
+
+    private final List<Person> warGenerals = new ArrayList<>();
+
 
     public Nation(String name, Continent continent, Authority authority) {
         this.name = name;
@@ -310,7 +316,6 @@ public class Nation extends ControlledArea implements Details {
                 return;
             }
             if(nation1 == nation2){
-                System.out.println("Cannot go to war against yourself");
                 String e = nation1 + " attempted to enter war against itself.";
                 throw new RuntimeException(e);
             }
@@ -328,14 +333,24 @@ public class Nation extends ControlledArea implements Details {
             for(Area claimedArea : nation1.claimedAreas){
                 Person defendingCommander = claimedArea.getHighestAuthority();
                 claimedArea.getAreaStateManager().startWar(nation2, defendingCommander);
+                nation1.getWarGenerals().add(defendingCommander);
             }
+
+            for(Area claimedArea : nation2.claimedAreas){
+                Person defendingCommander = claimedArea.getHighestAuthority();
+                claimedArea.getAreaStateManager().startWar(nation1, defendingCommander);
+                nation2.getWarGenerals().add(defendingCommander);
+            }
+
 
             // set Nations War Generals (Kings)
             Person warGeneral1 = nation1.getHighestAuthority();
             nation1.getAreaStateManager().startWar(nation2, warGeneral1);
+            nation1.getWarGenerals().add(warGeneral1);
 
             Person warGeneral2 = nation2.getHighestAuthority();
-            nation1.getAreaStateManager().startWar(nation2, warGeneral2);
+            nation2.getAreaStateManager().startWar(nation1, warGeneral2);
+            nation2.getWarGenerals().add(warGeneral2);
 
 
         } catch (RuntimeException e) {

@@ -1,5 +1,6 @@
 package model.worldCreation;
 
+import model.buildings.Property;
 import model.buildings.PropertyTracker;
 import model.characters.Person;
 import model.war.AreaStateManager;
@@ -17,6 +18,15 @@ public abstract class Area implements Details, HasContents {
     protected Nation claimedBy;
 
     protected String name;
+
+    public PropertyTracker getPropertyTracker() {
+        return propertyTracker;
+    }
+
+    public void addProperty(Property property) {
+        propertyTracker.addProperty(property);
+    }
+
     public PropertyTracker propertyTracker;
     public abstract List getContents();
     public abstract String getName();
