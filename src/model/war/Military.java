@@ -13,6 +13,8 @@ public interface Military {
 
     Person getOwner();
 
+    int getPower();
+
     default int getMilitaryStrength(){
         return getArmy().getTotalStrength();
     }

@@ -32,9 +32,10 @@ public class Army implements ArmyObserver, PaymentTracker {
 
 
     private int numOfSoldiers = 1;
-    private int attackPower = 1;
 
-    private final int expenseDay = Settings.getInt("armyExpense");
+
+
+    private int attackPower = 1;
     private int defencePower = 1;
     private Military military;
     private Wallet wallet;
@@ -42,9 +43,8 @@ public class Army implements ArmyObserver, PaymentTracker {
     private boolean recruitingInProcess = false;
     private boolean trainingInProcess = false;
 
-    public ArmyState getState() {
-        return state;
-    }
+    private final int expenseDay = Settings.getInt("armyExpense");
+
 
     private ArmyState state;
 
@@ -232,7 +232,17 @@ public class Army implements ArmyObserver, PaymentTracker {
         return numOfSoldiers;
     }
 
+    public ArmyState getState() {
+        return state;
+    }
 
+    public int getAttackPower() {
+        return attackPower;
+    }
+
+    public int getDefencePower() {
+        return defencePower;
+    }
 
     public Military getMilitary() {
         return military;
