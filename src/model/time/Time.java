@@ -83,6 +83,8 @@ public class Time {
 
         EventManager.processScheduledEvents(); // All scheduled events require information every day
 
+        WarManager.notifyTimeUpdate(day); // war effort requires daily information
+
 
         //AUTO CLICKER FUNCTIONALITY
         if(Clicker.getInstance().isAutoClickerOwned()){

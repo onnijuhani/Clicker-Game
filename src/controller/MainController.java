@@ -54,6 +54,9 @@ public class MainController extends BaseController {
     @FXML
     private ArmyController armyController;
     @FXML
+    private SiegeController siegeController;
+
+    @FXML
     private AnchorPane mainLayout;
 
     public RelationsController getRelationsController() {
@@ -200,6 +203,7 @@ public class MainController extends BaseController {
             armyController.setMain(this);
             armyController.setModel(model);
             armyController.characterController = characterController;
+            siegeController = armyController.getSiegeController();
         }
         else {
             System.out.println("armyController is null");
@@ -211,6 +215,14 @@ public class MainController extends BaseController {
         }
         else {
             System.out.println("overviewController is null");
+        }
+        if (siegeController != null) {
+            siegeController.setMain(this);
+            siegeController.setModel(model);
+            siegeController.setArmyController(armyController);
+        }
+        else {
+            System.out.println("siegeController is null");
         }
     }
 
@@ -258,6 +270,8 @@ public class MainController extends BaseController {
         relationsController.resetEverything();
         clickMeButton.requestFocus();
         relationsController.setCurrentCharacter(Model.getPlayerAsCharacter());
+
+        setUpArmyTab();
 
         // Switch back to characterTab only if relationsTab was selected
         if (selectedTab == relationsTab) {

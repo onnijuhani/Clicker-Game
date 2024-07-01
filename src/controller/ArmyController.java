@@ -11,14 +11,14 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import model.Model;
 import model.buildings.Property;
 import model.buildings.properties.MilitaryProperty;
 import model.characters.Character;
 import model.resourceManagement.TransferPackage;
 import model.stateSystem.Event;
 import model.stateSystem.GameEvent;
-import model.war.Army;
-import model.war.ArmyCost;
+import model.war.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +33,33 @@ public class ArmyController extends BaseController {
         updateTimeline.play();
     }
 
+    @FXML
+    void startTestWar(ActionEvent event) {
+        switchButton.setVisible(true);
+        switchViewMethod();
+        MilitaryBattle militaryBattle = MilitaryBattleManager.executeMilitaryBattle(Model.getPlayerAsPerson(),currentCharacter.getPerson());
+        if(militaryBattle == null){
+            return;
+        }
+        siegeController.setMilitaries((Military) Model.getPlayerAsPerson().getProperty(),
+                (Military) currentCharacter.getPerson().getProperty(),
+                militaryBattle,
+                "Attacker", "Defender" );
+
+
+    }
+
+    public SiegeController getSiegeController() {
+        return siegeController;
+    }
+
+    @FXML
+    private SiegeController siegeController;
+
+    @FXML
+    private AnchorPane armyManager;
+    @FXML
+    private AnchorPane siegeManager;
 
     @FXML
     private Label alloyCost;
@@ -93,6 +120,7 @@ public class ArmyController extends BaseController {
     @FXML
     private CheckBox autoRecruit;
 
+    private boolean isArmyView = true;
     private boolean isShowing = true;
 
     protected CharacterController characterController;
@@ -302,10 +330,15 @@ public class ArmyController extends BaseController {
     }
 
     @FXML
-    void switchView(ActionEvent event) {
-
+    public void switchView(ActionEvent event) {
+        switchViewMethod();
     }
 
+    protected void switchViewMethod() {
+        armyManager.setVisible(!isArmyView);
+        siegeManager.setVisible(isArmyView);
+        isArmyView = !isArmyView;
+    }
 
 
 }

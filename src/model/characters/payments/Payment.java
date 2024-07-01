@@ -13,7 +13,7 @@ public enum Payment {
     SLAVE_FACILITY_INCOME,
     MYSTIC_MINE_INCOME,
     WORKER_CENTER_INCOME,
-    UTILITY_INCOME, EXPECTED_CLICKER_INCOME;
+    UTILITY_INCOME, EXPECTED_CLICKER_INCOME, WAR_EFFORT;
 
 
     @Override
@@ -31,6 +31,7 @@ public enum Payment {
             case WORKER_CENTER_INCOME -> "Worker Center Income";
             case UTILITY_INCOME -> "Utility income";
             case EXPECTED_CLICKER_INCOME -> "Expected Clicker Income";
+            case WAR_EFFORT -> "War effort payment";
         };
     }
 

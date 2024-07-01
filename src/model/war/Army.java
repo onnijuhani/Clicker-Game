@@ -13,9 +13,8 @@ import model.stateSystem.GameEvent;
 import model.time.ArmyManager;
 import model.time.ArmyObserver;
 import model.time.EventManager;
-
+@SuppressWarnings("CallToPrintStackTrace")
 public class Army implements ArmyObserver, PaymentTracker {
-
     @Override
     public void armyUpdate(int day) {
         try {
@@ -29,12 +28,7 @@ public class Army implements ArmyObserver, PaymentTracker {
         }
 
     }
-
-
     private int numOfSoldiers = 1;
-
-
-
     private int attackPower = 1;
     private int defencePower = 1;
     private Military military;
@@ -42,16 +36,11 @@ public class Army implements ArmyObserver, PaymentTracker {
     private Person owner;
     private boolean recruitingInProcess = false;
     private boolean trainingInProcess = false;
-
     private final int expenseDay = Settings.getInt("armyExpense");
-
-
     private ArmyState state;
-
     public enum ArmyState{
         DEFENDING, ATTACKING, DEFEATED
     }
-
     public Army(Military military, Person owner) {
         this.military = military;
         this.owner = owner;
@@ -220,6 +209,25 @@ public class Army implements ArmyObserver, PaymentTracker {
     }
 
 
+    public int sendAttackPower(){
+        int amount = attackPower;
+        attackPower = 0;
+        return amount;
+    }
+
+    public int sendDefencePower(){
+        int amount = defencePower;
+        defencePower = 0;
+        return amount;
+    }
+
+    public int sendSoldiers(){
+        int amount = numOfSoldiers;
+        numOfSoldiers = 0;
+        return amount;
+    }
+
+
     public Military getMilitaryBuilding() {
         return military;
     }
@@ -248,6 +256,20 @@ public class Army implements ArmyObserver, PaymentTracker {
         return military;
     }
 
+    public void setState(ArmyState state) {
+        this.state = state;
+    }
 
+    public void enterIntoBattle(){
+        numOfSoldiers = 0;
+        attackPower = 0;
+        defencePower = 0;
+    }
+
+    public void returnFromBattle(int numOfSoldiers, int attackPower, int defencePower){
+        this.numOfSoldiers += numOfSoldiers;
+        this.attackPower += attackPower;
+        this.defencePower += defencePower;
+    }
 
 }
