@@ -62,12 +62,11 @@ public class Property implements PropertyObserver, Details, Ownable {
     protected Properties propertyEnum;
     protected UtilitySlot utilitySlot;
     private final EnumSet<State> states;
-
     public int getPower() {
         return power;
     }
 
-    private int power;
+    private final int power;
 
     public Property(PropertyConfig.PropertyValues propertyValues, String name, Person owner) {
         this.power = propertyValues.power;

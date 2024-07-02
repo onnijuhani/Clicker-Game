@@ -1,13 +1,10 @@
 package controller;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 import model.characters.AuthorityCharacter;
 import model.characters.Person;
 import model.resourceManagement.payments.Tax;
@@ -20,18 +17,9 @@ import static model.resourceManagement.payments.Tax.TaxRate.EXTREME;
 import static model.resourceManagement.payments.Tax.TaxRate.LOW;
 
 public class OverviewController extends BaseController{
-    @Override
-    public void initialize() {
-        try {
-            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> updateTab()));
-            updateTimeline.setCycleCount(Timeline.INDEFINITE);
-            updateTimeline.play();
-        } catch (Exception e) {
-            e.printStackTrace();throw new RuntimeException(e);
-        }
-    }
 
-    private void updateTab() {
+    @Override
+    public void update() {
         updateGuildBox();
         updateTaxBox();
     }

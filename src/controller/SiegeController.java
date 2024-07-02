@@ -1,7 +1,5 @@
 package controller;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -10,7 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.util.Duration;
 import model.war.ArmyCost;
 import model.war.Military;
 import model.war.MilitaryBattle;
@@ -19,18 +16,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class SiegeController extends BaseController {
-    @Override
-    public void initialize() {
-        try {
-            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.25), e -> updateEverything()));
-            updateTimeline.setCycleCount(Timeline.INDEFINITE);
-            updateTimeline.play();
-        } catch (Exception e) {
-            e.printStackTrace();throw new RuntimeException(e);
-        }
-    }
 
-    private void updateEverything() {
+
+    public void update() {
         checkState();
         updateStats();
         updateAvailableStats();
@@ -187,7 +175,6 @@ public class SiegeController extends BaseController {
         int amountOffence = militaryLeft.getArmy().getAttackPower();
         availableOffence.setText("Available: " + amountOffence);
 
-        System.out.println("avaibable offence:" +amountOffence);
     }
 
     private MilitaryBattle.ArmyStats getArmyStats() {

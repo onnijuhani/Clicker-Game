@@ -23,9 +23,7 @@ import model.stateSystem.SpecialEventsManager;
 import java.util.Set;
 
 public class RelationsController extends BaseController {
-    @FXML
-    public void initialize() {
-    }
+
 
     public void setCurrentCharacter(Character currentCharacter) {
         this.currentCharacter = currentCharacter;

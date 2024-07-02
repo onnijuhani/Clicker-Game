@@ -237,9 +237,11 @@ public class MainController extends BaseController {
             Platform.runLater(() -> exploreMapController.updateExploreTab());
             Platform.runLater(() -> clickerShopController.updateClickerShopPrices());
             Platform.runLater(() -> characterController.setCurrentCharacter(model.getPlayerCharacter()));
-            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateEventList()));
+            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> update()));
             updateTimeline.setCycleCount(Timeline.INDEFINITE);
             updateTimeline.play();
+
+            super.initialize();
 
             PopUpMessageTracker.messageProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue != null) {
@@ -269,7 +271,7 @@ public class MainController extends BaseController {
 
         // Perform the reset operations
         characterController.setCurrentCharacter(model.getPlayerCharacter());
-        characterController.updateCharacterTab();
+        characterController.update();
         model.accessCurrentView().setCurrentView(model.accessWorld().getSpawnQuarter());
         relationsController.resetEverything();
         clickMeButton.requestFocus();
@@ -294,18 +296,18 @@ public class MainController extends BaseController {
                 Time.incrementByClick();
                 Clicker.getInstance().generateResources();
                 topSectionController.updateWallet();
-                topSectionController.updateTopSection();
-                workWalletController.updateWorkWallet();
+                topSectionController.update();
+                workWalletController.update();
             } else {
                 model.getPlayerCharacter().getEventTracker().addEvent(EventTracker.Message("Error", "Simulation is paused. Cannot generate resources."));
-                workWalletController.updateWorkWallet();
+                workWalletController.update();
             }
         } else {
             Clicker.getInstance().generateResources();
             topSectionController.updateWallet();
-            workWalletController.updateWorkWallet();
+            workWalletController.update();
         }
-        updateEventList();
+        update();
     }
 
     @FXML
@@ -331,8 +333,8 @@ public class MainController extends BaseController {
         return name.replaceAll(pattern, "");
     }
 
-
-    public void updateEventList() {
+    @Override
+    public void update() {
 
         updatePauseBtnText();
         Platform.runLater(() -> {
@@ -354,7 +356,7 @@ public class MainController extends BaseController {
 
     @FXML
     void updateExchange(){
-        exchangeController.updateExchange();
+        exchangeController.update();
     }
 
     @FXML

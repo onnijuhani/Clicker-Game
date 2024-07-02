@@ -1,15 +1,12 @@
 package controller;
 
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.util.Duration;
 import model.Model;
 import model.characters.Person;
 import model.resourceManagement.Resource;
@@ -68,16 +65,14 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
     @FXML
     public void initialize() {
         try {
-            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateExchange()));
-            updateTimeline.setCycleCount(Timeline.INDEFINITE);
-            updateTimeline.play();
+            super.initialize();
             Time.setTradeExecutor(this);
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);
         }
     }
-
-    void updateExchange(){
+    @Override
+    public void update(){
         updateShopWallet();
         updateMarketFee();
         updateExchangePrices();
@@ -91,7 +86,7 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
     @FXML
     void increasePrices(MouseEvent event) {
         getExchange().increaseDefaultPrices();
-        updateExchange();
+        update();
     }
 
     @FXML
@@ -100,7 +95,7 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
         if (exchange.getDefaultGold() > 1 && exchange.getDefaultFood() > 1) {
             exchange.decreaseDefaultPrices();
         }
-        updateExchange();
+        update();
     }
 
     private static Exchange getExchange(){
@@ -210,27 +205,27 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
     void buyGoldFoodBtn(MouseEvent event) {
         int amountToBuy = getExchange().getDefaultGold();
         getExchange().exchangeResources(amountToBuy, Resource.Gold,Resource.Food,model.getPlayerCharacter());
-        updateExchange();
+        update();
     }
     @FXML
     void buyGoldAlloysBtn(MouseEvent event) {
         int amountToBuy = getExchange().getDefaultGold();
         getExchange().exchangeResources(amountToBuy,Resource.Gold,Resource.Alloy,model.getPlayerCharacter());
-        updateExchange();
+        update();
     }
 
     @FXML
     void buyAlloysGoldBtn(MouseEvent event) {
        int amountToBuy = getExchange().getDefaultAlloys();
         getExchange().exchangeResources(amountToBuy,Resource.Alloy,Resource.Gold,model.getPlayerCharacter());
-        updateExchange();
+        update();
     }
 
     @FXML
     void buyFoodGoldBtn(MouseEvent event) {
         int amountToBuy = getExchange().getDefaultFood();
         getExchange().exchangeResources(amountToBuy,Resource.Food,Resource.Gold,model.getPlayerCharacter());
-        updateExchange();
+        update();
     }
 
     public void updateMarketFee(){

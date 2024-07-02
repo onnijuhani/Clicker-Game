@@ -65,6 +65,7 @@ public class ClickerShopController extends BaseController {
     @FXML
     public void initialize() {
         setShop(Model.getPlayerRole().getNation().getShop());
+        super.initialize();
     }
 
     void setInfoTexts(){

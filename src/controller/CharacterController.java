@@ -1,8 +1,5 @@
 package controller;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,7 +10,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 import model.Model;
 import model.buildings.properties.MilitaryProperty;
 import model.characters.Character;
@@ -91,8 +87,11 @@ public class CharacterController extends BaseController  {
     @FXML
     private Tooltip challengeToolTip;
 
-
-    public void updateCharacterTab(){
+    @Override
+    public void update(){
+        if(currentCharacter == null){
+            return;
+        }
         propertyController.setCurrentProperty(currentCharacter.getPerson().getProperty());
         updateCharacterName();
         updateCharacterStatus();
@@ -223,20 +222,8 @@ public class CharacterController extends BaseController  {
     }
 
 
-    @FXML
-    public void initialize() {
-        Platform.runLater(this::createTimeLine);
-    }
 
-    private void createTimeLine() {
-        try {
-            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateCharacterTab()));
-            updateTimeline.setCycleCount(Timeline.INDEFINITE);
-            updateTimeline.play();
-        } catch (Exception e) {
-            e.printStackTrace();throw new RuntimeException(e);
-        }
-    }
+
 
     @FXML
     void getPrevious(ActionEvent event) {
@@ -265,13 +252,13 @@ public class CharacterController extends BaseController  {
     @FXML
     void executeDuel(){
         CombatService.executeDuel(model.getPlayerCharacter(), currentCharacter);
-        main.updateEventList();
+        main.update();
     }
 
     @FXML
     void executeAuthorityBattle(){
         CombatService.executeAuthorityBattle(model.getPlayerCharacter(), currentCharacter);
-        main.updateEventList();
+        main.update();
     }
 
     @FXML
@@ -315,7 +302,7 @@ public class CharacterController extends BaseController  {
             characterHistory.push(currentCharacter);
         }
         currentCharacter = newCharacter;
-        updateCharacterTab();
+        update();
         updatePreviousButtonState();
         main.getRelationsController().resetEverything();
         setUpToolTips();
@@ -347,7 +334,7 @@ public class CharacterController extends BaseController  {
 
     private void openCharacterProfile(Character character) {
         setCurrentCharacter(character);
-        updateCharacterTab();
+        update();
         main.clickMeButton.requestFocus();
     }
 

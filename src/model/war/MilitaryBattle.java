@@ -109,7 +109,7 @@ public class MilitaryBattle implements WarObserver {
 
             if (attackSucceeds) {
                 if (effectivePower > rand) {
-                    if (random.nextDouble() < 0.5) { // 50% chance of soldier loss
+                    if (random.nextDouble() > Math.min(effectivePower, 0.9)) { // effective power also determines if soldier will die, but 10% chance is the best this can go.
                         defender.loseSoldiers(1);
                         if(attacker == attackingArmyStats){
                             logEvent("Defender lost a soldier.");
@@ -125,8 +125,15 @@ public class MilitaryBattle implements WarObserver {
             double attackerLossRatio = (double) attackPower / totalDefenceAndAttack;
             double defenderLossRatio = (double) defencePower / totalDefenceAndAttack;
 
-            int attackerLoss = Math.min((int) (defenderLossRatio * (days+100)), 5000);
-            int defenderLoss = Math.min((int) (attackerLossRatio * (days+100)), 5000);
+            // this is for better balance
+            attackerLossRatio = (attackerLossRatio + 0.5 + 0.5) / 3.0;
+            defenderLossRatio = (defenderLossRatio + 0.5 + 0.5) / 3.0;
+
+            int attackerLoss = Math.min((int) (defenderLossRatio * (days+1000)), 100_000);
+            int defenderLoss = Math.min((int) (attackerLossRatio * (days+1000)), 100_000);
+
+            System.out.println(defenderLoss + " " + attackerLoss + " lol");
+
 
             // Debug prints
 //            System.out.println("Who is attacking? (turn): " + attackTurn);
@@ -165,6 +172,16 @@ public class MilitaryBattle implements WarObserver {
                 attackingCommander.getEventTracker().addEvent(EventTracker.Message("Major", String.format("Your army is victorious against %s", defendingCommander.getName())));
                 defendingCommander.getEventTracker().addEvent(EventTracker.Message("Major", String.format("Your army has lost against %s", attackingCommander.getName())));
                 logEvent("Battle ended.\nAttacker is victorious.");
+
+
+                TransferPackage transferPackage = defendingCommander.getWallet().getBalance();
+                if(attackingCommander.getWallet().depositAll(defendingCommander.getWallet())){
+                    attackingCommander.getEventTracker().addEvent(EventTracker.Message("Major","You have gained: " + transferPackage.toShortString()));
+                    defendingCommander.getEventTracker().addEvent(EventTracker.Message("Major","You have lost: " + transferPackage.toShortString()));
+                }
+
+
+
             }
 
             if (Objects.equals(winner, "Defender")) {
@@ -174,6 +191,13 @@ public class MilitaryBattle implements WarObserver {
                 attackingCommander.getEventTracker().addEvent(EventTracker.Message("Major", String.format("Your army has lost against %s", defendingCommander.getName())));
                 defendingCommander.getEventTracker().addEvent(EventTracker.Message("Major", String.format("Your army is victorious against %s", attackingCommander.getName())));
                 logEvent("Battle ended.\nDefender is victorious.");
+
+                TransferPackage transferPackage = attackingCommander.getWallet().getBalance();
+                if(defendingCommander.getWallet().depositAll(attackingCommander.getWallet())){
+                    defendingCommander.getEventTracker().addEvent(EventTracker.Message("Major","You have gained: " + transferPackage.toShortString()));
+                    attackingCommander.getEventTracker().addEvent(EventTracker.Message("Major","You have lost: " + transferPackage.toShortString()));
+                }
+
             }
 
             String attackerMsg;
@@ -292,6 +316,8 @@ public class MilitaryBattle implements WarObserver {
             }
         }
         public void loseDefencePower(int amount){
+            System.out.println("1:   "+amount);
+            System.out.println(defencePower);
             this.defencePower -= amount;
             if (this.defencePower < 0) {
                 this.defencePower = 0;
@@ -345,7 +371,8 @@ public class MilitaryBattle implements WarObserver {
     }
 
     public double calculateWinningChance() {
-        int defenderDefencePower = defendingArmyStats.getTotalPower();
+        int defenderDefencePower = defendingArmyStats.getTotalPower() + propertyPower;
+        System.out.println(defendingArmyStats.getTotalPower() +"   "+ propertyPower);
         int attackerAttackPower = attackingArmyStats.getTotalPower();
         return (double) attackerAttackPower / (defenderDefencePower + attackerAttackPower);
     }

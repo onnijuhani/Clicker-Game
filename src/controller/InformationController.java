@@ -1,7 +1,5 @@
 package controller;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,7 +11,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 import model.characters.payments.PaymentManager;
 import model.characters.player.clicker.Clicker;
 import model.resourceManagement.TransferPackage;
@@ -54,17 +51,8 @@ public class InformationController extends BaseController {
 
 
 
-    public void initialize() {
-        try {
-            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> updateInfoTab()));
-            updateTimeline.setCycleCount(Timeline.INDEFINITE);
-            updateTimeline.play();
-        } catch (Exception e) {
-            e.printStackTrace();throw new RuntimeException(e);
-        }
-    }
-
-    public void updateInfoTab() {
+    @Override
+    public void update() {
         updateFullExpense();
         updateFullIncome();
         updatePaymentListView();

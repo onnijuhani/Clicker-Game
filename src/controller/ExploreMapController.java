@@ -161,10 +161,6 @@ public class ExploreMapController extends BaseController {
     }
 
 
-    @FXML
-    public void initialize() {
-
-    }
     void updateTextArea(){
         testi.setText(model.accessCurrentView().getCurrentView().getDetails());
     }

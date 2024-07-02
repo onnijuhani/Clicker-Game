@@ -213,6 +213,7 @@ public class PropertyController extends BaseController {
     public void initialize() {
         initializeUIMappings();
         Platform.runLater(this::setUpSlider);
+        super.initialize();
     }
 
     private void updateVaultButtons(){

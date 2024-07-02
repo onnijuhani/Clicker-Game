@@ -199,8 +199,12 @@ public class RelationsManager {
         }
     }
     public Set<Person> getEnemies() {
-        synchronized (this) {
-            return new HashSet<>(enemies);
+        try {
+            synchronized (this) {
+                return new HashSet<>(enemies);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
         }
     }
 

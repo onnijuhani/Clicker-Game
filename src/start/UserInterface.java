@@ -1,5 +1,6 @@
 package start;
 
+import controller.ControllerManager;
 import controller.MainController;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -61,7 +62,9 @@ public class UserInterface extends Application {
                 }
             });
 
-            // make sure game stops running when window is closed
+            ControllerManager.startUpdateLoop();
+
+            // makes sure game stops running when window is closed
             primaryStage.setOnCloseRequest(event -> Platform.exit());
 
             primaryStage.show();

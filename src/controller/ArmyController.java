@@ -1,7 +1,5 @@
 package controller;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -12,7 +10,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 import model.Model;
 import model.buildings.Property;
 import model.characters.Person;
@@ -25,16 +22,7 @@ import java.util.*;
 
 @SuppressWarnings("CallToPrintStackTrace")
 public class ArmyController extends BaseController {
-    @Override
-    public void initialize() {
-        try {
-            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> updateArmyTab()));
-            updateTimeline.setCycleCount(Timeline.INDEFINITE);
-            updateTimeline.play();
-        } catch (Exception e) {
-            e.printStackTrace();throw new RuntimeException(e);
-        }
-    }
+
 
     @FXML
     void startTestWar(ActionEvent event) {
@@ -181,8 +169,8 @@ public class ArmyController extends BaseController {
     protected CharacterController characterController;
 
     private String latestUpgrade = "Defence";
-
-    private void updateArmyTab() {
+    @Override
+    public void update() {
         autoBuyUpdate();
         costAndPowerUpdate();
         differentiatePlayer();
@@ -214,6 +202,10 @@ public class ArmyController extends BaseController {
         for (Node control : controls) {
             control.setVisible(isPlayer);
 
+        }
+
+        if(autoTraining.isSelected()){
+            trainingBox.setVisible(isPlayer);
         }
 
 

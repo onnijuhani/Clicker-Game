@@ -8,8 +8,8 @@ import model.war.Army;
 import model.war.Military;
 
 public class MilitaryProperty extends Property implements Military {
-
     protected Army army;
+    protected Person supervisor; // person who has defeated the army in combat
 
     public MilitaryProperty(PropertyConfig.PropertyValues propertyValues ,String name, Person owner) {
         super(propertyValues, name, owner);
@@ -25,7 +25,5 @@ public class MilitaryProperty extends Property implements Military {
         this.army.clearResources(); // destroy the army made by constructor
         this.army = army;
     }
-
-
 
 }

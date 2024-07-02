@@ -1,12 +1,9 @@
 package controller;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.util.Duration;
 import model.stateSystem.EventTracker;
 import model.time.Speed;
 import model.time.Time;
@@ -37,14 +34,14 @@ public class TopSectionController extends BaseController {
     private Button slowerBtn;
     private MainController main;
 
+    @Override
     public void initialize() {
         try {
-            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.035), e -> updateTopSection()));
-            updateTimeline.setCycleCount(Timeline.INDEFINITE);
+            super.initialize();
             stopTimeBtn.setDisable(true);
-            updateTimeline.play();
+
         } catch (Exception e) {
-            e.printStackTrace();throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -53,8 +50,8 @@ public class TopSectionController extends BaseController {
         fasterBtn.setDisable(Time.getSpeed().equals(Speed.Fast));
         slowerBtn.setDisable(Time.getSpeed().equals(Speed.Slow));
     }
-
-    public void updateTopSection() {
+    @Override
+    public void update() {
         updateWallet();
         timeView.setText(Time.getClock());
         updateSpeed();

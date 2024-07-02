@@ -101,12 +101,14 @@ public class Wallet {
         depositFromWallet.subtractResources(transfer);
         return true;
     }
-    public void depositAll(Wallet depositFromWallet){
-        if (limitReached()) return;
+    public boolean depositAll(Wallet depositFromWallet){
+        if (limitReached()) return false;
+
         int[] all = depositFromWallet.getWalletValues();
         TransferPackage transfer = TransferPackage.fromArray(all);
         this.addResources(transfer);
         depositFromWallet.subtractResources(transfer);
+        return true;
     }
 
 

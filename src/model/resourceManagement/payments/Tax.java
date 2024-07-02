@@ -8,6 +8,10 @@ import model.stateSystem.EventTracker;
 import java.util.EnumMap;
 
 public class Tax {
+
+    public enum TaxRate {
+        LOW, MEDIUM, STANDARD, EXTREME
+    }
     private final EnumMap<Resource, TaxInfo> taxInfoByResource;
     private boolean isTaxRateChanged = true;
     private double taxRate;
@@ -18,9 +22,6 @@ public class Tax {
 
     private TaxRate currentTaxRate;
 
-    public enum TaxRate {
-        LOW, MEDIUM, STANDARD, EXTREME
-    }
 
     public Tax() {
         taxInfoByResource = new EnumMap<>(Resource.class);
