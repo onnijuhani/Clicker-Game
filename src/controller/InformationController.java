@@ -55,9 +55,13 @@ public class InformationController extends BaseController {
 
 
     public void initialize() {
-        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> updateInfoTab()));
-        updateTimeline.setCycleCount(Timeline.INDEFINITE);
-        updateTimeline.play();
+        try {
+            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> updateInfoTab()));
+            updateTimeline.setCycleCount(Timeline.INDEFINITE);
+            updateTimeline.play();
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
     }
 
     public void updateInfoTab() {

@@ -38,10 +38,14 @@ public class TopSectionController extends BaseController {
     private MainController main;
 
     public void initialize() {
-        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.035), e -> updateTopSection()));
-        updateTimeline.setCycleCount(Timeline.INDEFINITE);
-        stopTimeBtn.setDisable(true);
-        updateTimeline.play();
+        try {
+            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.035), e -> updateTopSection()));
+            updateTimeline.setCycleCount(Timeline.INDEFINITE);
+            stopTimeBtn.setDisable(true);
+            updateTimeline.play();
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
     }
 
     public void updateSpeed() {

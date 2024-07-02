@@ -230,28 +230,32 @@ public class MainController extends BaseController {
 
     @Override
     public void initialize() {
-        Platform.runLater(() -> clickMeButton.requestFocus());
-        Platform.runLater(this::generateStartingMessage);
+        try {
+            Platform.runLater(() -> clickMeButton.requestFocus());
+            Platform.runLater(this::generateStartingMessage);
 
-        Platform.runLater(() -> exploreMapController.updateExploreTab());
-        Platform.runLater(() -> clickerShopController.updateClickerShopPrices());
-        Platform.runLater(() -> characterController.setCurrentCharacter(model.getPlayerCharacter()));
-        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateEventList()));
-        updateTimeline.setCycleCount(Timeline.INDEFINITE);
-        updateTimeline.play();
+            Platform.runLater(() -> exploreMapController.updateExploreTab());
+            Platform.runLater(() -> clickerShopController.updateClickerShopPrices());
+            Platform.runLater(() -> characterController.setCurrentCharacter(model.getPlayerCharacter()));
+            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateEventList()));
+            updateTimeline.setCycleCount(Timeline.INDEFINITE);
+            updateTimeline.play();
 
-        PopUpMessageTracker.messageProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                openPopUp();
-            }
-        });
+            PopUpMessageTracker.messageProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue != null) {
+                    openPopUp();
+                }
+            });
 
-        PopUpMessageTracker.gameOverProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                openPopUp();
-                closePopUpBtn.setDisable(true);
-            }
-        });
+            PopUpMessageTracker.gameOverProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue != null) {
+                    openPopUp();
+                    closePopUpBtn.setDisable(true);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
     }
 
     @FXML

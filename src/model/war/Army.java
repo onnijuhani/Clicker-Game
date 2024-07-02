@@ -13,6 +13,10 @@ import model.stateSystem.GameEvent;
 import model.time.ArmyManager;
 import model.time.ArmyObserver;
 import model.time.EventManager;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+
 @SuppressWarnings("CallToPrintStackTrace")
 public class Army implements ArmyObserver, PaymentTracker {
     @Override
@@ -38,6 +42,18 @@ public class Army implements ArmyObserver, PaymentTracker {
     private boolean trainingInProcess = false;
     private final int expenseDay = Settings.getInt("armyExpense");
     private ArmyState state;
+
+
+    public LinkedList<String> getBattleHistory() {
+        return battleHistory;
+    }
+
+    public HashMap<String, Integer> getWinRatio() {
+        return winRatio;
+    }
+
+    private final HashMap<String, Integer> winRatio = new HashMap<>();
+    private final LinkedList<String> battleHistory = new LinkedList<>();
     public enum ArmyState{
         DEFENDING, ATTACKING, DEFEATED
     }
@@ -94,6 +110,10 @@ public class Army implements ArmyObserver, PaymentTracker {
 
             int daysUntilEvent = 15;
 
+            if(state == ArmyState.DEFENDING || state == ArmyState.ATTACKING){
+                daysUntilEvent /= 3;
+            }
+
             EventManager.scheduleEvent(this::finishDefenceIncrease, daysUntilEvent, gameEvent);
 
             return true;
@@ -128,6 +148,10 @@ public class Army implements ArmyObserver, PaymentTracker {
             owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Army Offence Training Started"));
 
             int daysUntilEvent = 15;
+
+            if(state == ArmyState.DEFENDING || state == ArmyState.ATTACKING){
+                daysUntilEvent /= 3;
+            }
 
             EventManager.scheduleEvent(this::finishAttackIncrease, daysUntilEvent, gameEvent);
 
@@ -168,6 +192,10 @@ public class Army implements ArmyObserver, PaymentTracker {
 
             int daysUntilEvent = 30 + amount*3;
 
+            if(state == ArmyState.DEFENDING || state == ArmyState.ATTACKING){
+                daysUntilEvent /= 3;
+            }
+
             EventManager.scheduleEvent(() -> finishSoldierRecruit(amount), daysUntilEvent, gameEvent);
 
             return true;
@@ -197,11 +225,11 @@ public class Army implements ArmyObserver, PaymentTracker {
 
 
     public int getTotalAttackPower(){
-        return numOfSoldiers * attackPower;
+        return Math.max(numOfSoldiers * attackPower, attackPower);
     }
 
     public int getTotalDefencePower(){
-        return numOfSoldiers * defencePower;
+        return Math.max(numOfSoldiers * defencePower, defencePower);
     }
 
     public int getTotalStrength(){
@@ -266,10 +294,25 @@ public class Army implements ArmyObserver, PaymentTracker {
         defencePower = 0;
     }
 
-    public void returnFromBattle(int numOfSoldiers, int attackPower, int defencePower){
+    public void returnFromBattle(int numOfSoldiers, int attackPower, int defencePower, String battleInfo){
         this.numOfSoldiers += numOfSoldiers;
         this.attackPower += attackPower;
         this.defencePower += defencePower;
+        addBattle(battleInfo);
+    }
+
+    public void addBattle(String battleInfo) {
+        if(battleHistory.size() > 5){
+            battleHistory.removeFirst();
+        }
+
+        if (battleInfo.contains("Won")) {
+            winRatio.put("Wins", winRatio.getOrDefault("Wins", 0) + 1);
+        } else {
+            winRatio.put("Lost", winRatio.getOrDefault("Lost", 0) + 1);
+        }
+
+        this.battleHistory.add(battleInfo);
     }
 
 }

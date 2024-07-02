@@ -22,9 +22,13 @@ import static model.resourceManagement.payments.Tax.TaxRate.LOW;
 public class OverviewController extends BaseController{
     @Override
     public void initialize() {
-        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> updateTab()));
-        updateTimeline.setCycleCount(Timeline.INDEFINITE);
-        updateTimeline.play();
+        try {
+            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> updateTab()));
+            updateTimeline.setCycleCount(Timeline.INDEFINITE);
+            updateTimeline.play();
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
     }
 
     private void updateTab() {

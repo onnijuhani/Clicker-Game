@@ -39,7 +39,7 @@ public class Time {
         executorService = Executors.newSingleThreadScheduledExecutor();
     }
 
-    public static int fastSpeed = 250;
+    public static int fastSpeed = 200;
 
     public static void incrementDay() {
 

@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -20,17 +21,19 @@ import model.stateSystem.Event;
 import model.stateSystem.GameEvent;
 import model.war.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+
 @SuppressWarnings("CallToPrintStackTrace")
 public class ArmyController extends BaseController {
     @Override
     public void initialize() {
-        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateArmyTab()));
-        updateTimeline.setCycleCount(Timeline.INDEFINITE);
-        updateTimeline.play();
+        try {
+            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> updateArmyTab()));
+            updateTimeline.setCycleCount(Timeline.INDEFINITE);
+            updateTimeline.play();
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
     }
 
     @FXML
@@ -59,6 +62,52 @@ public class ArmyController extends BaseController {
     private HBox player3;
     @FXML
     private Label armyName;
+    @FXML
+    private VBox historyBox;
+    @FXML
+    private Button historyBtn;
+    @FXML
+    private ScrollPane historyScrollPane;
+    @FXML
+    void showBattleHistory(ActionEvent event) {
+        historyScrollPane.setVisible(!historyScrollPane.isVisible());
+    }
+
+    private void updateBattleHistory(){
+        Army army;
+        army = getCurrentArmy();
+
+        if(army == null){
+            return;
+        }
+
+        LinkedList<String> history = army.getBattleHistory();
+
+        if(history.isEmpty()){
+            historyBtn.setVisible(false);
+            historyScrollPane.setVisible(false);
+            return;
+        }else{
+            historyBtn.setVisible(true);
+        }
+
+        historyBox.getChildren().clear();
+
+
+        String wr = String.valueOf(army.getWinRatio());
+        Label wrlabel = new Label(wr);
+        wrlabel.setStyle("-fx-text-fill: white;");
+        historyBox.getChildren().add(wrlabel);
+
+        for(String s : history){
+            Label label = new Label(s);
+            label.setStyle("-fx-text-fill: white;");
+            historyBox.getChildren().add(label);
+        }
+
+
+    }
+
     @FXML
     private SiegeController siegeController;
 
@@ -137,6 +186,7 @@ public class ArmyController extends BaseController {
         autoBuyUpdate();
         costAndPowerUpdate();
         differentiatePlayer();
+        updateBattleHistory();
     }
 
 
@@ -154,7 +204,6 @@ public class ArmyController extends BaseController {
                 plusSoldierBtn,
                 recruitSoldiersBtn,
                 autoTraining,
-                trainingBox,
                 autoRecruit,
                 player1,
                 player2,
@@ -166,17 +215,19 @@ public class ArmyController extends BaseController {
             control.setVisible(isPlayer);
 
         }
-        if(armyManager.isVisible()){
-            if(siegeController.getMilitaryBattle() == null || !siegeController.getMilitaryBattle().isOnGoing()){
-                switchButton.setVisible(false);
-                return;
-            }
-        }
+
 
         if(CharacterController.currentCharacter.getPerson().isPlayer()){
             armyName.setText("Your Army");
         }else {
             armyName.setText(CharacterController.currentCharacter.getPerson() + "'s Army");
+        }
+
+        if(armyManager.isVisible()){
+            if(siegeController.getMilitaryBattle() == null || !siegeController.getMilitaryBattle().isOnGoing()){
+                switchButton.setVisible(false);
+                return;
+            }
         }
 
     }
@@ -270,17 +321,10 @@ public class ArmyController extends BaseController {
             return;
         }
 
-        Property property = CharacterController.currentCharacter.getPerson().getProperty();
-        Army army;
-        if(property instanceof Military military){
-            army = military.getArmy();
-        }else{
-            army = null;
-        }
 
-        if(army == null){
-            return;
-        }
+        Army army;
+        army = getCurrentArmy();
+        if (army == null) return;
 
         defPower.setText(""+ army.getTotalDefencePower());
         attackPower.setText(""+ army.getTotalAttackPower());
@@ -300,6 +344,26 @@ public class ArmyController extends BaseController {
 
 
 
+    }
+
+    private static Army getCurrentArmy() {
+
+        if(CharacterController.currentCharacter == null){
+            return null;
+        }
+
+        Army army;
+        Property property = CharacterController.currentCharacter.getPerson().getProperty();
+        if(property instanceof Military military){
+            army = military.getArmy();
+        }else{
+            army = null;
+        }
+
+        if(army == null){
+            return null;
+        }
+        return army;
     }
 
 

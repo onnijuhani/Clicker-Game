@@ -21,9 +21,13 @@ import java.util.Objects;
 public class SiegeController extends BaseController {
     @Override
     public void initialize() {
-        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.25), e -> updateEverything()));
-        updateTimeline.setCycleCount(Timeline.INDEFINITE);
-        updateTimeline.play();
+        try {
+            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.25), e -> updateEverything()));
+            updateTimeline.setCycleCount(Timeline.INDEFINITE);
+            updateTimeline.play();
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
     }
 
     private void updateEverything() {
@@ -77,6 +81,9 @@ public class SiegeController extends BaseController {
         if(militaryBattle == null){
             return;
         }
+
+        // update current day
+        day.setText("Day: " + militaryBattle.getDays());
 
         // Update the soldiers count for both sides
         soldiersLeft.setText("Soldiers: " + militaryBattle.getAttackingArmyStats().getNumOfSoldiers());
@@ -163,6 +170,8 @@ public class SiegeController extends BaseController {
 
     @FXML
     private Label offenceRight;
+    @FXML
+    private Label day;
 
 
     void updateAvailableStats(){

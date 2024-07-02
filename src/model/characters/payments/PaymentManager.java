@@ -11,6 +11,11 @@ public class PaymentManager {
     // A class to hold payment information
     public class PaymentInfo {
         public Payment name;
+
+        public TransferPackage getAmount() {
+            return amount;
+        }
+
         public TransferPackage amount;
         public int day;
 
@@ -19,9 +24,10 @@ public class PaymentManager {
             this.amount = amount;
             this.day = day;
         }
-
-
         public boolean canMakePayment() {
+            if (name.isIncome()) {
+                return true; // Always true for income types
+            }
             return wallet.hasEnoughResources(amount);
         }
 
@@ -41,7 +47,6 @@ public class PaymentManager {
         }
         @Override
         public String toString() {
-
             if(canMakePayment()) {
                 return String.format("%s %s in %s days", name, amount.toShortString(), getDaysLeft());
             } else {
@@ -174,6 +179,25 @@ public class PaymentManager {
         }
         return nextPayment;
     }
+
+    public PaymentInfo getNextExpense(){
+        int currentDay = Time.getDay();
+        PaymentInfo nextExpense = null;
+        int minDayDifference = Integer.MAX_VALUE;
+
+        // Check expenses
+        for (PaymentInfo info : expenses.values()) {
+            int dayDifference = (info.day >= currentDay) ? info.day - currentDay : (info.day - currentDay + 30);
+            if (dayDifference < minDayDifference) {
+                minDayDifference = dayDifference;
+                nextExpense = info;
+            }
+        }
+
+        return nextExpense;
+    }
+
+
 
     public List<PaymentInfo> getAllPaymentsInOrder() {
         int currentDay = Time.getDay();

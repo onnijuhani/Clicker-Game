@@ -13,7 +13,9 @@ public enum Payment {
     SLAVE_FACILITY_INCOME,
     MYSTIC_MINE_INCOME,
     WORKER_CENTER_INCOME,
-    UTILITY_INCOME, EXPECTED_CLICKER_INCOME, WAR_EFFORT;
+    UTILITY_INCOME,
+    EXPECTED_CLICKER_INCOME,
+    MILITARY_BATTLE_EXPENSE;
 
 
     @Override
@@ -31,8 +33,20 @@ public enum Payment {
             case WORKER_CENTER_INCOME -> "Worker Center Income";
             case UTILITY_INCOME -> "Utility income";
             case EXPECTED_CLICKER_INCOME -> "Expected Clicker Income";
-            case WAR_EFFORT -> "War effort payment";
+            case MILITARY_BATTLE_EXPENSE -> "War effort expense";
         };
+    }
+
+    public boolean isIncome() {
+        return this == EXPECTED_SALARY_INCOME ||
+                this == MEADOWLANDS_INCOME ||
+                this == ALLOY_MINE_INCOME ||
+                this == GOLD_MINE_INCOME ||
+                this == SLAVE_FACILITY_INCOME ||
+                this == MYSTIC_MINE_INCOME ||
+                this == WORKER_CENTER_INCOME ||
+                this == UTILITY_INCOME ||
+                this == EXPECTED_CLICKER_INCOME;
     }
 
 }

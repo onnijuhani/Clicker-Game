@@ -14,6 +14,7 @@ import model.Model;
 import model.characters.Person;
 import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
+import model.resourceManagement.wallets.Wallet;
 import model.shop.Exchange;
 import model.stateSystem.SpecialEventsManager;
 import model.time.MonthlyTradeExecutor;
@@ -66,10 +67,14 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
 
     @FXML
     public void initialize() {
-        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateExchange()));
-        updateTimeline.setCycleCount(Timeline.INDEFINITE);
-        updateTimeline.play();
-        Time.setTradeExecutor(this);
+        try {
+            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> updateExchange()));
+            updateTimeline.setCycleCount(Timeline.INDEFINITE);
+            updateTimeline.play();
+            Time.setTradeExecutor(this);
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
     }
 
     void updateExchange(){
@@ -129,24 +134,62 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
 
         Person person = Model.getPlayerAsPerson();
 
+        TransferPackage netBalance = person.getPaymentManager().getNetBalance();
         TransferPackage netCash = person.getPaymentManager().getNetCash();
+        TransferPackage expenses = person.getPaymentManager().getFullExpense();
+        TransferPackage nextExpense = person.getPaymentManager().getNextExpense().getAmount();
 
         int minimum = Time.getYear() * 10;
 
+        Wallet wallet = person.getWallet();
+
+
+
+
         if(monthlyFood.isSelected()){
-            int amountSell = netCash.food() - minimum;
-            getExchange().sellResource(amountSell, Resource.Food, person.getCharacter());
+            if(!(netCash.food() < 0) && !(expenses.food() * 2 > wallet.getFood())){
+                int amountSell = netCash.food() - minimum;
+                if((wallet.getFood() - amountSell > nextExpense.food())) {
+                    getExchange().sellResource(amountSell, Resource.Food, person.getCharacter());
+                }
+            }
+
         }
+
         if(monthlyAlloys.isSelected()){
-            int amountSell = netCash.alloy() - minimum;
-            getExchange().sellResource(amountSell, Resource.Alloy, person.getCharacter());
+            if(!(netCash.alloy() < 0) && !(expenses.alloy() * 2 > wallet.getAlloy())){
+                int amountSell = netCash.alloy() - minimum;
+                if((wallet.getAlloy() - amountSell > nextExpense.alloy())) {
+                    getExchange().sellResource(amountSell, Resource.Alloy, person.getCharacter());
+                }
+            }
+
+        }
+
+        int amountGold = person.getWallet().getGold();
+
+        if(amountGold < expenses.gold() * 3){
+            System.out.println(1);
+            return; // return if there isn't enough gold
+        }
+        if(amountGold < 2){
+            System.out.println(2);
+            return; // return if there is less than 2 gold
+        }
+        if(netCash.gold() * 2 < 0){
+            System.out.println(3);
+            return; // return if net cash is negative.
         }
 
         int amountSpendGold = netCash.gold();
 
-        if(!(netCash.gold() > person.getWallet().getGold() * 1.5)){
-            return; // return if there isn't a lot of gold available.
+        if(amountSpendGold < 2){
+            System.out.println(4);
+            return; // return if amount spend is very low
         }
+
+        amountSpendGold = amountSpendGold / 4;
+
 
         if(monthlyGoldFood.isSelected()){
             int amountSpend = amountSpendGold / (monthlyGoldAlloys.isSelected() ? 2 : 1);
