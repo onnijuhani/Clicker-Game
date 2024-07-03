@@ -1,7 +1,10 @@
 package model.characters.combat;
 
+import model.buildings.properties.Citadel;
+import model.buildings.properties.Fortress;
 import model.characters.Character;
 import model.characters.Status;
+import model.characters.npc.King;
 import model.stateSystem.EventTracker;
 import model.stateSystem.State;
 
@@ -46,8 +49,23 @@ public class CombatService {
 
     public static void executeAuthorityBattle(Character attacker, Character defender) {
         if (checkForError(attacker, defender)) return;
+        if(weakPropertyTest(attacker, defender)) return;
         CombatSystem combatSystem = new CombatSystem(attacker, defender);
         combatSystem.authorityBattle();
+    }
+
+    private static boolean weakPropertyTest(Character attacker, Character defender) {
+        if(defender instanceof King){
+            if(attacker.getPerson().getProperty() instanceof Fortress || attacker.getPerson().getProperty() instanceof Citadel) {
+                return false;
+            } // fortress or citadel is needed to challenge king
+            else{
+                attacker.getPerson().getEventTracker().addEvent(EventTracker.Message("Error", "You need to construct Citadel or Fortress to be King"));
+                return true; // is too weak property
+            }
+        }
+        return false;
+
     }
 
 

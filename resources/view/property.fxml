@@ -360,7 +360,7 @@
                                  <children>
                                     <VBox fx:id="utilityBuyView4" alignment="CENTER" styleClass="property">
                                        <children>
-                                          <Label alignment="CENTER" text="Mystic Mine" textAlignment="CENTER" textFill="WHITE" underline="true">
+                                          <Label alignment="CENTER" onMouseClicked="#triggerMysticInfo" text="Mystic Mine" textAlignment="CENTER" textFill="WHITE" underline="true">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
@@ -534,7 +534,7 @@
             </VBox>
             <VBox fx:id="utilityBuyView51" alignment="CENTER" layoutX="12.0" layoutY="392.0" prefHeight="119.0" prefWidth="288.0" styleClass="property" stylesheets="@../characterStyle.css">
                <children>
-                  <Label alignment="CENTER" text="Vault" textFill="WHITE">
+                  <Label alignment="CENTER" onMouseClicked="#triggerVaultInfo" text="Vault" textFill="WHITE">
                      <font>
                         <Font size="20.0" />
                      </font>
@@ -549,7 +549,7 @@
                         </Tooltip>
                      </tooltip>
                   </Label>
-                  <Label fx:id="vaultValue" alignment="CENTER" stylesheets="@../characterStyle.css" text="Vault Value" textFill="WHITE" wrapText="true">
+                  <Label fx:id="vaultValue" alignment="CENTER" onMouseClicked="#triggerVaultInfo" stylesheets="@../characterStyle.css" text="Vault Value" textFill="WHITE" wrapText="true">
                      <font>
                         <Font size="15.0" />
                      </font>
@@ -667,7 +667,7 @@
                   </VBox>
                </children>
             </VBox>
-            <VBox fx:id="upgradeBox" alignment="CENTER" layoutX="140.0" layoutY="129.0" prefHeight="119.0" prefWidth="217.0" styleClass="property">
+            <VBox fx:id="upgradeBox" alignment="CENTER" layoutX="138.0" layoutY="260.0" prefHeight="119.0" prefWidth="217.0" styleClass="property">
                <children>
                   <Label alignment="CENTER" text="Upgrade" textFill="WHITE">
                      <font>
@@ -700,9 +700,44 @@
                   </Label>
                </children>
             </VBox>
+            <VBox fx:id="grandFoundryBox" alignment="CENTER" layoutX="138.0" layoutY="129.0" maxHeight="130.0" maxWidth="217.0" minWidth="217.0" prefWidth="217.0" spacing="2.0" styleClass="property">
+               <children>
+                  <Label alignment="CENTER" onMouseClicked="#grandTest" text="Grand Foundry" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label fx:id="grandProduction" onMouseClicked="#grandTest" text="Production here" textFill="WHITE">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label fx:id="grandInfo" onMouseClicked="#grandTest" text="Controlled by Jaxtyz Swftshadow until 1 days 5 months 77 years" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets left="3.0" right="3.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets top="3.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </VBox>
          </children>
       </AnchorPane>
-      <Button layoutX="137.0" layoutY="555.0" mnemonicParsing="false" onAction="#triggerPropertyInfo" text="?" />
-      <Button fx:id="showHideButton" layoutX="92.0" layoutY="555.0" mnemonicParsing="false" onAction="#showHideContent" text="Hide" />
+      <HBox layoutX="92.0" layoutY="555.0" spacing="5.0">
+         <children>
+            <Button fx:id="showHideButton" mnemonicParsing="false" onAction="#showHideContent" text="Hide" />
+            <Button mnemonicParsing="false" onAction="#triggerPropertyInfo" text="?" />
+         </children>
+      </HBox>
    </children>
 </AnchorPane>

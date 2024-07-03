@@ -152,9 +152,8 @@ public class SpecialEventsManager {
 
     public static void triggerFirstMysticMineMessage(){
         PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(
-                "Mystical Mine Constructed",
-                "You have constructed a Mystical Mine." +
-                        " This mysterious facility generates random amounts of alloys and gold, harnessing the arcane energies hidden beneath the earth." +
+                "Mystical Mine",
+                "Mystical Mine is a mysterious facility that generates random amounts of alloys and gold, harnessing the arcane energies hidden beneath the earth." +
                         " The unpredictable output of the mine can lead to unexpected windfalls, providing a unique edge in your resource management." +
                         " However, be prepared for the occasional dry spell, as the mystical forces at play can be capricious.",
                 "Properties/mysticMine.jpg",
@@ -243,7 +242,7 @@ public class SpecialEventsManager {
         PopUpMessageTracker.sendMessage(gameOverMessage);
     }
 
-    private static boolean vaultInfoSent = false;
+    public static boolean vaultInfoSent = false;
     public static void triggerVaultInfo() {
         if (vaultInfoSent) {
             return;
@@ -256,7 +255,8 @@ public class SpecialEventsManager {
                         "However, beware that your vault can be a target for robbers. " +
                         "Upgrade the defense of your property to safeguard your accumulated wealth. " +
                         "You can withdraw available resources from your vault to your main wallet at any time. " +
-                        "Some mandatory payments might automatically be paid from your vault if your main wallet balance is too low.",
+                        "Some mandatory payments might automatically be paid from your vault if your main wallet balance is too low." +
+                        "In case your main wallet is completely emptied, vault will automatically send required resources to prevent loss of strikes.",
                 "Properties/vaultInfo.jpg",
                 "Easy money…"
         );
@@ -314,6 +314,18 @@ public class SpecialEventsManager {
                         "Increasing property defence makes your property and vault stronger.",
                 "Properties/manorPop.jpg",
                 "Understood"
+        );
+        PopUpMessageTracker.sendMessage(message);
+    }
+
+    public static void triggerGrandFoundryInfo() {
+        PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(
+                "Grand Foundry",
+                "The Grand Foundry is a magnificent construction designed to generate vast amounts of resources, easing the burden of army expenses. " +
+                        "Over time, it will automatically upgrade itself, significantly boosting its resource production capabilities. " +
+                        "\nFurthermore, if you triumph over another military in battle, you will gain control of their Grand Foundry's production for a certain period.",
+                "Properties/grandFoundry.png",
+                "Exciting"
         );
         PopUpMessageTracker.sendMessage(message);
     }

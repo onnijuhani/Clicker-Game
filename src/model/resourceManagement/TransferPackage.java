@@ -74,4 +74,7 @@ public record TransferPackage(int food, int alloy, int gold) implements Comparab
         return this.food >= other.food && this.alloy >= other.alloy && this.gold >= other.gold;
     }
 
+    public boolean isEmpty() {
+        return this.food == 0 && this.alloy == 0 && this.gold == 0;
+    }
 }

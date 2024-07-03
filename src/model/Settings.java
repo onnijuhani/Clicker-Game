@@ -77,6 +77,10 @@ public class Settings {
         }
     }
 
+    public static String timeLeftFormat(int[] timeLeft){
+        return (String.format("%d days, %d months, %d years left", timeLeft[2], timeLeft[1], timeLeft[0]));
+    }
+
     public static String removeYouAndKing(String i){
         String name = i;
         if (i.contains("(you)")) {

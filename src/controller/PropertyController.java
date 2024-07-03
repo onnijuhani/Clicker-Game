@@ -10,12 +10,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import model.Model;
 import model.Settings;
 import model.buildings.Construct;
+import model.buildings.GrandFoundry;
 import model.buildings.Property;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.characters.Character;
@@ -23,7 +25,6 @@ import model.characters.Person;
 import model.characters.combat.CombatService;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
-import model.shop.Shop;
 import model.shop.UtilityShop;
 import model.stateSystem.Event;
 import model.stateSystem.GameEvent;
@@ -52,7 +53,37 @@ public class PropertyController extends BaseController {
     private AnchorPane content;
     @FXML
     private Label utilitySlots;
-    private boolean isShowing = true;
+    private boolean isShowing = true; // to hide and show image
+
+    @FXML
+    private Label grandInfo;
+    @FXML
+    private Label grandProduction;
+    @FXML
+    private VBox grandFoundryBox;
+
+    void updateGrandFoundry(){
+        GrandFoundry foundry = character.getPerson().getGrandFoundry();
+        if(foundry != null){
+
+            grandFoundryBox.setVisible(true);
+
+            grandProduction.setText(foundry.getFullProduction().toShortString());
+
+            grandInfo.setText(foundry.getDetails());
+
+        }else{
+            grandFoundryBox.setVisible(false);
+        }
+
+    }
+
+    @FXML
+    void grandTest(MouseEvent event) {
+        SpecialEventsManager.triggerGrandFoundryInfo();
+
+    }
+
 
     private Property property;
     private Character character;
@@ -206,8 +237,7 @@ public class PropertyController extends BaseController {
         updateConstructInfo();
         updateVaultButtons();
         updateVaultButtons();
-
-
+        updateGrandFoundry();
     }
     @FXML
     public void initialize() {
@@ -227,17 +257,34 @@ public class PropertyController extends BaseController {
         vaultSlider.setMax(100);
         vaultSlider.setValue(0);
 
-
         vaultSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             int percentage = (int) vaultSlider.getValue();
             Person person = model.getPlayerPerson();
-            int foodAmount =  percentage  * person.getWallet().getFood() / 100;
-            int alloyAmount =  percentage * person.getPerson().getWallet().getAlloy() / 100;
-            int goldAmount = percentage  * person.getPerson().getWallet().getGold() / 100;
+//            Wallet wallet = person.getWallet();
+//
+//            int FW =  percentage  * wallet.getFood() / 100;
+//            int AW =  percentage * wallet.getAlloy() / 100;
+//            int GW = percentage  * wallet.getGold() / 100;
+//
+//            Vault vault = person.getProperty().getVault();
+//
+//            int FV =  percentage  * vault.getFood() / 100;
+//            int AV =  percentage * vault.getAlloy() / 100;
+//            int GV = percentage  * vault.getGold() / 100;
+//
+//            playerVaultSliderAmount.setStyle("-fx-font-family: 'Courier New';");
+//
+//            String formattedText = String.format(
+//                    "F:%-1sA:%-1sG:%-1s %3d%% F:%-1sA:%-1sG:%-1s",
+//                    formatShortNumber(FW), formatShortNumber(AW), formatShortNumber(GW),
+//                    percentage,
+//                    formatShortNumber(FV), formatShortNumber(AV), formatShortNumber(GV)
+//            );
 
+//            playerVaultSliderAmount.setText(formattedText);
 
+                playerVaultSliderAmount.setText(String.format("%3d%%", percentage));
 
-            playerVaultSliderAmount.setText(percentage + "%\t F:" + formatShortNumber(foodAmount) + " A:" + formatShortNumber(alloyAmount) + " G:" + formatShortNumber(goldAmount));
         });
 
         vaultDepositBtn.setOnAction(e -> vaultDeposit());
@@ -262,6 +309,17 @@ public class PropertyController extends BaseController {
     private void resetSlider() {
         vaultSlider.setValue(50);
     }
+    @FXML
+    void triggerVaultInfo(MouseEvent event) {
+        SpecialEventsManager.vaultInfoSent = false;
+        SpecialEventsManager.triggerVaultInfo();
+    }
+
+    @FXML
+    void triggerMysticInfo(MouseEvent event) {
+        SpecialEventsManager.triggerFirstMysticMineMessage();
+    }
+
 
     private void vaultWithdraw() {
         SpecialEventsManager.triggerVaultInfo();
@@ -392,7 +450,7 @@ public class PropertyController extends BaseController {
 
         if (constructionEvent != null) {
             // Ongoing construction
-            int[] timeLeft = constructionEvent.timeLeftUntilExecution();
+            int[] timeLeft = constructionEvent.getTimeLeftUntilExecution();
             constructDaysLeft.setText(String.format("%d days, %d months, %d years left", timeLeft[2], timeLeft[1], timeLeft[0]));
             constructBtn.setDisable(true);
             constructBtn.setText("Under Construction");
@@ -494,7 +552,6 @@ public class PropertyController extends BaseController {
     public void setCurrentProperty(Property property) {
         this.property = property;
         this.character = CharacterController.currentCharacter;
-        Shop shop = character.getRole().getNation().getShop();
         updatePropertyTab();
     }
 
@@ -595,6 +652,7 @@ public class PropertyController extends BaseController {
     void triggerPropertyInfo(ActionEvent event) {
         SpecialEventsManager.triggerPropertyInfo();
     }
+
 
 
     public static class UtilityBuildingUI {

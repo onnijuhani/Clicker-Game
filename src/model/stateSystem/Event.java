@@ -9,7 +9,10 @@ public enum Event {
     RecruitSoldier("Recruit Soldier"),
     ArmyTraining("Army Training"),
     SABOTEUR("Saboteur"),
-    TRUCE("Truce");
+    TRUCE("Truce"),
+    CHALLENGE_WAITING("Challenge Waiting"),
+    GRAND_FOUNDRY_UNDER_OCCUPATION("Grand foundry under occupation"),
+    GRAND_FOUNDRY("Grand foundry being Constructed");
 
 
     private final String displayName;

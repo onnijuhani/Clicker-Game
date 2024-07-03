@@ -28,7 +28,7 @@ public class GameEvent {
         }
         this.isAborted = false; // Initialize as not aborted
     }
-    public int[] timeLeftUntilExecution() {
+    public int[] getTimeLeftUntilExecution() {
         // get current time
         int currentDay = Time.day;
         int currentMonth = Time.month;
@@ -44,6 +44,16 @@ public class GameEvent {
 
         return new int[]{yearsLeft, monthsLeft, daysLeft};
     }
+
+    public int getDaysLeftUntilExecution() {
+        int currentDay = Time.day;
+        int currentMonth = Time.month;
+        int currentYear = Time.year;
+
+        return (executionYear - currentYear) * 360 + (executionMonth - currentMonth) * 30 + (executionDay - currentDay);
+    }
+
+
 
     public void setExecutionTime(int executionDay, int executionMonth, int executionYear) {
         this.executionDay = executionDay;
@@ -64,11 +74,11 @@ public class GameEvent {
     }
 
     public String getTimeLeftString() {
-        int[] timeLeft = timeLeftUntilExecution();
+        int[] timeLeft = getTimeLeftUntilExecution();
         return (String.format("%d days, %d months, %d years left", timeLeft[2], timeLeft[1], timeLeft[0]));
     }
     public String getTimeLeftShortString() {
-        int[] timeLeft = timeLeftUntilExecution();
+        int[] timeLeft = getTimeLeftUntilExecution();
         return (String.format("%d d, %d m, %d y left", timeLeft[2], timeLeft[1], timeLeft[0]));
     }
 

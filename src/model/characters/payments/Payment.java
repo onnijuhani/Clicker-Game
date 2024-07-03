@@ -15,7 +15,8 @@ public enum Payment {
     WORKER_CENTER_INCOME,
     UTILITY_INCOME,
     EXPECTED_CLICKER_INCOME,
-    MILITARY_BATTLE_EXPENSE;
+    MILITARY_BATTLE_EXPENSE,
+    GRAND_FOUNDRY_INCOME;
 
 
     @Override
@@ -34,6 +35,7 @@ public enum Payment {
             case UTILITY_INCOME -> "Utility income";
             case EXPECTED_CLICKER_INCOME -> "Expected Clicker Income";
             case MILITARY_BATTLE_EXPENSE -> "War effort expense";
+            case GRAND_FOUNDRY_INCOME -> "Grand Foundry Income";
         };
     }
 
@@ -46,7 +48,8 @@ public enum Payment {
                 this == MYSTIC_MINE_INCOME ||
                 this == WORKER_CENTER_INCOME ||
                 this == UTILITY_INCOME ||
-                this == EXPECTED_CLICKER_INCOME;
+                this == EXPECTED_CLICKER_INCOME ||
+                this == GRAND_FOUNDRY_INCOME;
     }
 
 }

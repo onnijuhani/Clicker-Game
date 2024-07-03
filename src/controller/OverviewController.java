@@ -96,15 +96,14 @@ public class OverviewController extends BaseController{
         }else{
             taxBox.setVisible(false);
         }
+        testTaxRate();
     }
 
     @FXML
     void increaseTax(ActionEvent event) {
         if(player.getCharacter() instanceof AuthorityCharacter authorityCharacter){
             authorityCharacter.getAuthorityPosition().getTaxForm().increaseTaxRate();
-            Tax.TaxRate taxRate = authorityCharacter.getAuthorityPosition().getTaxForm().getCurrentTaxRate();
-            increaseTaxBtn.setDisable(taxRate == EXTREME);
-            lowerTaxBtn.setDisable(taxRate == LOW);
+            testTaxRate();
         }
 
     }
@@ -115,12 +114,17 @@ public class OverviewController extends BaseController{
     void lowerTax(ActionEvent event) {
         if(player.getCharacter() instanceof AuthorityCharacter authorityCharacter){
             authorityCharacter.getAuthorityPosition().getTaxForm().decreaseTaxRate();
+            testTaxRate();
+        }
+    }
+
+    private void testTaxRate() {
+        if(player.getCharacter() instanceof AuthorityCharacter authorityCharacter) {
             Tax.TaxRate taxRate = authorityCharacter.getAuthorityPosition().getTaxForm().getCurrentTaxRate();
             increaseTaxBtn.setDisable(taxRate == EXTREME);
             lowerTaxBtn.setDisable(taxRate == LOW);
         }
     }
-
 
 
 }

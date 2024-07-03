@@ -11,6 +11,9 @@ public class MilitaryBattleManager {
             System.out.println("tried to attack self");
             return null;
         }
+        if(attacker.getGrandFoundry() == null || defender.getGrandFoundry() == null){
+            return null;
+        }
 
         if (attacker.getProperty() instanceof Military military && defender.getProperty() instanceof Military military2) {
 

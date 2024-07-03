@@ -40,7 +40,7 @@ public class Army implements ArmyObserver, PaymentTracker {
     private Person owner;
     private boolean recruitingInProcess = false;
     private boolean trainingInProcess = false;
-    private final int expenseDay = Settings.getInt("armyExpense");
+    private static final int expenseDay = Settings.getInt("armyExpense");
     private ArmyState state;
 
 

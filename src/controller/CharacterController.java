@@ -164,9 +164,9 @@ public class CharacterController extends BaseController  {
             }
 
             assert onGoingEvent != null;
-            stateTimeLeft.setText(""+ Arrays.toString(onGoingEvent.timeLeftUntilExecution()));
+            stateTimeLeft.setText(""+ Arrays.toString(onGoingEvent.getTimeLeftUntilExecution()));
 
-            int[] timeLeft = onGoingEvent.timeLeftUntilExecution();
+            int[] timeLeft = onGoingEvent.getTimeLeftUntilExecution();
             stateTimeLeft.setText(String.format("%d days, %d months, %d years left", timeLeft[2], timeLeft[1], timeLeft[0]));
 
             currentState.setText("Currently in "+onGoingEvent.getEvent());

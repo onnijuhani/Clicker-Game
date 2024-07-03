@@ -204,8 +204,9 @@ public class ArmyController extends BaseController {
 
         }
 
-        if(autoTraining.isSelected()){
-            trainingBox.setVisible(isPlayer);
+        if(autoTraining.isSelected() && isPlayer){
+            Optional<GameEvent> armyTrainingEvent = Optional.ofNullable(Model.getPlayerAsPerson().getAnyOnGoingEvent(Event.ArmyTraining));
+            trainingBox.setVisible(armyTrainingEvent.isPresent());
         }
 
 

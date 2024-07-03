@@ -3,6 +3,7 @@ package model.characters;
 import model.Model;
 import model.NameCreation;
 import model.Settings;
+import model.buildings.GrandFoundry;
 import model.buildings.Property;
 import model.characters.ai.AiEngine;
 import model.characters.ai.Aspiration;
@@ -15,7 +16,9 @@ import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
 import model.shop.Ownable;
 import model.stateSystem.*;
+import model.time.EventManager;
 import model.time.Time;
+import model.war.Military;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -51,6 +54,10 @@ public class Person implements Ownable {
     }
 
     private int characterPic = 0;
+
+
+
+    private GrandFoundry grandFoundry;
 
     public Person(Boolean isNpc) {
         this.isPlayer = !isNpc;
@@ -198,6 +205,17 @@ public class Person implements Ownable {
             combatStats.decreaseOffense();
         }
     }
+
+    public GrandFoundry getGrandFoundry() {
+        return grandFoundry;
+    }
+
+    public void setGrandFoundry(final GrandFoundry grandFoundry) {
+        if(property instanceof Military) {
+            this.grandFoundry = grandFoundry;
+        }
+    }
+
     public String toString() {
         return getName();
     }
@@ -297,6 +315,32 @@ public class Person implements Ownable {
     }
     public List<String> getLoggerMessages(){
         return getAiEngine().getNpcActionLogger().getLogs();
+    }
+
+    private boolean grandFoundryOpened = false;
+    public void openGrandFoundry() {
+        try {
+            if(property instanceof Military){
+                if(!grandFoundryOpened) {
+                    GameEvent gameEvent = new GameEvent(Event.GRAND_FOUNDRY, this);
+                    EventManager.scheduleEvent(this::setGrandFoundry, 360, gameEvent);
+                    grandFoundryOpened = true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
+    }
+
+    private void setGrandFoundry() {
+        try {
+            this.grandFoundry = new GrandFoundry(this);
+            if(isPlayer) {
+                SpecialEventsManager.triggerGrandFoundryInfo();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
     }
 }
 

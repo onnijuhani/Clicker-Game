@@ -20,23 +20,32 @@ public class Character implements NpcObserver, Details, Ownable {
     @Override
     public void npcUpdate(int day, int month, int year){
 
-        if( day == 6 && month == 0 && year == 0){
-            updateFoodConsumption(GameManager.getFoodConsumptionRate());
-        }
+        try {
+            openGrandFoundry();
 
-        if (mandatoryFoodConsumption(day)) return; // food consumption should be the only 1 done here, should also be day1
-        if (day == 2){
-            person.getRelationsManager().updateSets(); // updating relations should be the only one done in day 2
-            return;
-        }
+            if( day == 6 && month == 0 && year == 0){
+                updateFoodConsumption(GameManager.getFoodConsumptionRate());
+            }
+
+            if (mandatoryFoodConsumption(day)) return; // food consumption should be the only 1 done here, should also be day1
+            if (day == 2){
+                person.getRelationsManager().updateSets(); // updating relations should be the only one done in day 2
+                return;
+            }
 
             if(person.isPlayer()){
             return;
         }
 
 
+            getPerson().getAiEngine().executeAiEngine(); // AI engine is executed rest of the time
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-        getPerson().getAiEngine().executeAiEngine(); // AI engine is executed rest of the time
+    private void openGrandFoundry() {
+        person.openGrandFoundry();
     }
 
     private boolean mandatoryFoodConsumption(int day) {

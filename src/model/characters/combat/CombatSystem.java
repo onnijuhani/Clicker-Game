@@ -62,11 +62,23 @@ public class CombatSystem {
             return;
         }
 
+        // NPC's cannot attack authority who is being targeted by player
+        if(!attacker.isPlayer()) {
+            if (defender.hasState(State.CHALLENGE_WAITING)) {
+                return;
+            }else{
+                defender.removeState(State.CHALLENGE_WAITING);
+            }
+        }
+
         try {
             if(defender.hasState(State.TRUCE)){
                 if(attacker.isPlayer()) {
                     attacker.getEventTracker().addEvent(EventTracker.Message(
                             "Error", "Person you are trying to attack has truce protection"));
+                    defender.addState(State.CHALLENGE_WAITING); // NPC's cannot attack authority who is being targeted by player
+                    GameEvent gameEvent = new GameEvent(Event.CHALLENGE_WAITING, defender);
+                    EventManager.scheduleEvent(() -> removeChallengeWaiting(defender),180,gameEvent); // this gets automatically deleted after 180 days
                 }
                 return;
             }
@@ -123,6 +135,15 @@ public class CombatSystem {
         }
 
     }
+
+    private static void removeChallengeWaiting(Person person) {
+        try {
+            person.removeState(State.CHALLENGE_WAITING);
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
+    }
+
     private static List<Person> getKingSupporters(Person defender, Person attacker) {
         List<Person> eligibleSupporters = new ArrayList<>();
         if (defender.getCharacter() instanceof King) {
@@ -208,15 +229,11 @@ public class CombatSystem {
         String compensationFromWallet = TransferPackage.fromArray(attacker.getWallet().getWalletValues()).toString();
 
         defender.getWallet().depositAll(attacker.getWallet());
-        TransferPackage halfVaultBalance = TransferPackage.fromArray(attacker.getProperty().getVault().getHalfValues());
-        defender.getProperty().getVault().subtractResources(halfVaultBalance);
-        defender.getWallet().addResources(halfVaultBalance);
+
 
         attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Paid entire wallet (" +
                 compensationFromWallet +
-                ")\nand 50% from the vault ("
-                + halfVaultBalance +
-                ")\nas compensation for disloyalty."
+                "\nas compensation for disloyalty."
         ));
 
         attacker.decreasePersonalOffence(3);

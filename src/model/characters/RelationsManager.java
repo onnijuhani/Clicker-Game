@@ -4,10 +4,11 @@ import model.characters.authority.Authority;
 import model.characters.authority.QuarterAuthority;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class RelationsManager {
-    private final Set<Person> allies = new HashSet<>();
-    private final Set<Person> enemies = new HashSet<>();
+    private final CopyOnWriteArraySet<Person> allies = new CopyOnWriteArraySet<>();
+    private final CopyOnWriteArraySet<Person> enemies = new CopyOnWriteArraySet<>();
     private final Set<Person> listOfDefeatedPersons = new HashSet<>();
     private final Set<Person> listOfDefeats = new HashSet<>();
     private final Set<Person> listOfSentinels = new HashSet<>(); //SENTINELS ARE SUPPORTS

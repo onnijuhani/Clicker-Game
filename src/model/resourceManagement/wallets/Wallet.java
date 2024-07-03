@@ -1,8 +1,10 @@
 package model.resourceManagement.wallets;
 
+import model.characters.Person;
 import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
 import model.shop.Ownable;
+import model.stateSystem.EventTracker;
 
 import static model.Settings.formatNumber;
 
@@ -88,6 +90,8 @@ public class Wallet {
         this.food -= transfer.food();
         this.alloy-= transfer.alloy();
         this.gold -= transfer.gold();
+
+        generateRescuePackage();
         return true;
     }
 
@@ -99,21 +103,25 @@ public class Wallet {
         }
         this.addResources(transfer);
         depositFromWallet.subtractResources(transfer);
+        depositFromWallet.generateRescuePackage();
         return true;
     }
     public boolean depositAll(Wallet depositFromWallet){
         if (limitReached()) return false;
 
+
+
         int[] all = depositFromWallet.getWalletValues();
         TransferPackage transfer = TransferPackage.fromArray(all);
         this.addResources(transfer);
         depositFromWallet.subtractResources(transfer);
+        depositFromWallet.generateRescuePackage();
         return true;
     }
 
 
     /**
-     * Withdrawal is automatic way to send resources from this wallet to another wallet using transferPackage
+     * Withdrawal is a faster way to send resources from this wallet to another wallet using transferPackage
      * @param withdrawalToWallet wallet that will receive the resources
      * @param transfer transferPackage that contains the amounts
      * @return returns true if the transaction happens and false if not. There must be enough resources in the wallet.
@@ -124,6 +132,7 @@ public class Wallet {
         }
         this.subtractResources(transfer);
         withdrawalToWallet.addResources(transfer);
+        generateRescuePackage();
         return true;
     }
     @Override
@@ -211,6 +220,30 @@ public class Wallet {
     }
     public void setGold(int gold) {
         this.gold = Math.max(gold, 0);
+    }
+
+
+    /**
+     * In case wallet is completely emptied, this method attempts to make a withdrawal from vault to prevent loss of strikes.
+     */
+    private void generateRescuePackage(){
+        if(!this.isEmpty()){
+            return;
+        }
+        if(getOwner() instanceof Person person){
+            TransferPackage expenses = person.getPaymentManager().getFullExpense();
+            Vault vault = person.getProperty().getVault();
+
+            if(vault.isEmpty()){
+                return;
+            }
+
+            if(this.deposit(vault, expenses)){
+                person.getEventTracker().addEvent(EventTracker.Message("Minor", "Deposited needed resources from Vault"));
+            }else{
+                this.depositAll(vault);
+            }
+        }
     }
 
 }
