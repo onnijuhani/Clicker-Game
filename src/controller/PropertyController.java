@@ -471,6 +471,7 @@ public class PropertyController extends BaseController {
             upgradeCost.setText(cost.toShortString());
         } else {
             upgradeCost.setText("Max");
+            constructBtn.setVisible(false);
         }
         updateConstructionTimeLeft();
     }

@@ -31,7 +31,6 @@ public class ArmyManager {
         // Notify all observers
         for (ArmyObserver observer : observers) {
             observer.armyUpdate(day);
-            System.out.println(observer);
         }
     }
 

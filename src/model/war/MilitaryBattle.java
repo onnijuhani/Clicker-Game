@@ -264,14 +264,14 @@ public class MilitaryBattle implements WarObserver {
     private void payRunningCosts() {
         try {
             if(!attackingCommander.getWallet().subtractResources(attackingArmyStats.getWarCost())){
-                attackingCommander.getEventTracker().addEvent(MessageTracker.Message("Minor", "Army expenses not paid"));
+                attackingCommander.getEventTracker().addEvent(MessageTracker.Message("Major", "Army expenses not paid"));
                 attackingCommander.loseStrike();
             }else{
                 attackingCommander.getEventTracker().addEvent(MessageTracker.Message("Minor", "War expenses paid: " + attackingArmyStats.getWarCost().toShortString()));
             }
 
             if(!defendingCommander.getWallet().subtractResources(defendingArmyStats.getWarCost())){
-                defendingCommander.getEventTracker().addEvent(MessageTracker.Message("Minor", "Army expenses not paid"));
+                defendingCommander.getEventTracker().addEvent(MessageTracker.Message("Major", "Army expenses not paid"));
                 defendingCommander.loseStrike();
             }else{
                 defendingCommander.getEventTracker().addEvent(MessageTracker.Message("Minor", "War expenses paid: " + attackingArmyStats.getWarCost().toShortString()));

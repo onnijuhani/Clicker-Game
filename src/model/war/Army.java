@@ -74,10 +74,8 @@ public class Army implements ArmyObserver, PaymentTracker {
     private void payRunningCosts() {
         try {
             if(!wallet.subtractResources(getRunningCost())){
-                owner.getEventTracker().addEvent(MessageTracker.Message("Minor", "Army expenses not paid"));
+                owner.getEventTracker().addEvent(MessageTracker.Message("Major", "Army expenses not paid"));
                 owner.loseStrike();
-            }else{
-                owner.getEventTracker().addEvent(MessageTracker.Message("Minor", "Army expenses paid: " + getRunningCost().toShortString()));
             }
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);
@@ -106,7 +104,7 @@ public class Army implements ArmyObserver, PaymentTracker {
             trainingInProcess = true;
 
             GameEvent gameEvent = new GameEvent(Event.ArmyTraining, owner);
-            owner.getEventTracker().addEvent(MessageTracker.Message("Minor", "Army Defence Training Started"));
+
 
             int daysUntilEvent = 15;
 
@@ -126,7 +124,7 @@ public class Army implements ArmyObserver, PaymentTracker {
         defencePower++;
         trainingInProcess = false;
         updatePaymentCalendar(owner.getPaymentManager());
-        owner.getEventTracker().addEvent(MessageTracker.Message("Minor", "Army Defence Training Finished"));
+
     }
 
     public boolean increaseAttackPower() {
@@ -145,7 +143,7 @@ public class Army implements ArmyObserver, PaymentTracker {
             trainingInProcess = true;
 
             GameEvent gameEvent = new GameEvent(Event.ArmyTraining, owner);
-            owner.getEventTracker().addEvent(MessageTracker.Message("Minor", "Army Offence Training Started"));
+
 
             int daysUntilEvent = 15;
 
@@ -166,7 +164,7 @@ public class Army implements ArmyObserver, PaymentTracker {
         attackPower++;
         trainingInProcess = false;
         updatePaymentCalendar(owner.getPaymentManager());
-        owner.getEventTracker().addEvent(MessageTracker.Message("Minor", "Army Offence Training Finished"));
+
     }
 
 
@@ -188,7 +186,6 @@ public class Army implements ArmyObserver, PaymentTracker {
             recruitingInProcess = true;
 
             GameEvent gameEvent = new GameEvent(Event.RecruitSoldier, owner);
-            owner.getEventTracker().addEvent(MessageTracker.Message("Minor", "Recruiting campaign started"));
 
             int daysUntilEvent = 30 + amount*3;
 
