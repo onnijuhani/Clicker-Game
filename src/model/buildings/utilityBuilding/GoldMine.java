@@ -6,7 +6,7 @@ import model.characters.payments.PaymentManager;
 import model.characters.Person;
 import model.characters.Status;
 import model.resourceManagement.TransferPackage;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.time.Time;
 
 public class GoldMine extends UtilityBuilding {
@@ -32,7 +32,7 @@ public class GoldMine extends UtilityBuilding {
         TransferPackage transfer = getGenerateAmount();
         owner.getWallet().addResources(transfer);
         if (owner.isPlayer()) {
-            owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
+            owner.getEventTracker().addEvent(MessageTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
         }
     }
 

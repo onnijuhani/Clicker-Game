@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class EventTracker {
+public class MessageTracker {
     public static String Message(String type, String message) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -34,7 +34,7 @@ public class EventTracker {
     private final int maxShopEvents;
     private final int maxUtilityEvents;
 
-    public EventTracker(boolean isNpc) {
+    public MessageTracker(boolean isNpc) {
         preferences = new PlayerPreferences();
 
         if (isNpc) {

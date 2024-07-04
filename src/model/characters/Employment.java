@@ -3,7 +3,7 @@ package model.characters;
 import model.Settings;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.WorkWallet;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 
 import java.util.Random;
 
@@ -46,7 +46,7 @@ public class Employment {
         workWallet.addResources(transfer);
 
 
-        workWallet.getOwner().getEventTracker().addEvent(EventTracker.Message("Clicker", "Labor generated: " +transfer ));
+        workWallet.getOwner().getEventTracker().addEvent(MessageTracker.Message("Clicker", "Labor generated: " +transfer ));
     }
 
 

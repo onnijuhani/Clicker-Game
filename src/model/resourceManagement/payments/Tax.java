@@ -3,7 +3,7 @@ package model.resourceManagement.payments;
 import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.WorkWallet;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 
 import java.util.EnumMap;
 
@@ -87,7 +87,7 @@ public class Tax {
         return taxRate;
     }
 
-    public void collectTax(WorkWallet fromWallet, EventTracker taxPayerTracker, WorkWallet toWallet, EventTracker taxManTracker, int day) {
+    public void collectTax(WorkWallet fromWallet, MessageTracker taxPayerTracker, WorkWallet toWallet, MessageTracker taxManTracker, int day) {
         int foodTax = (int) taxInfoByResource.get(Resource.Food).calculateTax(fromWallet.getFood());
         int alloyTax = (int) taxInfoByResource.get(Resource.Alloy).calculateTax(fromWallet.getAlloy());
         int goldTax = (int) taxInfoByResource.get(Resource.Gold).calculateTax(fromWallet.getGold());
@@ -98,8 +98,8 @@ public class Tax {
         fromWallet.setTaxedOrNot(true);
         fromWallet.cashOutSalary(day);
 
-        String taxPaid = EventTracker.Message("Minor", "Tax paid " + transfer);
-        String taxCollected = EventTracker.Message("Minor", "Tax Collected " + transfer);
+        String taxPaid = MessageTracker.Message("Minor", "Tax paid " + transfer);
+        String taxCollected = MessageTracker.Message("Minor", "Tax Collected " + transfer);
         taxPayerTracker.addEvent(taxPaid);
         taxManTracker.addEvent(taxCollected);
     }

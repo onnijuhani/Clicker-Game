@@ -5,7 +5,7 @@ import model.characters.combat.CombatStats;
 import model.characters.payments.PaymentManager;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.stateSystem.GameEvent;
 import model.stateSystem.State;
 
@@ -18,7 +18,7 @@ public interface PersonalAttributes {
     WorkWallet getWorkWallet();
     Property getProperty();
     RelationsManager getRelationsManager();
-    EventTracker getEventTracker();
+    MessageTracker getEventTracker();
     CombatStats getCombatStats();
     EnumSet<State> getStates();
     List<GameEvent> getOngoingEvents();

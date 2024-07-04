@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.time.Speed;
 import model.time.Time;
 
@@ -120,7 +120,7 @@ public class TopSectionController extends BaseController {
 
         main.clickMeButton.setDisable(Time.getSpeed().equals(Speed.Slow));
         if (Time.getSpeed().equals(Speed.Slow)){
-            model.getPlayerCharacter().getEventTracker().addEvent(EventTracker.Message("Major","Clicker is disabled"));
+            model.getPlayerCharacter().getEventTracker().addEvent(MessageTracker.Message("Major","Clicker is disabled"));
         }
         main.updatePauseBtnText();
     }

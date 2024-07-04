@@ -168,7 +168,7 @@ public class SpecialEventsManager {
                 "Strike Lost",
                 "You have missed a payment and lost a strike. Ensure you have sufficient resources to cover all monthly expenses." +
                         " There will be no further warnings when strikes are lost. If you lose all your strikes, the game will end." +
-                        " You can view your cash flow, including incomes and expenses, in the Financials tab." +
+                        " You can view your cash flow, including incomes and expenses, in the Financials tab. Deposit to your vault for backup. " +
                         "\nTake immediate action to secure your position.",
                 "Properties/gameOverFirstWarning.jpg",
                 "Understood"

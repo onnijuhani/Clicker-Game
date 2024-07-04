@@ -4,7 +4,7 @@ import model.characters.Person;
 import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
 import model.shop.Ownable;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 
 import static model.Settings.formatNumber;
 
@@ -239,7 +239,7 @@ public class Wallet {
             }
 
             if(this.deposit(vault, expenses)){
-                person.getEventTracker().addEvent(EventTracker.Message("Minor", "Deposited needed resources from Vault"));
+                person.getEventTracker().addEvent(MessageTracker.Message("Minor", "Deposited needed resources from Vault"));
             }else{
                 this.depositAll(vault);
             }

@@ -104,6 +104,7 @@ public class SiegeController extends BaseController {
         List<String> logEntries = militaryBattle.getBattleLog();
         ObservableList<String> items = FXCollections.observableArrayList(logEntries);
         battleLog.setItems(items);
+        battleLog.scrollTo(items.size() - 1);
 
 
         // update photos

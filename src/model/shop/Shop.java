@@ -3,7 +3,7 @@ package model.shop;
 import model.characters.payments.PaymentManager;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 
 public class Shop implements Ownable {
     private Wallet wallet;
@@ -40,7 +40,7 @@ public class Shop implements Ownable {
     }
 
     @Override // maybe add event PaymentTracker later
-    public EventTracker getEventTracker() {
+    public MessageTracker getEventTracker() {
         return null;
     }
 

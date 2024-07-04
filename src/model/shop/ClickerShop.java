@@ -9,7 +9,7 @@ import model.characters.player.clicker.GoldClicker;
 import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 
 public class ClickerShop extends ShopComponents {
 
@@ -25,10 +25,10 @@ public class ClickerShop extends ShopComponents {
         if (person.getWallet().hasEnoughResource(Resource.Gold, price)) {
             this.wallet.deposit(person.getWallet(), transfer);
             Clicker.getInstance().addClickerTool(type, newTool);
-            person.getEventTracker().addEvent(EventTracker.Message("Shop", "Successfully purchased " + type + " Clicker!"));
+            person.getEventTracker().addEvent(MessageTracker.Message("Shop", "Successfully purchased " + type + " Clicker!"));
             return true; // Purchase was successful
         } else {
-            person.getEventTracker().addEvent(EventTracker.Message("Error", "Insufficient gold to buy " + type + " clicker."));
+            person.getEventTracker().addEvent(MessageTracker.Message("Error", "Insufficient gold to buy " + type + " clicker."));
             return false; // Purchase failed
         }
     }
@@ -81,10 +81,10 @@ public class ClickerShop extends ShopComponents {
             this.wallet.deposit(player.getWallet(), transfer);
             item.increaseLevel(); // Upgrade the item
 
-            player.getEventTracker().addEvent(EventTracker.Message("Shop", "Successfully upgraded " + type + " Clicker to level " + item.getUpgradeLevel() + "!"));
+            player.getEventTracker().addEvent(MessageTracker.Message("Shop", "Successfully upgraded " + type + " Clicker to level " + item.getUpgradeLevel() + "!"));
             return true;
         } else {
-            player.getEventTracker().addEvent(EventTracker.Message("Error", "Insufficient gold to upgrade " + type + " clicker to level " + (item.getUpgradeLevel() + 1) + "."));
+            player.getEventTracker().addEvent(MessageTracker.Message("Error", "Insufficient gold to upgrade " + type + " clicker to level " + (item.getUpgradeLevel() + 1) + "."));
             return false;
         }
     }

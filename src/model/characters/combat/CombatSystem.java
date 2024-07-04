@@ -49,14 +49,14 @@ public class CombatSystem {
 
         if (attacker.hasState(State.IN_BATTLE) || defender.hasState(State.IN_BATTLE) || venue.hasState(State.IN_BATTLE)) {
             if(attacker.isPlayer()) {
-                attacker.getEventTracker().addEvent(EventTracker.Message(
+                attacker.getEventTracker().addEvent(MessageTracker.Message(
                         "Error", "Either attacker or property is already in a battle. \nAction not allowed."));
             }
             return; // Can not enter battle
         }
         if (attacker.getRole().getAuthority().getCharacterInThisPosition() != defender.getCharacter()) {
             if(attacker.isPlayer()) {
-                attacker.getEventTracker().addEvent(EventTracker.Message(
+                attacker.getEventTracker().addEvent(MessageTracker.Message(
                         "Error", "You may only challenge your direct authority"));
             }
             return;
@@ -74,7 +74,7 @@ public class CombatSystem {
         try {
             if(defender.hasState(State.TRUCE)){
                 if(attacker.isPlayer()) {
-                    attacker.getEventTracker().addEvent(EventTracker.Message(
+                    attacker.getEventTracker().addEvent(MessageTracker.Message(
                             "Error", "Person you are trying to attack has truce protection"));
                     defender.addState(State.CHALLENGE_WAITING); // NPC's cannot attack authority who is being targeted by player
                     GameEvent gameEvent = new GameEvent(Event.CHALLENGE_WAITING, defender);
@@ -111,10 +111,10 @@ public class CombatSystem {
 
         GameEvent gameEvent = new GameEvent(Event.AuthorityBattle, participantsArray);
 
-        attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Challenging the Authority of " + defender.getCharacter()));
-        defender.getEventTracker().addEvent(EventTracker.Message("Major", "Your Authority is being challenged by " + attacker.getCharacter()));
+        attacker.getEventTracker().addEvent(MessageTracker.Message("Major", "Challenging the Authority of " + defender.getCharacter()));
+        defender.getEventTracker().addEvent(MessageTracker.Message("Major", "Your Authority is being challenged by " + attacker.getCharacter()));
 
-        eligibleSupporters.forEach(support -> support.getEventTracker().addEvent(EventTracker.Message("Major", "Joined " +
+        eligibleSupporters.forEach(support -> support.getEventTracker().addEvent(MessageTracker.Message("Major", "Joined " +
                 defender.getCharacter() +
                 "\nin authority battle against " +
                 attacker.getCharacter())));
@@ -182,7 +182,7 @@ public class CombatSystem {
     private boolean IsLevelHighEnough(int requiredLevel) {
         if (attacker.getCombatStats().getOffenseLevel() < requiredLevel) {
             if(attacker.isPlayer()) {
-                attacker.getEventTracker().addEvent(EventTracker.Message(
+                attacker.getEventTracker().addEvent(MessageTracker.Message(
                         "Error", "Attack level must be " + requiredLevel + " or higher to enter this fight."));
             }
             return true;
@@ -220,9 +220,9 @@ public class CombatSystem {
     }
 
     private void handleAuthorityBattleDefenderWin() {
-        attacker.getEventTracker().addEvent(EventTracker.Message(
+        attacker.getEventTracker().addEvent(MessageTracker.Message(
                 "Major", "Failed to challenge the Authority of \n" + defender.getCharacter() + ". Your power has been decreased."));
-        defender.getEventTracker().addEvent(EventTracker.Message(
+        defender.getEventTracker().addEvent(MessageTracker.Message(
                 "Major", "Successfully defended against\nthe Authority challenge by " + attacker.getCharacter()));
 
 
@@ -231,7 +231,7 @@ public class CombatSystem {
         defender.getWallet().depositAll(attacker.getWallet());
 
 
-        attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Paid entire wallet (" +
+        attacker.getEventTracker().addEvent(MessageTracker.Message("Major", "Paid entire wallet (" +
                 compensationFromWallet +
                 "\nas compensation for disloyalty."
         ));
@@ -239,7 +239,7 @@ public class CombatSystem {
         attacker.decreasePersonalOffence(3);
         attacker.addAspiration(Aspiration.INCREASE_PERSONAL_OFFENCE);
 
-        attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Offense decreased by 3 levels"));
+        attacker.getEventTracker().addEvent(MessageTracker.Message("Major", "Offense decreased by 3 levels"));
 
         defender.getRelationsManager().processResults(attacker);
 
@@ -253,9 +253,9 @@ public class CombatSystem {
     }
 
     private void handleAuthorityBattleAttackerWin() {
-        attacker.getEventTracker().addEvent(EventTracker.Message(
+        attacker.getEventTracker().addEvent(MessageTracker.Message(
                 "Major", "Authority of " + defender.getCharacter() + " has been overtaken."));
-        defender.getEventTracker().addEvent(EventTracker.Message(
+        defender.getEventTracker().addEvent(MessageTracker.Message(
                 "Major", "Your Authority has been overtaken by " + attacker.getCharacter()));
 
         attacker.getRelationsManager().processResults(defender);
@@ -399,7 +399,7 @@ public class CombatSystem {
             attacker.getPerson().getRelationsManager().updateSets();
             defender.getPerson().getRelationsManager().updateSets();
 
-            attacker.getEventTracker().addEvent(EventTracker.Message(
+            attacker.getEventTracker().addEvent(MessageTracker.Message(
                     "Major", "You are now the " +
                             attackerRole.getStatus() +
                             " in the \n"+
@@ -410,7 +410,7 @@ public class CombatSystem {
             Area area;
             if(!(defender.getCharacter() instanceof Peasant)){
                 area = defenderRole.getPosition().getAreaUnderAuthority();
-                defender.getEventTracker().addEvent(EventTracker.Message(
+                defender.getEventTracker().addEvent(MessageTracker.Message(
                         "Major", "You are now the " +
                                 defenderRole.getStatus() +
                                 " in the \n"+
@@ -419,7 +419,7 @@ public class CombatSystem {
                 ));
             }else {
                 area = defender.getProperty().getLocation();
-                defender.getEventTracker().addEvent(EventTracker.Message(
+                defender.getEventTracker().addEvent(MessageTracker.Message(
                         "Major", "You are now " +
                                 defenderRole.getStatus() +
                                 " in the \n"+
@@ -493,28 +493,28 @@ public class CombatSystem {
 
         if (Time.year < 1) {
             if (attacker.isPlayer()) {
-                attacker.getEventTracker().addEvent(EventTracker.Message("Error", "Robbery is only possible after the first year"));
+                attacker.getEventTracker().addEvent(MessageTracker.Message("Error", "Robbery is only possible after the first year"));
             }
             return;
         }
         // Check if attacker's level is high enough
         if (!IsLevelHighEnough(4)) {
             if (attacker.isPlayer()) {
-                attacker.getEventTracker().addEvent(EventTracker.Message("Error", "Attacker level is not high enough for robbery"));
+                attacker.getEventTracker().addEvent(MessageTracker.Message("Error", "Attacker level is not high enough for robbery"));
             }
             return;
         }
         // Check if the venue is too big for the attacker
         if (venueStats.getUpgradeLevel() * 4 > attacker.getCombatStats().getOffenseLevel()) {
             if (attacker.isPlayer()) {
-                attacker.getEventTracker().addEvent(EventTracker.Message("Error", "Venue is too well-defended for your current offense level"));
+                attacker.getEventTracker().addEvent(MessageTracker.Message("Error", "Venue is too well-defended for your current offense level"));
             }
             return;
         }
         // Check that no one is in battle
         if (attacker.hasState(State.IN_BATTLE) || venue.hasState(State.IN_BATTLE)) {
             if (attacker.isPlayer()) {
-                attacker.getEventTracker().addEvent(EventTracker.Message(
+                attacker.getEventTracker().addEvent(MessageTracker.Message(
                         "Error", "Either attacker or property is already in a battle. \nAction not allowed."));
             }
             return; // Cannot enter battle
@@ -522,7 +522,7 @@ public class CombatSystem {
         // Check for loyalty issues
         if (attacker.getRelationsManager().isAlly(defender) && !attacker.getAiEngine().getProfile().containsKey(Trait.Disloyal)) {
             if (attacker.isPlayer()) {
-                attacker.getEventTracker().addEvent(EventTracker.Message(
+                attacker.getEventTracker().addEvent(MessageTracker.Message(
                         "Error", "Attempted to rob \n" + defender.getProperty().getName() +
                                 " owned by ally " + defender.getName() + ". \nAction not allowed."));
             }
@@ -537,8 +537,8 @@ public class CombatSystem {
 
         GameEvent gameEvent = new GameEvent(Event.ROBBERY,attacker,defender);
 
-        attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Robbery Started"));
-        defender.getEventTracker().addEvent(EventTracker.Message("Major", "You are being robbed by "+ attacker));
+        attacker.getEventTracker().addEvent(MessageTracker.Message("Major", "Robbery Started"));
+        defender.getEventTracker().addEvent(MessageTracker.Message("Major", "You are being robbed by "+ attacker));
 
         EventManager.scheduleEvent(this::decideRobbery, daysUntilEvent, gameEvent);
     }
@@ -565,10 +565,10 @@ public class CombatSystem {
         boolean attackerWins = battle(effectiveAttackerOffense, effectiveDefenderDefense);
 
         if (attackerWins) {
-                attacker.getEventTracker().addEvent(EventTracker.Message(
+                attacker.getEventTracker().addEvent(MessageTracker.Message(
                         "Major", "Robbed the "
                                 + defender.getProperty().getName() + " vault"));
-                defender.getEventTracker().addEvent((EventTracker.Message(
+                defender.getEventTracker().addEvent((MessageTracker.Message(
                         "Major", "You have been robbed by " + attacker.getName()
                 )));
 
@@ -580,9 +580,9 @@ public class CombatSystem {
 
             attackerStats.getOffense().decreaseLevel();
 
-            attacker.getEventTracker().addEvent(EventTracker.Message(
+            attacker.getEventTracker().addEvent(MessageTracker.Message(
                     "Major", "Robbery failed. \nOffense level decreased."));
-            defender.getEventTracker().addEvent(EventTracker.Message(
+            defender.getEventTracker().addEvent(MessageTracker.Message(
                     "Major", "Successfully defended a robbery. \n"));
 
             attacker.addAspiration(Aspiration.INCREASE_PERSONAL_OFFENCE);
@@ -610,14 +610,14 @@ public class CombatSystem {
         }
 
         if (attacker.hasState(State.IN_BATTLE) || defender.hasState(State.IN_BATTLE)) {
-            attacker.getEventTracker().addEvent(EventTracker.Message(
+            attacker.getEventTracker().addEvent(MessageTracker.Message(
                     "Error", "Either attacker or defender is already in a battle. \nAction not allowed."));
             return; // Can not enter battle
         }
 
         if (attacker.getRelationsManager().isAlly(defender) && !attacker.getAiEngine().getProfile().containsKey(Trait.Disloyal)) {
             if (attacker.isPlayer()) {
-                attacker.getEventTracker().addEvent(EventTracker.Message(
+                attacker.getEventTracker().addEvent(MessageTracker.Message(
                         "Error", "Attempted to duel \n" + defender.getName() +
                                 " who is your ally " + ". \nAction not allowed."));
             }
@@ -627,7 +627,7 @@ public class CombatSystem {
         if(defender.hasState(State.TRUCE)){
             if(attacker.isPlayer()) {
                 String daysLeft = defender.getAnyOnGoingEvent(Event.TRUCE).getTimeLeftShortString();
-                attacker.getEventTracker().addEvent(EventTracker.Message(
+                attacker.getEventTracker().addEvent(MessageTracker.Message(
                         "Error", "Person you are trying to attack has truce protection. " + daysLeft));
             }
             return;
@@ -641,8 +641,8 @@ public class CombatSystem {
 
         GameEvent gameEvent = new GameEvent(Event.DUEL,attacker,defender);
 
-        attacker.getEventTracker().addEvent(EventTracker.Message("Major", "Duel Started against " + defender.getCharacter()));
-        defender.getEventTracker().addEvent(EventTracker.Message("Major", "You are being attacked (duel) by \n"+ attacker.getCharacter()));
+        attacker.getEventTracker().addEvent(MessageTracker.Message("Major", "Duel Started against " + defender.getCharacter()));
+        defender.getEventTracker().addEvent(MessageTracker.Message("Major", "You are being attacked (duel) by \n"+ attacker.getCharacter()));
 
         EventManager.scheduleEvent(this::decideDuel, daysUntilEvent, gameEvent);
     }
@@ -659,10 +659,10 @@ public class CombatSystem {
 
             attacker.getRelationsManager().processResults(defender);
 
-            attacker.getEventTracker().addEvent(EventTracker.Message(
+            attacker.getEventTracker().addEvent(MessageTracker.Message(
                     "Major", "Won the duel against " + defender.getCharacter()));
 
-            defender.getEventTracker().addEvent((EventTracker.Message(
+            defender.getEventTracker().addEvent((MessageTracker.Message(
                     "Major", "You were defeated by " + attacker.getCharacter())));
 
             defender.addAspiration(Aspiration.INCREASE_PERSONAL_DEFENCE);
@@ -670,23 +670,23 @@ public class CombatSystem {
         } else {
                 defender.getRelationsManager().processResults(attacker);
 
-                attacker.getEventTracker().addEvent(EventTracker.Message(
+                attacker.getEventTracker().addEvent(MessageTracker.Message(
                         "Major", "Duel Lost against " + defender.getCharacter()));
-                defender.getEventTracker().addEvent(EventTracker.Message(
+                defender.getEventTracker().addEvent(MessageTracker.Message(
                         "Major", "Duel won against " + attacker.getCharacter()));
 
 
             if (random.nextInt(100) < 10) {
                 attacker.getCombatStats().decreaseOffense();
                 if(attacker.isPlayer()) {
-                    attacker.getEventTracker().addEvent(EventTracker.Message(
+                    attacker.getEventTracker().addEvent(MessageTracker.Message(
                             "Minor", "Offense decreased for losing the Duel"));
                 }
             } else if (random.nextInt(100) < 5) {
                 attacker.getCombatStats().decreaseOffense();
                 attacker.getCombatStats().decreaseOffense();
                 if(attacker.isPlayer()) {
-                    attacker.getEventTracker().addEvent(EventTracker.Message(
+                    attacker.getEventTracker().addEvent(MessageTracker.Message(
                             "Minor", "Offense decreased by 2 for losing the Duel"));
                 }
             }

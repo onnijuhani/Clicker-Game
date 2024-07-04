@@ -7,7 +7,7 @@ import model.characters.payments.PaymentManager;
 import model.characters.payments.PaymentTracker;
 import model.resourceManagement.TransferPackage;
 import model.stateSystem.Event;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.stateSystem.GameEvent;
 import model.stateSystem.State;
 import model.time.ArmyManager;
@@ -98,7 +98,7 @@ public class GrandFoundry implements ArmyObserver, PaymentTracker, Details {
         TransferPackage amount = getFullProduction();
 
         String message = String.format("Grand Foundry generated %s", amount.toShortString());
-        owner.getEventTracker().addEvent(EventTracker.Message("Utility", message));
+        owner.getEventTracker().addEvent(MessageTracker.Message("Utility", message));
     }
 
     private TransferPackage getPaymentAmount() {
@@ -127,9 +127,9 @@ public class GrandFoundry implements ArmyObserver, PaymentTracker, Details {
 
     private void returnControl() {
         this.owner.removeState(State.GRAND_FOUNDRY_UNDER_OCCUPATION);
-        this.owner.getEventTracker().addEvent(EventTracker.Message("Minor","Control of Grand Foundry Gained back."));
+        this.owner.getEventTracker().addEvent(MessageTracker.Message("Minor","Control of Grand Foundry Gained back."));
         this.controller.removeState(State.GRAND_FOUNDRY_OCCUPIED);
-        this.controller.getEventTracker().addEvent(EventTracker.Message("Minor","Control of " + owner + "'s Foundry forfeited."));
+        this.controller.getEventTracker().addEvent(MessageTracker.Message("Minor","Control of " + owner + "'s Foundry forfeited."));
 
         this.controller.getGrandFoundry().removeFoundriesUnderControl(this);
 

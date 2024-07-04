@@ -4,7 +4,7 @@ import model.GameManager;
 import model.characters.payments.Payment;
 import model.characters.payments.PaymentManager;
 import model.characters.payments.PaymentTracker;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Vault;
 import model.resourceManagement.wallets.Wallet;
@@ -31,17 +31,17 @@ public class Maintenance implements PaymentTracker {
         if (canPay(maintenanceCost, ownerWallet)) {
             ownerWallet.subtractResources(maintenanceCost);
             if(isPlayer) {
-                property.getOwner().getEventTracker().addEvent(EventTracker.Message("Minor", message));
+                property.getOwner().getEventTracker().addEvent(MessageTracker.Message("Minor", message));
             }
         } else if (canPay(maintenanceCost, propertyVault)) {
             propertyVault.subtractResources(maintenanceCost);
             if(isPlayer) {
-                property.getOwner().getEventTracker().addEvent(EventTracker.Message("Minor", message));
+                property.getOwner().getEventTracker().addEvent(MessageTracker.Message("Minor", message));
             }
         } else {
             String errorMessage = "Maintenance not paid " + maintenanceCost;
             if(isPlayer) {
-                property.getOwner().getEventTracker().addEvent(EventTracker.Message("Error", errorMessage));
+                property.getOwner().getEventTracker().addEvent(MessageTracker.Message("Error", errorMessage));
             }
             property.getOwner().loseStrike();
         }

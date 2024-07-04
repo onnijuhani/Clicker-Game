@@ -8,7 +8,7 @@ import model.characters.payments.PaymentManager;
 import model.characters.Person;
 import model.characters.Trait;
 import model.resourceManagement.TransferPackage;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.time.Time;
 
 import java.util.Arrays;
@@ -92,7 +92,7 @@ public class SlaveFacility extends UtilityBuilding {
                     }
 
                     if(owner.isPlayer()) {
-                        owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Relationship with " + ally.getCharacter() + "\n\t\t\t\tcooled due to Slave Facility construction."));
+                        owner.getEventTracker().addEvent(MessageTracker.Message("Minor", "Relationship with " + ally.getCharacter() + "\n\t\t\t\tcooled due to Slave Facility construction."));
                     }
                 }
             }
@@ -104,7 +104,7 @@ public class SlaveFacility extends UtilityBuilding {
                 owner.getRelationsManager().removeEnemy(enemy);
                 enemy.getRelationsManager().removeEnemy(owner);
                 if(owner.isPlayer()) {
-                    owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Common interests in Slave Facilities\n\t\t\t\thave improved your standing with " + enemy.getCharacter() + "."));
+                    owner.getEventTracker().addEvent(MessageTracker.Message("Minor", "Common interests in Slave Facilities\n\t\t\t\thave improved your standing with " + enemy.getCharacter() + "."));
                 }
             }
         }
@@ -125,7 +125,7 @@ public class SlaveFacility extends UtilityBuilding {
         transfer = new TransferPackage(production[0]*calculateBonus(), production[1]*calculateBonus(), production[2]*calculateBonus());
         owner.getWallet().addResources(transfer);
         if(owner.isPlayer()) {
-            owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
+            owner.getEventTracker().addEvent(MessageTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
         }
     }
 

@@ -5,7 +5,7 @@ import model.characters.payments.PaymentManager;
 import model.characters.Person;
 import model.characters.Trait;
 import model.resourceManagement.TransferPackage;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.time.Time;
 
 import java.util.HashSet;
@@ -25,7 +25,7 @@ public class WorkerCenter extends SlaveFacility {
     protected void generateAction() {
         TransferPackage transfer = new TransferPackage(production[0]*calculateBonus(),production[1]*calculateBonus(), production[2]*calculateBonus());
         owner.getPerson().getWallet().addResources(transfer);
-        owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
+        owner.getEventTracker().addEvent(MessageTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
     }
     @Override
     public void payConsequence() {
@@ -43,7 +43,7 @@ public class WorkerCenter extends SlaveFacility {
                     }
 
                     if(owner.isPlayer()) {
-                        owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Relationship with " + ally.getCharacter() + "\n\t\t\t\tcooled due to Work Center construction."));
+                        owner.getEventTracker().addEvent(MessageTracker.Message("Minor", "Relationship with " + ally.getCharacter() + "\n\t\t\t\tcooled due to Work Center construction."));
                     }
                 }
             }
@@ -55,7 +55,7 @@ public class WorkerCenter extends SlaveFacility {
                 owner.getRelationsManager().removeEnemy(enemy);
                 enemy.getRelationsManager().removeEnemy(owner);
                 if(owner.isPlayer()) {
-                    owner.getEventTracker().addEvent(EventTracker.Message("Minor", "Common interests in Work Center\n\t\t\t\thave improved your standing with " + enemy.getCharacter() + "."));
+                    owner.getEventTracker().addEvent(MessageTracker.Message("Minor", "Common interests in Work Center\n\t\t\t\thave improved your standing with " + enemy.getCharacter() + "."));
                 }
             }
         }

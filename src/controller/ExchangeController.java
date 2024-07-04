@@ -164,22 +164,18 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
         int amountGold = person.getWallet().getGold();
 
         if(amountGold < expenses.gold() * 3){
-            System.out.println(1);
             return; // return if there isn't enough gold
         }
         if(amountGold < 2){
-            System.out.println(2);
             return; // return if there is less than 2 gold
         }
         if(netCash.gold() * 2 < 0){
-            System.out.println(3);
             return; // return if net cash is negative.
         }
 
         int amountSpendGold = netCash.gold();
 
         if(amountSpendGold < 2){
-            System.out.println(4);
             return; // return if amount spend is very low
         }
 

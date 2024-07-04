@@ -1,10 +1,10 @@
 package model.shop;
 
 import model.characters.payments.PaymentManager;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 
 public interface Ownable {
-    EventTracker getEventTracker();
+    MessageTracker getEventTracker();
     PaymentManager getPaymentManager();
 
 }

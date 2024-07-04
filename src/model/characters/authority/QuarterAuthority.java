@@ -6,7 +6,7 @@ import model.characters.Peasant;
 import model.resourceManagement.Resource;
 import model.resourceManagement.payments.Tax;
 import model.resourceManagement.wallets.WorkWallet;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.time.Time;
 
 import java.util.LinkedList;
@@ -41,7 +41,7 @@ public class QuarterAuthority extends Authority {
         for (Peasant peasant : peasants){
             Tax taxForm = getTaxForm();
             WorkWallet taxedWallet = peasant.getPerson().getWorkWallet();
-            EventTracker tracker = peasant.getEventTracker();
+            MessageTracker tracker = peasant.getEventTracker();
             taxForm.collectTax(taxedWallet,tracker,workWallet,this.getCharacterInThisPosition().getEventTracker(), taxDay);
         }
     }

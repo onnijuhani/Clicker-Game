@@ -5,7 +5,7 @@ import model.characters.payments.Payment;
 import model.characters.payments.PaymentManager;
 import model.characters.Person;
 import model.resourceManagement.TransferPackage;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.time.Time;
 
 import java.util.Random;
@@ -28,7 +28,7 @@ public class MysticMine extends UtilityBuilding {
         TransferPackage transfer = getGenerateAmount();
         owner.getWallet().addResources(transfer);
         if (owner.isPlayer()) {
-            owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
+            owner.getEventTracker().addEvent(MessageTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
         }
     }
 

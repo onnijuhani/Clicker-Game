@@ -5,7 +5,7 @@ import model.characters.Person;
 import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 
 import java.util.Arrays;
 import java.util.OptionalInt;
@@ -126,7 +126,7 @@ public class Exchange extends ShopComponents {
         character.getPerson().getWallet().addResources(purchasePackage);
 
         if(character.getPerson().isPlayer()) {
-            String message = EventTracker.Message("Shop", "Exchanged " + sellType + " for " + amountGold + " gold");
+            String message = MessageTracker.Message("Shop", "Exchanged " + sellType + " for " + amountGold + " gold");
             character.getEventTracker().addEvent(message);
         }
         return true;
@@ -156,7 +156,7 @@ public class Exchange extends ShopComponents {
 
         if (!character.getPerson().getWallet().hasEnoughResource(sellType, totalCost)) {
             if(character.getPerson().isPlayer()) {
-                String errorMessage = EventTracker.Message("Error", "Insufficient resources for the exchange.");
+                String errorMessage = MessageTracker.Message("Error", "Insufficient resources for the exchange.");
                 character.getEventTracker().addEvent(errorMessage);
             }
             return false;
@@ -171,7 +171,7 @@ public class Exchange extends ShopComponents {
             character.getPerson().getWallet().addResources(purchasePackage);
 
 
-            String message = EventTracker.Message("Shop", "Exchanged " +totalCost +"-"+ sellType + " for " + amountToBuy +"-"+ buyType);
+            String message = MessageTracker.Message("Shop", "Exchanged " +totalCost +"-"+ sellType + " for " + amountToBuy +"-"+ buyType);
             character.getEventTracker().addEvent(message);
 
 
@@ -278,16 +278,16 @@ public class Exchange extends ShopComponents {
 
     public void forceAcquire(TransferPackage cost, Person person, boolean isMandatory) {
 
-        person.getEventTracker().addEvent(EventTracker.Message("Minor" , "Tried force Acquire"));
+        person.getEventTracker().addEvent(MessageTracker.Message("Minor" , "Tried force Acquire"));
 
         if(person.isPlayer() && !isMandatory){
             return;
         }
-        person.getEventTracker().addEvent(EventTracker.Message("Minor" , "Tried force Acquire 1"));
+        person.getEventTracker().addEvent(MessageTracker.Message("Minor" , "Tried force Acquire 1"));
         if (person.getWallet().hasEnoughResources(cost)) {
             return; // Sufficient resources available, no action needed
         }
-        person.getEventTracker().addEvent(EventTracker.Message("Minor" , "Tried force Acquire 2"));
+        person.getEventTracker().addEvent(MessageTracker.Message("Minor" , "Tried force Acquire 2"));
 
         int fCost = cost.food();
         int aCost = cost.alloy();
@@ -301,7 +301,7 @@ public class Exchange extends ShopComponents {
         int aNeeded = aCost - aOwned;
         int gNeeded = gCost - gOwned;
 
-        person.getEventTracker().addEvent(EventTracker.Message("Minor" , "Tried force Acquire\n" + fNeeded +" "+ aNeeded +" "+ gNeeded));
+        person.getEventTracker().addEvent(MessageTracker.Message("Minor" , "Tried force Acquire\n" + fNeeded +" "+ aNeeded +" "+ gNeeded));
 
         switch (getAction(fNeeded, aNeeded, gNeeded)) {
             case BUY_FOOD_AND_ALLOY:

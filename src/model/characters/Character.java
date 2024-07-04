@@ -9,7 +9,7 @@ import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.shop.Exchange;
 import model.shop.Ownable;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.time.NpcManager;
 import model.time.NpcObserver;
 import model.worldCreation.Details;
@@ -53,7 +53,7 @@ public class Character implements NpcObserver, Details, Ownable {
             foodConsumption(this);
 
             if (person.isPlayer()) {
-                this.getEventTracker().addEvent(EventTracker.Message("Minor", GameManager.getFoodConsumptionRate() + " Food Consumed."));
+                this.getEventTracker().addEvent(MessageTracker.Message("Minor", GameManager.getFoodConsumptionRate() + " Food Consumed."));
                 return true;
             }
 
@@ -129,7 +129,7 @@ public class Character implements NpcObserver, Details, Ownable {
                         }
                     } else {
                         // Case where neither gold nor alloys are sufficient
-                        String errorMessage = EventTracker.Message("Error", "Not enough resources to cover food consumption.");
+                        String errorMessage = MessageTracker.Message("Error", "Not enough resources to cover food consumption.");
                         character.getPerson().getEventTracker().addEvent(errorMessage);
                         character.getPerson().loseStrike();
                         return;
@@ -156,7 +156,7 @@ public class Character implements NpcObserver, Details, Ownable {
     }
 
     @Override
-    public EventTracker getEventTracker() {
+    public MessageTracker getEventTracker() {
         return person.getEventTracker();
     }
 

@@ -5,7 +5,7 @@ import model.buildings.properties.Fortress;
 import model.characters.Character;
 import model.characters.Status;
 import model.characters.npc.King;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.stateSystem.State;
 
 public class CombatService {
@@ -13,7 +13,7 @@ public class CombatService {
         if (checkBattleState(attacker, defender)) return true;
         if (isKingOrNoble(attacker)) return true;
         if (attacker == defender){
-            attacker.getPerson().getEventTracker().addEvent(EventTracker.Message("Error", "Cannot fight yourself"));
+            attacker.getPerson().getEventTracker().addEvent(MessageTracker.Message("Error", "Cannot fight yourself"));
             return true;
         }
         return false;
@@ -60,7 +60,7 @@ public class CombatService {
                 return false;
             } // fortress or citadel is needed to challenge king
             else{
-                attacker.getPerson().getEventTracker().addEvent(EventTracker.Message("Error", "You need to construct Citadel or Fortress to be King"));
+                attacker.getPerson().getEventTracker().addEvent(MessageTracker.Message("Error", "You need to construct Citadel or Fortress to be King"));
                 return true; // is too weak property
             }
         }

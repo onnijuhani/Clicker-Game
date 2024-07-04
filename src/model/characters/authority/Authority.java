@@ -9,7 +9,7 @@ import model.resourceManagement.payments.Salary;
 import model.resourceManagement.payments.Tax;
 import model.resourceManagement.wallets.WorkWallet;
 import model.shop.Ownable;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.time.TaxEventManager;
 import model.time.TaxObserver;
 import model.worldCreation.Area;
@@ -68,7 +68,7 @@ public class Authority implements TaxObserver, Ownable {
     public void imposeTax(){
         for (Authority authority : subordinate){
             WorkWallet walletUnderTaxation = authority.getWorkWallet();
-            EventTracker tracker = authority.getCharacterInThisPosition().getEventTracker();
+            MessageTracker tracker = authority.getCharacterInThisPosition().getEventTracker();
             taxForm.collectTax(walletUnderTaxation,tracker,workWallet,this.getCharacterInThisPosition().getEventTracker(), taxDay);
         }
     }
@@ -87,7 +87,7 @@ public class Authority implements TaxObserver, Ownable {
             Salary salary = support.getSalary();
             TransferPackage transfer = TransferPackage.fromArray(salary.getAll());
             support.getPerson().getWallet().deposit(workWallet, transfer);
-            support.getEventTracker().addEvent(EventTracker.Message("Minor", "Salary received: " + transfer));
+            support.getEventTracker().addEvent(MessageTracker.Message("Minor", "Salary received: " + transfer));
         }
     }
 
@@ -154,7 +154,7 @@ public class Authority implements TaxObserver, Ownable {
     }
 
     @Override
-    public EventTracker getEventTracker() {
+    public MessageTracker getEventTracker() {
         return characterPositionedHere.getEventTracker();
     }
 

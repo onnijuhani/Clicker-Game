@@ -10,7 +10,7 @@ import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Vault;
 import model.shop.Ownable;
 import model.shop.UpgradeSystem;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.stateSystem.State;
 import model.time.PropertyManager;
 import model.time.PropertyObserver;
@@ -110,11 +110,11 @@ public class Property implements PropertyObserver, Details, Ownable {
         if(owner.getWallet().hasEnoughResource(Resource.Alloy,price)){
             owner.getWallet().subtractAlloy(price);
             getDefenceStats().increaseLevel();
-            owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName()+"'s defence was increased"));
+            owner.getEventTracker().addEvent(MessageTracker.Message("Utility", this.getClass().getSimpleName()+"'s defence was increased"));
             return true;
         }else{
             if(owner.isPlayer()){
-                owner.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough alloys to increase property defence"));
+                owner.getEventTracker().addEvent(MessageTracker.Message("Error", "Not enough alloys to increase property defence"));
             }
             return false;
         }
@@ -182,7 +182,7 @@ public class Property implements PropertyObserver, Details, Ownable {
     }
 
     @Override
-    public EventTracker getEventTracker(){
+    public MessageTracker getEventTracker(){
         return owner.getEventTracker();
     }
 

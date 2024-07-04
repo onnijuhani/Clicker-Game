@@ -9,7 +9,7 @@ import model.resourceManagement.Resource;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.resourceManagement.wallets.WorkWallet;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.time.Time;
 
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import java.util.Map;
 public class Clicker implements PaymentTracker {
     private static Clicker instance;
     private final Map<Resource, ClickerTools> ownedClickerTools;
-    private final EventTracker eventTracker;
+    private final MessageTracker messageTracker;
     private int totalClicks = 0;
     private final Wallet wallet;
     private final WorkWallet workWallet;
@@ -29,7 +29,7 @@ public class Clicker implements PaymentTracker {
 
     private Clicker(Person person) {
         this.person = person;
-        this.eventTracker = person.getEventTracker();
+        this.messageTracker = person.getEventTracker();
         this.wallet = person.getWallet();
         this.workWallet = person.getWorkWallet();
         this.ownedClickerTools = new HashMap<>();
@@ -65,7 +65,7 @@ public class Clicker implements PaymentTracker {
         workWallet.addResources(resourcesGenerated);
         totalClicks++;
         String message = "Clicker generated "+ clickerTransferMessage(resourcesGenerated);
-        eventTracker.addEvent(EventTracker.Message("Clicker", message));
+        messageTracker.addEvent(MessageTracker.Message("Clicker", message));
         if(showClickerSalaryInPayments) {
             updatePaymentCalendar(person.getPaymentManager());
         }

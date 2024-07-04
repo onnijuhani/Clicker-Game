@@ -36,7 +36,7 @@ public class Person implements Ownable {
     private final WorkWallet workWallet;
     private Property property;
     private final RelationsManager relationsManager;
-    private final EventTracker eventTracker;
+    private final MessageTracker messageTracker;
     private final CombatStats combatStats;
     private final EnumSet<State> states;
     private final EnumSet<Aspiration> aspirations;
@@ -65,7 +65,7 @@ public class Person implements Ownable {
         this.workWallet = new WorkWallet(this, wallet);
         this.relationsManager = new RelationsManager(this);
         this.name = NameCreation.generateCharacterName(isNpc);
-        this.eventTracker = new EventTracker(isNpc);
+        this.messageTracker = new MessageTracker(isNpc);
         this.combatStats = new CombatStats(Settings.getInt("offenceBasePrice"),Settings.getInt("defenceBasePrice"), this);
         this.paymentManager = new PaymentManager(wallet);
         this.strikesTracker = new StrikesTracker(Settings.getInt("strikes"));
@@ -118,7 +118,7 @@ public class Person implements Ownable {
         if(isPlayer){
             return;
         }
-        eventTracker.addEvent(EventTracker.Message("Major",
+        messageTracker.addEvent(MessageTracker.Message("Major",
                 "\nYou are "+character + "\n" +
                         "Traits: "+getAiEngine().getProfile() + "\n" +
                         "Starting Area: " + property.getLocation().getFullHierarchyInfo() + "\n" +
@@ -151,7 +151,7 @@ public class Person implements Ownable {
             triggerGameOver();
         }else {
             if(isPlayer) {
-                getEventTracker().addEvent(EventTracker.Message("Major", "Lost a Strike! Strikes left: " + strikesLeft));
+                getEventTracker().addEvent(MessageTracker.Message("Major", "Lost a Strike! Strikes left: " + strikesLeft));
             }
         }
     }
@@ -160,7 +160,7 @@ public class Person implements Ownable {
 
     private void triggerGameOver(){
         if(character.getPerson().isPlayer()) {
-            getEventTracker().addEvent(EventTracker.Message("Major","GAME OVER. No Strikes left."));
+            getEventTracker().addEvent(MessageTracker.Message("Major","GAME OVER. No Strikes left."));
             Time.setGameOver(true);
 
             PopUpMessageTracker.PopUpMessage gameOverMessage = new PopUpMessageTracker.PopUpMessage(
@@ -173,7 +173,7 @@ public class Person implements Ownable {
             PopUpMessageTracker.sendGameOver();
         }else{
             getStrikesTracker().gainStrike(10);
-            getEventTracker().addEvent(EventTracker.Message("Major", "Bankrupt"));
+            getEventTracker().addEvent(MessageTracker.Message("Major", "Bankrupt"));
             for(int i = 0; i < 5; i++){
                 decreasePersonalPower();
             }
@@ -243,8 +243,8 @@ public class Person implements Ownable {
     public RelationsManager getRelationsManager() {
         return relationsManager;
     }
-    public EventTracker getEventTracker() {
-        return eventTracker;
+    public MessageTracker getEventTracker() {
+        return messageTracker;
     }
     public CombatStats getCombatStats() {return combatStats;}
     public EnumSet<State> getStates() {

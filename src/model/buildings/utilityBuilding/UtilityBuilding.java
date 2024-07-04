@@ -6,7 +6,7 @@ import model.characters.Person;
 import model.characters.payments.PaymentTracker;
 import model.resourceManagement.TransferPackage;
 import model.shop.UpgradeSystem;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.time.UtilityManager;
 import model.time.UtilityObserver;
 
@@ -39,7 +39,7 @@ public class UtilityBuilding extends UpgradeSystem implements UtilityObserver, P
         TransferPackage transfer = new TransferPackage(0,0,0);
         owner.getWallet().addResources(transfer);
         if (owner.isPlayer()) {
-            owner.getEventTracker().addEvent(EventTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
+            owner.getEventTracker().addEvent(MessageTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
         }
     }
 

@@ -9,7 +9,7 @@ import model.characters.ai.Aspiration;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.stateSystem.Event;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.stateSystem.GameEvent;
 import model.stateSystem.PopUpMessageTracker;
 import model.time.EventManager;
@@ -55,7 +55,7 @@ public class Construct {
             assert newType != null;
 
             GameEvent gameEvent = new GameEvent(Event.CONSTRUCTION, person);
-            person.getEventTracker().addEvent(EventTracker.Message("Minor", "Construction of "+newType+ " started"));
+            person.getEventTracker().addEvent(MessageTracker.Message("Minor", "Construction of "+newType+ " started"));
 
             int daysUntilEvent = getDaysUntilEvent(newType);
 
@@ -64,7 +64,7 @@ public class Construct {
             }, daysUntilEvent, gameEvent);
         } else {
             if (person.isPlayer()){
-            person.getEventTracker().addEvent(EventTracker.Message("Error", "Not enough resources for construction"));
+            person.getEventTracker().addEvent(MessageTracker.Message("Error", "Not enough resources for construction"));
             }
             throw new InsufficientResourcesException("Not enough resources for construction of " + newType, cost);
         }
@@ -80,7 +80,7 @@ public class Construct {
         Property newHouse = initiateNewProperty(newType, oldHouse.getName(), person);
         newHouse.setFirstTimeReached(false);
         switchPropertyAttributes(person, newHouse, location, oldHouse, oldUtilitySlot);
-        person.getEventTracker().addEvent(EventTracker.Message("Major", "New property constructed"));
+        person.getEventTracker().addEvent(MessageTracker.Message("Major", "New property constructed"));
 
         newHouse.maintenance.updatePaymentCalendar(person.getPaymentManager());
 

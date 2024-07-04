@@ -6,7 +6,7 @@ import model.characters.payments.PaymentManager;
 import model.characters.payments.PaymentTracker;
 import model.resourceManagement.TransferPackage;
 import model.shop.Ownable;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 
 public class WorkWallet extends Wallet implements PaymentTracker {
     private boolean taxedOrNot;
@@ -27,7 +27,7 @@ public class WorkWallet extends Wallet implements PaymentTracker {
         if (isTaxed()) {
             TransferPackage amount = new TransferPackage(getFood(), getAlloy(), getGold());
             mainWallet.depositAll(this);
-            getOwner().getEventTracker().addEvent(EventTracker.Message("Minor","Salary received"));
+            getOwner().getEventTracker().addEvent(MessageTracker.Message("Minor","Salary received"));
             setTaxedOrNot(false);
 
             lastSalaryAmount = amount;

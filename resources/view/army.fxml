@@ -287,7 +287,7 @@
                   <Button fx:id="hideButton" layoutX="92.0" layoutY="555.0" mnemonicParsing="false" onAction="#hideContent" text="Hide" />
                   <Button layoutX="650.0" layoutY="150.0" mnemonicParsing="false" onAction="#startTestWar" text="War" />
                   <Button fx:id="historyBtn" layoutX="636.0" layoutY="33.0" mnemonicParsing="false" onAction="#showBattleHistory" text="History" />
-                  <ScrollPane fx:id="historyScrollPane" layoutX="7.0" layoutY="102.0" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="101.0">
+                  <ScrollPane fx:id="historyScrollPane" layoutX="7.0" layoutY="102.0" visible="false" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="101.0">
                      <content>
                         <VBox fx:id="historyBox" alignment="TOP_CENTER" fillWidth="false" prefHeight="400.0" prefWidth="680.0" spacing="15.0" styleClass="charbox">
                            <padding>

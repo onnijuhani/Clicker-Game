@@ -6,7 +6,7 @@ import model.characters.Trait;
 import model.characters.ai.Aspiration;
 import model.characters.ai.actionCircle.WeightedObject;
 import model.resourceManagement.TransferPackage;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.war.Army;
 import model.war.ArmyCost;
 import model.war.Military;
@@ -176,12 +176,12 @@ public class WarActions extends BaseActions {
         amount =  Math.min(netBalance.gold() / ArmyCost.runningGold - 1, amount) ;
 
         if(army.recruitSoldier(amount)){
-            person.getEventTracker().addEvent(EventTracker.Message("Major", "Recruited " + amount + " new Soldier(s)"));
+            person.getEventTracker().addEvent(MessageTracker.Message("Major", "Recruited " + amount + " new Soldier(s)"));
 
             action.logAction(String.format("Recruited %d new soldiers. Now total of %d soldiers", amount, army.getNumOfSoldiers()));
 
         }else{
-            person.getEventTracker().addEvent(EventTracker.Message("Major", "Recruiting new Soldiers went wrong"));
+            person.getEventTracker().addEvent(MessageTracker.Message("Major", "Recruiting new Soldiers went wrong"));
         }
     }
 

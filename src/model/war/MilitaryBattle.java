@@ -5,14 +5,15 @@ import model.characters.Person;
 import model.characters.payments.Payment;
 import model.characters.payments.PaymentManager;
 import model.resourceManagement.TransferPackage;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.time.WarManager;
 import model.time.WarObserver;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+
 @SuppressWarnings("CallToPrintStackTrace")
 public class MilitaryBattle implements WarObserver {
 
@@ -54,7 +55,7 @@ public class MilitaryBattle implements WarObserver {
     Person defendingCommander;
     private final Random random = Settings.getRandom();
     private int days = 0; // tracks how many days have gone by
-    private final List<String> battleLog = new ArrayList<>(); // Logging system
+    private final LinkedList<String> battleLog = new LinkedList<>(); // Logging system
 
 
     private boolean isOnGoing = true;
@@ -175,38 +176,22 @@ public class MilitaryBattle implements WarObserver {
                 defendingMilitary.getArmy().setState(Army.ArmyState.DEFEATED);
                 attackingMilitary.getArmy().setState(null);
 
-                attackingCommander.getEventTracker().addEvent(EventTracker.Message("Major", String.format("Your army is victorious against %s", defendingCommander.getName())));
-                defendingCommander.getEventTracker().addEvent(EventTracker.Message("Major", String.format("Your army has lost against %s", attackingCommander.getName())));
+                attackingCommander.getEventTracker().addEvent(MessageTracker.Message("Major", String.format("Your army is victorious against %s", defendingCommander.getName())));
+                defendingCommander.getEventTracker().addEvent(MessageTracker.Message("Major", String.format("Your army has lost against %s", attackingCommander.getName())));
                 logEvent("Battle ended.\nAttacker is victorious.");
 
-
-                TransferPackage transferPackage = defendingCommander.getWallet().getBalance();
-                if(attackingCommander.getWallet().depositAll(defendingCommander.getWallet())){
-                    attackingCommander.getEventTracker().addEvent(EventTracker.Message("Major","You have gained: " + transferPackage.toShortString()));
-                    defendingCommander.getEventTracker().addEvent(EventTracker.Message("Major","You have lost: " + transferPackage.toShortString()));
-                }
-
                 defendingCommander.getGrandFoundry().setUnderOccupation(attackingCommander, 360);
-
-
             }
 
             if (Objects.equals(winner, "Defender")) {
                 defendingMilitary.getArmy().setState(null);
                 attackingMilitary.getArmy().setState(null);
 
-                attackingCommander.getEventTracker().addEvent(EventTracker.Message("Major", String.format("Your army has lost against %s", defendingCommander.getName())));
-                defendingCommander.getEventTracker().addEvent(EventTracker.Message("Major", String.format("Your army is victorious against %s", attackingCommander.getName())));
+                attackingCommander.getEventTracker().addEvent(MessageTracker.Message("Major", String.format("Your army has lost against %s", defendingCommander.getName())));
+                defendingCommander.getEventTracker().addEvent(MessageTracker.Message("Major", String.format("Your army is victorious against %s", attackingCommander.getName())));
                 logEvent("Battle ended.\nDefender is victorious.");
 
-                TransferPackage transferPackage = attackingCommander.getWallet().getBalance();
-                if(defendingCommander.getWallet().depositAll(attackingCommander.getWallet())){
-                    defendingCommander.getEventTracker().addEvent(EventTracker.Message("Major","You have gained: " + transferPackage.toShortString()));
-                    attackingCommander.getEventTracker().addEvent(EventTracker.Message("Major","You have lost: " + transferPackage.toShortString()));
-                }
-
-                attackingCommander.getGrandFoundry().setUnderOccupation(defendingCommander, 360);
-
+                attackingCommander.getGrandFoundry().setUnderOccupation(defendingCommander, days * 2);
             }
 
             String attackerMsg;
@@ -230,7 +215,6 @@ public class MilitaryBattle implements WarObserver {
                     defendingArmyStats.attackPower / ArmyCost.increaseArmyAttack,
                     defendingArmyStats.defencePower / ArmyCost.increaseArmyDefence);
 
-
             attackingMilitary.getArmy().returnFromBattle(attackingArmyStats.numOfSoldiers,
                     attackingArmyStats.attackPower / ArmyCost.increaseArmyAttack,
                     attackingArmyStats.defencePower / ArmyCost.increaseArmyDefence,
@@ -240,7 +224,6 @@ public class MilitaryBattle implements WarObserver {
                     defendingArmyStats.attackPower / ArmyCost.increaseArmyAttack,
                     defendingArmyStats.defencePower / ArmyCost.increaseArmyDefence,
                     defenderMsg);
-
 
             WarManager.unsubscribe(this);
 
@@ -256,7 +239,11 @@ public class MilitaryBattle implements WarObserver {
     }
 
     private void logEvent(String event) {
-        battleLog.add(event);
+        if(battleLog.size() >= 3){
+            battleLog.removeFirst();
+        }
+        String message = "Day " + days + ": " + event;
+        battleLog.add(message);
     }
 
     public List<String> getBattleLog() {
@@ -277,17 +264,17 @@ public class MilitaryBattle implements WarObserver {
     private void payRunningCosts() {
         try {
             if(!attackingCommander.getWallet().subtractResources(attackingArmyStats.getWarCost())){
-                attackingCommander.getEventTracker().addEvent(EventTracker.Message("Minor", "Army expenses not paid"));
+                attackingCommander.getEventTracker().addEvent(MessageTracker.Message("Minor", "Army expenses not paid"));
                 attackingCommander.loseStrike();
             }else{
-                attackingCommander.getEventTracker().addEvent(EventTracker.Message("Minor", "War expenses paid: " + attackingArmyStats.getWarCost().toShortString()));
+                attackingCommander.getEventTracker().addEvent(MessageTracker.Message("Minor", "War expenses paid: " + attackingArmyStats.getWarCost().toShortString()));
             }
 
             if(!defendingCommander.getWallet().subtractResources(defendingArmyStats.getWarCost())){
-                defendingCommander.getEventTracker().addEvent(EventTracker.Message("Minor", "Army expenses not paid"));
+                defendingCommander.getEventTracker().addEvent(MessageTracker.Message("Minor", "Army expenses not paid"));
                 defendingCommander.loseStrike();
             }else{
-                defendingCommander.getEventTracker().addEvent(EventTracker.Message("Minor", "War expenses paid: " + attackingArmyStats.getWarCost().toShortString()));
+                defendingCommander.getEventTracker().addEvent(MessageTracker.Message("Minor", "War expenses paid: " + attackingArmyStats.getWarCost().toShortString()));
             }
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);
@@ -297,7 +284,6 @@ public class MilitaryBattle implements WarObserver {
     public Military getAttackingMilitary() {
         return attackingMilitary;
     }
-
 
     public class ArmyStats {
         private int numOfSoldiers;
@@ -362,13 +348,9 @@ public class MilitaryBattle implements WarObserver {
         }
 
         public TransferPackage getWarCost(){
-
             int food = numOfSoldiers * ArmyCost.runningFood;
             int alloys = (attackPower / ArmyCost.increaseArmyAttack + defencePower / ArmyCost.increaseArmyDefence) * ArmyCost.runningAlloy;
             int gold = numOfSoldiers * ArmyCost.runningGold;
-
-
-
             return new TransferPackage(food, alloys, gold);
         }
 

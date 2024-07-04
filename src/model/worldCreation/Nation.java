@@ -14,7 +14,8 @@ import model.characters.npc.Governor;
 import model.characters.npc.Mercenary;
 import model.resourceManagement.TransferPackage;
 import model.shop.Shop;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
+import model.war.Military;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -192,7 +193,7 @@ public class Nation extends ControlledArea implements Details {
         }
         if(!person.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.SlaveFacility)) return;
         slaverGuild.add(person);
-        person.getEventTracker().addEvent(EventTracker.Message("Minor", "Joined Slaver Guild"));
+        person.getEventTracker().addEvent(MessageTracker.Message("Minor", "Joined Slaver Guild"));
         person.getProperty().getUtilitySlot().getUtilityBuilding(UtilityBuildings.SlaveFacility).addBonus("Slaver Guild Bonus", 1);
     }
     public void joinLiberalGuild(Person person){
@@ -201,7 +202,7 @@ public class Nation extends ControlledArea implements Details {
         }
         if(!person.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.WorkerCenter)) return;
         freedomFighters.add(person);
-        person.getEventTracker().addEvent(EventTracker.Message("Minor", "Joined Liberal Guild"));
+        person.getEventTracker().addEvent(MessageTracker.Message("Minor", "Joined Liberal Guild"));
         person.getProperty().getUtilitySlot().getUtilityBuilding(UtilityBuildings.WorkerCenter).addBonus("Liberal Guild Bonus", 1);
     }
 
@@ -435,4 +436,43 @@ public class Nation extends ControlledArea implements Details {
     public boolean isAtWar() {
         return isAtWar;
     }
+
+    public int getMilitaryPower() {
+        int totalPower = 0;
+        for(Quarter quarter : allQuarters){
+            for(Military military : quarter.getMilitaryProperties()){
+                totalPower += military.getMilitaryStrength();
+            }
+        }
+        return totalPower;
+    }
+
+    public int getQuarterAmount() {
+        return allQuarters.size();
+    }
+
+    public int getMilitaryAmount() {
+        int amount = 0;
+        for(Quarter quarter : allQuarters){
+            amount += quarter.getMilitaryProperties().size();
+        }
+        return amount;
+    }
+
+    public ArrayList<Military>  getAllMilitaries() {
+        ArrayList<Military> militaries = new ArrayList<>();
+        for(Quarter quarter : allQuarters){
+            militaries.addAll(quarter.getMilitaryProperties());
+        }
+        return militaries;
+    }
+
+    public Optional<Military> getStrongestMilitary() {
+        return getAllMilitaries().stream()
+                .max(Comparator.comparingInt(Military::getMilitaryStrength));
+    }
+
+
+
+
 }

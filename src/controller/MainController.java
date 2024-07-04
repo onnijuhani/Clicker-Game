@@ -3,6 +3,7 @@ package controller;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,13 +21,12 @@ import model.Model;
 import model.characters.Character;
 import model.characters.player.clicker.Clicker;
 import model.resourceManagement.TransferPackage;
-import model.stateSystem.EventTracker;
+import model.stateSystem.MessageTracker;
 import model.stateSystem.PopUpMessageTracker;
 import model.stateSystem.SpecialEventsManager;
 import model.time.Time;
 import model.worldCreation.Quarter;
 
-import java.util.HashSet;
 import java.util.List;
 
 import static model.stateSystem.SpecialEventsManager.triggerStartingMessage;
@@ -299,7 +299,7 @@ public class MainController extends BaseController {
                 topSectionController.update();
                 workWalletController.update();
             } else {
-                model.getPlayerCharacter().getEventTracker().addEvent(EventTracker.Message("Error", "Simulation is paused. Cannot generate resources."));
+                model.getPlayerCharacter().getEventTracker().addEvent(MessageTracker.Message("Error", "Simulation is paused. Cannot generate resources."));
                 workWalletController.update();
             }
         } else {
@@ -317,15 +317,15 @@ public class MainController extends BaseController {
 
    void generateStartingMessage(){
         triggerStartingMessage();
-        EventTracker tracker = model.getPlayerCharacter().getEventTracker();
-        tracker.addEvent(EventTracker.Message("Major","New Game Started"));
+        MessageTracker tracker = model.getPlayerCharacter().getEventTracker();
+        tracker.addEvent(MessageTracker.Message("Major","New Game Started"));
 
         Quarter spawn = model.accessWorld().getSpawnQuarter();
-        tracker.addEvent(EventTracker.Message("Major","Starting District is: "+cleanName(spawn.toString())));
-        tracker.addEvent(EventTracker.Message("Major","Starting City is: "+cleanName(spawn.getHigher().toString())));
-        tracker.addEvent(EventTracker.Message("Major","Starting Province is: "+cleanName(spawn.getHigher().getHigher().toString())));
-        tracker.addEvent(EventTracker.Message("Major","Starting Nation is: "+cleanName(spawn.getNation().toString())));
-        tracker.addEvent(EventTracker.Message("Major","Starting Continent is: "+cleanName(spawn.getNation().getHigher().toString())));
+        tracker.addEvent(MessageTracker.Message("Major","Starting District is: "+cleanName(spawn.toString())));
+        tracker.addEvent(MessageTracker.Message("Major","Starting City is: "+cleanName(spawn.getHigher().toString())));
+        tracker.addEvent(MessageTracker.Message("Major","Starting Province is: "+cleanName(spawn.getHigher().getHigher().toString())));
+        tracker.addEvent(MessageTracker.Message("Major","Starting Nation is: "+cleanName(spawn.getNation().toString())));
+        tracker.addEvent(MessageTracker.Message("Major","Starting Continent is: "+cleanName(spawn.getNation().getHigher().toString())));
 
     }
     private String cleanName(String name) {
@@ -341,12 +341,16 @@ public class MainController extends BaseController {
             List<String> newEvents = model.getPlayerCharacter().getEventTracker().getCombinedEvents();
             ObservableList<String> currentEvents = eventList.getItems();
 
-            // Check if the lists are different in size or content
-            if (currentEvents.size() != newEvents.size() || !new HashSet<>(currentEvents).containsAll(newEvents)) {
-                // Only update the items if there are changes
-                currentEvents.setAll(newEvents);
-                // Scroll to the last item
-                eventList.scrollTo(currentEvents.size() - 1);
+
+            if (!currentEvents.equals(newEvents)) {
+
+                ObservableList<String> updatedEvents = FXCollections.observableArrayList(newEvents);
+                eventList.setItems(updatedEvents);
+
+                // Scroll to the last item if the list is not empty
+                if (!updatedEvents.isEmpty()) {
+                    eventList.scrollTo(updatedEvents.size() - 1);
+                }
             }
         });
     }
