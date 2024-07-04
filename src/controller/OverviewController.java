@@ -2,13 +2,23 @@ package controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import model.Model;
 import model.characters.AuthorityCharacter;
 import model.characters.Person;
+import model.characters.npc.King;
 import model.resourceManagement.payments.Tax;
+import model.war.WarPlanningManager;
+import model.worldCreation.Nation;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import static model.buildings.utilityBuilding.UtilityBuildings.SlaveFacility;
@@ -22,12 +32,125 @@ public class OverviewController extends BaseController{
     public void update() {
         updateGuildBox();
         updateTaxBox();
+        updateRivalingNationsBox();
     }
 
     @FXML
     private VBox guildBox;
     @FXML
     private VBox rivalingNationsBox;
+    @FXML
+    private ScrollPane rivalingNationsScrollPane;
+    private static final int UPDATE_THRESHOLD = 50;
+    private static int updateRivalsCounter = UPDATE_THRESHOLD; // makes sure rivals aren't updated too often
+
+
+    private void updateRivalingNationsBox() {
+
+        if (updateRivalsCounter < UPDATE_THRESHOLD) {
+            updateRivalsCounter++;
+            return;
+        }
+
+        updateRivalsCounter = 0;
+
+        rivalingNationsBox.getChildren().clear();
+
+        ArrayList<WarPlanningManager.NationDetails> nationsInfo = WarPlanningManager.getNationsInfo();
+
+        // Create header
+        GridPane header = createHeader();
+        rivalingNationsBox.getChildren().add(header);
+
+        for (WarPlanningManager.NationDetails nationDetails : nationsInfo) {
+            GridPane nationGrid = createNationGrid(nationDetails);
+            rivalingNationsBox.getChildren().add(nationGrid);
+        }
+    }
+
+    private GridPane createHeader() {
+        GridPane header = new GridPane();
+        header.setHgap(10);
+        header.setPadding(new Insets(10, 10, 10, 10));
+
+        ColumnConstraints nameCol = new ColumnConstraints();
+        nameCol.setMinWidth(150);
+        nameCol.setPrefWidth(200);
+        nameCol.setMaxWidth(300);
+
+        ColumnConstraints powerCol = new ColumnConstraints();
+        powerCol.setMinWidth(150);
+        powerCol.setPrefWidth(150);
+
+        header.getColumnConstraints().addAll(nameCol, powerCol);
+
+        Label nameLabel = new Label("Nation");
+        styleHeaderLabel(nameLabel);
+
+        Label powerLabel = new Label("Military Power");
+        styleHeaderLabel(powerLabel);
+
+        header.add(nameLabel, 0, 0);
+        header.add(powerLabel, 1, 0);
+
+        return header;
+    }
+
+    private void styleHeaderLabel(Label label) {
+        label.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;");
+    }
+
+    private GridPane createNationGrid(WarPlanningManager.NationDetails nationDetails) {
+        GridPane nationGrid = new GridPane();
+        nationGrid.setHgap(10); // Set horizontal gap between columns
+        nationGrid.setVgap(5); // Set vertical gap between rows
+        nationGrid.setPadding(new Insets(5, 10, 5, 10)); // Add some padding
+
+        // Set column constraints
+        ColumnConstraints nameCol = new ColumnConstraints();
+        nameCol.setMinWidth(150);
+        nameCol.setPrefWidth(200);
+        nameCol.setMaxWidth(300);
+
+        ColumnConstraints powerCol = new ColumnConstraints();
+        powerCol.setMinWidth(150);
+        powerCol.setPrefWidth(150);
+
+        ColumnConstraints actionCol = new ColumnConstraints();
+        actionCol.setMinWidth(75);
+        actionCol.setPrefWidth(75);
+
+        nationGrid.getColumnConstraints().addAll(nameCol, powerCol, actionCol);
+
+        // Create labels for each piece of information
+        Label nameLabel = new Label(nationDetails.nation().toString());
+        nameLabel.setStyle("-fx-text-fill: white;");
+        Label powerLabel = new Label(String.valueOf(nationDetails.militaryPower()));
+        powerLabel.setStyle("-fx-text-fill: white;");
+
+        // Create hyperlink for starting a war
+        Hyperlink startWarLink = new Hyperlink("Start War");
+        startWarLink.setOnAction(event -> startWar(nationDetails.nation()));
+
+        // Add labels and hyperlink to the GridPane
+        nationGrid.add(nameLabel, 0, 0);
+        nationGrid.add(powerLabel, 1, 0);
+
+        if(Model.getPlayerAsCharacter() instanceof King) {
+            nationGrid.add(startWarLink, 2, 0);
+        }
+
+        return nationGrid;
+    }
+
+    private void startWar(Nation nation) {
+        // start war
+    }
+
+
+
+
+
     @FXML
     private VBox taxBox;
 

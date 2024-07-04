@@ -3,20 +3,15 @@ package model.war;
 import model.characters.Character;
 import model.worldCreation.Nation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class WarPlanningManager {
-
-
 
     public static void addNation(Nation nation) {
         nations.add(nation);
     }
 
-    private static Set<Nation> nations;
+    private final static Set<Nation> nations = new HashSet<>();
 
     public static HashMap<Nation, Integer> getOtherNationsAndMilitaryPowers(Nation nation){
         HashMap<Nation, Integer> otherNations = new HashMap<>();
@@ -31,18 +26,21 @@ public class WarPlanningManager {
     }
 
 
-    public static ArrayList<NationDetails> getNationsInfo(Nation nation){
-        ArrayList<NationDetails> nations = new ArrayList<>();
+    public static ArrayList<NationDetails> getNationsInfo() {
+        ArrayList<NationDetails> nationsInfo = new ArrayList<>();
 
-        for(Nation n : WarPlanningManager.nations){
-
+        for (Nation n : WarPlanningManager.nations) {
             int militaryPower = n.getMilitaryPower();
             int quarters = n.numberOfQuarters;
             Character leader = n.getAuthorityHere().getCharacterInThisPosition();
             NationDetails nationDetails = new NationDetails(n, militaryPower, quarters, leader);
-            nations.add(nationDetails);
+            nationsInfo.add(nationDetails);
         }
-        return nations;
+
+        // Sort the list by military power in descending order
+        nationsInfo.sort(Comparator.comparingInt(NationDetails::militaryPower).reversed());
+
+        return nationsInfo;
     }
 
     public static List<NationMilitary> getStrongestMilitaries() {
@@ -59,11 +57,10 @@ public class WarPlanningManager {
     public record NationDetails(Nation nation, int militaryPower, int numberOfQuarters, Character leader) {
         @Override
             public String toString() {
-                return "Nation=" + nation +
-                        "militaryPower=" + militaryPower +
-                        ", numberOfQuarters=" + numberOfQuarters +
-                        ", leaderName='" + leader + '\'' +
-                        '}';
+                return nation +
+                        " " + militaryPower +
+                        " " + numberOfQuarters +
+                        " '" + leader;
         }
     }
 

@@ -13,6 +13,7 @@ import model.characters.npc.King;
 import model.characters.npc.Noble;
 import model.characters.npc.Vanguard;
 import model.resourceManagement.TransferPackage;
+import model.war.WarPlanningManager;
 
 
 import java.util.ArrayList;
@@ -87,6 +88,8 @@ public class Continent extends Area implements Details {
             // add sentinels as allies at the beginning
             RelationsManager relations = king.getPerson().getRelationsManager();
             relations.getListOfSentinels().forEach(relations::addAlly);
+
+            WarPlanningManager.addNation(nation); // add into war planner
 
         }
     }
