@@ -55,6 +55,8 @@ public class MainController extends BaseController {
     private ArmyController armyController;
     @FXML
     private SiegeController siegeController;
+    @FXML
+    private WarController warController;
 
     @FXML
     private AnchorPane mainLayout;
@@ -223,6 +225,13 @@ public class MainController extends BaseController {
         }
         else {
             System.out.println("siegeController is null");
+        }
+        if (warController != null) {
+            warController.setMain(this);
+            warController.setModel(model);
+        }
+        else {
+            System.out.println("warController is null");
         }
     }
 

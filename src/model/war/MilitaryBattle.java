@@ -58,6 +58,7 @@ public class MilitaryBattle implements WarObserver {
     private boolean isOnGoing = true;
 
     public MilitaryBattle(Military attacker, Military defender) {
+        testMilitaries(attacker, defender);
         this.attackingArmyStats = new ArmyStats(attacker.getArmy());
         this.defendingArmyStats = new ArmyStats(defender.getArmy());
         this.attackingMilitary = attacker;
@@ -72,7 +73,21 @@ public class MilitaryBattle implements WarObserver {
 
         setStartingStates();
 
+
+        attacker.getArmy().enterIntoBattle(this);
+        defender.getArmy().enterIntoBattle(this);
+
     }
+
+    private void testMilitaries(Military attacker, Military defender) {
+        if(attacker.getArmy().getNumOfSoldiers() <= 1){
+            attacker.getArmy().addOneSoldier();
+        }
+        if(defender.getArmy().getNumOfSoldiers() <= 1){
+            defender.getArmy().addOneSoldier();
+        }
+    }
+
     private void setStartingStates() {
         attackingMilitary.getArmy().setState(Army.ArmyState.ATTACKING);
         defendingMilitary.getArmy().setState(Army.ArmyState.DEFENDING);
@@ -324,7 +339,6 @@ public class MilitaryBattle implements WarObserver {
             this.attackPower = army.getAttackPower() * ArmyCost.increaseArmyAttack;
             this.defencePower = army.getDefencePower() * ArmyCost.increaseArmyDefence;
 
-            army.enterIntoBattle();
         }
 
         public void loseSoldiers(int amount){

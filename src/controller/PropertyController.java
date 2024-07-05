@@ -471,7 +471,9 @@ public class PropertyController extends BaseController {
             upgradeCost.setText(cost.toShortString());
         } else {
             upgradeCost.setText("Max");
-            constructBtn.setVisible(false);
+            if(character.getPerson().isPlayer()) {
+                constructBtn.setVisible(false);
+            }
         }
         updateConstructionTimeLeft();
     }

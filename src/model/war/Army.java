@@ -32,6 +32,7 @@ public class Army implements ArmyObserver, PaymentTracker {
         }
 
     }
+    private MilitaryBattle militaryBattle;
     private int numOfSoldiers = 1;
     private int attackPower = 1;
     private int defencePower = 1;
@@ -87,6 +88,10 @@ public class Army implements ArmyObserver, PaymentTracker {
         this.owner = null;
         this.wallet = null;
         ArmyManager.unsubscribe(this);
+    }
+
+    public void addOneSoldier(){
+        numOfSoldiers += 1;
     }
 
 
@@ -285,10 +290,11 @@ public class Army implements ArmyObserver, PaymentTracker {
         this.state = state;
     }
 
-    public void enterIntoBattle(){
+    public void enterIntoBattle(MilitaryBattle battle){
         numOfSoldiers = 0;
         attackPower = 0;
         defencePower = 0;
+        this.militaryBattle = battle;
     }
 
     public void returnFromBattle(int numOfSoldiers, int attackPower, int defencePower, String battleInfo){
@@ -296,6 +302,7 @@ public class Army implements ArmyObserver, PaymentTracker {
         this.attackPower += attackPower;
         this.defencePower += defencePower;
         addBattle(battleInfo);
+        this.militaryBattle = null;
     }
 
     public void addBattle(String battleInfo) {
@@ -311,5 +318,10 @@ public class Army implements ArmyObserver, PaymentTracker {
 
         this.battleHistory.add(battleInfo);
     }
+
+    public MilitaryBattle getMilitaryBattle() {
+        return militaryBattle;
+    }
+
 
 }

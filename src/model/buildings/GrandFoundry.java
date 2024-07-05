@@ -155,13 +155,16 @@ public class GrandFoundry implements ArmyObserver, PaymentTracker, Details {
 
         if(!foundriesUnderControl.isEmpty()){
             if(foundriesUnderControl.size() == 1){
-                int[] i = foundriesUnderControl.getFirst().getOwner().getAnyOnGoingEvent(Event.GRAND_FOUNDRY_UNDER_OCCUPATION).getTimeLeftUntilExecution();
+                GameEvent ongoingEvent = foundriesUnderControl.getFirst().getOwner().getAnyOnGoingEvent(Event.GRAND_FOUNDRY_UNDER_OCCUPATION);
+                int[] i = (ongoingEvent != null) ? ongoingEvent.getTimeLeftUntilExecution() : null;
+                assert i != null : "on going events are null, should be GRAND_FOUNDRY_UNDER_OCCUPATION";
                 details.append("1 enemy foundry under control for\n").append(timeLeftFormat(i));
             }else{
                 int amount = foundriesUnderControl.size();
                 int days = 0;
                 for(GrandFoundry foundry : foundriesUnderControl){
-                    int i = foundry.getOwner().getAnyOnGoingEvent(Event.GRAND_FOUNDRY_UNDER_OCCUPATION).getDaysLeftUntilExecution();
+                    GameEvent ongoingEvent = foundry.getOwner().getAnyOnGoingEvent(Event.GRAND_FOUNDRY_UNDER_OCCUPATION);
+                    int i = (ongoingEvent != null) ? ongoingEvent.getDaysLeftUntilExecution() : -1;
                     days += i;
                 }
                 int avgDays = days / amount;

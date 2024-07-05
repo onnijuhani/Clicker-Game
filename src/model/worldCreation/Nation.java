@@ -17,6 +17,7 @@ import model.resourceManagement.wallets.Wallet;
 import model.shop.Shop;
 import model.stateSystem.MessageTracker;
 import model.war.Military;
+import model.war.War;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -43,6 +44,14 @@ public class Nation extends ControlledArea implements Details {
     private final List<Person> warCommanders = new ArrayList<>();
 
     private boolean nobleWarBonus = false;
+
+    public War getWar() {
+        return war;
+    }
+
+
+
+    private War war;
 
 
     public Nation(String name, Continent continent, Authority authority) {
@@ -208,7 +217,7 @@ public class Nation extends ControlledArea implements Details {
         freedomFighters.add(person);
         person.getEventTracker().addEvent(MessageTracker.Message("Minor", "Joined Liberal Guild"));
         person.getProperty().getUtilitySlot().getUtilityBuilding(UtilityBuildings.WorkerCenter).addBonus("Liberal Guild Bonus", 1);
-        person.getProperty().getUtilitySlot().getUtilityBuilding(UtilityBuildings.SlaveFacility).updatePaymentManager(person.getPaymentManager());
+        person.getProperty().getUtilitySlot().getUtilityBuilding(UtilityBuildings.WorkerCenter).updatePaymentManager(person.getPaymentManager());
     }
 
     public Set<Person> getFreedomFighters() {
@@ -324,23 +333,15 @@ public class Nation extends ControlledArea implements Details {
                 System.out.println(nation1 + " is already at war");
                 return;
             }
-            if(nation2.isAtWar) {
-                System.out.println(nation2 + " is already at war");
-                return;
-            }
             if(nation1 == nation2){
                 String e = nation1 + " attempted to enter war against itself.";
                 throw new RuntimeException(e);
             }
 
-            // set enemies
             nation1.enemy = nation2;
-            nation2.enemy = nation1;
 
             // set war flag
             nation1.setAtWar(true);
-            nation2.setAtWar(true);
-
 
             // add commanders who own militaries to war generals
             for(Area claimedArea : nation1.claimedAreas){
@@ -349,16 +350,6 @@ public class Nation extends ControlledArea implements Details {
                     nation1.getWarCommanders().add(defendingCommander);
                 }
             }
-
-            for(Area claimedArea : nation2.claimedAreas){
-                Person defendingCommander = claimedArea.getHighestAuthority();
-
-                if(defendingCommander.getProperty() instanceof Military) {
-                    nation2.getWarCommanders().add(defendingCommander);
-                }
-            }
-
-
 
         } catch (RuntimeException e) {
             e.printStackTrace();throw new RuntimeException(e);
@@ -463,6 +454,10 @@ public class Nation extends ControlledArea implements Details {
     }
 
 
+    public void startWar(Nation opponent, War war) {
+        this.war = war;
+        handleStartWar(this, opponent);
 
 
+    }
 }

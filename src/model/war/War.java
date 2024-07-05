@@ -1,21 +1,38 @@
 package model.war;
 
+import model.time.WarManager;
 import model.time.WarObserver;
+import model.worldCreation.Details;
 import model.worldCreation.Nation;
 
 import java.util.*;
 
 import static model.war.War.Phase.PHASE1;
 
-public class War implements WarObserver {
+public class War implements WarObserver, Details {
     @Override
     public void warUpdate(int day) {
-        if(day == 23){
-            updatePhase();
-            updateSets();
-            matchAndBattle();
-            updateOnGoingBattles();
+        try {
+            if(day == 23){
+                updateSets();
+                matchAndBattle();
+                updateOnGoingBattles();
+                updatePhase();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String getDetails() {
+        String text ="Current phase: " + currentPhase + "\n" +
+                "Attacker Militaries In Play: " + attackerMilitariesInPlay.size() + "\n" +
+                "Defender Militaries In Play: " + defenderMilitariesInPlay.size() +  "\n" +
+                "Attacker Defeated Militaries: " + attackerDefeatedMilitaries.size() + "\n" +
+                "Defender Defeated Militaries: " + defenderDefeatedMilitaries.size() + "\n" +
+                "On Going Battles: " + onGoingBattles.size();
+        return text;
     }
 
     public enum Phase {
@@ -44,6 +61,7 @@ public class War implements WarObserver {
 
 
     private void updatePhase(){
+        if (testForEmpty(attackerDefeatedMilitaries, defenderDefeatedMilitaries)) return;
 
         int attackerDefeatRatio = attackerDefeatedMilitaries.size() / (attackerDefeatedMilitaries.size() + attackerMilitariesInPlay.size());
         int defenderDefeatRatio = defenderDefeatedMilitaries.size() / (defenderDefeatedMilitaries.size() + defenderMilitariesInPlay.size());
@@ -56,6 +74,13 @@ public class War implements WarObserver {
                 startPhase2(attacker + " has defeated 80% of the opponents civilian armies.");
             }
         }
+    }
+
+    private boolean testForEmpty(Collection c1, Collection c2) {
+        if(c1.isEmpty() || c2.isEmpty()){
+            return true;
+        }
+        return false;
     }
 
     private void updateSets(){
@@ -97,6 +122,11 @@ public class War implements WarObserver {
         this.attacker = attacker;
         this.defender = defender;
         startPhase1();
+        WarManager.subscribe(this);
+    }
+
+    public void endWar(){
+        WarManager.unsubscribe(this);
     }
 
     private void updateOnGoingBattles(){
@@ -124,8 +154,8 @@ public class War implements WarObserver {
         setCurrentPhase(PHASE1);
 
         // Add civilian militaries to in play set
-        attackerMilitariesInPlay.addAll(attacker.getMilitariesOwnedByGenerals());
-        defenderMilitariesInPlay.addAll(defender.getMilitariesOwnedByGenerals());
+        attackerMilitariesInPlay.addAll(attacker.getMilitariesNotOwnedByGenerals());
+        defenderMilitariesInPlay.addAll(defender.getMilitariesNotOwnedByGenerals());
     }
 
     public void startPhase2(String message) {
@@ -152,6 +182,7 @@ public class War implements WarObserver {
     }
 
     private void matchAndBattle() {
+        if (testForEmpty(attackerMilitariesInPlay, defenderMilitariesInPlay)) return;
 
         List<Military> attackerList = new ArrayList<>(attackerMilitariesInPlay);
         List<Military> defenderList = new ArrayList<>(defenderMilitariesInPlay);
@@ -160,15 +191,16 @@ public class War implements WarObserver {
             // Attacker here means the attacking military, not the attacking nation!
             Military attacker = attackerList.remove(0);
             Military defender = defenderList.remove(0);
+            MilitaryBattle battle1 = MilitaryBattleManager.executeMilitaryBattle(attacker.getOwner(), defender.getOwner());
+            addMilitaryBattle(battle1);
+
+
+            if (testForEmpty(attackerList, defenderList )) return;
 
             // 2 battles launch at the same time with different party being the attacker
             Military attacker2 = defenderList.remove(0);
             Military defender2 = attackerList.remove(0);
-
-            MilitaryBattle battle1 = MilitaryBattleManager.executeMilitaryBattle(attacker.getOwner(), defender.getOwner());
             MilitaryBattle battle2 = MilitaryBattleManager.executeMilitaryBattle(attacker2.getOwner(), defender2.getOwner());
-
-            addMilitaryBattle(battle1);
             addMilitaryBattle(battle2);
         }
     }
