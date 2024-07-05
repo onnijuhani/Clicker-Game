@@ -13,6 +13,7 @@ import model.characters.authority.ProvinceAuthority;
 import model.characters.npc.Governor;
 import model.characters.npc.Mercenary;
 import model.resourceManagement.TransferPackage;
+import model.resourceManagement.wallets.Wallet;
 import model.shop.Shop;
 import model.stateSystem.MessageTracker;
 import model.war.Military;
@@ -30,19 +31,16 @@ public class Nation extends ControlledArea implements Details {
     private boolean isGeneralsCacheValid = false;
     private final Set<Person> slaverGuild = new HashSet<>();
     private final Set<Person> freedomFighters = new HashSet<>();
-
-
     private final Set<Area> claimedAreas = new HashSet<>();
-    private final Set<Area> areasUnderEnemyOccupation = new HashSet<>();
-
+    private final Wallet wallet = new Wallet(authorityHere);
     private boolean isAtWar = false;
     private Nation enemy = null;
 
-    public List<Person> getWarGenerals() {
-        return warGenerals;
+    public List<Person> getWarCommanders() {
+        return warCommanders;
     }
 
-    private final List<Person> warGenerals = new ArrayList<>();
+    private final List<Person> warCommanders = new ArrayList<>();
 
 
     public Nation(String name, Continent continent, Authority authority) {
@@ -177,6 +175,9 @@ public class Nation extends ControlledArea implements Details {
             }
         }
     }
+    public Wallet getWallet() {
+        return wallet;
+    }
     public boolean isGeneralsCacheValid() {
         return isGeneralsCacheValid;
     }
@@ -195,6 +196,7 @@ public class Nation extends ControlledArea implements Details {
         slaverGuild.add(person);
         person.getEventTracker().addEvent(MessageTracker.Message("Minor", "Joined Slaver Guild"));
         person.getProperty().getUtilitySlot().getUtilityBuilding(UtilityBuildings.SlaveFacility).addBonus("Slaver Guild Bonus", 1);
+        person.getProperty().getUtilitySlot().getUtilityBuilding(UtilityBuildings.SlaveFacility).updatePaymentManager(person.getPaymentManager());
     }
     public void joinLiberalGuild(Person person){
         if(person.getAiEngine().getProfile().containsKey(Trait.Slaver) && !person.isPlayer()){
@@ -204,6 +206,7 @@ public class Nation extends ControlledArea implements Details {
         freedomFighters.add(person);
         person.getEventTracker().addEvent(MessageTracker.Message("Minor", "Joined Liberal Guild"));
         person.getProperty().getUtilitySlot().getUtilityBuilding(UtilityBuildings.WorkerCenter).addBonus("Liberal Guild Bonus", 1);
+        person.getProperty().getUtilitySlot().getUtilityBuilding(UtilityBuildings.SlaveFacility).updatePaymentManager(person.getPaymentManager());
     }
 
     public Set<Person> getFreedomFighters() {
@@ -259,6 +262,17 @@ public class Nation extends ControlledArea implements Details {
                 .collect(Collectors.toList());
     }
 
+    public void setConquerorToWorkWallets(Nation nation){
+        for(Character c :citizenCache){
+            c.getPerson().getWorkWallet().setConqueror(nation);
+        }
+    }
+
+    public void removeConquerorFromWorkWallets(){
+        for(Character c :citizenCache){
+            c.getPerson().getWorkWallet().setConqueror(null);
+        }
+    }
 
     @Override
     public void setNation(Nation nation) {
@@ -276,10 +290,6 @@ public class Nation extends ControlledArea implements Details {
 
     public List<Character> getNationsGenerals() {
         return nationsGenerals;
-    }
-
-    public void setNationsGenerals(List<Character> nationsGenerals) {
-        this.nationsGenerals = nationsGenerals;
     }
 
     public Shop getShop() {
@@ -330,28 +340,22 @@ public class Nation extends ControlledArea implements Details {
             nation2.setAtWar(true);
 
 
-            // set up AreaStateManagers for claimed areas
+            // add commanders who own militaries to war generals
             for(Area claimedArea : nation1.claimedAreas){
                 Person defendingCommander = claimedArea.getHighestAuthority();
-                claimedArea.getAreaStateManager().startWar(nation2, defendingCommander);
-                nation1.getWarGenerals().add(defendingCommander);
+                if(defendingCommander.getProperty() instanceof Military) {
+                    nation1.getWarCommanders().add(defendingCommander);
+                }
             }
 
             for(Area claimedArea : nation2.claimedAreas){
                 Person defendingCommander = claimedArea.getHighestAuthority();
-                claimedArea.getAreaStateManager().startWar(nation1, defendingCommander);
-                nation2.getWarGenerals().add(defendingCommander);
+
+                if(defendingCommander.getProperty() instanceof Military) {
+                    nation2.getWarCommanders().add(defendingCommander);
+                }
             }
 
-
-            // set Nations War Generals (Kings)
-            Person warGeneral1 = nation1.getHighestAuthority();
-            nation1.getAreaStateManager().startWar(nation2, warGeneral1);
-            nation1.getWarGenerals().add(warGeneral1);
-
-            Person warGeneral2 = nation2.getHighestAuthority();
-            nation2.getAreaStateManager().startWar(nation1, warGeneral2);
-            nation2.getWarGenerals().add(warGeneral2);
 
 
         } catch (RuntimeException e) {
@@ -359,75 +363,29 @@ public class Nation extends ControlledArea implements Details {
         }
     }
 
+
     public Set<Area> getClaimedAreas() {
         return claimedAreas;
     }
-    public Set<Area> getAreasUnderEnemyOccupation() {
-        return areasUnderEnemyOccupation;
-    }
+
     public void addClaimedArea(Area claimedArea){
         try {
             if(isAtWar){
                 String error = "Cannot claim area during a war. Use the handleAreaOwnershipChange method instead.";
                 throw new RuntimeException(error);
             }
-            claimedArea.getAreaStateManager().setClaimingNation(this);
             claimedAreas.add(claimedArea);
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);
         }
     }
-    private void addClaimedAreaWar(Area claimedArea){
-        try {
-            claimedArea.getAreaStateManager().setClaimingNation(this);
-            claimedAreas.add(claimedArea);
-        } catch (Exception e) {
-            e.printStackTrace();throw new RuntimeException(e);
-        }
-    }
-    public static void handleAreaOwnershipChange(Area claimedArea, Nation newOwner, Nation oldOwner){
-        try {
-            if(!newOwner.isAtWar || !oldOwner.isAtWar){
-                System.out.println("Cannot switch area claims if not at war");
-                return;
-            }
-            if(oldOwner.claimedAreas.contains(claimedArea)){
-                oldOwner.claimedAreas.remove(claimedArea);
-                newOwner.addClaimedAreaWar(claimedArea);
 
-                claimedArea.getAreaStateManager().triggerClaimChange();
-
-                if(claimedArea instanceof ControlledArea controlledArea){
-                    controlledArea.setNation(newOwner);
-                }
-
-            } else {
-                System.out.println("Cannot switch area claims " + oldOwner + " doesn't claim the area.");
-                return;
-            }
-            if(oldOwner.claimedAreas.isEmpty()){
-                triggerTheEndOfTheNation(oldOwner);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();throw new RuntimeException(e);
-        }
-    }
 
     private static void triggerTheEndOfTheNation(Nation nation) {
         System.out.println(nation + " has been destroyed by it's enemies");
     }
 
-    public void addEnemyOccupiedArea(Area occupiedArea){
-        if(isAtWar) {
-            if(claimedAreas.contains(occupiedArea)) {
-                areasUnderEnemyOccupation.add(occupiedArea);
-            }else{
-                System.out.println("Cannot add area to be in enemy occupation since " + this + " doesn't claim the area.");
-            }
-        }else{
-            System.out.println("Cannot add area to be in enemy occupation since " + this + " is not at war.");
-        }
-    }
+
 
     private void setAtWar(boolean atWar) {
         this.isAtWar = atWar;
@@ -465,6 +423,28 @@ public class Nation extends ControlledArea implements Details {
             militaries.addAll(quarter.getMilitaryProperties());
         }
         return militaries;
+    }
+
+    public ArrayList<Military> getMilitariesOwnedByGenerals() {
+        ArrayList<Military> militariesOwnedByGenerals = new ArrayList<>();
+        ArrayList<Military> allMilitaries = getAllMilitaries();
+        for (Military military : allMilitaries) {
+            if (warCommanders.contains(military.getOwner())) {
+                militariesOwnedByGenerals.add(military);
+            }
+        }
+        return militariesOwnedByGenerals;
+    }
+
+    public ArrayList<Military> getMilitariesNotOwnedByGenerals() {
+        ArrayList<Military> militariesNotOwnedByGenerals = new ArrayList<>();
+        ArrayList<Military> allMilitaries = getAllMilitaries();
+        for (Military military : allMilitaries) {
+            if (!warCommanders.contains(military.getOwner())) {
+                militariesNotOwnedByGenerals.add(military);
+            }
+        }
+        return militariesNotOwnedByGenerals;
     }
 
     public Optional<Military> getStrongestMilitary() {

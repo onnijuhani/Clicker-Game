@@ -35,6 +35,15 @@ public class Construct {
 
 
         Properties newType = getNextProperty(person);
+
+        if(newType == Properties.Castle){
+            if(person.getRole().getNation().isAtWar()){
+                // cannot upgrade into military property if nation is at war
+                return;
+            }
+        }
+
+
         TransferPackage cost = getCost(person);
 
         assert cost != null;
@@ -82,7 +91,7 @@ public class Construct {
         switchPropertyAttributes(person, newHouse, location, oldHouse, oldUtilitySlot);
         person.getEventTracker().addEvent(MessageTracker.Message("Major", "New property constructed"));
 
-        newHouse.maintenance.updatePaymentCalendar(person.getPaymentManager());
+        newHouse.maintenance.updatePaymentManager(person.getPaymentManager());
 
 
         if(person.isPlayer()) {

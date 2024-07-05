@@ -40,7 +40,7 @@ public class Property implements PropertyObserver, Details, Ownable {
                 maintenance.payMaintenance(this);
         }
 
-        maintenance.updatePaymentCalendar(owner.getPaymentManager());
+        maintenance.updatePaymentManager(owner.getPaymentManager());
 
     }
     @Override

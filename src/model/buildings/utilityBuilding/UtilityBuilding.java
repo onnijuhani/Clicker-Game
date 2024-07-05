@@ -44,7 +44,7 @@ public class UtilityBuilding extends UpgradeSystem implements UtilityObserver, P
     }
 
     @Override
-    public void updatePaymentCalendar(PaymentManager calendar) {
+    public void updatePaymentManager(PaymentManager calendar) {
 
     }
 }

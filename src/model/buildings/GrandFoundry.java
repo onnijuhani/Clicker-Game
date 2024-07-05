@@ -35,7 +35,7 @@ public class GrandFoundry implements ArmyObserver, PaymentTracker, Details {
         try {
             if(day == expenseDay){
                 generatePayment();
-                updatePaymentCalendar(controller.getPaymentManager());
+                updatePaymentManager(controller.getPaymentManager());
             }
             increaseProduction(); // production increases over time automatically
         } catch (Exception e) {
@@ -68,7 +68,7 @@ public class GrandFoundry implements ArmyObserver, PaymentTracker, Details {
     }
 
     @Override
-    public void updatePaymentCalendar(PaymentManager calendar) {
+    public void updatePaymentManager(PaymentManager calendar) {
 
 
         TransferPackage amount = getFullProduction();

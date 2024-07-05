@@ -80,7 +80,7 @@ public class MysticMine extends UtilityBuilding {
 
 
     @Override
-    public void updatePaymentCalendar(PaymentManager calendar) {
+    public void updatePaymentManager(PaymentManager calendar) {
         calendar.addPayment(PaymentManager.PaymentType.INCOME, Payment.MYSTIC_MINE_INCOME, getExpectedAmount(), Time.utilitySlots);
     }
 

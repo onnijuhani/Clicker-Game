@@ -63,9 +63,9 @@ public class UtilitySlot implements PaymentTracker {
 
 
     @Override
-    public void updatePaymentCalendar(PaymentManager calendar) {
+    public void updatePaymentManager(PaymentManager calendar) {
         ownedUtilityBuildings.forEach((key, building) -> {
-            building.updatePaymentCalendar(calendar);
+            building.updatePaymentManager(calendar);
         });
     }
 

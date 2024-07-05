@@ -70,7 +70,7 @@ public class Maintenance implements PaymentTracker {
     }
 
     @Override
-    public void updatePaymentCalendar(PaymentManager calendar) {
+    public void updatePaymentManager(PaymentManager calendar) {
         calendar.addPayment(PaymentManager.PaymentType.EXPENSE, Payment.MAINTENANCE_EXPENSE, getMaintenanceCost(), GameManager.getMaintenanceDay());
     }
 }

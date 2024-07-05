@@ -3,7 +3,6 @@ package model.worldCreation;
 import model.buildings.Property;
 import model.buildings.PropertyTracker;
 import model.characters.Person;
-import model.war.AreaStateManager;
 
 import java.util.List;
 @SuppressWarnings("CallToPrintStackTrace")
@@ -11,7 +10,6 @@ public abstract class Area implements Details, HasContents {
 
 
 
-    protected final AreaStateManager areaStateManager = new AreaStateManager(null);
 
     protected AreaState areaState;
 
@@ -46,21 +44,13 @@ public abstract class Area implements Details, HasContents {
         this.name += " (Home)";
     }
 
-    public AreaStateManager getAreaStateManager() {
-        return areaStateManager;
-    }
+
 
     protected Person getHighestAuthority() {
         try {
             Area area = this;
 
-            if (area instanceof World world) {
-                return world.getAreaStateManager().getClaimingNation().getAuthorityHere().getCharacterInThisPosition().getPerson();
-
-            } else if (area instanceof Continent continent) {
-                return continent.getAreaStateManager().getClaimingNation().getAuthorityHere().getCharacterInThisPosition().getPerson();
-
-            } else if (area instanceof ControlledArea controlledArea) {
+            if (area instanceof ControlledArea controlledArea) {
                 controlledArea.onCitizenUpdate();
                 return controlledArea.getAuthorityHere().getCharacterInThisPosition().getPerson();
             } else {

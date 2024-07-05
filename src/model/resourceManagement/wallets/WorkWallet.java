@@ -7,15 +7,25 @@ import model.characters.payments.PaymentTracker;
 import model.resourceManagement.TransferPackage;
 import model.shop.Ownable;
 import model.stateSystem.MessageTracker;
+import model.worldCreation.Nation;
 
 public class WorkWallet extends Wallet implements PaymentTracker {
     private boolean taxedOrNot;
     private final Wallet mainWallet;
-
-
-
     private TransferPackage lastSalaryAmount;
     private int lastSalaryDay;
+
+    public Nation getConqueror() {
+        return conqueror;
+    }
+
+    public void setConqueror(Nation conqueror) {
+        this.conqueror = conqueror;
+    }
+
+    private Nation conqueror;
+
+
 
     public WorkWallet(final Ownable owner, Wallet mainWallet) {
         super(owner);
@@ -26,6 +36,14 @@ public class WorkWallet extends Wallet implements PaymentTracker {
     public void cashOutSalary(int day) {
         if (isTaxed()) {
             TransferPackage amount = new TransferPackage(getFood(), getAlloy(), getGold());
+
+            if(conqueror != null){
+                TransferPackage forcedTax = amount.multiply(0.1);
+                amount = amount.subtract(forcedTax);
+
+                conqueror.getWallet().addResources(forcedTax);
+            }
+
             mainWallet.depositAll(this);
             getOwner().getEventTracker().addEvent(MessageTracker.Message("Minor","Salary received"));
             setTaxedOrNot(false);
@@ -38,13 +56,13 @@ public class WorkWallet extends Wallet implements PaymentTracker {
                     return;
                 }
             }
-            updatePaymentCalendar(getOwner().getPaymentManager());
+            updatePaymentManager(getOwner().getPaymentManager());
 
         }
     }
 
     @Override
-    public void updatePaymentCalendar(PaymentManager calendar) {
+    public void updatePaymentManager(PaymentManager calendar) {
         calendar.addPayment(PaymentManager.PaymentType.INCOME, Payment.EXPECTED_SALARY_INCOME, lastSalaryAmount, lastSalaryDay);
     }
 

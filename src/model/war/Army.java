@@ -24,7 +24,7 @@ public class Army implements ArmyObserver, PaymentTracker {
         try {
             if(day == expenseDay) {
                 payRunningCosts();
-                updatePaymentCalendar(owner.getPaymentManager());
+                updatePaymentManager(owner.getPaymentManager());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,11 +62,11 @@ public class Army implements ArmyObserver, PaymentTracker {
         this.owner = owner;
         this.wallet = owner.getWallet();
         ArmyManager.subscribe(this);
-        updatePaymentCalendar(owner.getPaymentManager());
+        updatePaymentManager(owner.getPaymentManager());
     }
 
     @Override
-    public void updatePaymentCalendar(PaymentManager calendar) {
+    public void updatePaymentManager(PaymentManager calendar) {
         calendar.addPayment(PaymentManager.PaymentType.EXPENSE, Payment.ARMY_EXPENSE, getRunningCost(), expenseDay);
     }
 
@@ -123,7 +123,7 @@ public class Army implements ArmyObserver, PaymentTracker {
     private void finishDefenceIncrease() {
         defencePower++;
         trainingInProcess = false;
-        updatePaymentCalendar(owner.getPaymentManager());
+        updatePaymentManager(owner.getPaymentManager());
 
     }
 
@@ -163,7 +163,7 @@ public class Army implements ArmyObserver, PaymentTracker {
     private void finishAttackIncrease() {
         attackPower++;
         trainingInProcess = false;
-        updatePaymentCalendar(owner.getPaymentManager());
+        updatePaymentManager(owner.getPaymentManager());
 
     }
 
@@ -207,7 +207,7 @@ public class Army implements ArmyObserver, PaymentTracker {
     private void finishSoldierRecruit(int amount) {
         numOfSoldiers += amount;
         recruitingInProcess = false;
-        updatePaymentCalendar(owner.getPaymentManager());
+        updatePaymentManager(owner.getPaymentManager());
     }
 
 

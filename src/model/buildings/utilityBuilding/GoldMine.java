@@ -41,7 +41,7 @@ public class GoldMine extends UtilityBuilding {
     }
 
     @Override
-    public void updatePaymentCalendar(PaymentManager calendar) {
+    public void updatePaymentManager(PaymentManager calendar) {
         calendar.addPayment(PaymentManager.PaymentType.INCOME, Payment.GOLD_MINE_INCOME, getGenerateAmount(), Time.utilitySlots);
     }
 

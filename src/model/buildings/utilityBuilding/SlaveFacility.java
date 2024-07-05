@@ -129,12 +129,12 @@ public class SlaveFacility extends UtilityBuilding {
         }
     }
 
-    private TransferPackage getGenerateAmount() {
-        return new TransferPackage(production[0],production[1],production[2]);
+    protected TransferPackage getGenerateAmount() {
+        return new TransferPackage(production[0]*calculateBonus(), production[1]*calculateBonus(), production[2]*calculateBonus());
     }
 
     @Override
-    public void updatePaymentCalendar(PaymentManager calendar) {
+    public void updatePaymentManager(PaymentManager calendar) {
         calendar.addPayment(PaymentManager.PaymentType.INCOME, Payment.SLAVE_FACILITY_INCOME, getGenerateAmount(), Time.utilitySlots);
     }
 

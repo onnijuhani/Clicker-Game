@@ -42,7 +42,7 @@ public class Clicker implements PaymentTracker {
     }
 
     @Override
-    public void updatePaymentCalendar(PaymentManager calendar) {
+    public void updatePaymentManager(PaymentManager calendar) {
         double taxRate = person.getRole().getAuthority().getTaxForm().getTaxRate() / 100;
         person.getPaymentManager().addPayment(PaymentManager.PaymentType.INCOME, Payment.EXPECTED_CLICKER_INCOME ,person.getWorkWallet().getBalance().multiply(taxRate), 27);
 
@@ -67,7 +67,7 @@ public class Clicker implements PaymentTracker {
         String message = "Clicker generated "+ clickerTransferMessage(resourcesGenerated);
         messageTracker.addEvent(MessageTracker.Message("Clicker", message));
         if(showClickerSalaryInPayments) {
-            updatePaymentCalendar(person.getPaymentManager());
+            updatePaymentManager(person.getPaymentManager());
         }
     }
     private TransferPackage generate() {
