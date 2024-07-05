@@ -35,9 +35,6 @@ public class MilitaryBattle implements WarObserver {
             performAttack(defendingArmyStats, attackingArmyStats, "Defender");
             setCurrentTurn("Attacker");
         }
-
-
-
     }
 
     private void updatePaymentCalendars() {
@@ -81,7 +78,7 @@ public class MilitaryBattle implements WarObserver {
         defendingMilitary.getArmy().setState(Army.ArmyState.DEFENDING);
         logEvent("Battle started.\nAttacker: " + attackingCommander.getName() + "\nDefender: " + defendingCommander.getName());
     }
-    private void performAttack(ArmyStats attacker, ArmyStats defender, String attackTurn) {
+    private void performAttack(ArmyStats currentAttackTurn, ArmyStats currentDefenceTurn, String attacker) {
         try {
 
             // battle ends when 1 army runs out of soldiers
@@ -95,18 +92,19 @@ public class MilitaryBattle implements WarObserver {
             }
 
 
-            int attackPower = attacker.getAttackPower();
-            int defencePower = defender.getDefencePower();
+            int attackPower = currentAttackTurn.getAttackPower();
+            int defencePower = currentDefenceTurn.getDefencePower();
 
-            if(Objects.equals(attackTurn, "Attacker")){
+            if(Objects.equals(attacker, "Attacker")){
                 defencePower += propertyPower;
             }
 
-            //calculate effective strengths
-            int attackStrength = attackPower * attacker.getNumOfSoldiers() + 5000;
-            int defenceStrength = defencePower * defender.getNumOfSoldiers() + 5000;
+            NobleBonus nobleBonus = getNobleBonus(currentAttackTurn);
 
-            // basic success chance is 60%
+            int attackStrength = (attackPower * currentAttackTurn.getNumOfSoldiers() + 5000) * nobleBonus.attackerNobleBonus();
+            int defenceStrength = (defencePower * currentDefenceTurn.getNumOfSoldiers() + 5000) * nobleBonus.defenderNobleBonus();
+
+
             boolean attackSucceeds = random.nextDouble() < 0.5; // 50% chance of attack success
 
             if (attackPower > (defencePower * 100)) { // If attackPower is significantly higher, attack always succeeds.
@@ -116,15 +114,15 @@ public class MilitaryBattle implements WarObserver {
                 attackSucceeds = false;
             }
 
-            // effective power is another way to determine is attack succeeds, it's determined by the share of the strength
+            // effective power is another way to determine if attack succeeds, it's determined by the share of the strength
             double effectivePower = Math.max((double) attackStrength / (attackStrength + defenceStrength), 0.1); // 10% is the minimum
             double rand = random.nextDouble();
 
             if (attackSucceeds) {
                 if (effectivePower > rand) {
                     if (random.nextDouble() < Math.min(effectivePower, 0.7)) { // effective power also determines if soldier will die, but 70% chance is the best this can go.
-                        defender.loseSoldiers(1);
-                        if(attacker == attackingArmyStats){
+                        currentDefenceTurn.loseSoldiers(1);
+                        if(currentAttackTurn == attackingArmyStats){
                             logEvent("Defender lost a soldier.");
                         }else {
                             logEvent("Attacker lost a soldier.");
@@ -149,25 +147,50 @@ public class MilitaryBattle implements WarObserver {
 
 
             // Debug prints
-            System.out.println("Who is attacking? (turn): " + attackTurn);
-            System.out.println("Attack Power: " + attackPower);
-            System.out.println("Defence Power: " + defencePower);
-            System.out.println("Total Defence and Attack: " + totalDefenceAndAttack);
-            System.out.println("Attacker Loss Ratio: " + attackerLossRatio);
-            System.out.println("Defender Loss Ratio: " + defenderLossRatio);
-            System.out.println("Days: " + days);
-            System.out.println("Attacker Loss: " + attackerLoss);
-            System.out.println("Defender Loss: " + defenderLoss);
-            System.out.println("Attacker soldiers" + attacker.getNumOfSoldiers());
-            System.out.println("Defender soldiers" + defender.getNumOfSoldiers());
+//            System.out.println("Who is attacking? (turn): " + attacker);
+//            System.out.println("Attack Power: " + attackPower);
+//            System.out.println("Defence Power: " + defencePower);
+//            System.out.println("Total Defence and Attack: " + totalDefenceAndAttack);
+//            System.out.println("Attacker Loss Ratio: " + attackerLossRatio);
+//            System.out.println("Defender Loss Ratio: " + defenderLossRatio);
+//            System.out.println("Days: " + days);
+//            System.out.println("Attacker Loss: " + attackerLoss);
+//            System.out.println("Defender Loss: " + defenderLoss);
+//            System.out.println("Attacker soldiers" + currentAttackTurn.getNumOfSoldiers());
+//            System.out.println("Defender soldiers" + currentDefenceTurn.getNumOfSoldiers());
 
-            defender.loseDefencePower(defenderLoss);
-            attacker.loseAttackPower(attackerLoss);
+            currentDefenceTurn.loseDefencePower(defenderLoss);
+            currentAttackTurn.loseAttackPower(attackerLoss);
 
 
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);
         }
+    }
+
+    private NobleBonus getNobleBonus(ArmyStats currentAttackTurn) {
+        int attackerNobleBonus = 1;
+        int defenderNobleBonus = 1;
+
+        if (currentAttackTurn == attackingArmyStats) {
+            if (attackingCommander.getRole().getNation().isNobleWarBonus()) {
+                attackerNobleBonus = 2;
+            }
+            if (defendingCommander.getRole().getNation().isNobleWarBonus()) {
+                defenderNobleBonus = 2;
+            }
+        } else {
+            if (defendingCommander.getRole().getNation().isNobleWarBonus()) {
+                attackerNobleBonus = 2;
+            }
+            if (attackingCommander.getRole().getNation().isNobleWarBonus()) {
+                defenderNobleBonus = 2;
+            }
+        }
+        return new NobleBonus(attackerNobleBonus, defenderNobleBonus);
+    }
+
+    private record NobleBonus(int attackerNobleBonus, int defenderNobleBonus) {
     }
 
     private void settleBattle(String winner) {
@@ -180,7 +203,10 @@ public class MilitaryBattle implements WarObserver {
                 defendingCommander.getEventTracker().addEvent(MessageTracker.Message("Major", String.format("Your army has lost against %s", attackingCommander.getName())));
                 logEvent("Battle ended.\nAttacker is victorious.");
 
-                defendingCommander.getGrandFoundry().setUnderOccupation(attackingCommander, 360);
+
+                int x = attackingCommander.getRole().getNation().isAtWar() ? 4 : 2;
+                int days = Math.max(Math.min(this.days, 360) * x, 1800);
+                defendingCommander.getGrandFoundry().setUnderOccupation(attackingCommander, days);
             }
 
             if (Objects.equals(winner, "Defender")) {
@@ -191,7 +217,10 @@ public class MilitaryBattle implements WarObserver {
                 defendingCommander.getEventTracker().addEvent(MessageTracker.Message("Major", String.format("Your army is victorious against %s", attackingCommander.getName())));
                 logEvent("Battle ended.\nDefender is victorious.");
 
-                attackingCommander.getGrandFoundry().setUnderOccupation(defendingCommander, days * 2);
+
+                int x = defendingCommander.getRole().getNation().isAtWar() ? 4 : 2;
+                int days = Math.max(Math.min(this.days, 360) * x, 1800);
+                attackingCommander.getGrandFoundry().setUnderOccupation(defendingCommander, days);
             }
 
             String attackerMsg;

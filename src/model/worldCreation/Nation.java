@@ -42,6 +42,8 @@ public class Nation extends ControlledArea implements Details {
 
     private final List<Person> warCommanders = new ArrayList<>();
 
+    private boolean nobleWarBonus = false;
+
 
     public Nation(String name, Continent continent, Authority authority) {
         this.name = name;
@@ -450,6 +452,14 @@ public class Nation extends ControlledArea implements Details {
     public Optional<Military> getStrongestMilitary() {
         return getAllMilitaries().stream()
                 .max(Comparator.comparingInt(Military::getMilitaryStrength));
+    }
+
+    public boolean isNobleWarBonus() {
+        return nobleWarBonus;
+    }
+
+    public void setNobleWarBonus(boolean nobleWarBonus) {
+        this.nobleWarBonus = nobleWarBonus;
     }
 
 
