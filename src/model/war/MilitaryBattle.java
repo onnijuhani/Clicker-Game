@@ -38,12 +38,13 @@ public class MilitaryBattle implements WarObserver {
     }
 
     private void updatePaymentCalendars() {
-        System.out.println("wtf "+attackingArmyStats.getWarCost());
         attackingCommander.getPaymentManager().addPayment(PaymentManager.PaymentType.EXPENSE, Payment.MILITARY_BATTLE_EXPENSE, attackingArmyStats.getWarCost(), 6);
         defendingCommander.getPaymentManager().addPayment(PaymentManager.PaymentType.EXPENSE, Payment.MILITARY_BATTLE_EXPENSE, defendingArmyStats.getWarCost(), 6);
     }
     private String currentTurn = "Attacker"; // attacker starts
     private final Military attackingMilitary;
+
+
     private final Military defendingMilitary;
     private final ArmyStats attackingArmyStats;
     private final ArmyStats defendingArmyStats;
@@ -220,7 +221,7 @@ public class MilitaryBattle implements WarObserver {
 
 
                 int x = attackingCommander.getRole().getNation().isAtWar() ? 4 : 2;
-                int days = Math.max(Math.min(this.days, 360) * x, 1800);
+                int days = Math.min(Math.min(this.days, 360) * x, 1800);
                 defendingCommander.getGrandFoundry().setUnderOccupation(attackingCommander, days);
             }
 
@@ -234,7 +235,7 @@ public class MilitaryBattle implements WarObserver {
 
 
                 int x = defendingCommander.getRole().getNation().isAtWar() ? 4 : 2;
-                int days = Math.max(Math.min(this.days, 360) * x, 1800);
+                int days = Math.min(Math.min(this.days, 360) * x, 1800);
                 attackingCommander.getGrandFoundry().setUnderOccupation(defendingCommander, days);
             }
 
@@ -327,6 +328,9 @@ public class MilitaryBattle implements WarObserver {
 
     public Military getAttackingMilitary() {
         return attackingMilitary;
+    }
+    public Military getDefendingMilitary() {
+        return defendingMilitary;
     }
 
     public class ArmyStats {

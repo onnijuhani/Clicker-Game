@@ -27,7 +27,6 @@ public class Army implements ArmyObserver, PaymentTracker {
                 updatePaymentManager(owner.getPaymentManager());
             }
         } catch (Exception e) {
-            e.printStackTrace();
             e.printStackTrace();throw new RuntimeException(e);
         }
 

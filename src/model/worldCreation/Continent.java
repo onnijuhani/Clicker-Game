@@ -42,7 +42,6 @@ public class Continent extends Area implements Details {
     private void updateEverything(){
 
         for (Nation nation : nations){
-            nation.collectGenerals();
 
             for (Quarter quarter : nation.getAllQuarters()){
                 quarter.calculateQuarterWealth();

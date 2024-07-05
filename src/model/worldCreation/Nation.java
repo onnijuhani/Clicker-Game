@@ -28,19 +28,12 @@ public class Nation extends ControlledArea implements Details {
     private final Shop shop;
     protected LinkedList<Quarter> allQuarters;
     public int numberOfQuarters;
-    private List<Character> nationsGenerals = null;
-    private boolean isGeneralsCacheValid = false;
     private final Set<Person> slaverGuild = new HashSet<>();
     private final Set<Person> freedomFighters = new HashSet<>();
     private final Set<Area> claimedAreas = new HashSet<>();
     private final Wallet wallet = new Wallet(authorityHere);
     private boolean isAtWar = false;
     private Nation enemy = null;
-
-    public List<Person> getWarCommanders() {
-        return warCommanders;
-    }
-
     private final List<Person> warCommanders = new ArrayList<>();
 
     private boolean nobleWarBonus = false;
@@ -72,54 +65,12 @@ public class Nation extends ControlledArea implements Details {
     @Override
     public String getDetails() {
 
-        StringBuilder detailsBuilder = new StringBuilder();
-
-        if (!nationsGenerals.isEmpty()) {
-            detailsBuilder.append("Generals (").append(nationsGenerals.size()).append("):");
-            for (Character general : nationsGenerals) {
-                String generalDetails = String.format("\n- %s, Status: %s, Property: %s",
-                        general.getName(),
-                        general.getRole().getStatus(),
-                        general.getPerson().getProperty().getClass().getSimpleName());
-                detailsBuilder.append(generalDetails);
-            }
-        } else {
-            detailsBuilder.append("\nNo generals found.");
-        }
-
-        return detailsBuilder.toString();
+        return null;
     }
 
-    public void updateGenerals(){
-        setGeneralsCacheValid(false);
-        collectGenerals();
-    }
 
-    /**
-     Generals are some of the main authority characters and their supporters who also have property capable of having an army
-     **/
-    public void collectGenerals() {
-        if (isGeneralsCacheValid) {
-            return;
-        }
-        Set<Status> generalStatuses = EnumSet.of(Status.Governor, Status.Vanguard, Status.Mercenary, Status.King);
 
-        Set<String> validProperties = Set.of("Castle", "Citadel", "Fortress");
 
-        nationsGenerals = new ArrayList<>();
-        for (Quarter quarter : allQuarters) {
-            quarter.updateCitizenCache();
-
-            quarter.getPopulationMap().entrySet().stream()
-                    .filter(entry -> generalStatuses.contains(entry.getKey()))
-                    .flatMap(entry -> entry.getValue().stream())
-                    .filter(character -> validProperties.contains(character.getProperty().getClass().getSimpleName()))
-                    .forEach(person -> {
-                        nationsGenerals.add(person.getCharacter());
-                    });
-        }
-        isGeneralsCacheValid = true;
-    }
 
     private void createProvinces() {
         Random random = Settings.getRandom();
@@ -188,12 +139,6 @@ public class Nation extends ControlledArea implements Details {
     }
     public Wallet getWallet() {
         return wallet;
-    }
-    public boolean isGeneralsCacheValid() {
-        return isGeneralsCacheValid;
-    }
-    public void setGeneralsCacheValid(boolean generalsCacheValid) {
-        isGeneralsCacheValid = generalsCacheValid;
     }
 
     public Set<Person> getSlaverGuild() {
@@ -299,9 +244,6 @@ public class Nation extends ControlledArea implements Details {
         );
     }
 
-    public List<Character> getNationsGenerals() {
-        return nationsGenerals;
-    }
 
     public Shop getShop() {
         return shop;
@@ -341,9 +283,9 @@ public class Nation extends ControlledArea implements Details {
             nation1.enemy = nation2;
 
             // set war flag
-            nation1.setAtWar(true);
+            nation1.setAtWar();
 
-            // add commanders who own militaries to war generals
+            // add commanders who own militaries to war commanders
             for(Area claimedArea : nation1.claimedAreas){
                 Person defendingCommander = claimedArea.getHighestAuthority();
                 if(defendingCommander.getProperty() instanceof Military) {
@@ -377,11 +319,12 @@ public class Nation extends ControlledArea implements Details {
     private static void triggerTheEndOfTheNation(Nation nation) {
         System.out.println(nation + " has been destroyed by it's enemies");
     }
+    public List<Person> getWarCommanders() {
+        return warCommanders;
+    }
 
-
-
-    private void setAtWar(boolean atWar) {
-        this.isAtWar = atWar;
+    private void setAtWar() {
+        this.isAtWar = true;
     }
 
     public boolean isAtWar() {
@@ -410,7 +353,7 @@ public class Nation extends ControlledArea implements Details {
         return amount;
     }
 
-    public ArrayList<Military>  getAllMilitaries() {
+    public ArrayList<Military> getAllMilitaries() {
         ArrayList<Military> militaries = new ArrayList<>();
         for(Quarter quarter : allQuarters){
             militaries.addAll(quarter.getMilitaryProperties());
@@ -418,27 +361,49 @@ public class Nation extends ControlledArea implements Details {
         return militaries;
     }
 
-    public ArrayList<Military> getMilitariesOwnedByGenerals() {
-        ArrayList<Military> militariesOwnedByGenerals = new ArrayList<>();
+    public ArrayList<Military> getMilitariesOwnedByCommanders() {
+        ArrayList<Military> militariesOwnedByCommanders = new ArrayList<>();
         ArrayList<Military> allMilitaries = getAllMilitaries();
         for (Military military : allMilitaries) {
             if (warCommanders.contains(military.getOwner())) {
-                militariesOwnedByGenerals.add(military);
+                militariesOwnedByCommanders.add(military);
             }
         }
-        return militariesOwnedByGenerals;
+        return militariesOwnedByCommanders;
     }
 
-    public ArrayList<Military> getMilitariesNotOwnedByGenerals() {
-        ArrayList<Military> militariesNotOwnedByGenerals = new ArrayList<>();
+    public ArrayList<Military> getMilitariesOwnedByCivilians() {
+        ArrayList<Military> militariesOwnedByCivilians = new ArrayList<>();
         ArrayList<Military> allMilitaries = getAllMilitaries();
         for (Military military : allMilitaries) {
             if (!warCommanders.contains(military.getOwner())) {
-                militariesNotOwnedByGenerals.add(military);
+                if(     !(military.getOwner().getRole().getStatus() == Status.Vanguard) || // king and his sentinels are excluded here
+                        !(military.getOwner().getRole().getStatus() == Status.King) ||
+                        !(military.getOwner().getRole().getStatus() == Status.Noble)) {
+                    militariesOwnedByCivilians.add(military);
+                }
             }
         }
-        return militariesNotOwnedByGenerals;
+        return militariesOwnedByCivilians;
     }
+
+    public ArrayList<Military> getMilitariesOwnedByKingAndHisSentinels() {
+        ArrayList<Military> militariesOwnedKingAndSentinels= new ArrayList<>();
+
+        Military military = (Military) getAuthorityHere().getCharacterInThisPosition().getPerson().getProperty();
+
+        militariesOwnedKingAndSentinels.add(military);
+
+        for(Support support : getAuthorityHere().getSupporters()){
+            if(support.getPerson().getProperty() instanceof Military m){
+                militariesOwnedKingAndSentinels.add(m);
+            }
+        }
+
+        return militariesOwnedKingAndSentinels;
+    }
+
+
 
     public Optional<Military> getStrongestMilitary() {
         return getAllMilitaries().stream()

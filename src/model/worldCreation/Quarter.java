@@ -362,7 +362,6 @@ public class Quarter extends ControlledArea implements Details {
     public void addCitizen(Status status, Person person){
         getPopulationMap().get(status).add(person);
         isPopulationChanged = true;
-        getNation().setGeneralsCacheValid(false);
 
         if (person.getCharacter() instanceof Peasant) {
             addPeasantToBeTaxed(person);

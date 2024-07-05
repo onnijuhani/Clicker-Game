@@ -391,10 +391,6 @@ public class CombatSystem {
             attacker.getProperty().getLocation().updateEverything();
             defender.getProperty().getLocation().updateEverything();
 
-            //GENERALS MUST BE UPDATED
-            attackerRole.getNation().updateGenerals();
-            defenderRole.getNation().updateGenerals();
-
             //RELATIONS MUST BE UPDATED
             attacker.getPerson().getRelationsManager().updateSets();
             defender.getPerson().getRelationsManager().updateSets();

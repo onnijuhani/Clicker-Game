@@ -23,7 +23,6 @@ public class MilitaryBattleManager {
                 return null;
             }
             if(military2.getArmy().getState() != null){
-                System.out.println(military2.getArmy().getState());
                 attacker.getEventTracker().addEvent(MessageTracker.Message("Error", "Cannot enter military battle, opponent's military is not in Neutral state"));
                 return null;
             }

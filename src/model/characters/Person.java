@@ -90,7 +90,7 @@ public class Person implements Ownable {
             return;
         }
         if(Model.getPlayerAsPerson().getRole().getAuthority().getSupervisor().getSupervisor().getCharacterInThisPosition().getPerson() == this){
-            this.characterPic = 2;
+            this.characterPic = 7;
             return;
         }
 
@@ -103,14 +103,22 @@ public class Person implements Ownable {
             return;
         }
         if (character instanceof Miner || character instanceof Farmer) {
-            this.characterPic = Settings.getRandom().nextBoolean() ? 18 : 4;
+            if(Settings.getRandom().nextBoolean()) {
+                this.characterPic = Settings.getRandom().nextBoolean() ? 18 : 4;
+            }else{
+                this.characterPic = Settings.getRandom().nextInt(6) + 1;
+            }
             return;
         }
         if(character instanceof Mercenary){
             this.characterPic = 19;
             return;
         }
-        this.characterPic = Settings.getRandom().nextInt(5) + 1;
+        if(character instanceof Noble){
+            this.characterPic = 22;
+            return;
+        }
+        this.characterPic = Settings.getRandom().nextInt(9) + 1;
     }
 
     private void startingMsgAndAiEngine() {

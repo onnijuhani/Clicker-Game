@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import model.Model;
 import model.war.ArmyCost;
 import model.war.Military;
 import model.war.MilitaryBattle;
@@ -22,6 +23,7 @@ public class SiegeController extends BaseController {
         checkState();
         updateStats();
         updateAvailableStats();
+        testForBattle();
     }
 
     private void checkState() {
@@ -46,6 +48,38 @@ public class SiegeController extends BaseController {
         this.militaryRight = militaryRight;
         this.militaryBattle = militaryBattle;
         this.left = uiLeftSideIsAttackerOrDefender;
+    }
+
+    private void testForBattle(){
+        if(militaryBattle != null){ // if militaryBattle is already set, return
+            return;
+        }
+        if(Model.getPlayerAsPerson().getProperty() instanceof Military military){
+            if(military.getArmy().getMilitaryBattle() != null){
+                MilitaryBattle battle = military.getArmy().getMilitaryBattle();
+
+                if(!battle.isOnGoing()){ // set to null if battle is ended
+                    militaryBattle = null;
+                    return;
+                }
+
+                armyController.switchViewMethod();
+
+                String uiLeftSide;
+
+                Military militaryRight;
+                if(battle.getAttackingMilitary() == military){
+                    militaryRight = battle.getDefendingMilitary();
+                    uiLeftSide = "Attacker";
+                }else{
+                    militaryRight = battle.getAttackingMilitary();
+                    uiLeftSide = "Defender";
+                }
+                setMilitaries(military, militaryRight, battle, uiLeftSide);
+                armyController.switchViewMethod();
+            }
+
+        }
     }
 
     private Military militaryLeft; // right and left refers to the side in the UI
