@@ -72,6 +72,8 @@ public class Time {
             ArmyManager.notifyTimeUpdate(day);
         }
 
+        WarManager.notifyTimeUpdate(day); // war effort requires daily information
+
         /**
          * TODO OPTIMIZE THIS
          * // 26.3 only triggers during free days
@@ -83,7 +85,7 @@ public class Time {
 
         EventManager.processScheduledEvents(); // All scheduled events require information every day
 
-        WarManager.notifyTimeUpdate(day); // war effort requires daily information
+
 
 
         //AUTO CLICKER FUNCTIONALITY

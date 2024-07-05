@@ -48,8 +48,8 @@ public class MilitaryBattle implements WarObserver {
     private final ArmyStats attackingArmyStats;
     private final ArmyStats defendingArmyStats;
     private final int propertyPower;
-    Person attackingCommander;
-    Person defendingCommander;
+    private final Person attackingCommander;
+    private final Person defendingCommander;
     private final Random random = Settings.getRandom();
     private int days = 0; // tracks how many days have gone by
     private final LinkedList<String> battleLog = new LinkedList<>(); // Logging system

@@ -69,7 +69,7 @@ public class NameCreation {
                 "Infinite", "Pinnacle", "Iron", "Iron Legion", "Warfront", "Steel Enforcer",
                 "Ironguard", "Terrific", "Stormfront", "Devastating", "Thunder", "Thunderstrike", "Warbound",
                 "Kingdom", "Empire", "Republic", "Federation", "Commonwealth", "Dynasty",
-                "Confederation", "Realm", "Alliance", "Principality", "State", "Union",
+                "Confederation", "Realm", "Alliance", "Principality", "Phase", "Union",
                 "Territory", "Lands", "Dominion", "Protectorate", "Sultanate", "Caliphate"
         };
 

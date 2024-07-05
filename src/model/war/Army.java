@@ -55,7 +55,7 @@ public class Army implements ArmyObserver, PaymentTracker {
     private final HashMap<String, Integer> winRatio = new HashMap<>();
     private final LinkedList<String> battleHistory = new LinkedList<>();
     public enum ArmyState{
-        DEFENDING, ATTACKING, DEFEATED
+        DEFENDING, ATTACKING, AVAILABLE, DEFEATED
     }
     public Army(Military military, Person owner) {
         this.military = military;
