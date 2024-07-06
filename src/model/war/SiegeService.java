@@ -3,13 +3,14 @@ package model.war;
 import model.characters.Person;
 import model.stateSystem.MessageTracker;
 
-public class MilitaryBattleManager {
+public class SiegeService {
 
     public static MilitaryBattle executeMilitaryBattle(Person attacker, Person defender) {
 
         if(attacker == defender){
-            System.out.println("tried to attack self");
-            return null;
+
+            throw new RuntimeException("Tried to attack self. Attacker and nation: " + attacker +" "+ attacker.getRole().getNation() +
+                    " Defender and nation nation: " + defender +" "+ defender.getRole().getNation());
         }
         if(attacker.getGrandFoundry() == null || defender.getGrandFoundry() == null){
             return null;

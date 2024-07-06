@@ -26,7 +26,7 @@ public class ArmyController extends BaseController {
 
     @FXML
     void startTestWar(ActionEvent event) {
-        MilitaryBattle militaryBattle = MilitaryBattleManager.executeMilitaryBattle(Model.getPlayerAsPerson(),CharacterController.currentCharacter.getPerson());
+        MilitaryBattle militaryBattle = SiegeService.executeMilitaryBattle(Model.getPlayerAsPerson(),CharacterController.currentCharacter.getPerson());
         if(militaryBattle == null){
             return;
         }

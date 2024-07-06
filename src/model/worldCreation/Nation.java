@@ -37,6 +37,7 @@ public class Nation extends ControlledArea implements Details {
     private final List<Person> warCommanders = new ArrayList<>();
 
     private boolean nobleWarBonus = false;
+    private boolean warTax = false;
 
     public War getWar() {
         return war;
@@ -230,6 +231,29 @@ public class Nation extends ControlledArea implements Details {
         }
     }
 
+    public void setWarTaxToWorkWallets(){
+        warTax = true;
+        for(Area area : claimedAreas) {
+            if(area instanceof ControlledArea ca) {
+                for (Character c : ca.citizenCache) {
+                    c.getPerson().getWorkWallet().setWarTax(warTax, this);
+                }
+            }
+        }
+    }
+
+
+
+    public void removeWarTaxFromWorkWallets(){
+        warTax = false;
+        for(Character c :citizenCache){
+            c.getPerson().getWorkWallet().setWarTax(warTax);
+        }
+    }
+
+
+
+
     @Override
     public void setNation(Nation nation) {
         throw new RuntimeException("Attempted to set nation into nation");
@@ -287,9 +311,9 @@ public class Nation extends ControlledArea implements Details {
 
             // add commanders who own militaries to war commanders
             for(Area claimedArea : nation1.claimedAreas){
-                Person defendingCommander = claimedArea.getHighestAuthority();
-                if(defendingCommander.getProperty() instanceof Military) {
-                    nation1.getWarCommanders().add(defendingCommander);
+                Person commander = claimedArea.getHighestAuthority();
+                if(commander.getProperty() instanceof Military) {
+                    nation1.getWarCommanders().add(commander);
                 }
             }
 
@@ -366,13 +390,14 @@ public class Nation extends ControlledArea implements Details {
         ArrayList<Military> allMilitaries = getAllMilitaries();
         for (Military military : allMilitaries) {
             if (warCommanders.contains(military.getOwner())) {
-                if (!warCommanders.contains(military.getOwner())) {
                     if(     !(military.getOwner().getRole().getStatus() == Status.Vanguard) || // king and his sentinels are excluded here
                             !(military.getOwner().getRole().getStatus() == Status.King) ||
                             !(military.getOwner().getRole().getStatus() == Status.Noble)) {
                         militariesOwnedByCommanders.add(military);
-                    }
                 }
+            }
+            if(military.getOwner().getRole().getStatus() == Status.Mercenary){ // mercenaries are added here
+                militariesOwnedByCommanders.add(military);
             }
         }
         return militariesOwnedByCommanders;
@@ -385,7 +410,8 @@ public class Nation extends ControlledArea implements Details {
             if (!warCommanders.contains(military.getOwner())) {
                 if(     !(military.getOwner().getRole().getStatus() == Status.Vanguard) || // king and his sentinels are excluded here
                         !(military.getOwner().getRole().getStatus() == Status.King) ||
-                        !(military.getOwner().getRole().getStatus() == Status.Noble)) {
+                        !(military.getOwner().getRole().getStatus() == Status.Noble) ||
+                        !(military.getOwner().getRole().getStatus() == Status.Mercenary)) {
                     militariesOwnedByCivilians.add(military);
                 }
             }

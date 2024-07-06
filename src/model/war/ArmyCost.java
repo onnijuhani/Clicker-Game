@@ -14,6 +14,8 @@ public class ArmyCost {
     public static final int runningGold = Settings.getInt("runningGold");
 
 
+
+
     public static TransferPackage getRecruitingCost() {
         return new TransferPackage(0,0, ArmyCost.hireSoldierGold);
     }

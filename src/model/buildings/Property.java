@@ -49,7 +49,7 @@ public class Property implements PropertyObserver, Details, Ownable {
     }
     @Override
     public String toString() {
-        return name;
+        return name + " " + this.getClass().getSimpleName();
     }
 
     private boolean firstTimeReached = true;

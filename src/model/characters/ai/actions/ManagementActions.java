@@ -348,7 +348,7 @@ public class ManagementActions extends BaseActions {
                                 Construct.constructProperty(person);
                                 person.removeAspiration(Aspiration.UPGRADE_PROPERTY);
                                 person.removeAspiration(Aspiration.SAVE_RESOURCES);
-                                logAction(String.format("New Property Construction started, current one is %s", person.getProperty()));
+                                logAction(String.format("New Property Construction started, current one is %s", person.getProperty().getClass().getSimpleName()));
                             } catch (InsufficientResourcesException e) {
                                 person.getProperty().getVault().withdrawal(wallet, e.getCost());
     
@@ -481,14 +481,14 @@ public class ManagementActions extends BaseActions {
                 if(netCash.food() > 1100 && netCash.alloy() > 300 && netCash.gold() > 100){
                     person.addAspiration(Aspiration.UPGRADE_PROPERTY);
                     person.addAspiration(Aspiration.SAVE_RESOURCES);
-                    logAction(String.format("Evaluated a need to upgrade current home %s and a need to save resources for that", person.getProperty()));
+                    logAction(String.format("Evaluated a need to upgrade current home %s and a need to save resources for that", person.getProperty().getClass().getSimpleName()));
                 }
 
             }else if(usedSlotAmount == property.getUtilitySlot().getSlotAmount()) {
                 if (property.getUtilitySlot().getTotalUpgradeLevels() > 3 * usedSlotAmount){ // idea here is to upgrade some of the utility buildings first before the property
                     person.addAspiration(Aspiration.UPGRADE_PROPERTY); // remember to remove this need after new property is created.
                     person.addAspiration(Aspiration.SAVE_RESOURCES); // remove this one too
-                    logAction(String.format("Evaluated a need to upgrade current home %s and a need to save resources for that", person.getProperty()));
+                    logAction(String.format("Evaluated a need to upgrade current home %s and a need to save resources for that", person.getProperty().getClass().getSimpleName()));
                 }
             }
         }

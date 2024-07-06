@@ -9,6 +9,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import model.Model;
+import model.buildings.properties.Citadel;
+import model.buildings.properties.Fortress;
 import model.war.Army;
 import model.war.ArmyCost;
 import model.war.Military;
@@ -88,6 +90,8 @@ public class SiegeController extends BaseController {
     public MilitaryBattle getMilitaryBattle() {
         return militaryBattle;
     }
+    @FXML
+    private ImageView backgroundImg;
 
     private MilitaryBattle militaryBattle;
     private String left; // whether player is attacker or defender
@@ -155,10 +159,10 @@ public class SiegeController extends BaseController {
 
 
         // update photos
-        setCharacterPictures();
+        setImages();
     }
 
-    private void setCharacterPictures(){
+    private void setImages(){
 
         Image image;
         String number = String.valueOf(militaryLeft.getOwner().getCharacterPic());
@@ -175,6 +179,19 @@ public class SiegeController extends BaseController {
         image = new Image(imagePath);
 
         rightImage.setImage(image);
+
+
+        Military def = militaryBattle.getDefendingMilitary();
+
+        Image img = new Image("/Properties/castleWar.png");
+
+        if (def instanceof Citadel citadel) {
+            img = new Image("/Properties/citadelWar.jpg");
+        } else if (def instanceof Fortress fortress) {
+            img = new Image("/Properties/fortressWar.png");
+        }
+
+        backgroundImg.setImage(img);
 
     }
 

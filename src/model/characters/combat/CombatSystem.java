@@ -71,6 +71,16 @@ public class CombatSystem {
             }
         }
 
+        if(defender.getCharacter() instanceof King){
+            if(defender.getRole().getNation().isAtWar()){
+                if(attacker.isPlayer()) {
+                    attacker.getEventTracker().addEvent(MessageTracker.Message(
+                            "Error", "Cannot challenge King if your nation is at War"));
+                }
+                return;
+            }
+        }
+
         try {
             if(defender.hasState(State.TRUCE)){
                 if(attacker.isPlayer()) {

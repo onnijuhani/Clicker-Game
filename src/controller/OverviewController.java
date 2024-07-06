@@ -15,7 +15,7 @@ import model.characters.AuthorityCharacter;
 import model.characters.Peasant;
 import model.characters.Person;
 import model.resourceManagement.payments.Tax;
-import model.war.WarManager;
+import model.war.WarService;
 import model.war.WarPlanningManager;
 import model.worldCreation.Nation;
 
@@ -145,7 +145,7 @@ public class OverviewController extends BaseController{
     }
 
     private void startWar(Nation nation) {
-        WarManager.startWar(Model.getPlayerRole().getNation(), nation);
+        WarService.startWar(Model.getPlayerRole().getNation(), nation);
     }
 
 

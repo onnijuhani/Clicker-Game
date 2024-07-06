@@ -2,7 +2,7 @@ package model.war;
 
 import model.worldCreation.Nation;
 
-public class WarManager {
+public class WarService {
 
 
     public static War startWar(Nation attacker, Nation defender) {

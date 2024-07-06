@@ -15,15 +15,10 @@ public class WorkWallet extends Wallet implements PaymentTracker {
     private TransferPackage lastSalaryAmount;
     private int lastSalaryDay;
 
-    public Nation getConqueror() {
-        return conqueror;
-    }
 
-    public void setConqueror(Nation conqueror) {
-        this.conqueror = conqueror;
-    }
-
+    private Boolean warTax = false;
     private Nation conqueror;
+    private Nation nation;
 
 
 
@@ -42,6 +37,13 @@ public class WorkWallet extends Wallet implements PaymentTracker {
                 amount = amount.subtract(forcedTax);
 
                 conqueror.getWallet().addResources(forcedTax);
+            }
+
+            if(warTax && warTax != null){
+                TransferPackage warTax = amount.multiply(0.1);
+                amount = amount.subtract(warTax);
+
+                nation.getWallet().addResources(warTax);
             }
 
             mainWallet.depositAll(this);
@@ -77,6 +79,16 @@ public class WorkWallet extends Wallet implements PaymentTracker {
     public TransferPackage getLastSalaryAmount() {
         return lastSalaryAmount;
     }
+    public void setConqueror(Nation conqueror) {
+        this.conqueror = conqueror;
+    }
 
+    public void setWarTax(boolean warTax, Nation nation){
+        this.warTax = warTax;
+        this.nation = nation;
+    }
+    public void setWarTax(boolean warTax){
+        this.warTax = warTax;
+    }
 
 }

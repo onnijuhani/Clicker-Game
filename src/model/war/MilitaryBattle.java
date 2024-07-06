@@ -156,8 +156,8 @@ public class MilitaryBattle implements WarObserver {
             attackerLossRatio = (attackerLossRatio + 0.5 ) / 2.0;
             defenderLossRatio = (defenderLossRatio + 0.5 ) / 2.0;
 
-            int attackerLoss = Math.min((int) (defenderLossRatio * (days+1000)), 100_000);
-            int defenderLoss = Math.min((int) (attackerLossRatio * (days+1000)), 100_000);
+            int attackerLoss = Math.min((int) (defenderLossRatio * (days+100)), 25_000);
+            int defenderLoss = Math.min((int) (attackerLossRatio * (days+100)), 25_000);
 
 
 
