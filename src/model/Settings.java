@@ -78,6 +78,9 @@ public class Settings {
     }
 
     public static String timeLeftFormat(int[] timeLeft){
+        if(timeLeft == null){
+            return (String.format("%d days, %d months, %d years left", 0, 0, 0));
+        }
         return (String.format("%d days, %d months, %d years left", timeLeft[2], timeLeft[1], timeLeft[0]));
     }
 

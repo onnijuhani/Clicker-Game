@@ -43,63 +43,65 @@ public class Time {
 
     public static void incrementDay() {
 
-        day++;
-        if (day > 30) {
-            day = 1;
-            month++;
-        }
-        if (month > 12) {
-            month = 1;
-            year++;
-            GameManager.updateYearly(year);
-        }
-        if (day == quarterTax ||
-                day == cityTax ||
-                day == provinceTax ||
-                day == nationTax) {
-            TaxEventManager.notifyTimeUpdate(day, month, year);
-        }
-        if (day == maintenance) {
-            PropertyManager.notifyTimeUpdate();
-        }
-        if (day == generate) {
-            GenerateManager.notifyTimeUpdate();
-        }
-        if (day == utilitySlots) {
-            UtilityManager.notifyTimeUpdate();
-        }
-        if (day == armyRunningCost && !(year == 0 && month == 0)) { // prevent unfair situations by skipping the very first time
-            ArmyManager.notifyTimeUpdate(day);
-        }
-
-        WarManager.notifyTimeUpdate(day); // war effort requires daily information
-
-        /**
-         * TODO OPTIMIZE THIS
-         * // 26.3 only triggers during free days
-         */
-        if (!isFirstDay && freeDay() ) {
-            NpcManager.notifyTimeUpdate(day, month, year);
-        }
-        isFirstDay = false; // After the first increment, it's no longer the first day
-
-        EventManager.processScheduledEvents(); // All scheduled events require information every day
-
-
-
-
-        //AUTO CLICKER FUNCTIONALITY
-        if(Clicker.getInstance().isAutoClickerOwned()){
-            if(day % Clicker.getInstance().getAutoClickerLevel() == 0) {
-                Clicker.getInstance().generateResources();
+        try {
+            day++;
+            if (day > 30) {
+                day = 1;
+                month++;
             }
+            if (month > 12) {
+                month = 1;
+                year++;
+                GameManager.updateYearly(year);
+            }
+            if (day == quarterTax ||
+                    day == cityTax ||
+                    day == provinceTax ||
+                    day == nationTax) {
+                TaxEventManager.notifyTimeUpdate(day, month, year);
+            }
+            if (day == maintenance) {
+                PropertyManager.notifyTimeUpdate();
+            }
+            if (day == generate) {
+                GenerateManager.notifyTimeUpdate();
+            }
+            if (day == utilitySlots) {
+                UtilityManager.notifyTimeUpdate();
+            }
+            if (day == armyRunningCost && !(year == 0 && month == 0)) { // prevent unfair situations by skipping the very first time
+                ArmyManager.notifyTimeUpdate(day);
+            }
+
+            WarManager.notifyTimeUpdate(day); // war effort requires daily information
+
+            /**
+             * TODO OPTIMIZE THIS
+             * // 26.3 only triggers during free days
+             */
+            if (!isFirstDay && freeDay() ) {
+                NpcManager.notifyTimeUpdate(day, month, year);
+            }
+            isFirstDay = false; // After the first increment, it's no longer the first day
+
+            EventManager.processScheduledEvents(); // All scheduled events require information every day
+
+
+            //AUTO CLICKER FUNCTIONALITY
+            if(Clicker.getInstance().isAutoClickerOwned()){
+                if(day % Clicker.getInstance().getAutoClickerLevel() == 0) {
+                    Clicker.getInstance().generateResources();
+                }
+            }
+
+
+            executeMonthlyTrades(); // players monthly trades
+
+
+            handleSpecialEvents(); // early game resource bonus
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
         }
-
-
-        executeMonthlyTrades(); // players monthly trades
-
-
-        handleSpecialEvents(); // early game resource bonus
 
 
     }

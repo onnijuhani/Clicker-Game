@@ -9,6 +9,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import model.Model;
+import model.war.Army;
 import model.war.ArmyCost;
 import model.war.Military;
 import model.war.MilitaryBattle;
@@ -63,18 +64,17 @@ public class SiegeController extends BaseController {
                     return;
                 }
 
-                armyController.switchViewMethod();
+                String uiLeftSide = null;
 
-                String uiLeftSide;
-
-                Military militaryRight;
-                if(battle.getAttackingMilitary() == military){
-                    militaryRight = battle.getDefendingMilitary();
-                    uiLeftSide = "Attacker";
-                }else{
+                if(military.getState().equals(Army.ArmyState.DEFENDING)){
                     militaryRight = battle.getAttackingMilitary();
                     uiLeftSide = "Defender";
                 }
+                if(military.getState().equals(Army.ArmyState.ATTACKING)){
+                    militaryRight = battle.getDefendingMilitary();
+                    uiLeftSide = "Attacker";
+                }
+
                 setMilitaries(military, militaryRight, battle, uiLeftSide);
                 armyController.switchViewMethod();
             }
@@ -90,7 +90,7 @@ public class SiegeController extends BaseController {
     }
 
     private MilitaryBattle militaryBattle;
-    private String left;
+    private String left; // whether player is attacker or defender
 
     public void setArmyController(ArmyController armyController) {
         this.armyController = armyController;
@@ -104,35 +104,48 @@ public class SiegeController extends BaseController {
             return;
         }
 
+        MilitaryBattle.ArmyStats armyLeftStats = militaryBattle.getDefendingArmyStats();
+        MilitaryBattle.ArmyStats armyRightStats = militaryBattle.getAttackingArmyStats();
+
+        if(Objects.equals(left, "Attacker")){
+            armyLeftStats = militaryBattle.getAttackingArmyStats();
+            armyRightStats = militaryBattle.getDefendingArmyStats();
+        }
+
         // update current day
         day.setText("Day: " + militaryBattle.getDays());
 
         // Update the soldiers count for both sides
-        soldiersLeft.setText("Soldiers: " + militaryBattle.getAttackingArmyStats().getNumOfSoldiers());
-        soldiersRight.setText("Soldiers: " + militaryBattle.getDefendingArmyStats().getNumOfSoldiers());
+        soldiersLeft.setText("Soldiers: " + armyLeftStats.getNumOfSoldiers());
+        soldiersRight.setText("Soldiers: " + armyRightStats.getNumOfSoldiers());
 
         // Update the offence power for both sides
-        offenceLeft.setText("Offence Weapons: " + militaryBattle.getAttackingArmyStats().getAttackPower() / ArmyCost.increaseArmyAttack);
-        offenceRight.setText("Offence Weapons: " + militaryBattle.getDefendingArmyStats().getAttackPower() / ArmyCost.increaseArmyAttack);
+        offenceLeft.setText("Offence Weapons: " + armyLeftStats.getAttackPower() / ArmyCost.increaseArmyAttack);
+        offenceRight.setText("Offence Weapons: " + armyRightStats.getAttackPower() / ArmyCost.increaseArmyAttack);
 
         // Update the defence power for both sides
-        defenceLeft.setText("Defence Weapons: " + militaryBattle.getAttackingArmyStats().getDefencePower() / ArmyCost.increaseArmyDefence);
-        defenceRight.setText("Defence Weapons: " + militaryBattle.getDefendingArmyStats().getDefencePower() / ArmyCost.increaseArmyDefence);
+        defenceLeft.setText("Defence Weapons: " + armyLeftStats.getDefencePower() / ArmyCost.increaseArmyDefence);
+        defenceRight.setText("Defence Weapons: " + armyRightStats.getDefencePower() / ArmyCost.increaseArmyDefence);
 
         // Update the state for both sides (attacker or defender)
         if(militaryBattle.getAttackingMilitary() == militaryLeft){
             stateLeft.setText("Attacker");
             stateRight.setText("Defender");
+            // Calculate and update the winning chance
+            double winningChanceValue = militaryBattle.calculateWinningChance();
+            double losingChanceValue = 1 - winningChanceValue;
+            winningChance.setText(String.format("%.2f%% - %.2f%%", winningChanceValue * 100, losingChanceValue * 100));
         }else{
             stateLeft.setText("Defender");
             stateRight.setText("Attacker");
+            // Calculate and update the winning chance
+            double winningChanceValue = militaryBattle.calculateWinningChance();
+            double losingChanceValue = 1 - winningChanceValue;
+            winningChance.setText(String.format("%.2f%% - %.2f%%", losingChanceValue * 100, winningChanceValue * 100));
         }
 
 
-        // Calculate and update the winning chance
-        double winningChanceValue = militaryBattle.calculateWinningChance();
-        double losingChanceValue = 1 - winningChanceValue;
-        winningChance.setText(String.format("%.2f%% - %.2f%%", winningChanceValue * 100, losingChanceValue * 100));
+
 
         // update log
         List<String> logEntries = militaryBattle.getBattleLog();
@@ -147,17 +160,12 @@ public class SiegeController extends BaseController {
 
     private void setCharacterPictures(){
 
-        if(militaryLeft.getOwner().getCharacterPic() == 0){
-            militaryLeft.getOwner().generatePicture();
-        }
-
         Image image;
         String number = String.valueOf(militaryLeft.getOwner().getCharacterPic());
         String imagePath = String.format("/characterImages/%s.png", number);
         image = new Image(imagePath);
 
         leftImage.setImage(image);
-
 
         if(militaryRight.getOwner().getCharacterPic() == 0){
             militaryRight.getOwner().generatePicture();
@@ -212,7 +220,7 @@ public class SiegeController extends BaseController {
 
     }
 
-    private MilitaryBattle.ArmyStats getArmyStats() {
+    private MilitaryBattle.ArmyStats getPlayerArmyStats() {
         MilitaryBattle.ArmyStats armyStats;
         if(Objects.equals(left, "Attacker")){
             armyStats = militaryBattle.getAttackingArmyStats();
@@ -232,7 +240,7 @@ public class SiegeController extends BaseController {
     private Label availableSoldiers;
     @FXML
     void sendDefence(ActionEvent event) {
-        MilitaryBattle.ArmyStats armyStats = getArmyStats();
+        MilitaryBattle.ArmyStats armyStats = getPlayerArmyStats();
         armyStats.addDefencePower(militaryLeft.getArmy());
     }
 
@@ -240,13 +248,13 @@ public class SiegeController extends BaseController {
 
     @FXML
     void sendOffence(ActionEvent event) {
-        MilitaryBattle.ArmyStats armyStats = getArmyStats();
+        MilitaryBattle.ArmyStats armyStats = getPlayerArmyStats();
         armyStats.addAttackPower(militaryLeft.getArmy());
     }
 
     @FXML
     void sendSoldiers(ActionEvent event) {
-        MilitaryBattle.ArmyStats armyStats = getArmyStats();
+        MilitaryBattle.ArmyStats armyStats = getPlayerArmyStats();
         armyStats.addSoldiers(militaryLeft.getArmy());
     }
 

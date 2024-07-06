@@ -92,7 +92,7 @@ public class MilitaryBattle implements WarObserver {
     private void setStartingStates() {
         attackingMilitary.getArmy().setState(Army.ArmyState.ATTACKING);
         defendingMilitary.getArmy().setState(Army.ArmyState.DEFENDING);
-        logEvent("Battle started.\nAttacker: " + attackingCommander.getName() + "\nDefender: " + defendingCommander.getName());
+        logEvent("Battle started.\nAttacker: " + attackingCommander.getCharacter().getName() + "\nDefender: " + defendingCommander.getCharacter().getName());
     }
     private void performAttack(ArmyStats currentAttackTurn, ArmyStats currentDefenceTurn, String attacker) {
         try {
@@ -227,7 +227,7 @@ public class MilitaryBattle implements WarObserver {
 
             if (Objects.equals(winner, "Defender")) {
                 defendingMilitary.getArmy().setState(null);
-                attackingMilitary.getArmy().setState(null);
+                attackingMilitary.getArmy().setState(Army.ArmyState.DEFEATED);
 
                 attackingCommander.getEventTracker().addEvent(MessageTracker.Message("Major", String.format("Your army has lost against %s", defendingCommander.getName())));
                 defendingCommander.getEventTracker().addEvent(MessageTracker.Message("Major", String.format("Your army is victorious against %s", attackingCommander.getName())));
@@ -243,7 +243,7 @@ public class MilitaryBattle implements WarObserver {
             String defenderMsg;
 
             String resultA = Objects.equals(winner, "Attacker") ? "Won" : "Lost";
-            String resultD = Objects.equals(winner, "Attacker") ? "Lost" : "Won";
+            String resultD = Objects.equals(winner, "Defender") ? "Won" : "Lost";
 
             attackerMsg = String.format("%s offensive battle against %s.\nBattle lasted for %d days. Returned with %d soldiers, %d offence weapons and %d defence Weapons",
                     resultA,
@@ -406,6 +406,9 @@ public class MilitaryBattle implements WarObserver {
         }
     }
 
+    /**
+     * @return returns winning chance from attackers perspective
+     */
     public double calculateWinningChance() {
         int defenderDefencePower = defendingArmyStats.getTotalPower() + propertyPower;
         int attackerAttackPower = attackingArmyStats.getTotalPower();

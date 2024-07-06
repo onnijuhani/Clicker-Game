@@ -366,7 +366,13 @@ public class Nation extends ControlledArea implements Details {
         ArrayList<Military> allMilitaries = getAllMilitaries();
         for (Military military : allMilitaries) {
             if (warCommanders.contains(military.getOwner())) {
-                militariesOwnedByCommanders.add(military);
+                if (!warCommanders.contains(military.getOwner())) {
+                    if(     !(military.getOwner().getRole().getStatus() == Status.Vanguard) || // king and his sentinels are excluded here
+                            !(military.getOwner().getRole().getStatus() == Status.King) ||
+                            !(military.getOwner().getRole().getStatus() == Status.Noble)) {
+                        militariesOwnedByCommanders.add(military);
+                    }
+                }
             }
         }
         return militariesOwnedByCommanders;

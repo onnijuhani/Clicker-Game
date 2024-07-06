@@ -12,7 +12,6 @@ public class MilitaryBattleManager {
             return null;
         }
         if(attacker.getGrandFoundry() == null || defender.getGrandFoundry() == null){
-            System.out.println("Grand foundry not owned");
             return null;
         }
 

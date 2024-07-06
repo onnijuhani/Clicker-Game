@@ -254,7 +254,7 @@
                                     <Insets top="4.0" />
                                  </VBox.margin>
                               </VBox>
-                              <Button fx:id="switchButton" mnemonicParsing="false" onAction="#switchView" styleClass="militaryButton" text="WAR CONTROL ROOM" textAlignment="CENTER" textFill="#eeeeee">
+                              <Button fx:id="switchButton" mnemonicParsing="false" onAction="#switchView" styleClass="militaryButton" text="BATTLE" textAlignment="CENTER" textFill="#eeeeee">
                                  <VBox.margin>
                                     <Insets top="15.0" />
                                  </VBox.margin>

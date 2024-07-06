@@ -13,10 +13,11 @@ public class War implements WarObserver, Details {
     @Override
     public void warUpdate(int day) {
         try {
-            if(day == 23){
+            if(day == 23 || day == 8){
+                royalsMatchMaking(day);
                 updateSets();
-                matchAndBattle();
                 updateOnGoingBattles();
+                matchAndPlay(day);
                 updatePhase();
             }
         } catch (Exception e) {
@@ -29,6 +30,8 @@ public class War implements WarObserver, Details {
         String text ="Current phase: " + currentPhase + "\n" +
                 "Attacker Militaries In Play: " + attackerMilitariesInPlay.size() + "\n" +
                 "Defender Militaries In Play: " + defenderMilitariesInPlay.size() +  "\n" +
+                "Attacker Militaries In Battle: " + attackerMilitariesInBattle.size() +  "\n" +
+                "Defender Militaries In Battle: " + defenderMilitariesInBattle.size() +  "\n" +
                 "Attacker Defeated Militaries: " + attackerDefeatedMilitaries.size() + "\n" +
                 "Defender Defeated Militaries: " + defenderDefeatedMilitaries.size() + "\n" +
                 "On Going Battles: " + onGoingBattles.size();
@@ -53,7 +56,8 @@ public class War implements WarObserver, Details {
     private final HashSet<Military> attackerDefeatedMilitaries = new HashSet<>(); // Militaries that are out of the war completely
     private final HashSet<Military> defenderDefeatedMilitaries = new HashSet<>();
 
-
+    private final HashSet<Military> attackerRoyals = new HashSet<>(); // Militaries that are out of the war completely
+    private final HashSet<Military> defenderRoyals = new HashSet<>();
 
     private final ArrayList<MilitaryBattle> onGoingBattles = new ArrayList<>();
 
@@ -63,34 +67,36 @@ public class War implements WarObserver, Details {
     private void updatePhase(){
         if (testForEmpty(attackerDefeatedMilitaries, defenderDefeatedMilitaries)) return;
 
-        double attackerDefeatRatio = (double) attackerDefeatedMilitaries.size() / (attackerDefeatedMilitaries.size() + attackerMilitariesInPlay.size());
-        double defenderDefeatRatio = (double) defenderDefeatedMilitaries.size() / (defenderDefeatedMilitaries.size() + defenderMilitariesInPlay.size());
+        double attackerDefeatRatio = (double) attackerDefeatedMilitaries.size() / (attackerDefeatedMilitaries.size() + attackerMilitariesInPlay.size() + attackerMilitariesInBattle.size());
+        double defenderDefeatRatio = (double) defenderDefeatedMilitaries.size() / (defenderDefeatedMilitaries.size() + defenderMilitariesInPlay.size() + defenderMilitariesInBattle.size());
 
         if(currentPhase == PHASE1) {
-            if(attackerDefeatRatio > 0.8){
-                startPhase2(defender + " has defeated 80% of the opponents civilian armies.");
+            if(attackerDefeatRatio > 0.6){
+                startPhase2(defender + " has defeated 60% of the opponents civilian armies.");
             }
-            if(defenderDefeatRatio > 0.8){
-                startPhase2(attacker + " has defeated 80% of the opponents civilian armies.");
+            if(defenderDefeatRatio > 0.6){
+                startPhase2(attacker + " has defeated 60% of the opponents civilian armies.");
             }
         }
 
 
         if(currentPhase == PHASE2) {
-            if(attackerDefeatRatio >= 1){
-                startPhase3(defender + " has defeated 100% of the opponents commander armies.");
+            if(attackerDefeatRatio >= 0.6){
+                startPhase3(defender + " has defeated 60% of the opponents commander armies.");
             }
-            if(defenderDefeatRatio >= 1){
-                startPhase3(attacker + " has defeated 100% of the opponents commander armies.");
+            if(defenderDefeatRatio >= 0.6){
+                startPhase3(attacker + " has defeated 60% of the opponents commander armies.");
             }
         }
 
         if(currentPhase == PHASE3) {
             if(attackerDefeatRatio >= 1){
                 System.out.println(defender + " has won the war against " + attacker);
+                endWar();
             }
             if(defenderDefeatRatio >= 1){
                 System.out.println(attacker + " has won the war against " + defender);
+                endWar();
             }
         }
 
@@ -120,12 +126,18 @@ public class War implements WarObserver, Details {
     private void filterArmies(Set<Military> militariesAvailable, Set<Military> defeatedMilitaries, Set<Military> militariesInBattle) {
         HashSet<Military> all = new HashSet<>(militariesAvailable);
         all.addAll(militariesInBattle);
-        Iterator<Military> iterator = all.iterator();
-        while (iterator.hasNext()) {
-            Military military = iterator.next();
+        for (Military military : all) {
+
+            Army.ArmyState state = military.getState();
+
+            if(state == null){
+                militariesInBattle.remove(military);
+                militariesAvailable.add(military);
+                continue;
+            }
 
             // If military is defeated, move to defeatedMilitaries
-            if (military.getState() == Army.ArmyState.DEFEATED) {
+            if (state == Army.ArmyState.DEFEATED) {
                 defeatedMilitaries.add(military);
                 militariesAvailable.remove(military);
                 militariesInBattle.remove(military);
@@ -133,14 +145,13 @@ public class War implements WarObserver, Details {
             }
 
             // If military is in battle, move to militariesInBattle
-            if (military.getState() == Army.ArmyState.ATTACKING || military.getState() == Army.ArmyState.DEFENDING) {
+            if (state == Army.ArmyState.ATTACKING || state == Army.ArmyState.DEFENDING) {
                 militariesInBattle.add(military);
                 militariesAvailable.remove(military);
-                return;
+                continue;
             }
 
-            militariesInBattle.remove(military);
-            militariesAvailable.add(military);
+
 
         }
     }
@@ -202,27 +213,50 @@ public class War implements WarObserver, Details {
         if(currentPhase == PHASE2) {
             System.out.println(message);
             attackerMilitariesInPlay.addAll(attacker.getMilitariesOwnedByKingAndHisSentinels());
+            attackerRoyals.addAll(attacker.getMilitariesOwnedByKingAndHisSentinels());
+
             defenderMilitariesInPlay.addAll(defender.getMilitariesOwnedByKingAndHisSentinels());
+            defenderRoyals.addAll(defender.getMilitariesOwnedByKingAndHisSentinels());
         }
         setCurrentPhase(PHASE3);
-
     }
 
-    public void addMilitaryBattle(MilitaryBattle battle) {
-        if(battle == null){
-            return;
+    private void royalsMatchMaking(int day){
+        if(currentPhase != PHASE3) return;
+
+        testRoyalMilitary(attackerRoyals, attackerDefeatedMilitaries);
+        testRoyalMilitary(defenderRoyals, defenderDefeatedMilitaries);
+
+        if(day == 23) {
+            matchMaking(attackerRoyals, defenderRoyals);
+        }else{
+            matchMaking(defenderRoyals, attackerRoyals);
         }
-        onGoingBattles.add(battle);
-    }
-    public ArrayList<MilitaryBattle> getOnGoingBattles() {
-        return onGoingBattles;
     }
 
-    private void matchAndBattle() {
-        if (testForEmpty(attackerMilitariesInPlay, defenderMilitariesInPlay)) return;
+    private void testRoyalMilitary(HashSet<Military> set, HashSet<Military> defeated) {
+        Iterator<Military> iterator = set.iterator();
+        while (iterator.hasNext()) {
+            Military m = iterator.next();
+            if (m.getState() == Army.ArmyState.DEFEATED) {
+                iterator.remove();
+                defeated.add(m);
+            }
+        }
+    }
+    private void matchAndPlay(int day) {
+        if(day == 23) {
+            matchMaking(attackerMilitariesInPlay, defenderMilitariesInPlay);
+        }else{
+            matchMaking(defenderMilitariesInPlay, attackerMilitariesInPlay);
+        }
+    }
 
-        List<Military> attackerList = new ArrayList<>(attackerMilitariesInPlay);
-        List<Military> defenderList = new ArrayList<>(defenderMilitariesInPlay);
+    private void matchMaking(HashSet<Military> attackerSet, HashSet<Military> defenderSet) {
+        if (testForEmpty(attackerSet, defenderSet)) return;
+
+        List<Military> attackerList = new ArrayList<>(attackerSet);
+        List<Military> defenderList = new ArrayList<>(defenderSet);
 
         while (!attackerList.isEmpty() && !defenderList.isEmpty()) {
             // Attacker here means the attacking military, not the attacking nation!
@@ -231,7 +265,12 @@ public class War implements WarObserver, Details {
 
             if (testMilitariesForUndefeated(attacker, defender)) {
                 MilitaryBattle battle1 = MilitaryBattleManager.executeMilitaryBattle(attacker.getOwner(), defender.getOwner());
-                addMilitaryBattle(battle1);
+                if(addMilitaryBattle(battle1)) {
+                    defenderMilitariesInPlay.remove(defender);
+                    attackerMilitariesInPlay.remove(attacker);
+                    attackerMilitariesInBattle.add(attacker);
+                    defenderMilitariesInBattle.add(defender);
+                }
             }
 
             if (attackerList.isEmpty() || defenderList.isEmpty()) break;
@@ -242,10 +281,33 @@ public class War implements WarObserver, Details {
 
             if (testMilitariesForUndefeated(attacker2, defender2)) {
                 MilitaryBattle battle2 = MilitaryBattleManager.executeMilitaryBattle(attacker2.getOwner(), defender2.getOwner());
-                addMilitaryBattle(battle2);
+                if(addMilitaryBattle(battle2)) {
+                    defenderMilitariesInPlay.remove(attacker2);
+                    attackerMilitariesInPlay.remove(defender2);
+                    attackerMilitariesInBattle.add(defender2);
+                    defenderMilitariesInBattle.add(attacker2);
+                }
             }
         }
     }
+
+
+    /**
+     * @param battle battle to be added to the class list
+     * @return returns false if battle is null, and true if battle started successfully
+     */
+    public boolean addMilitaryBattle(MilitaryBattle battle) {
+        if(battle == null){
+            return false;
+        }
+        onGoingBattles.add(battle);
+        return true;
+    }
+    public ArrayList<MilitaryBattle> getOnGoingBattles() {
+        return onGoingBattles;
+    }
+
+
 
 
     /**
