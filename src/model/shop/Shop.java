@@ -40,7 +40,7 @@ public class Shop implements Ownable {
     }
 
     @Override // maybe add event PaymentTracker later
-    public MessageTracker getEventTracker() {
+    public MessageTracker getMessageTracker() {
         return null;
     }
 

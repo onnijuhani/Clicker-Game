@@ -120,7 +120,7 @@ public class MessageTracker {
     public LinkedList<String> getUtilityEvents() {
         return utilityEvents;
     }
-    public void addEvent(String message) {
+    public void addMessage(String message) {
         String type = extractTypeFromMessage(message);
 
         switch (type) {

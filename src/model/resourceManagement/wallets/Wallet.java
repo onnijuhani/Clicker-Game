@@ -239,7 +239,7 @@ public class Wallet {
             }
 
             if(this.deposit(vault, expenses)){
-                person.getEventTracker().addEvent(MessageTracker.Message("Minor", "Deposited needed resources from Vault"));
+                person.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Deposited needed resources from Vault"));
             }else{
                 this.depositAll(vault);
             }

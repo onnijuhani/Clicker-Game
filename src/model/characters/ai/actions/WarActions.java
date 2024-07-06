@@ -22,9 +22,9 @@ public class WarActions extends BaseActions {
 
     @Override
     protected void createAllActions() {
-        HireSoldiers hireSoldiers = new HireSoldiers(person, npcActionLogger,5,profile);
-        TrainAttack trainAttack = new TrainAttack(person, npcActionLogger,5,profile);
-        TrainDefence trainDefence = new TrainDefence(person, npcActionLogger,5,profile);
+        HireSoldiers hireSoldiers = new HireSoldiers(person, npcActionLogger,1,profile);
+        TrainAttack trainAttack = new TrainAttack(person, npcActionLogger,10,profile);
+        TrainDefence trainDefence = new TrainDefence(person, npcActionLogger,10,profile);
 
         allActions.add(hireSoldiers);
         allActions.add(trainAttack);
@@ -176,12 +176,12 @@ public class WarActions extends BaseActions {
         amount =  Math.min(netBalance.gold() / ArmyCost.runningGold - 1, amount) ;
 
         if(army.recruitSoldier(amount)){
-            person.getEventTracker().addEvent(MessageTracker.Message("Major", "Recruited " + amount + " new Soldier(s)"));
+            person.getMessageTracker().addMessage(MessageTracker.Message("Major", "Recruited " + amount + " new Soldier(s)"));
 
             action.logAction(String.format("Recruited %d new soldiers. Now total of %d soldiers", amount, army.getNumOfSoldiers()));
 
         }else{
-            person.getEventTracker().addEvent(MessageTracker.Message("Major", "Recruiting new Soldiers went wrong"));
+            person.getMessageTracker().addMessage(MessageTracker.Message("Major", "Recruiting new Soldiers went wrong"));
         }
     }
 

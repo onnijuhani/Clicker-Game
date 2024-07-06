@@ -32,7 +32,7 @@ public class GoldMine extends UtilityBuilding {
         TransferPackage transfer = getGenerateAmount();
         owner.getWallet().addResources(transfer);
         if (owner.isPlayer()) {
-            owner.getEventTracker().addEvent(MessageTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
+            owner.getMessageTracker().addMessage(MessageTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
         }
     }
 

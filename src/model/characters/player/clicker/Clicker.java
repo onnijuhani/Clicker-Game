@@ -29,7 +29,7 @@ public class Clicker implements PaymentTracker {
 
     private Clicker(Person person) {
         this.person = person;
-        this.messageTracker = person.getEventTracker();
+        this.messageTracker = person.getMessageTracker();
         this.wallet = person.getWallet();
         this.workWallet = person.getWorkWallet();
         this.ownedClickerTools = new HashMap<>();
@@ -65,7 +65,7 @@ public class Clicker implements PaymentTracker {
         workWallet.addResources(resourcesGenerated);
         totalClicks++;
         String message = "Clicker generated "+ clickerTransferMessage(resourcesGenerated);
-        messageTracker.addEvent(MessageTracker.Message("Clicker", message));
+        messageTracker.addMessage(MessageTracker.Message("Clicker", message));
         if(showClickerSalaryInPayments) {
             updatePaymentManager(person.getPaymentManager());
         }

@@ -126,7 +126,7 @@ public class Person implements Ownable {
         if(isPlayer){
             return;
         }
-        messageTracker.addEvent(MessageTracker.Message("Major",
+        messageTracker.addMessage(MessageTracker.Message("Major",
                 "\nYou are "+character + "\n" +
                         "Traits: "+getAiEngine().getProfile() + "\n" +
                         "Starting Area: " + property.getLocation().getFullHierarchyInfo() + "\n" +
@@ -159,7 +159,7 @@ public class Person implements Ownable {
             triggerGameOver();
         }else {
             if(isPlayer) {
-                getEventTracker().addEvent(MessageTracker.Message("Major", "Lost a Strike! Strikes left: " + strikesLeft));
+                getMessageTracker().addMessage(MessageTracker.Message("Major", "Lost a Strike! Strikes left: " + strikesLeft));
             }
         }
     }
@@ -168,7 +168,7 @@ public class Person implements Ownable {
 
     private void triggerGameOver(){
         if(character.getPerson().isPlayer()) {
-            getEventTracker().addEvent(MessageTracker.Message("Major","GAME OVER. No Strikes left."));
+            getMessageTracker().addMessage(MessageTracker.Message("Major","GAME OVER. No Strikes left."));
             Time.setGameOver(true);
 
             PopUpMessageTracker.PopUpMessage gameOverMessage = new PopUpMessageTracker.PopUpMessage(
@@ -181,7 +181,7 @@ public class Person implements Ownable {
             PopUpMessageTracker.sendGameOver();
         }else{
             getStrikesTracker().gainStrike(10);
-            getEventTracker().addEvent(MessageTracker.Message("Major", "Bankrupt"));
+            getMessageTracker().addMessage(MessageTracker.Message("Major", "Bankrupt"));
             for(int i = 0; i < 5; i++){
                 decreasePersonalPower();
             }
@@ -251,7 +251,7 @@ public class Person implements Ownable {
     public RelationsManager getRelationsManager() {
         return relationsManager;
     }
-    public MessageTracker getEventTracker() {
+    public MessageTracker getMessageTracker() {
         return messageTracker;
     }
     public CombatStats getCombatStats() {return combatStats;}

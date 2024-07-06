@@ -39,7 +39,7 @@ public class UtilityBuilding extends UpgradeSystem implements UtilityObserver, P
         TransferPackage transfer = new TransferPackage(0,0,0);
         owner.getWallet().addResources(transfer);
         if (owner.isPlayer()) {
-            owner.getEventTracker().addEvent(MessageTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
+            owner.getMessageTracker().addMessage(MessageTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
         }
     }
 

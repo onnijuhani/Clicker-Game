@@ -50,7 +50,7 @@ public class War implements WarObserver, Details {
     }
 
     public enum Phase {
-        PHASE1, PHASE2, PHASE3
+        PHASE1, PHASE2, PHASE3, ENDED
     }
 
     private int days = 0;
@@ -130,6 +130,7 @@ public class War implements WarObserver, Details {
             if(ddr > 0.6){
                 startPhase2(attacker + " has defeated 60% of the opponents civilian armies.");
             }
+            return;
         }
 
 
@@ -140,16 +141,19 @@ public class War implements WarObserver, Details {
             if(ddr >= 0.8){
                 startPhase3(attacker + " has defeated 80% of the opponents commander armies.");
             }
+            return;
         }
 
         if(currentPhase == PHASE3) {
             if(adr >= 0.7 && attackerRoyals.isEmpty()){
                 System.out.println(defender + " has won the war against " + attacker);
-                endWar();
+                endWar("Loser", "Winner"); // Attacker has lost the offensive war
+                currentPhase = ENDED;
             }
-            if(ddr >= 0.7 && attackerRoyals.isEmpty()){
+            if(ddr >= 0.7 && defenderRoyals.isEmpty()){
                 System.out.println(attacker + " has won the war against " + defender);
-                endWar();
+                endWar("Winner", "Loser"); // Attacker has won the offensive war
+                currentPhase = ENDED;
             }
         }
 
@@ -221,7 +225,11 @@ public class War implements WarObserver, Details {
         WarManager.subscribe(this);
     }
 
-    public void endWar(){
+    public void endWar(String attacker, String defender){
+
+        this.attacker.endWar(this.defender, attacker);
+        this.defender.endWar(this.attacker, defender);
+
         WarManager.unsubscribe(this);
     }
 

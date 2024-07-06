@@ -33,13 +33,18 @@ public class WorkWallet extends Wallet implements PaymentTracker {
             TransferPackage amount = new TransferPackage(getFood(), getAlloy(), getGold());
 
             if(conqueror != null){
-                TransferPackage forcedTax = amount.multiply(0.1);
+                TransferPackage forcedTax = amount.multiply(0.25);
+                if(getOwner() instanceof Person p){
+                    if(p.isPlayer()){
+                        p.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Forced tax paid to: " + conqueror + "\n" + "Amount: " + forcedTax));
+                    }
+                }
                 amount = amount.subtract(forcedTax);
 
                 conqueror.getWallet().addResources(forcedTax);
             }
 
-            if(warTax && warTax != null){
+            if(warTax){
                 TransferPackage warTax = amount.multiply(0.1);
                 amount = amount.subtract(warTax);
 
@@ -47,7 +52,7 @@ public class WorkWallet extends Wallet implements PaymentTracker {
             }
 
             mainWallet.depositAll(this);
-            getOwner().getEventTracker().addEvent(MessageTracker.Message("Minor","Salary received"));
+            getOwner().getMessageTracker().addMessage(MessageTracker.Message("Minor","Salary received"));
             setTaxedOrNot(false);
 
             lastSalaryAmount = amount;

@@ -32,7 +32,7 @@ public class Vault extends Wallet implements Ownable {
         lockedResources.addResources(transfer);
         depositFromWallet.subtractResources(transfer);
         TransferPackage lockedAmount = TransferPackage.fromArray(lockedResources.getWalletValues());
-        getOwner().getEventTracker().addEvent(MessageTracker.Message("Minor", "Deposited resources "+lockedAmount.toShortString()+"\nare locked and will be available after the year ends.\nInterest will not be applied during this time."));
+        getOwner().getMessageTracker().addMessage(MessageTracker.Message("Minor", "Deposited resources "+lockedAmount.toShortString()+"\nare locked and will be available after the year ends.\nInterest will not be applied during this time."));
         return true;
     }
 
@@ -40,7 +40,7 @@ public class Vault extends Wallet implements Ownable {
         TransferPackage lockedAmount = TransferPackage.fromArray(lockedResources.getWalletValues());
         this.depositAll(lockedResources);
         if( !(lockedAmount.getAll()[0] == 0) && !(lockedAmount.getAll()[1] == 0) && !(lockedAmount.getAll()[2] == 0))  {
-            getOwner().getEventTracker().addEvent(MessageTracker.Message("Minor", "Locked resources " + lockedAmount.toShortString() + "\nare now available for immediate withdrawal and interest payments at the year end."));
+            getOwner().getMessageTracker().addMessage(MessageTracker.Message("Minor", "Locked resources " + lockedAmount.toShortString() + "\nare now available for immediate withdrawal and interest payments at the year end."));
         }
     }
 
@@ -61,7 +61,7 @@ public class Vault extends Wallet implements Ownable {
         TransferPackage interestTransfer = TransferPackage.fromArray(interestValues);
         addResources(interestTransfer);
 
-        getOwner().getEventTracker().addEvent(MessageTracker.Message("Minor","Vault interest gained "+ interestTransfer));
+        getOwner().getMessageTracker().addMessage(MessageTracker.Message("Minor","Vault interest gained "+ interestTransfer));
 
     }
 
@@ -76,8 +76,8 @@ public class Vault extends Wallet implements Ownable {
         toWallet.addResources(transfer);
 
 
-        attacker.getEventTracker().addEvent(MessageTracker.Message("Major", "Robbery successful.\n Gained: " + transfer + " from vault."));
-        defender.getEventTracker().addEvent(MessageTracker.Message("Major", "Vault robbed.\n Lost: " + transfer + "."));
+        attacker.getMessageTracker().addMessage(MessageTracker.Message("Major", "Robbery successful.\n Gained: " + transfer + " from vault."));
+        defender.getMessageTracker().addMessage(MessageTracker.Message("Major", "Vault robbed.\n Lost: " + transfer + "."));
 
     }
 
@@ -91,7 +91,7 @@ public class Vault extends Wallet implements Ownable {
     }
 
     @Override
-    public MessageTracker getEventTracker() {
+    public MessageTracker getMessageTracker() {
         return null;
     }
 

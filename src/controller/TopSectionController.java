@@ -120,7 +120,7 @@ public class TopSectionController extends BaseController {
 
         main.clickMeButton.setDisable(Time.getSpeed().equals(Speed.Slow));
         if (Time.getSpeed().equals(Speed.Slow)){
-            model.getPlayerCharacter().getEventTracker().addEvent(MessageTracker.Message("Major","Clicker is disabled"));
+            model.getPlayerCharacter().getMessageTracker().addMessage(MessageTracker.Message("Major","Clicker is disabled"));
         }
         main.updatePauseBtnText();
     }

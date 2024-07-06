@@ -98,7 +98,7 @@ public class GrandFoundry implements ArmyObserver, PaymentTracker, Details {
         TransferPackage amount = getFullProduction();
 
         String message = String.format("Grand Foundry generated %s", amount.toShortString());
-        owner.getEventTracker().addEvent(MessageTracker.Message("Utility", message));
+        owner.getMessageTracker().addMessage(MessageTracker.Message("Utility", message));
     }
 
     private TransferPackage getPaymentAmount() {
@@ -127,9 +127,9 @@ public class GrandFoundry implements ArmyObserver, PaymentTracker, Details {
 
     private void returnControl() {
         this.owner.removeState(State.GRAND_FOUNDRY_UNDER_OCCUPATION);
-        this.owner.getEventTracker().addEvent(MessageTracker.Message("Minor","Control of Grand Foundry Gained back."));
+        this.owner.getMessageTracker().addMessage(MessageTracker.Message("Minor","Control of Grand Foundry Gained back."));
         this.controller.removeState(State.GRAND_FOUNDRY_OCCUPIED);
-        this.controller.getEventTracker().addEvent(MessageTracker.Message("Minor","Control of " + owner + "'s Foundry forfeited."));
+        this.controller.getMessageTracker().addMessage(MessageTracker.Message("Minor","Control of " + owner + "'s Foundry forfeited."));
 
         this.controller.getGrandFoundry().removeFoundriesUnderControl(this);
 

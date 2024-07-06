@@ -12,11 +12,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import model.Model;
 import model.characters.AuthorityCharacter;
-import model.characters.Peasant;
+import model.characters.Character;
 import model.characters.Person;
 import model.resourceManagement.payments.Tax;
-import model.war.WarService;
 import model.war.WarPlanningManager;
+import model.war.WarService;
 import model.worldCreation.Nation;
 
 import java.util.ArrayList;
@@ -137,7 +137,7 @@ public class OverviewController extends BaseController{
         nationGrid.add(nameLabel, 0, 0);
         nationGrid.add(powerLabel, 1, 0);
 
-        if(Model.getPlayerAsCharacter() instanceof Peasant) {
+        if(Model.getPlayerAsCharacter() instanceof Character) {
             nationGrid.add(startWarLink, 2, 0);
         }
 

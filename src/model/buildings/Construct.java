@@ -64,7 +64,7 @@ public class Construct {
             assert newType != null;
 
             GameEvent gameEvent = new GameEvent(Event.CONSTRUCTION, person);
-            person.getEventTracker().addEvent(MessageTracker.Message("Minor", "Construction of "+newType+ " started"));
+            person.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Construction of "+newType+ " started"));
 
             int daysUntilEvent = getDaysUntilEvent(newType);
 
@@ -73,7 +73,7 @@ public class Construct {
             }, daysUntilEvent, gameEvent);
         } else {
             if (person.isPlayer()){
-            person.getEventTracker().addEvent(MessageTracker.Message("Error", "Not enough resources for construction"));
+            person.getMessageTracker().addMessage(MessageTracker.Message("Error", "Not enough resources for construction"));
             }
             throw new InsufficientResourcesException("Not enough resources for construction of " + newType, cost);
         }
@@ -89,7 +89,7 @@ public class Construct {
         Property newHouse = initiateNewProperty(newType, oldHouse.getName(), person);
         newHouse.setFirstTimeReached(false);
         switchPropertyAttributes(person, newHouse, location, oldHouse, oldUtilitySlot);
-        person.getEventTracker().addEvent(MessageTracker.Message("Major", "New property constructed"));
+        person.getMessageTracker().addMessage(MessageTracker.Message("Major", "New property constructed"));
 
         newHouse.maintenance.updatePaymentManager(person.getPaymentManager());
 

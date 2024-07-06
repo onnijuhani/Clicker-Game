@@ -3,11 +3,11 @@ package model.time;
 import model.stateSystem.GameEvent;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EventManager {
-    private static final List<ScheduledEvent> scheduledEvents = new ArrayList<>();
+    private static final List<ScheduledEvent> scheduledEvents = new CopyOnWriteArrayList<>();
 
     private static List<ScheduledEvent> getScheduledEvents(){
         return scheduledEvents;
@@ -31,8 +31,7 @@ public class EventManager {
         }
 
         gameEvent.setExecutionTime(targetDay, targetMonth, targetYear);
-        scheduledEvents.add(new ScheduledEvent(eventAction, targetDay, targetMonth,targetYear, gameEvent));
-
+        scheduledEvents.add(new ScheduledEvent(eventAction, targetDay, targetMonth, targetYear, gameEvent));
     }
 
     public static void processScheduledEvents() {
@@ -41,12 +40,10 @@ public class EventManager {
         int currentMonth = Time.month;
         int currentYear = Time.year;
 
-        Iterator<ScheduledEvent> iterator = scheduledEvents.iterator();
-        while (iterator.hasNext()) {
-            ScheduledEvent event = iterator.next();
+        for (ScheduledEvent event : scheduledEvents) {
             if (event.isDue(currentDay, currentMonth, currentYear)) {
                 eventsToExecute.add(event);
-                iterator.remove();
+                scheduledEvents.remove(event);
             }
         }
 
@@ -58,6 +55,5 @@ public class EventManager {
                 event.gameEvent().resetBattleStatesAuthorityBattle();
             }
         }
-
     }
 }

@@ -22,7 +22,7 @@ public class WorkerCenter extends SlaveFacility {
     protected void generateAction() {
         TransferPackage transfer = new TransferPackage(production[0]*calculateBonus(),production[1]*calculateBonus(), production[2]*calculateBonus());
         owner.getPerson().getWallet().addResources(transfer);
-        owner.getEventTracker().addEvent(MessageTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
+        owner.getMessageTracker().addMessage(MessageTracker.Message("Utility", this.getClass().getSimpleName() + " generated " + transfer));
     }
     @Override
     public void payConsequence() {
@@ -40,7 +40,7 @@ public class WorkerCenter extends SlaveFacility {
                     }
 
                     if(owner.isPlayer()) {
-                        owner.getEventTracker().addEvent(MessageTracker.Message("Minor", "Relationship with " + ally.getCharacter() + "\n\t\t\t\tcooled due to Work Center construction."));
+                        owner.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Relationship with " + ally.getCharacter() + "\n\t\t\t\tcooled due to Work Center construction."));
                     }
                 }
             }
@@ -52,7 +52,7 @@ public class WorkerCenter extends SlaveFacility {
                 owner.getRelationsManager().removeEnemy(enemy);
                 enemy.getRelationsManager().removeEnemy(owner);
                 if(owner.isPlayer()) {
-                    owner.getEventTracker().addEvent(MessageTracker.Message("Minor", "Common interests in Work Center\n\t\t\t\thave improved your standing with " + enemy.getCharacter() + "."));
+                    owner.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Common interests in Work Center\n\t\t\t\thave improved your standing with " + enemy.getCharacter() + "."));
                 }
             }
         }

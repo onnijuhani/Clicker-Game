@@ -454,6 +454,7 @@ public class ManagementActions extends BaseActions {
             if(!(person.getProperty() instanceof Fortress) && counter < 1) {  // fortress cannot be upgraded
                 evaluatePropertyNeed();
             }
+
             evaluateMinimumResourceNeeds();
 
             counter++; // property shouldn't be checked every time, every 10th time is just fine to prevent AI advancing too greedily

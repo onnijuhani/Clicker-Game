@@ -308,7 +308,7 @@ public class MainController extends BaseController {
                 topSectionController.update();
                 workWalletController.update();
             } else {
-                model.getPlayerCharacter().getEventTracker().addEvent(MessageTracker.Message("Error", "Simulation is paused. Cannot generate resources."));
+                model.getPlayerCharacter().getMessageTracker().addMessage(MessageTracker.Message("Error", "Simulation is paused. Cannot generate resources."));
                 workWalletController.update();
             }
         } else {
@@ -326,15 +326,15 @@ public class MainController extends BaseController {
 
    void generateStartingMessage(){
         triggerStartingMessage();
-        MessageTracker tracker = model.getPlayerCharacter().getEventTracker();
-        tracker.addEvent(MessageTracker.Message("Major","New Game Started"));
+        MessageTracker tracker = model.getPlayerCharacter().getMessageTracker();
+        tracker.addMessage(MessageTracker.Message("Major","New Game Started"));
 
         Quarter spawn = model.accessWorld().getSpawnQuarter();
-        tracker.addEvent(MessageTracker.Message("Major","Starting District is: "+cleanName(spawn.toString())));
-        tracker.addEvent(MessageTracker.Message("Major","Starting City is: "+cleanName(spawn.getHigher().toString())));
-        tracker.addEvent(MessageTracker.Message("Major","Starting Province is: "+cleanName(spawn.getHigher().getHigher().toString())));
-        tracker.addEvent(MessageTracker.Message("Major","Starting Nation is: "+cleanName(spawn.getNation().toString())));
-        tracker.addEvent(MessageTracker.Message("Major","Starting Continent is: "+cleanName(spawn.getNation().getHigher().toString())));
+        tracker.addMessage(MessageTracker.Message("Major","Starting District is: "+cleanName(spawn.toString())));
+        tracker.addMessage(MessageTracker.Message("Major","Starting City is: "+cleanName(spawn.getHigher().toString())));
+        tracker.addMessage(MessageTracker.Message("Major","Starting Province is: "+cleanName(spawn.getHigher().getHigher().toString())));
+        tracker.addMessage(MessageTracker.Message("Major","Starting Nation is: "+cleanName(spawn.getNation().toString())));
+        tracker.addMessage(MessageTracker.Message("Major","Starting Continent is: "+cleanName(spawn.getNation().getHigher().toString())));
 
     }
     private String cleanName(String name) {
@@ -347,7 +347,7 @@ public class MainController extends BaseController {
 
         updatePauseBtnText();
         Platform.runLater(() -> {
-            List<String> newEvents = model.getPlayerCharacter().getEventTracker().getCombinedEvents();
+            List<String> newEvents = model.getPlayerCharacter().getMessageTracker().getCombinedEvents();
             ObservableList<String> currentEvents = eventList.getItems();
 
 
@@ -480,22 +480,22 @@ public class MainController extends BaseController {
     @FXML
     void hideGenerateMessages(ActionEvent event) {
         boolean isChecked = generateMessages.isSelected();
-        model.getPlayerCharacter().getEventTracker().getPreferences().setShowClickerEvents(!isChecked);
+        model.getPlayerCharacter().getMessageTracker().getPreferences().setShowClickerEvents(!isChecked);
     }
     @FXML
     void hideMinorMessages(ActionEvent event) {
         boolean isChecked = minorMessages.isSelected();
-        model.getPlayerCharacter().getEventTracker().getPreferences().setShowMinorEvents(!isChecked);
+        model.getPlayerCharacter().getMessageTracker().getPreferences().setShowMinorEvents(!isChecked);
     }
     @FXML
     void hideErrorMessages(ActionEvent event) {
         boolean isChecked = errorMessages.isSelected();
-        model.getPlayerCharacter().getEventTracker().getPreferences().setShowErrorEvents(!isChecked);
+        model.getPlayerCharacter().getMessageTracker().getPreferences().setShowErrorEvents(!isChecked);
     }
     @FXML
     void hideShopMessages(ActionEvent event) {
         boolean isChecked = shopMessages.isSelected();
-        model.getPlayerCharacter().getEventTracker().getPreferences().setShowShopEvents(!isChecked);
+        model.getPlayerCharacter().getMessageTracker().getPreferences().setShowShopEvents(!isChecked);
     }
 
     @FXML
@@ -506,7 +506,7 @@ public class MainController extends BaseController {
     @FXML
     void hideUtilityMessages(ActionEvent event) {
         boolean isChecked = hideUtility.isSelected();
-        model.getPlayerCharacter().getEventTracker().getPreferences().setShowUtilityEvents(!isChecked);
+        model.getPlayerCharacter().getMessageTracker().getPreferences().setShowUtilityEvents(!isChecked);
     }
 
     @FXML

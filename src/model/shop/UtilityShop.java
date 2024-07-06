@@ -31,7 +31,7 @@ public class UtilityShop extends ShopComponents {
                 person.getWallet().subtractGold(upgradePrice);
                 building.increaseLevel();
                 if(person.isPlayer()) {
-                    person.getEventTracker().addEvent(MessageTracker.Message("Utility",
+                    person.getMessageTracker().addMessage(MessageTracker.Message("Utility",
                             "Successfully upgraded " + type + " to level " +
                                     building.getUpgradeLevel() + "!"));
                 }
@@ -40,14 +40,14 @@ public class UtilityShop extends ShopComponents {
                 return true; // Upgrade was successful
             } else {
                 if(person.isPlayer()) {
-                    person.getEventTracker().addEvent(MessageTracker.Message("Error", "Insufficient gold to upgrade " + type));
+                    person.getMessageTracker().addMessage(MessageTracker.Message("Error", "Insufficient gold to upgrade " + type));
                 }
                 building.updatePaymentManager(person.getPaymentManager());
                 return false; // Upgrade failed
 
             }
         } else {
-            person.getEventTracker().addEvent(MessageTracker.Message("Error", type + " not owned."));
+            person.getMessageTracker().addMessage(MessageTracker.Message("Error", type + " not owned."));
             return false; // Building not owned
         }
     }
@@ -59,7 +59,7 @@ public class UtilityShop extends ShopComponents {
         if ((type == UtilityBuildings.SlaveFacility && slot.isUtilityBuildingOwned(UtilityBuildings.WorkerCenter)) ||
                 (type == UtilityBuildings.WorkerCenter && slot.isUtilityBuildingOwned(UtilityBuildings.SlaveFacility))) {
             if(person.isPlayer()) {
-                person.getEventTracker().addEvent(MessageTracker.Message("Error", "Cannot own both " + UtilityBuildings.SlaveFacility + " and " + UtilityBuildings.WorkerCenter));
+                person.getMessageTracker().addMessage(MessageTracker.Message("Error", "Cannot own both " + UtilityBuildings.SlaveFacility + " and " + UtilityBuildings.WorkerCenter));
             }
 
             return false;
@@ -68,14 +68,14 @@ public class UtilityShop extends ShopComponents {
 
         if(person.getProperty().getUtilitySlot().getSlotAmount() == person.getProperty().getUtilitySlot().usedSlotAmount()){
             if(person.isPlayer()) {
-                person.getEventTracker().addEvent(MessageTracker.Message("Error", "No more available utility slots"));
+                person.getMessageTracker().addMessage(MessageTracker.Message("Error", "No more available utility slots"));
             }
             return false;
         }
         int price = getBuildingPrice(type);
         if (!person.getWallet().hasEnoughResource(Resource.Gold, price)) {
             if(person.isPlayer()) {
-                person.getEventTracker().addEvent(MessageTracker.Message("Error", "Insufficient gold to buy " + type));
+                person.getMessageTracker().addMessage(MessageTracker.Message("Error", "Insufficient gold to buy " + type));
             }
             return false;
         }
@@ -83,7 +83,7 @@ public class UtilityShop extends ShopComponents {
         UtilityBuilding newBuilding = createBuilding(type, price, person.getCharacter());
         if (newBuilding == null) {
             if(person.isPlayer()) {
-                person.getEventTracker().addEvent(MessageTracker.Message("Error", "Unknown building type: " + type));
+                person.getMessageTracker().addMessage(MessageTracker.Message("Error", "Unknown building type: " + type));
             }
             return false;
         }
@@ -92,7 +92,7 @@ public class UtilityShop extends ShopComponents {
         property.getUtilitySlot().addUtilityBuilding(type, newBuilding);
         person.getWallet().subtractGold(price);
         if(person.isPlayer()) {
-            person.getEventTracker().addEvent(MessageTracker.Message("Major", "Successfully purchased " + type + "!")); //This goes to major instead to see wtf npc is doing
+            person.getMessageTracker().addMessage(MessageTracker.Message("Major", "Successfully purchased " + type + "!")); //This goes to major instead to see wtf npc is doing
         }
         property.getUtilitySlot().increaseTotalLevels();
         newBuilding.updatePaymentManager(person.getPaymentManager());
@@ -141,19 +141,19 @@ public class UtilityShop extends ShopComponents {
 
         if(saboteur.hasState(SABOTEUR)){
             String timeLeft = saboteur.getAnyOnGoingEvent(Event.SABOTEUR).getTimeLeftString();
-            saboteur.getEventTracker().addEvent(MessageTracker.Message("Error", timeLeft +" until sabotage is available"));
+            saboteur.getMessageTracker().addMessage(MessageTracker.Message("Error", timeLeft +" until sabotage is available"));
             return;
         }
 
         if(utilityBuilding == null){
-            saboteur.getEventTracker().addEvent(MessageTracker.Message("Error", owner + " does not own " + type));
+            saboteur.getMessageTracker().addMessage(MessageTracker.Message("Error", owner + " does not own " + type));
             return;
         }
 
         int currentLevel = utilityBuilding.getUpgradeLevel();
 
         if(currentLevel == 1){
-            saboteur.getEventTracker().addEvent(MessageTracker.Message("Error", "Cannot sabotage level 1 " + type));
+            saboteur.getMessageTracker().addMessage(MessageTracker.Message("Error", "Cannot sabotage level 1 " + type));
             return;
         }
 
@@ -169,7 +169,7 @@ public class UtilityShop extends ShopComponents {
         for(int i = 0; i < sabotagePoints; i++) {
             GameEvent gameEvent = new GameEvent(Event.SABOTEUR, owner);
             int time = 5 * i + 5;
-            EventManager.scheduleEvent(() -> commitSabotage(utilityBuilding, owner.getEventTracker()), time , gameEvent);
+            EventManager.scheduleEvent(() -> commitSabotage(utilityBuilding, owner.getMessageTracker()), time , gameEvent);
         }
 
         int days = 90;
@@ -179,7 +179,7 @@ public class UtilityShop extends ShopComponents {
         EventManager.scheduleEvent(() -> removeSaboteur(saboteur), days, gameEvent);
 
         saboteur.addState(SABOTEUR);
-        saboteur.getEventTracker().addEvent(MessageTracker.Message("Minor",
+        saboteur.getMessageTracker().addMessage(MessageTracker.Message("Minor",
                 String.format("Sabotage action committed against %s.\nTheir %s will be reduced by %d levels." +
                 "\nYou are unable to make new sabotage actions for next %s days",
                         owner, type, sabotagePoints, days)));
@@ -188,12 +188,12 @@ public class UtilityShop extends ShopComponents {
 
     public static void removeSaboteur(Person saboteur){
         saboteur.removeState(SABOTEUR);
-        saboteur.getEventTracker().addEvent(MessageTracker.Message("Minor", "Sabotage is now available."));
+        saboteur.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Sabotage is now available."));
     }
 
     public static void commitSabotage(UtilityBuilding sabotagedBuilding, MessageTracker tracker){
         sabotagedBuilding.decreaseLevel();
-        tracker.addEvent(MessageTracker.Message("Minor", "Your " + sabotagedBuilding + " was sabotaged."));
+        tracker.addMessage(MessageTracker.Message("Minor", "Your " + sabotagedBuilding + " was sabotaged."));
     }
 
 

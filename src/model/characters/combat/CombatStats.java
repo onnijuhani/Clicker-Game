@@ -23,10 +23,10 @@ public class CombatStats {
         if(person.getWallet().hasEnoughResource(Resource.Gold,price)){
             person.getWallet().subtractGold(price);
             getOffense().increaseLevel();
-            person.getEventTracker().addEvent(MessageTracker.Message("Utility", "Offence was increased"));
+            person.getMessageTracker().addMessage(MessageTracker.Message("Utility", "Offence was increased"));
             return true;
         }else{
-            person.getEventTracker().addEvent(MessageTracker.Message("Error", "Not enough Gold to increase offence"));
+            person.getMessageTracker().addMessage(MessageTracker.Message("Error", "Not enough Gold to increase offence"));
             return false;
         }
     }
@@ -36,10 +36,10 @@ public class CombatStats {
         if(person.getWallet().hasEnoughResource(Resource.Gold,price)){
             person.getWallet().subtractGold(price);
             getDefense().increaseLevel();
-            person.getEventTracker().addEvent(MessageTracker.Message("Utility",  "Defence was increased"));
+            person.getMessageTracker().addMessage(MessageTracker.Message("Utility",  "Defence was increased"));
             return true;
         }else{
-            person.getEventTracker().addEvent(MessageTracker.Message("Error", "Not enough Gold to increase defence"));
+            person.getMessageTracker().addMessage(MessageTracker.Message("Error", "Not enough Gold to increase defence"));
             return false;
         }
     }

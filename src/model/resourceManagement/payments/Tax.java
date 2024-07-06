@@ -100,8 +100,8 @@ public class Tax {
 
         String taxPaid = MessageTracker.Message("Minor", "Tax paid " + transfer);
         String taxCollected = MessageTracker.Message("Minor", "Tax Collected " + transfer);
-        taxPayerTracker.addEvent(taxPaid);
-        taxManTracker.addEvent(taxCollected);
+        taxPayerTracker.addMessage(taxPaid);
+        taxManTracker.addMessage(taxCollected);
     }
 
     public String toStringTaxRates() {

@@ -13,7 +13,7 @@ public class CombatService {
         if (checkBattleState(attacker, defender)) return true;
         if (isKingOrNoble(attacker)) return true;
         if (attacker == defender){
-            attacker.getPerson().getEventTracker().addEvent(MessageTracker.Message("Error", "Cannot fight yourself"));
+            attacker.getPerson().getMessageTracker().addMessage(MessageTracker.Message("Error", "Cannot fight yourself"));
             return true;
         }
         return false;
@@ -60,7 +60,7 @@ public class CombatService {
                 return false;
             } // fortress or citadel is needed to challenge king
             else{
-                attacker.getPerson().getEventTracker().addEvent(MessageTracker.Message("Error", "You need to construct Citadel or Fortress to be King"));
+                attacker.getPerson().getMessageTracker().addMessage(MessageTracker.Message("Error", "You need to construct Citadel or Fortress to be King"));
                 return true; // is too weak property
             }
         }

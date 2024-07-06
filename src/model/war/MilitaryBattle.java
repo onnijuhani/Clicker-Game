@@ -35,6 +35,20 @@ public class MilitaryBattle implements WarObserver {
             performAttack(defendingArmyStats, attackingArmyStats, "Defender");
             setCurrentTurn("Attacker");
         }
+        if(day >= 1440){
+            triggerForceEnd();
+        }
+    }
+
+    private void triggerForceEnd() {
+        if (attackingArmyStats.getNumOfSoldiers() <= 1) {
+            settleBattle("Defender");
+            return;
+        }
+        if (defendingArmyStats.getNumOfSoldiers() <= 1) {
+            settleBattle("Attacker");
+            return;
+        }
     }
 
     private void updatePaymentCalendars() {
@@ -98,11 +112,11 @@ public class MilitaryBattle implements WarObserver {
         try {
 
             // battle ends when 1 army runs out of soldiers
-            if (attackingArmyStats.getNumOfSoldiers() == 1) {
+            if (attackingArmyStats.getNumOfSoldiers() <= 1) {
                 settleBattle("Defender");
                 return;
             }
-            if (defendingArmyStats.getNumOfSoldiers() == 1) {
+            if (defendingArmyStats.getNumOfSoldiers() <= 1) {
                 settleBattle("Attacker");
                 return;
             }
@@ -121,7 +135,7 @@ public class MilitaryBattle implements WarObserver {
             int defenceStrength = (defencePower * currentDefenceTurn.getNumOfSoldiers() + 5000) * nobleBonus.defenderNobleBonus();
 
 
-            boolean attackSucceeds = random.nextDouble() < 0.5; // 50% chance of attack success
+            boolean attackSucceeds = random.nextDouble() < 0.6; // 60% chance of attack success
 
             if (attackPower > (defencePower * 100)) { // If attackPower is significantly higher, attack always succeeds.
                 attackSucceeds = true;
@@ -136,12 +150,19 @@ public class MilitaryBattle implements WarObserver {
 
             if (attackSucceeds) {
                 if (effectivePower > rand) {
-                    if (random.nextDouble() < Math.min(effectivePower, 0.7)) { // effective power also determines if soldier will die, but 70% chance is the best this can go.
-                        currentDefenceTurn.loseSoldiers(1);
+                    if (random.nextDouble() < Math.min(effectivePower, 0.9)) { // effective power also determines if soldier will die, but 90% chance is the best this can go.
+
+                        int lostSoldiers = 1;
+
+                        if(currentDefenceTurn.getDefencePower() < 10_000 && currentDefenceTurn.getNumOfSoldiers() > 5 && currentAttackTurn.getAttackPower() > 50_000){
+                            lostSoldiers = 3;
+                        }
+
+                        currentDefenceTurn.loseSoldiers(3);
                         if(currentAttackTurn == attackingArmyStats){
-                            logEvent("Defender lost a soldier.");
+                            logEvent(String.format("Defender lost %d soldier%s.", lostSoldiers, lostSoldiers>1 ? " " : "s"));
                         }else {
-                            logEvent("Attacker lost a soldier.");
+                            logEvent(String.format("Attacker lost %d soldier%s.", lostSoldiers, lostSoldiers>1 ? " " : "s"));
                         }
                     }
                 }
@@ -156,10 +177,8 @@ public class MilitaryBattle implements WarObserver {
             attackerLossRatio = (attackerLossRatio + 0.5 ) / 2.0;
             defenderLossRatio = (defenderLossRatio + 0.5 ) / 2.0;
 
-            int attackerLoss = Math.min((int) (defenderLossRatio * (days+100)), 25_000);
-            int defenderLoss = Math.min((int) (attackerLossRatio * (days+100)), 25_000);
-
-
+            int attackerLoss = Math.min((int) (defenderLossRatio * (days+400)), 25_000);
+            int defenderLoss = Math.min((int) (attackerLossRatio * (days+400)), 25_000);
 
 
             // Debug prints
@@ -215,8 +234,8 @@ public class MilitaryBattle implements WarObserver {
                 defendingMilitary.getArmy().setState(Army.ArmyState.DEFEATED);
                 attackingMilitary.getArmy().setState(null);
 
-                attackingCommander.getEventTracker().addEvent(MessageTracker.Message("Major", String.format("Your army is victorious against %s", defendingCommander.getName())));
-                defendingCommander.getEventTracker().addEvent(MessageTracker.Message("Major", String.format("Your army has lost against %s", attackingCommander.getName())));
+                attackingCommander.getMessageTracker().addMessage(MessageTracker.Message("Major", String.format("Your army is victorious against %s", defendingCommander.getName())));
+                defendingCommander.getMessageTracker().addMessage(MessageTracker.Message("Major", String.format("Your army has lost against %s", attackingCommander.getName())));
                 logEvent("Battle ended.\nAttacker is victorious.");
 
 
@@ -229,8 +248,8 @@ public class MilitaryBattle implements WarObserver {
                 defendingMilitary.getArmy().setState(null);
                 attackingMilitary.getArmy().setState(Army.ArmyState.DEFEATED);
 
-                attackingCommander.getEventTracker().addEvent(MessageTracker.Message("Major", String.format("Your army has lost against %s", defendingCommander.getName())));
-                defendingCommander.getEventTracker().addEvent(MessageTracker.Message("Major", String.format("Your army is victorious against %s", attackingCommander.getName())));
+                attackingCommander.getMessageTracker().addMessage(MessageTracker.Message("Major", String.format("Your army has lost against %s", defendingCommander.getName())));
+                defendingCommander.getMessageTracker().addMessage(MessageTracker.Message("Major", String.format("Your army is victorious against %s", attackingCommander.getName())));
                 logEvent("Battle ended.\nDefender is victorious.");
 
 
@@ -309,17 +328,17 @@ public class MilitaryBattle implements WarObserver {
     private void payRunningCosts() {
         try {
             if(!attackingCommander.getWallet().subtractResources(attackingArmyStats.getWarCost())){
-                attackingCommander.getEventTracker().addEvent(MessageTracker.Message("Major", "Army expenses not paid"));
+                attackingCommander.getMessageTracker().addMessage(MessageTracker.Message("Major", "Army expenses not paid"));
                 attackingCommander.loseStrike();
             }else{
-                attackingCommander.getEventTracker().addEvent(MessageTracker.Message("Minor", "War expenses paid: " + attackingArmyStats.getWarCost().toShortString()));
+                attackingCommander.getMessageTracker().addMessage(MessageTracker.Message("Minor", "War expenses paid: " + attackingArmyStats.getWarCost().toShortString()));
             }
 
             if(!defendingCommander.getWallet().subtractResources(defendingArmyStats.getWarCost())){
-                defendingCommander.getEventTracker().addEvent(MessageTracker.Message("Major", "Army expenses not paid"));
+                defendingCommander.getMessageTracker().addMessage(MessageTracker.Message("Major", "Army expenses not paid"));
                 defendingCommander.loseStrike();
             }else{
-                defendingCommander.getEventTracker().addEvent(MessageTracker.Message("Minor", "War expenses paid: " + attackingArmyStats.getWarCost().toShortString()));
+                defendingCommander.getMessageTracker().addMessage(MessageTracker.Message("Minor", "War expenses paid: " + attackingArmyStats.getWarCost().toShortString()));
             }
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);
@@ -348,7 +367,7 @@ public class MilitaryBattle implements WarObserver {
         public void loseSoldiers(int amount){
             this.numOfSoldiers -= amount;
             if (this.numOfSoldiers < 0) {
-                this.numOfSoldiers = 0;
+                this.numOfSoldiers = 1;
             }
         }
         public void loseAttackPower(int amount){

@@ -53,7 +53,7 @@ public class Character implements NpcObserver, Details, Ownable {
             foodConsumption(this);
 
             if (person.isPlayer()) {
-                this.getEventTracker().addEvent(MessageTracker.Message("Minor", GameManager.getFoodConsumptionRate() + " Food Consumed."));
+                this.getMessageTracker().addMessage(MessageTracker.Message("Minor", GameManager.getFoodConsumptionRate() + " Food Consumed."));
                 return true;
             }
 
@@ -130,7 +130,7 @@ public class Character implements NpcObserver, Details, Ownable {
                     } else {
                         // Case where neither gold nor alloys are sufficient
                         String errorMessage = MessageTracker.Message("Major", "Not enough resources to cover food consumption.");
-                        character.getPerson().getEventTracker().addEvent(errorMessage);
+                        character.getPerson().getMessageTracker().addMessage(errorMessage);
                         character.getPerson().loseStrike();
                         return;
                     }
@@ -156,8 +156,8 @@ public class Character implements NpcObserver, Details, Ownable {
     }
 
     @Override
-    public MessageTracker getEventTracker() {
-        return person.getEventTracker();
+    public MessageTracker getMessageTracker() {
+        return person.getMessageTracker();
     }
 
     @Override

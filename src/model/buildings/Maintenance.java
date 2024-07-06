@@ -31,17 +31,17 @@ public class Maintenance implements PaymentTracker {
         if (canPay(maintenanceCost, ownerWallet)) {
             ownerWallet.subtractResources(maintenanceCost);
             if(isPlayer) {
-                property.getOwner().getEventTracker().addEvent(MessageTracker.Message("Minor", message));
+                property.getOwner().getMessageTracker().addMessage(MessageTracker.Message("Minor", message));
             }
         } else if (canPay(maintenanceCost, propertyVault)) {
             propertyVault.subtractResources(maintenanceCost);
             if(isPlayer) {
-                property.getOwner().getEventTracker().addEvent(MessageTracker.Message("Minor", message));
+                property.getOwner().getMessageTracker().addMessage(MessageTracker.Message("Minor", message));
             }
         } else {
             String errorMessage = "Maintenance not paid " + maintenanceCost;
             if(isPlayer) {
-                property.getOwner().getEventTracker().addEvent(MessageTracker.Message("Error", errorMessage));
+                property.getOwner().getMessageTracker().addMessage(MessageTracker.Message("Error", errorMessage));
             }
             property.getOwner().loseStrike();
         }

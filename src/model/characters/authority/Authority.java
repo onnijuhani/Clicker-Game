@@ -68,8 +68,8 @@ public class Authority implements TaxObserver, Ownable {
     public void imposeTax(){
         for (Authority authority : subordinate){
             WorkWallet walletUnderTaxation = authority.getWorkWallet();
-            MessageTracker tracker = authority.getCharacterInThisPosition().getEventTracker();
-            taxForm.collectTax(walletUnderTaxation,tracker,workWallet,this.getCharacterInThisPosition().getEventTracker(), taxDay);
+            MessageTracker tracker = authority.getCharacterInThisPosition().getMessageTracker();
+            taxForm.collectTax(walletUnderTaxation,tracker,workWallet,this.getCharacterInThisPosition().getMessageTracker(), taxDay);
         }
     }
 
@@ -87,7 +87,7 @@ public class Authority implements TaxObserver, Ownable {
             Salary salary = support.getSalary();
             TransferPackage transfer = TransferPackage.fromArray(salary.getAll());
             support.getPerson().getWallet().deposit(workWallet, transfer);
-            support.getEventTracker().addEvent(MessageTracker.Message("Minor", "Salary received: " + transfer));
+            support.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Salary received: " + transfer));
         }
     }
 
@@ -154,8 +154,8 @@ public class Authority implements TaxObserver, Ownable {
     }
 
     @Override
-    public MessageTracker getEventTracker() {
-        return characterPositionedHere.getEventTracker();
+    public MessageTracker getMessageTracker() {
+        return characterPositionedHere.getMessageTracker();
     }
 
     @Override

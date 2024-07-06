@@ -41,8 +41,8 @@ public class QuarterAuthority extends Authority {
         for (Peasant peasant : peasants){
             Tax taxForm = getTaxForm();
             WorkWallet taxedWallet = peasant.getPerson().getWorkWallet();
-            MessageTracker tracker = peasant.getEventTracker();
-            taxForm.collectTax(taxedWallet,tracker,workWallet,this.getCharacterInThisPosition().getEventTracker(), taxDay);
+            MessageTracker tracker = peasant.getMessageTracker();
+            taxForm.collectTax(taxedWallet,tracker,workWallet,this.getCharacterInThisPosition().getMessageTracker(), taxDay);
         }
     }
     public void addPeasant(Peasant peasant){

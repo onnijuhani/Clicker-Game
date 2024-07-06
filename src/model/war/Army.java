@@ -8,8 +8,8 @@ import model.characters.payments.PaymentTracker;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.stateSystem.Event;
-import model.stateSystem.MessageTracker;
 import model.stateSystem.GameEvent;
+import model.stateSystem.MessageTracker;
 import model.time.ArmyManager;
 import model.time.ArmyObserver;
 import model.time.EventManager;
@@ -74,7 +74,7 @@ public class Army implements ArmyObserver, PaymentTracker {
     private void payRunningCosts() {
         try {
             if(!wallet.subtractResources(getRunningCost())){
-                owner.getEventTracker().addEvent(MessageTracker.Message("Major", "Army expenses not paid"));
+                owner.getMessageTracker().addMessage(MessageTracker.Message("Major", "Army expenses not paid"));
                 owner.loseStrike();
             }
         } catch (Exception e) {
@@ -128,7 +128,7 @@ public class Army implements ArmyObserver, PaymentTracker {
         defencePower++;
         trainingInProcess = false;
         updatePaymentManager(owner.getPaymentManager());
-
+        addDefenceAutomatically();
     }
 
     public boolean increaseAttackPower() {
@@ -168,7 +168,7 @@ public class Army implements ArmyObserver, PaymentTracker {
         attackPower++;
         trainingInProcess = false;
         updatePaymentManager(owner.getPaymentManager());
-
+        addOffenceAutomatically();
     }
 
 
@@ -212,6 +212,7 @@ public class Army implements ArmyObserver, PaymentTracker {
         numOfSoldiers += amount;
         recruitingInProcess = false;
         updatePaymentManager(owner.getPaymentManager());
+        addSoldiersAutomatically();
     }
 
 
@@ -235,6 +236,39 @@ public class Army implements ArmyObserver, PaymentTracker {
 
     public int getTotalStrength(){
         return getTotalAttackPower() + getTotalDefencePower();
+    }
+
+
+    private void addOffenceAutomatically(){
+        if(militaryBattle == null) return;
+        if(owner.isPlayer()) return;
+
+        MilitaryBattle.ArmyStats armyStats = getCorrectArmyStats();
+        armyStats.addAttackPower(this);
+    }
+    private void addDefenceAutomatically(){
+        if(militaryBattle == null) return;
+        if(owner.isPlayer()) return;
+
+        MilitaryBattle.ArmyStats armyStats = getCorrectArmyStats();
+        armyStats.addDefencePower(this);
+    }
+    private void addSoldiersAutomatically(){
+        if(militaryBattle == null) return;
+        if(owner.isPlayer()) return;
+
+        MilitaryBattle.ArmyStats armyStats = getCorrectArmyStats();
+        armyStats.addSoldiers(this);
+    }
+
+    private MilitaryBattle.ArmyStats getCorrectArmyStats() {
+        MilitaryBattle.ArmyStats armyStats;
+        if(militaryBattle.getDefendingMilitary().getArmy() == this){
+            armyStats = militaryBattle.getDefendingArmyStats();
+        }else{
+            armyStats = militaryBattle.getAttackingArmyStats();
+        }
+        return armyStats;
     }
 
 
@@ -304,7 +338,7 @@ public class Army implements ArmyObserver, PaymentTracker {
         this.militaryBattle = null;
     }
 
-    public void addBattle(String battleInfo) {
+    private void addBattle(String battleInfo) {
         if(battleHistory.size() > 5){
             battleHistory.removeFirst();
         }

@@ -11,16 +11,20 @@ import model.characters.*;
 import model.characters.authority.Authority;
 import model.characters.authority.ProvinceAuthority;
 import model.characters.npc.Governor;
+import model.characters.npc.King;
 import model.characters.npc.Mercenary;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.shop.Shop;
 import model.stateSystem.MessageTracker;
+import model.stateSystem.State;
 import model.war.Military;
 import model.war.War;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 @SuppressWarnings("CallToPrintStackTrace")
 public class Nation extends ControlledArea implements Details {
     private Province[] provinces;
@@ -34,7 +38,16 @@ public class Nation extends ControlledArea implements Details {
     private final Wallet wallet = new Wallet(authorityHere);
     private boolean isAtWar = false;
     private Nation enemy = null;
-    private final List<Person> warCommanders = new ArrayList<>();
+    private final HashSet<Person> warCommanders = new HashSet<>();
+
+    public int getWarsFought() {
+        return warsFought;
+    }
+
+    private int warsFought = 0;
+
+    private Nation conqueror;
+    private final HashSet<Nation> nationsUnderControl = new HashSet<>();
 
     private boolean nobleWarBonus = false;
     private boolean warTax = false;
@@ -151,7 +164,7 @@ public class Nation extends ControlledArea implements Details {
         }
         if(!person.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.SlaveFacility)) return;
         slaverGuild.add(person);
-        person.getEventTracker().addEvent(MessageTracker.Message("Minor", "Joined Slaver Guild"));
+        person.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Joined Slaver Guild"));
         person.getProperty().getUtilitySlot().getUtilityBuilding(UtilityBuildings.SlaveFacility).addBonus("Slaver Guild Bonus", 1);
         person.getProperty().getUtilitySlot().getUtilityBuilding(UtilityBuildings.SlaveFacility).updatePaymentManager(person.getPaymentManager());
     }
@@ -161,7 +174,7 @@ public class Nation extends ControlledArea implements Details {
         }
         if(!person.getProperty().getUtilitySlot().isUtilityBuildingOwned(UtilityBuildings.WorkerCenter)) return;
         freedomFighters.add(person);
-        person.getEventTracker().addEvent(MessageTracker.Message("Minor", "Joined Liberal Guild"));
+        person.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Joined Liberal Guild"));
         person.getProperty().getUtilitySlot().getUtilityBuilding(UtilityBuildings.WorkerCenter).addBonus("Liberal Guild Bonus", 1);
         person.getProperty().getUtilitySlot().getUtilityBuilding(UtilityBuildings.WorkerCenter).updatePaymentManager(person.getPaymentManager());
     }
@@ -219,6 +232,22 @@ public class Nation extends ControlledArea implements Details {
                 .collect(Collectors.toList());
     }
 
+    private Set<Character> getAllImportantCharacters() {
+        Iterable<? extends Person> characters = getAllCitizensOfTheNation();
+
+        List<Status> statusOrder = getImportantStatusRank();
+
+        return StreamSupport.stream(characters.spliterator(), false)
+                .filter(person -> statusOrder.contains(person.getRole().getStatus()))
+                .sorted(Comparator.comparingInt(person -> statusOrder.indexOf(person.getRole().getStatus())))
+                .map(Person::getCharacter)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+
+
+
+
     public void setConquerorToWorkWallets(Nation nation){
         for(Character c :citizenCache){
             c.getPerson().getWorkWallet().setConqueror(nation);
@@ -245,6 +274,9 @@ public class Nation extends ControlledArea implements Details {
 
 
     public void removeWarTaxFromWorkWallets(){
+        if(!warTax){
+            return;
+        }
         warTax = false;
         for(Character c :citizenCache){
             c.getPerson().getWorkWallet().setWarTax(warTax);
@@ -262,10 +294,10 @@ public class Nation extends ControlledArea implements Details {
     @Override
     public List<Status> getImportantStatusRank() {
         return List.of(
-                Status.King,
-                Status.Vanguard,
-                Status.Noble
-        );
+                Status.King, Status.Noble, Status.Vanguard,
+                Status.Governor, Status.Mercenary,
+                Status.Mayor,
+                Status.Captain);
     }
 
 
@@ -304,17 +336,61 @@ public class Nation extends ControlledArea implements Details {
                 throw new RuntimeException(e);
             }
 
+            // set enemy
             nation1.enemy = nation2;
 
             // set war flag
             nation1.setAtWar();
 
+            // set states
+            nation1.addWarState();
+
             // add commanders who own militaries to war commanders
             for(Area claimedArea : nation1.claimedAreas){
                 Person commander = claimedArea.getHighestAuthority();
-                if(commander.getProperty() instanceof Military) {
-                    nation1.getWarCommanders().add(commander);
+
+                if(commander.getCharacter() instanceof King){
+                    continue; // kings should be excluded
                 }
+
+
+                nation1.getWarCommanders().add(commander);
+
+
+                if(commander.getCharacter() instanceof Governor governor){ // add mercenaries here
+                    for(Support support : governor.getAuthorityPosition().getSupporters()){
+                        nation1.getWarCommanders().add(support.getPerson());
+                    }
+                }
+            }
+
+        } catch (RuntimeException e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
+    }
+
+    public static void handleEndingWar(Nation nation1, Nation opponent, String winnerOrLoser) {
+        try {
+
+            // remove enemy
+            nation1.enemy = null;
+
+            // remove war flag
+            nation1.setNotAtWar();
+
+            // reset states
+            nation1.removeWarState();
+
+            // remove commanders
+            nation1.resetWarCommanders();
+
+            // remove warTax
+            nation1.removeWarTaxFromWorkWallets();
+
+            if(Objects.equals(winnerOrLoser, "Winner")){
+                nation1.nationsUnderControl.add(opponent);
+            }else{
+                nation1.setConqueror(opponent);
             }
 
         } catch (RuntimeException e) {
@@ -343,12 +419,15 @@ public class Nation extends ControlledArea implements Details {
     private static void triggerTheEndOfTheNation(Nation nation) {
         System.out.println(nation + " has been destroyed by it's enemies");
     }
-    public List<Person> getWarCommanders() {
+    public HashSet<Person> getWarCommanders() {
         return warCommanders;
     }
 
     private void setAtWar() {
         this.isAtWar = true;
+    }
+    private void setNotAtWar() {
+        this.isAtWar = false;
     }
 
     public boolean isAtWar() {
@@ -377,6 +456,57 @@ public class Nation extends ControlledArea implements Details {
         return amount;
     }
 
+
+    public void sendWalletBalanceToLeaders() {
+
+        if(wallet.isEmpty()) return;
+        if(wallet.isLowBalance()) return;
+        if(wallet.getCombinedAmount() < 10_000) return;
+
+        // Retrieve important characters
+        Set<Character> importantCharacters = getAllImportantCharacters();
+
+        int size = importantCharacters.size();
+
+        TransferPackage amount = wallet.getBalance().divide(size);
+
+        for (Character character : importantCharacters) {
+
+            Wallet characterWallet = character.getPerson().getWallet();
+            characterWallet.addResources(amount);
+
+            if(character.getPerson().isPlayer()){
+                character.getPerson().getMessageTracker().addMessage(MessageTracker.Message("Major", "National resource distribution added "+amount));
+            }
+
+            // Deduct from nation's wallet
+            wallet.subtractResources(amount);
+        }
+
+
+    }
+
+
+    private void addWarState(){
+        for(Person person : getAllCitizensOfTheNation()){
+            person.addState(State.AT_WAR);
+        }
+    }
+    private void removeWarState(){
+        for(Person person : getAllCitizensOfTheNation()){
+            person.removeState(State.AT_WAR);
+        }
+    }
+
+    private Iterable<? extends Person> getAllCitizensOfTheNation() {
+        HashSet<Person> set = new HashSet<>();
+        for(Quarter quarter : allQuarters){
+            set.addAll(quarter.getPersonsLivingHere());
+        }
+        return set;
+    }
+
+
     public ArrayList<Military> getAllMilitaries() {
         ArrayList<Military> militaries = new ArrayList<>();
         for(Quarter quarter : allQuarters){
@@ -387,17 +517,13 @@ public class Nation extends ControlledArea implements Details {
 
     public ArrayList<Military> getMilitariesOwnedByCommanders() {
         ArrayList<Military> militariesOwnedByCommanders = new ArrayList<>();
-        ArrayList<Military> allMilitaries = getAllMilitaries();
-        for (Military military : allMilitaries) {
-            if (warCommanders.contains(military.getOwner())) {
-                    if(     !(military.getOwner().getRole().getStatus() == Status.Vanguard) || // king and his sentinels are excluded here
-                            !(military.getOwner().getRole().getStatus() == Status.King) ||
-                            !(military.getOwner().getRole().getStatus() == Status.Noble)) {
-                        militariesOwnedByCommanders.add(military);
-                }
+
+        for(Person person : getWarCommanders()){
+            if(person.getCharacter() instanceof King){
+                continue;
             }
-            if(military.getOwner().getRole().getStatus() == Status.Mercenary){ // mercenaries are added here
-                militariesOwnedByCommanders.add(military);
+            if(person.getProperty() instanceof Military m){
+                militariesOwnedByCommanders.add(m);
             }
         }
         return militariesOwnedByCommanders;
@@ -454,7 +580,24 @@ public class Nation extends ControlledArea implements Details {
     public void startWar(Nation opponent, War war) {
         this.war = war;
         handleStartWar(this, opponent);
-
-
     }
+    public void endWar(Nation opponent, String winnerOrLoser) {
+        this.warsFought++;
+        this.war = null;
+        handleEndingWar(this, opponent, winnerOrLoser);
+    }
+
+    private void resetWarCommanders(){
+        warCommanders.clear();
+    }
+
+    public Nation getConqueror() {
+        return conqueror;
+    }
+
+    public void setConqueror(Nation conqueror) {
+        this.conqueror = conqueror;
+        setConquerorToWorkWallets(conqueror);
+    }
+
 }

@@ -110,11 +110,11 @@ public class Property implements PropertyObserver, Details, Ownable {
         if(owner.getWallet().hasEnoughResource(Resource.Alloy,price)){
             owner.getWallet().subtractAlloy(price);
             getDefenceStats().increaseLevel();
-            owner.getEventTracker().addEvent(MessageTracker.Message("Utility", this.getClass().getSimpleName()+"'s defence was increased"));
+            owner.getMessageTracker().addMessage(MessageTracker.Message("Utility", this.getClass().getSimpleName()+"'s defence was increased"));
             return true;
         }else{
             if(owner.isPlayer()){
-                owner.getEventTracker().addEvent(MessageTracker.Message("Error", "Not enough alloys to increase property defence"));
+                owner.getMessageTracker().addMessage(MessageTracker.Message("Error", "Not enough alloys to increase property defence"));
             }
             return false;
         }
@@ -182,8 +182,8 @@ public class Property implements PropertyObserver, Details, Ownable {
     }
 
     @Override
-    public MessageTracker getEventTracker(){
-        return owner.getEventTracker();
+    public MessageTracker getMessageTracker(){
+        return owner.getMessageTracker();
     }
 
     @Override

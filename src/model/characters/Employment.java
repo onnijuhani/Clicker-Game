@@ -46,7 +46,7 @@ public class Employment {
         workWallet.addResources(transfer);
 
 
-        workWallet.getOwner().getEventTracker().addEvent(MessageTracker.Message("Clicker", "Labor generated: " +transfer ));
+        workWallet.getOwner().getMessageTracker().addMessage(MessageTracker.Message("Clicker", "Labor generated: " +transfer ));
     }
 
 
