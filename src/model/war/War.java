@@ -148,12 +148,12 @@ public class War implements WarObserver, Details {
             if(adr >= 0.7 && attackerRoyals.isEmpty()){
                 System.out.println(defender + " has won the war against " + attacker);
                 endWar("Loser", "Winner"); // Attacker has lost the offensive war
-                currentPhase = ENDED;
+
             }
             if(ddr >= 0.7 && defenderRoyals.isEmpty()){
                 System.out.println(attacker + " has won the war against " + defender);
                 endWar("Winner", "Loser"); // Attacker has won the offensive war
-                currentPhase = ENDED;
+
             }
         }
 
@@ -226,6 +226,7 @@ public class War implements WarObserver, Details {
     }
 
     public void endWar(String attacker, String defender){
+        currentPhase = ENDED;
 
         this.attacker.endWar(this.defender, attacker);
         this.defender.endWar(this.attacker, defender);

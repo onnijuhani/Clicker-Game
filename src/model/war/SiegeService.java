@@ -16,6 +16,8 @@ public class SiegeService {
             return null;
         }
 
+        if (checkIfArmyIsNull(attacker, defender)) return null;
+
         if (attacker.getProperty() instanceof Military military && defender.getProperty() instanceof Military military2) {
 
             if(military.getArmy().getState() != null){
@@ -37,6 +39,19 @@ public class SiegeService {
         } else {
             throw new RuntimeException("Tried to launch attack against non military property");
         }
+    }
+
+    private static boolean checkIfArmyIsNull(Person attacker, Person defender) {
+        if(attacker.getProperty() instanceof Military military){
+            if(military.getArmy() == null){
+                return true;
+            }
+        }
+
+        if(defender.getProperty() instanceof Military military){
+            return military.getArmy() == null;
+        }
+        return false;
     }
 
 

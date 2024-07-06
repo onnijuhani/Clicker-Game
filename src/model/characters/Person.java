@@ -146,7 +146,7 @@ public class Person implements Ownable {
     /**
      * Only method that should ever be called to lose strikes
      */
-    public void loseStrike(){
+    public void loseStrike(String message){
         getStrikesTracker().loseStrike();
         int strikesLeft = getStrikesTracker().getStrikes();
         if (strikesLeft == 9 && isPlayer){
@@ -156,24 +156,25 @@ public class Person implements Ownable {
             triggerGameOverWarning();
         }
         if (strikesLeft < 1) {
-            triggerGameOver();
+            triggerGameOver(message);
         }else {
             if(isPlayer) {
-                getMessageTracker().addMessage(MessageTracker.Message("Major", "Lost a Strike! Strikes left: " + strikesLeft));
+                getMessageTracker().addMessage(MessageTracker.Message("Major", "Lost a Strike! " + message));
+                getMessageTracker().addMessage(MessageTracker.Message("Major", "Strikes left: " + strikesLeft));
             }
         }
     }
 
 
 
-    private void triggerGameOver(){
+    private void triggerGameOver(String message){
         if(character.getPerson().isPlayer()) {
             getMessageTracker().addMessage(MessageTracker.Message("Major","GAME OVER. No Strikes left."));
             Time.setGameOver(true);
 
             PopUpMessageTracker.PopUpMessage gameOverMessage = new PopUpMessageTracker.PopUpMessage(
                     "Game Over",
-                    "ALL STRIKES LOST\n\nYour journey ends here.\n\n",
+                    "ALL STRIKES LOST\n\n"+message+"\n\nYour journey ends here.\n\n",
                     "Properties/gameOver.jpg",
                     "R.I.P"
             );

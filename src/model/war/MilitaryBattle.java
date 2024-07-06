@@ -68,12 +68,10 @@ public class MilitaryBattle implements WarObserver {
     private final Random random = Settings.getRandom();
     private int days = 0; // tracks how many days have gone by
     private final LinkedList<String> battleLog = new LinkedList<>(); // Logging system
-
-
     private boolean isOnGoing = true;
 
     public MilitaryBattle(Military attacker, Military defender) {
-        testMilitaries(attacker, defender);
+        testMilitaries();
         this.attackingArmyStats = new ArmyStats(attacker.getArmy());
         this.defendingArmyStats = new ArmyStats(defender.getArmy());
         this.attackingMilitary = attacker;
@@ -94,12 +92,12 @@ public class MilitaryBattle implements WarObserver {
 
     }
 
-    private void testMilitaries(Military attacker, Military defender) {
-        if(attacker.getArmy().getNumOfSoldiers() <= 1){
-            attacker.getArmy().addOneSoldier();
+    private void testMilitaries() {
+        if(this.attackingMilitary.getArmy().getNumOfSoldiers() < 1){
+            this.attackingMilitary.getArmy().addOneSoldier();
         }
-        if(defender.getArmy().getNumOfSoldiers() <= 1){
-            defender.getArmy().addOneSoldier();
+        if(this.defendingMilitary.getArmy().getNumOfSoldiers() < 1){
+            this.defendingMilitary.getArmy().addOneSoldier();
         }
     }
 
@@ -110,7 +108,7 @@ public class MilitaryBattle implements WarObserver {
     }
     private void performAttack(ArmyStats currentAttackTurn, ArmyStats currentDefenceTurn, String attacker) {
         try {
-
+            testMilitaries();
             // battle ends when 1 army runs out of soldiers
             if (attackingArmyStats.getNumOfSoldiers() <= 1) {
                 settleBattle("Defender");
@@ -230,6 +228,7 @@ public class MilitaryBattle implements WarObserver {
 
     private void settleBattle(String winner) {
         try {
+            testMilitaries();
             if (Objects.equals(winner, "Attacker")) {
                 defendingMilitary.getArmy().setState(Army.ArmyState.DEFEATED);
                 attackingMilitary.getArmy().setState(null);
@@ -328,15 +327,13 @@ public class MilitaryBattle implements WarObserver {
     private void payRunningCosts() {
         try {
             if(!attackingCommander.getWallet().subtractResources(attackingArmyStats.getWarCost())){
-                attackingCommander.getMessageTracker().addMessage(MessageTracker.Message("Major", "Army expenses not paid"));
-                attackingCommander.loseStrike();
+                attackingCommander.loseStrike("Army expenses not paid");
             }else{
                 attackingCommander.getMessageTracker().addMessage(MessageTracker.Message("Minor", "War expenses paid: " + attackingArmyStats.getWarCost().toShortString()));
             }
 
             if(!defendingCommander.getWallet().subtractResources(defendingArmyStats.getWarCost())){
-                defendingCommander.getMessageTracker().addMessage(MessageTracker.Message("Major", "Army expenses not paid"));
-                defendingCommander.loseStrike();
+                defendingCommander.loseStrike("Army expenses not paid");
             }else{
                 defendingCommander.getMessageTracker().addMessage(MessageTracker.Message("Minor", "War expenses paid: " + attackingArmyStats.getWarCost().toShortString()));
             }

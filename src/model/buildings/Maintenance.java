@@ -39,11 +39,7 @@ public class Maintenance implements PaymentTracker {
                 property.getOwner().getMessageTracker().addMessage(MessageTracker.Message("Minor", message));
             }
         } else {
-            String errorMessage = "Maintenance not paid " + maintenanceCost;
-            if(isPlayer) {
-                property.getOwner().getMessageTracker().addMessage(MessageTracker.Message("Error", errorMessage));
-            }
-            property.getOwner().loseStrike();
+            property.getOwner().loseStrike("Maintenance not paid");
         }
     }
 

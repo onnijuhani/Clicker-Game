@@ -9,7 +9,6 @@ import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.stateSystem.Event;
 import model.stateSystem.GameEvent;
-import model.stateSystem.MessageTracker;
 import model.time.ArmyManager;
 import model.time.ArmyObserver;
 import model.time.EventManager;
@@ -74,8 +73,7 @@ public class Army implements ArmyObserver, PaymentTracker {
     private void payRunningCosts() {
         try {
             if(!wallet.subtractResources(getRunningCost())){
-                owner.getMessageTracker().addMessage(MessageTracker.Message("Major", "Army expenses not paid"));
-                owner.loseStrike();
+                owner.loseStrike("Army costs not paid");
             }
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);
@@ -218,11 +216,19 @@ public class Army implements ArmyObserver, PaymentTracker {
 
     public TransferPackage getRunningCost(){
 
+        MilitaryBattle.ArmyStats armyStats = getCorrectArmyStats();
+
         int food = numOfSoldiers * ArmyCost.runningFood;
         int alloys = (attackPower + defencePower) * ArmyCost.runningAlloy;
         int gold = numOfSoldiers * ArmyCost.runningGold;
 
-        return new TransferPackage(food, alloys, gold);
+        TransferPackage transferPackage = new TransferPackage(food, alloys, gold);
+
+        if(armyStats != null) {
+            transferPackage = transferPackage.add(armyStats.getWarCost());
+        }
+
+        return transferPackage;
     }
 
 
@@ -262,6 +268,9 @@ public class Army implements ArmyObserver, PaymentTracker {
     }
 
     private MilitaryBattle.ArmyStats getCorrectArmyStats() {
+        if(militaryBattle == null){
+            return null;
+        }
         MilitaryBattle.ArmyStats armyStats;
         if(militaryBattle.getDefendingMilitary().getArmy() == this){
             armyStats = militaryBattle.getDefendingArmyStats();
