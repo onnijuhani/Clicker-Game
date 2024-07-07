@@ -22,9 +22,9 @@
       </ImageView>
       <VBox alignment="CENTER" layoutX="466.0" layoutY="104.0" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="46.0">
          <children>
-            <HBox fx:id="CombatBox" alignment="CENTER" prefHeight="52.0" prefWidth="174.0" styleClass="charbox">
+            <HBox fx:id="CombatBox" alignment="CENTER" prefHeight="35.0" styleClass="charbox">
                <children>
-                  <Button mnemonicParsing="false" onAction="#executeDuel" text="Duel">
+                  <Button fx:id="duelBtn" mnemonicParsing="false" onAction="#executeDuel" text="Duel">
                      <HBox.margin>
                         <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                      </HBox.margin>
@@ -35,7 +35,7 @@
                            </font>
                         </Tooltip>
                      </tooltip></Button>
-                  <Button mnemonicParsing="false" onAction="#executeAuthorityBattle" text="Challenge">
+                  <Button fx:id="challengeBtn" mnemonicParsing="false" onAction="#executeAuthorityBattle" text="Challenge">
                      <HBox.margin>
                         <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                      </HBox.margin>
@@ -49,7 +49,7 @@
                   </Button>
                </children>
                <VBox.margin>
-                  <Insets left="15.0" right="15.0" />
+                  <Insets bottom="2.0" left="15.0" right="15.0" />
                </VBox.margin>
             </HBox>
             <AnchorPane id="charbox" styleClass="charbox">

@@ -45,6 +45,8 @@ public class CombatSystem {
      */
     public void authorityBattle() {
 
+        checkForDuelTruce(attacker, defender);
+
         if (IsLevelHighEnough(4)) return; // Must be at least level 4 to attack
 
         if (attacker.hasState(State.IN_BATTLE) || defender.hasState(State.IN_BATTLE) || venue.hasState(State.IN_BATTLE)) {
@@ -152,6 +154,16 @@ public class CombatSystem {
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);
         }
+    }
+
+    private static boolean checkForDuelTruce(Person attacker, Person defender){
+        if(attacker.getRelationsManager().checkForTruce(defender)){
+            if(attacker.isPlayer()){
+                attacker.getMessageTracker().addMessage(MessageTracker.Message("Error", "Cannot enter battle against " + defender + "\nYou have lost Duel against them."));
+            }
+            return true;
+        }
+        return defender.getRelationsManager().checkForTruce(attacker);
     }
 
     private static List<Person> getKingSupporters(Person defender, Person attacker) {
@@ -497,6 +509,8 @@ public class CombatSystem {
      */
     public void robbery() {
 
+        checkForDuelTruce(attacker, defender);
+
         if (Time.year < 1) {
             if (attacker.isPlayer()) {
                 attacker.getMessageTracker().addMessage(MessageTracker.Message("Error", "Robbery is only possible after the first year"));
@@ -505,11 +519,9 @@ public class CombatSystem {
         }
         // Check if attacker's level is high enough
         if (!IsLevelHighEnough(4)) {
-            if (attacker.isPlayer()) {
-                attacker.getMessageTracker().addMessage(MessageTracker.Message("Error", "Attacker level is not high enough for robbery"));
-            }
             return;
         }
+
         // Check if the venue is too big for the attacker
         if (venueStats.getUpgradeLevel() * 4 > attacker.getCombatStats().getOffenseLevel()) {
             if (attacker.isPlayer()) {
@@ -607,9 +619,12 @@ public class CombatSystem {
 
     /**
      Duel is a battle type where there is no resource exchange at all. Doesn't affect positions unlike authorityBattle.
-     Both offense and defense levels are used for both characters. Venue is not included.
+     Both offense and defense levels are used for both characters. Venue is not included. If attacker wins the duel, defender
+     will get "Duel Truce" effect against them, meaning that defender cannot attack the attacker for a while.
      */
     public void Duel() {
+
+        checkForDuelTruce(attacker, defender);
 
         if (IsLevelHighEnough(3)){
             return; // Must be at least level 3 attack
@@ -672,6 +687,8 @@ public class CombatSystem {
                     "Major", "You were defeated by " + attacker.getCharacter())));
 
             defender.addAspiration(Aspiration.INCREASE_PERSONAL_DEFENCE);
+
+            defender.getRelationsManager().addLostDuel(defender,attacker); // if attacker is successful, defender cannot attack them for a while.
 
         } else {
                 defender.getRelationsManager().processResults(attacker);

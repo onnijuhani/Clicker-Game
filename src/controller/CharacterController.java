@@ -93,6 +93,7 @@ public class CharacterController extends BaseController  {
         if(currentCharacter == null){
             return;
         }
+        differentiatePlayer();
         propertyController.setCurrentProperty(currentCharacter.getPerson().getProperty());
         updateCharacterName();
         updateCharacterStatus();
@@ -100,7 +101,6 @@ public class CharacterController extends BaseController  {
         updateWalletInfo();
         updateAuthority();
         updateHomeQuarter();
-        differentiatePlayer();
         updateCombatStats();
         main.resetBtn.setDisable(currentCharacter.getPerson() == Model.getPlayerAsPerson());
         disableArmyTab();
@@ -124,7 +124,7 @@ public class CharacterController extends BaseController  {
 
         if(states.contains(State.IN_BATTLE) || states.contains(State.IN_DEFENCE)){
             stateBox.setVisible(true);
-            CombatBox.setVisible(false);
+
 
             GameEvent authorityEvent = currentPerson.getAnyOnGoingEvent(Event.AuthorityBattle);
             GameEvent duelEvent = currentPerson.getAnyOnGoingEvent(Event.DUEL);
@@ -174,10 +174,21 @@ public class CharacterController extends BaseController  {
 
         }else{
             stateBox.setVisible(false);
-            CombatBox.setVisible(true);
-        }
 
+        }
     }
+
+    @FXML
+    private Button duelBtn;
+    @FXML
+    private Button challengeBtn;
+
+    void updateCombatButtons(){
+        challengeBtn.setVisible(!CombatService.checkForError(Model.getPlayerAsCharacter(), currentCharacter));
+        duelBtn.setVisible(!CombatService.checkForError(Model.getPlayerAsCharacter(), currentCharacter));
+        CombatBox.setVisible(challengeBtn.isVisible() || duelBtn.isVisible());
+    }
+
 
     private void handleParticipantClick(Person participant) {
         openCharacterProfile(participant.getCharacter());
@@ -276,15 +287,14 @@ public class CharacterController extends BaseController  {
 
 
     void differentiatePlayer(){
-        if (currentCharacter.getPerson().equals(model.getPlayerPerson())){
+        if (currentCharacter == Model.getPlayerAsCharacter()){
             attackBox.setVisible(true);
             defenseBox.setVisible(true);
-            CombatBox.setVisible(false);
         }else{
             attackBox.setVisible(false);
             defenseBox.setVisible(false);
-            CombatBox.setVisible(true);
         }
+        updateCombatButtons();
     }
 
 

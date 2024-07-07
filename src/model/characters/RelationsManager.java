@@ -2,6 +2,9 @@ package model.characters;
 
 import model.characters.authority.Authority;
 import model.characters.authority.QuarterAuthority;
+import model.stateSystem.Event;
+import model.stateSystem.GameEvent;
+import model.time.EventManager;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -15,6 +18,8 @@ public class RelationsManager {
     private final Set<Person> listOfSubordinates = new HashSet<>();
     private final Person owner;
     private final HashMap<Status, Person> authorities = new HashMap<>(); // Unique authorities
+
+    private final HashSet<Person> duelTruceList = new HashSet<>();
 
     public RelationsManager(Person owner) {
         this.owner = owner;
@@ -208,8 +213,36 @@ public class RelationsManager {
             e.printStackTrace();throw new RuntimeException(e);
         }
     }
-
     public Set<Person> getListOfDefeatedPersons() {
         return listOfDefeatedPersons;
     }
+
+
+    /**
+     * Losing duel makes it impossible for the loser to attack the winner for a while.
+     * @param thisPerson person who owns the relationsManager
+     * @param opponent person they lost the duel to
+     */
+    public void addLostDuel(Person thisPerson, Person opponent){
+        if(opponent == thisPerson.getRole().getAuthority().getCharacterInThisPosition().getPerson()){
+            return; // if authority duels this person, duelTruce won't apply
+        }
+        duelTruceList.add(opponent);
+        GameEvent gameEvent = new GameEvent(Event.DUEL_TRUCE, thisPerson);
+
+        EventManager.scheduleEvent(() -> removePersonFromTruceDuels(opponent), 1080, gameEvent);
+    }
+
+    private void removePersonFromTruceDuels(Person opponent){
+        this.duelTruceList.remove(opponent);
+    }
+
+    /**
+     * @param opponent Opponent who might be in the truce list
+     * @return returns true if opponent is in the list, owner of this manager cannot enter the battle
+     */
+    public boolean checkForTruce(Person opponent) {
+        return duelTruceList.contains(opponent);
+    }
+
 }
