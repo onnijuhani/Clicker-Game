@@ -1,6 +1,8 @@
 package model.war;
 
+import model.characters.Person;
 import model.resourceManagement.TransferPackage;
+import model.time.Time;
 import model.time.WarManager;
 import model.time.WarObserver;
 import model.worldCreation.Details;
@@ -50,9 +52,19 @@ public class War implements WarObserver, Details {
         return s.toString();
     }
 
+    public War(Nation attacker, Nation defender, String warName) {
+        this.attacker = attacker;
+        this.defender = defender;
+        startPreparing();
+        WarManager.subscribe(this);
+        generateStartingNote(warName);
+    }
+
     public enum Phase {
         PREPARING, PHASE1, PHASE2, PHASE3, ENDED, WAITING,
     }
+
+    private final WarNotes warNotes = new WarNotes();
 
     private int days = 0;
     private int phase3StartingDay;
@@ -83,8 +95,6 @@ public class War implements WarObserver, Details {
         if(currentPhase != PHASE3){
             return;
         }
-        double adr = getDefeatRatio(attackerDefeatedMilitaries, attackerMilitariesInPlay, attackerMilitariesInBattle);
-        double ddr = getDefeatRatio(defenderDefeatedMilitaries, defenderMilitariesInPlay, defenderMilitariesInBattle);
 
         sendResourceAidToRoyals(attacker, attackerRoyals);
         sendResourceAidToRoyals(defender, defenderRoyals);
@@ -136,22 +146,22 @@ public class War implements WarObserver, Details {
 
 
         if(currentPhase == PHASE2) {
-            if(adr >= 0.8){
-                startPhase3(defender + " has defeated 80% of the opponents commander armies.");
+            if(adr >= 0.9){
+                startPhase3(defender + " has defeated 90% of the opponents commander armies.");
             }
-            if(ddr >= 0.8){
-                startPhase3(attacker + " has defeated 80% of the opponents commander armies.");
+            if(ddr >= 0.9){
+                startPhase3(attacker + " has defeated 90% of the opponents commander armies.");
             }
             return;
         }
 
         if(currentPhase == PHASE3) {
-            if(adr >= 0.95 && attackerRoyals.isEmpty()){
+            if(adr >= 0.98 && attackerRoyals.isEmpty()){
                 System.out.println(defender + " has won the war against " + attacker);
                 endWar("Loser", "Winner"); // Attacker has lost the offensive war
 
             }
-            if(ddr >= 0.95 && defenderRoyals.isEmpty()){
+            if(ddr >= 0.98 && defenderRoyals.isEmpty()){
                 System.out.println(attacker + " has won the war against " + defender);
                 endWar("Winner", "Loser"); // Attacker has won the offensive war
 
@@ -219,18 +229,22 @@ public class War implements WarObserver, Details {
     }
 
 
-    public War(Nation attacker, Nation defender) {
-        this.attacker = attacker;
-        this.defender = defender;
-        startPreparing();
-        WarManager.subscribe(this);
-    }
-
+    /**
+     * @param attacker whether attacker of the war is "Winner" or "Loser"
+     * @param defender "Winner" or "Loser"
+     */
     public void endWar(String attacker, String defender){
+
+        if(Objects.equals(attacker, "Winner")) {
+            generateWarReport(this.attacker);
+        }else{
+            generateWarReport(this.defender);
+        }
+
         currentPhase = ENDED;
 
-        this.attacker.endWar(this.defender, attacker);
-        this.defender.endWar(this.attacker, defender);
+        this.attacker.endWar(this.defender, attacker, warNotes);
+        this.defender.endWar(this.attacker, defender, warNotes);
 
         WarManager.unsubscribe(this);
     }
@@ -265,7 +279,7 @@ public class War implements WarObserver, Details {
     }
     public void startPhase1() {
         if(currentPhase == PREPARING){
-        setCurrentPhase(PHASE1);
+            setCurrentPhase(PHASE1);
         }
     }
 
@@ -290,12 +304,11 @@ public class War implements WarObserver, Details {
     }
 
     private void reduceMilitaries(HashSet<Military> set) {
-        if(set.size() > 50){
-            for(Military m : set){
-                if(set.size() <= 50){
-                    break;
-                }
-                set.remove(m);
+        if (set.size() > 50) {
+            Iterator<Military> iterator = set.iterator();
+            while (iterator.hasNext() && set.size() > 50) {
+                iterator.next();
+                iterator.remove();
             }
         }
     }
@@ -464,6 +477,44 @@ public class War implements WarObserver, Details {
         // Implement logic for final assault on the king and bodyguards
     }
 
+    private void addWarNote(String note){
+        warNotes.warLog.add(days + " " + note);
+    }
 
+    private void generateStartingNote(String warName){
+        warNotes.warName = warName;
+        addWarNote(warName + " started: " + Time.getClock());
+    }
+
+    private void generateWarReport(Nation winner){
+        warNotes.attackingKing = attacker.getAuthorityHere().getCharacterInThisPosition().getPerson();
+        warNotes.defendingKing = defender.getAuthorityHere().getCharacterInThisPosition().getPerson();
+        warNotes.attacker = attacker;
+        warNotes.defender = defender;
+        warNotes.lastedForDays = days;
+        warNotes.winner = winner;
+        warNotes.totalBattles = attackerDefeatedMilitaries.size() + defenderDefeatedMilitaries.size();
+
+    }
+
+    public static class WarNotes {
+        ArrayList<String> warLog = new ArrayList<>(); // messages here
+
+        Nation attacker;
+        Nation defender;
+        Nation winner;
+        int totalBattles;
+        int lastedForDays;
+        Person attackingKing;
+        Person defendingKing;
+
+        Person deadliestAttacker;
+        Person deadliestDefender;
+
+        String warName;
+
+
+
+    }
 
 }

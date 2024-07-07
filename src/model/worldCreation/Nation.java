@@ -40,17 +40,17 @@ public class Nation extends ControlledArea implements Details {
     private Nation enemy = null;
     private final HashSet<Person> warCommanders = new HashSet<>();
 
-    public int getWarsFought() {
-        return warsFought;
+    public int getWarsFoughtAmount() {
+        return warsFoughtAmount;
     }
 
-    private int warsFought = 0;
+    private int warsFoughtAmount = 0;
 
-    private Nation conqueror;
+    private Nation overlord;
+    private boolean isVassal = false;
 
-
-
-    private final HashSet<Nation> nationsUnderControl = new HashSet<>();
+    private final HashSet<Nation> vassals = new HashSet<>();
+    private ArrayList<War.WarNotes> warHistory = new ArrayList<>();
 
     private boolean nobleWarBonus = false;
     private boolean warTax = false;
@@ -253,13 +253,13 @@ public class Nation extends ControlledArea implements Details {
 
     public void setConquerorToWorkWallets(Nation nation){
         for(Character c :citizenCache){
-            c.getPerson().getWorkWallet().setConqueror(nation);
+            c.getPerson().getWorkWallet().setOverlord(nation);
         }
     }
 
     public void removeConquerorFromWorkWallets(){
         for(Character c :citizenCache){
-            c.getPerson().getWorkWallet().setConqueror(null);
+            c.getPerson().getWorkWallet().setOverlord(null);
         }
     }
 
@@ -323,8 +323,8 @@ public class Nation extends ControlledArea implements Details {
         getAllQuarters().add(quarter);
         numberOfQuarters++;
     }
-    public HashSet<Nation> getNationsUnderControl() {
-        return nationsUnderControl;
+    public HashSet<Nation> getVassals() {
+        return vassals;
     }
 
     public Nation getEnemy() {
@@ -333,14 +333,8 @@ public class Nation extends ControlledArea implements Details {
 
     public static void handleStartWar(Nation nation1, Nation nation2) {
         try {
-            if(nation1.isAtWar) {
-                System.out.println(nation1 + " is already at war");
-                return;
-            }
-            if(nation1 == nation2){
-                String e = nation1 + " attempted to enter war against itself.";
-                throw new RuntimeException(e);
-            }
+
+            // checking for errors should be done already in WarService
 
             // set enemy
             nation1.enemy = nation2;
@@ -394,9 +388,9 @@ public class Nation extends ControlledArea implements Details {
             nation1.removeWarTaxFromWorkWallets();
 
             if(Objects.equals(winnerOrLoser, "Winner")){
-                nation1.nationsUnderControl.add(opponent);
+                nation1.vassals.add(opponent);
             }else{
-                nation1.setConqueror(opponent);
+                nation1.setOverlord(opponent);
                 nation1.getAuthorityHere().setSupervisor(opponent.getAuthorityHere());
             }
 
@@ -588,9 +582,10 @@ public class Nation extends ControlledArea implements Details {
         this.war = war;
         handleStartWar(this, opponent);
     }
-    public void endWar(Nation opponent, String winnerOrLoser) {
-        this.warsFought++;
+    public void endWar(Nation opponent, String winnerOrLoser, War.WarNotes warNotes) {
+        this.warsFoughtAmount++;
         this.war = null;
+        this.warHistory.add(warNotes);
         handleEndingWar(this, opponent, winnerOrLoser);
     }
 
@@ -598,13 +593,28 @@ public class Nation extends ControlledArea implements Details {
         warCommanders.clear();
     }
 
-    public Nation getConqueror() {
-        return conqueror;
+    public Nation getOverlord() {
+        return overlord;
     }
 
-    public void setConqueror(Nation conqueror) {
-        this.conqueror = conqueror;
-        setConquerorToWorkWallets(conqueror);
+    public void setOverlord(Nation overlord) {
+        this.overlord = overlord;
+        this.isVassal = true;
+        setConquerorToWorkWallets(overlord);
     }
+
+    public List<Person> searchCharactersByName(String query) {
+        Iterable<? extends Person> characters = getAllCitizensOfTheNation();
+
+        // Filter characters by name
+        return StreamSupport.stream(characters.spliterator(), false)
+                .filter(character -> character.getName().toLowerCase().contains(query.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    public boolean isVassal() {
+        return isVassal;
+    }
+
 
 }
