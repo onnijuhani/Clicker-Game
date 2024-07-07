@@ -226,22 +226,25 @@ public class Wallet {
     /**
      * In case wallet is completely emptied, this method attempts to make a withdrawal from vault to prevent loss of strikes.
      */
-    private void generateRescuePackage(){
-        if(!this.isEmpty()){
+    private void generateRescuePackage() {
+        if (!this.isEmpty()) {
             return;
         }
-        if(getOwner() instanceof Person person){
+
+        if (getOwner() instanceof Person person) {
             TransferPackage expenses = person.getPaymentManager().getFullExpense();
             Vault vault = person.getProperty().getVault();
 
-            if(vault.isEmpty()){
+            if (vault.isEmpty()) {
+                person.getMessageTracker().addMessage(MessageTracker.Message("Error", "Vault is empty. No resources available for rescue package."));
                 return;
             }
 
-            if(this.deposit(vault, expenses)){
-                person.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Deposited needed resources from Vault"));
-            }else{
+            if (this.deposit(vault, expenses)) {
+                person.getMessageTracker().addMessage(MessageTracker.Message("Major", String.format("Deposited %s from Vault to cover expenses.", expenses)));
+            } else {
                 this.depositAll(vault);
+                person.getMessageTracker().addMessage(MessageTracker.Message("Major", "Vault resources deposited, but it was insufficient to cover all expenses."));
             }
         }
     }

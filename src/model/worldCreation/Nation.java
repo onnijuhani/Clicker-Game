@@ -47,6 +47,9 @@ public class Nation extends ControlledArea implements Details {
     private int warsFought = 0;
 
     private Nation conqueror;
+
+
+
     private final HashSet<Nation> nationsUnderControl = new HashSet<>();
 
     private boolean nobleWarBonus = false;
@@ -320,6 +323,9 @@ public class Nation extends ControlledArea implements Details {
         getAllQuarters().add(quarter);
         numberOfQuarters++;
     }
+    public HashSet<Nation> getNationsUnderControl() {
+        return nationsUnderControl;
+    }
 
     public Nation getEnemy() {
         return enemy;
@@ -391,6 +397,7 @@ public class Nation extends ControlledArea implements Details {
                 nation1.nationsUnderControl.add(opponent);
             }else{
                 nation1.setConqueror(opponent);
+                nation1.getAuthorityHere().setSupervisor(opponent.getAuthorityHere());
             }
 
         } catch (RuntimeException e) {

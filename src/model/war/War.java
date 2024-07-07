@@ -18,6 +18,7 @@ public class War implements WarObserver, Details {
             if(days < 360){
                 return;
             }
+            startPhase1();
             if(day == 23 || day == 8){
                 finalPhaseActions();
                 royalsMatchMaking(day);
@@ -50,7 +51,7 @@ public class War implements WarObserver, Details {
     }
 
     public enum Phase {
-        PHASE1, PHASE2, PHASE3, ENDED
+        PREPARING, PHASE1, PHASE2, PHASE3, ENDED, WAITING,
     }
 
     private int days = 0;
@@ -85,8 +86,6 @@ public class War implements WarObserver, Details {
         double adr = getDefeatRatio(attackerDefeatedMilitaries, attackerMilitariesInPlay, attackerMilitariesInBattle);
         double ddr = getDefeatRatio(defenderDefeatedMilitaries, defenderMilitariesInPlay, defenderMilitariesInBattle);
 
-        checkAndAddWarTax(adr, ddr); // war tax is only set after certain amount of opponents armies have been defeated
-
         sendResourceAidToRoyals(attacker, attackerRoyals);
         sendResourceAidToRoyals(defender, defenderRoyals);
 
@@ -106,11 +105,11 @@ public class War implements WarObserver, Details {
     }
 
     private void checkAndAddWarTax(double adr, double ddr) {
-        if(adr > 0.5 && !aWarTax){
+        if(adr > 0.6 && !aWarTax){
             attacker.setWarTaxToWorkWallets();
             aWarTax = true;
         }
-        if(ddr > 0.5 && !dWarTax){
+        if(ddr > 0.6 && !dWarTax){
             defender.setWarTaxToWorkWallets();
             dWarTax = true;
         }
@@ -133,6 +132,8 @@ public class War implements WarObserver, Details {
             return;
         }
 
+        checkAndAddWarTax(adr, ddr); // war tax is only set after certain amount of opponents armies have been defeated
+
 
         if(currentPhase == PHASE2) {
             if(adr >= 0.8){
@@ -145,12 +146,12 @@ public class War implements WarObserver, Details {
         }
 
         if(currentPhase == PHASE3) {
-            if(adr >= 0.7 && attackerRoyals.isEmpty()){
+            if(adr >= 0.95 && attackerRoyals.isEmpty()){
                 System.out.println(defender + " has won the war against " + attacker);
                 endWar("Loser", "Winner"); // Attacker has lost the offensive war
 
             }
-            if(ddr >= 0.7 && defenderRoyals.isEmpty()){
+            if(ddr >= 0.95 && defenderRoyals.isEmpty()){
                 System.out.println(attacker + " has won the war against " + defender);
                 endWar("Winner", "Loser"); // Attacker has won the offensive war
 
@@ -221,7 +222,7 @@ public class War implements WarObserver, Details {
     public War(Nation attacker, Nation defender) {
         this.attacker = attacker;
         this.defender = defender;
-        startPhase1();
+        startPreparing();
         WarManager.subscribe(this);
     }
 
@@ -255,24 +256,48 @@ public class War implements WarObserver, Details {
     }
 
     // Automatic matchmaking and battles
-    public void startPhase1() {
-        setCurrentPhase(PHASE1);
+    public void startPreparing() {
+        setCurrentPhase(PREPARING);
 
         // Add civilian militaries to in play set
         attackerMilitariesInPlay.addAll(attacker.getMilitariesOwnedByCivilians());
         defenderMilitariesInPlay.addAll(defender.getMilitariesOwnedByCivilians());
     }
+    public void startPhase1() {
+        if(currentPhase == PREPARING){
+        setCurrentPhase(PHASE1);
+        }
+    }
+
+
 
     public void startPhase2(String message) {
         if(currentPhase == PHASE1) {
             System.out.println(message);
+
+            reduceMilitaries(attackerMilitariesInPlay);
+            reduceMilitaries(defenderMilitariesInPlay);
+
             attackerMilitariesInPlay.addAll(attacker.getMilitariesOwnedByCommanders());
             defenderMilitariesInPlay.addAll(defender.getMilitariesOwnedByCommanders());
-            System.out.println(attacker.getMilitariesOwnedByCommanders());
+
+            System.out.println("Commanders added");
+
         }
 
         setCurrentPhase(PHASE2);
 
+    }
+
+    private void reduceMilitaries(HashSet<Military> set) {
+        if(set.size() > 50){
+            for(Military m : set){
+                if(set.size() <= 50){
+                    break;
+                }
+                set.remove(m);
+            }
+        }
     }
 
     public void startPhase3(String message) {
