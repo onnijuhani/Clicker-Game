@@ -5,16 +5,17 @@ import model.characters.Character;
 import model.characters.Peasant;
 import model.characters.Status;
 import model.characters.authority.Authority;
-import model.resourceManagement.TransferPackage;
 import model.time.GenerateManager;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
 import static model.NameCreation.generateWorldName;
 
-public class CreateWorld {
-    private final World world;
+public class CreateWorld implements Serializable {
+
+    public final World world;
     private final Quarter spawnQuarter;
     private Character initialPlayer;
 
@@ -92,7 +93,7 @@ public class CreateWorld {
 //        initialPlayer.getPerson().getProperty().getVault().addResources(cheatPackage);
 //        initialPlayer.getPerson().getWorkWallet().addResources(cheatPackage);
 
-
+        initialPlayer.getPerson().getCombatStats().increaseOffence(150);
 
     }
 

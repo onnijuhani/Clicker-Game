@@ -230,6 +230,9 @@ public class Wallet {
         if (!this.isEmpty()) {
             return;
         }
+        if(this instanceof Vault){
+            return;
+        }
 
         if (getOwner() instanceof Person person) {
             TransferPackage expenses = person.getPaymentManager().getFullExpense();

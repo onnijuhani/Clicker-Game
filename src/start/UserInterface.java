@@ -57,8 +57,13 @@ public class UserInterface extends Application {
             // Key event SPACE to stop/start time
             scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
                 if (event.getCode() == KeyCode.SPACE) {
+                    if(mainController.getCharacterController().getSearchPane().isVisible()){
+                        return;
+                    }
                     mainController.toggleSimulation();
-                    event.consume();
+                    if (!event.isConsumed()) {
+                        event.consume();
+                    }
                 }
             });
 

@@ -15,6 +15,7 @@ import model.characters.AuthorityCharacter;
 import model.characters.Character;
 import model.characters.Person;
 import model.resourceManagement.payments.Tax;
+import model.stateSystem.MessageTracker;
 import model.war.WarPlanningManager;
 import model.war.WarService;
 import model.worldCreation.Nation;
@@ -207,16 +208,24 @@ public class OverviewController extends BaseController{
         Label powerLabel = new Label(String.valueOf(nationDetails.militaryPower()));
         powerLabel.setStyle("-fx-text-fill: white;");
 
-        // Create hyperlink for starting a war
-        Hyperlink startWarLink = new Hyperlink("Start War");
-        startWarLink.setOnAction(event -> startWar(nationDetails.nation()));
+        Hyperlink hyperlink;
+
+        if(nationDetails.nation().isVassal()){
+            // Hyperlink for vassals ( Cannot enter war with nations that are vassals of another nation)
+            hyperlink = new Hyperlink("Vassal");
+            hyperlink .setOnAction(event -> vassalInfo(nationDetails.nation()));
+        }else {
+            // Create hyperlink for starting a war
+            hyperlink  = new Hyperlink("Start War");
+            hyperlink .setOnAction(event -> startWar(nationDetails.nation()));
+        }
 
         // Add labels and hyperlink to the GridPane
         nationGrid.add(nameLabel, 0, 0);
         nationGrid.add(powerLabel, 1, 0);
 
         if(Model.getPlayerAsCharacter() instanceof Character) {
-            nationGrid.add(startWarLink, 2, 0);
+            nationGrid.add(hyperlink, 2, 0);
         }
 
         return nationGrid;
@@ -224,6 +233,10 @@ public class OverviewController extends BaseController{
 
     private void startWar(Nation nation) {
         WarService.startWar(Model.getPlayerRole().getNation(), nation);
+    }
+
+    private void vassalInfo(Nation nation) {
+        Model.getPlayerAsPerson().getMessageTracker().addMessage(MessageTracker.Message("Major", nation + " is vassal under: " + nation.getOverlord()));
     }
 
 

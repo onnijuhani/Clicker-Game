@@ -15,7 +15,7 @@ import model.worldCreation.*;
 
 public class Model {
 
-    private static final CreateWorld world = new CreateWorld();
+    private static final CreateWorld createWorld = new CreateWorld();
     private static final CurrentView currentView = new CurrentView();
     private static final Time time = new Time();
 
@@ -26,13 +26,14 @@ public class Model {
 
 
     public Model(){
-        currentView.setCurrentView(world.getSpawnQuarter().getHigher());
+        currentView.setCurrentView(createWorld.getSpawnQuarter().getHigher());
         setUpPlayer();
+        createWorld.world.calculateAllNonPlayerNations();
         Clicker.initializeClicker(playerPerson);
     }
 
     private void setUpPlayer() {
-        playerCharacter = world.getInitialPlayer();
+        playerCharacter = createWorld.getInitialPlayer();
         playerPerson = playerCharacter.getPerson();
         playerRole = playerCharacter.getRole();
     }
@@ -72,7 +73,7 @@ public class Model {
         return time;
     }
     public CreateWorld accessWorld() {
-        return world;
+        return createWorld;
     }
     public CurrentView accessCurrentView() {
         return currentView;
@@ -111,8 +112,8 @@ public class Model {
             Nation nation = (Nation) king.getAuthorityPosition().getAreaUnderAuthority();
             int amountQuartersUnderAuthority = nation.getQuarterAmount();
 
-            if(!nation.getNationsUnderControl().isEmpty()){
-                for(Nation n : nation.getNationsUnderControl()){
+            if(!nation.getVassals().isEmpty()){
+                for(Nation n : nation.getVassals()){
                     amountQuartersUnderAuthority += n.getQuarterAmount();
                 }
             }

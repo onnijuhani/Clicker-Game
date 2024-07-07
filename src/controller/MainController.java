@@ -43,6 +43,11 @@ public class MainController extends BaseController {
     private WorkWalletController workWalletController;
     @FXML
     protected ExploreMapController exploreMapController;
+
+    public CharacterController getCharacterController() {
+        return characterController;
+    }
+
     @FXML
     private CharacterController characterController;
     @FXML
@@ -69,7 +74,6 @@ public class MainController extends BaseController {
     private RelationsController relationsController;
     @FXML
     public Button resetBtn;
-
 
     @FXML
     protected Button clickMeButton;
@@ -123,15 +127,10 @@ public class MainController extends BaseController {
     @FXML
     private Label popUpHeadline;
 
-
     @FXML
     private CheckBox pausePopBtn;
     @FXML
     private Label currentlyViewing;
-
-
-
-
 
     boolean autoContinue = false;
 
@@ -139,52 +138,55 @@ public class MainController extends BaseController {
         super();
     }
 
-
     @Override
     public void setModel(Model model) {
         super.setModel(model);
+        setControllerModels(model);
+    }
+
+    private void setControllerModels(Model model) {
         if (topSectionController != null) {
             topSectionController.setModel(model);
             topSectionController.setMain(this);
         } else {
-            System.out.println("TopSectionController is null");
+            logError("TopSectionController is null");
         }
         if (clickerShopController != null) {
             clickerShopController.setModel(model);
         } else {
-            System.out.println("ClickerShopController is null");
+            logError("ClickerShopController is null");
         }
         if (exchangeController != null) {
             exchangeController.setModel(model);
             exchangeController.setMain(this);
         } else {
-            System.out.println("ExchangeController is null");
+            logError("ExchangeController is null");
         }
         if (workWalletController != null) {
             workWalletController.setModel(model);
         } else {
-            System.out.println("WorkWalletController is null");
+            logError("WorkWalletController is null");
         }
         if (exploreMapController != null) {
             exploreMapController.setModel(model);
             exploreMapController.setMain(this);
             exploreMapController.setCharacterController(characterController);
         } else {
-            System.out.println("ExploreController is null");
+            logError("ExploreController is null");
         }
         if (characterController != null) {
             characterController.setModel(model);
             characterController.setMain(this);
             characterController.setPropertyController(propertyController);
         } else {
-            System.out.println("CharacterController is null");
+            logError("CharacterController is null");
         }
         if (propertyController != null) {
             propertyController.setModel(model);
             propertyController.setMain(this);
             propertyController.setCharacterController(characterController);
         } else {
-            System.out.println("PropertyController is null");
+            logError("PropertyController is null");
         }
         if (relationsController != null) {
             relationsController.setMain(this);
@@ -192,60 +194,65 @@ public class MainController extends BaseController {
             relationsController.setModel(model);
             relationsController.resetEverything();
         } else {
-            System.out.println("RelationsController is null");
+            logError("RelationsController is null");
         }
         if (informationController != null) {
             informationController.setMain(this);
             informationController.setModel(model);
-        }
-        else {
-            System.out.println("InformationController is null");
+        } else {
+            logError("InformationController is null");
         }
         if (armyController != null) {
             armyController.setMain(this);
             armyController.setModel(model);
             armyController.characterController = characterController;
             siegeController = armyController.getSiegeController();
-        }
-        else {
-            System.out.println("armyController is null");
+        } else {
+            logError("armyController is null");
         }
         if (overviewController != null) {
             overviewController.setMain(this);
             overviewController.setModel(model);
             overviewController.setPlayer(Model.getPlayerAsPerson());
-        }
-        else {
-            System.out.println("overviewController is null");
+        } else {
+            logError("overviewController is null");
         }
         if (siegeController != null) {
             siegeController.setMain(this);
             siegeController.setModel(model);
             siegeController.setArmyController(armyController);
-        }
-        else {
-            System.out.println("siegeController is null");
+        } else {
+            logError("siegeController is null");
         }
         if (warController != null) {
             warController.setMain(this);
             warController.setModel(model);
-        }
-        else {
-            System.out.println("warController is null");
+        } else {
+            logError("warController is null");
         }
     }
-
-
 
     @Override
     public void initialize() {
         try {
             Platform.runLater(() -> clickMeButton.requestFocus());
             Platform.runLater(this::generateStartingMessage);
+            Platform.runLater(() -> {
+                if (exploreMapController != null) {
+                    exploreMapController.updateExploreTab();
+                }
+            });
+            Platform.runLater(() -> {
+                if (clickerShopController != null) {
+                    clickerShopController.updateClickerShopPrices();
+                }
+            });
+            Platform.runLater(() -> {
+                if (characterController != null) {
+                    characterController.setCurrentCharacter(model.getPlayerCharacter());
+                }
+            });
 
-            Platform.runLater(() -> exploreMapController.updateExploreTab());
-            Platform.runLater(() -> clickerShopController.updateClickerShopPrices());
-            Platform.runLater(() -> characterController.setCurrentCharacter(model.getPlayerCharacter()));
             Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> update()));
             updateTimeline.setCycleCount(Timeline.INDEFINITE);
             updateTimeline.play();
@@ -265,8 +272,13 @@ public class MainController extends BaseController {
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();throw new RuntimeException(e);
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+    }
+
+    private void logError(String message) {
+        System.err.println("[MainController] ERROR: " + message);
     }
 
     @FXML
@@ -275,46 +287,58 @@ public class MainController extends BaseController {
     }
 
     public void Reset() {
-        // Save the currently selected tab
         Tab selectedTab = mainTabPane.getSelectionModel().getSelectedItem();
 
-        // Perform the reset operations
-        characterController.setCurrentCharacter(model.getPlayerCharacter());
-        characterController.update();
+        if (characterController != null) {
+            characterController.setCurrentCharacter(model.getPlayerCharacter());
+            characterController.update();
+        }
         model.accessCurrentView().setCurrentView(model.accessWorld().getSpawnQuarter());
-        relationsController.resetEverything();
+        if (relationsController != null) {
+            relationsController.resetEverything();
+        }
         clickMeButton.requestFocus();
-        relationsController.setCurrentCharacter(Model.getPlayerAsCharacter());
+        if (relationsController != null) {
+            relationsController.setCurrentCharacter(Model.getPlayerAsCharacter());
+        }
 
         setUpArmyTab();
 
-        // Switch back to characterTab only if relationsTab was selected
         if (selectedTab == relationsTab) {
             mainTabPane.getSelectionModel().select(characterTab);
         }
     }
 
-    public void openExploreMapTab(){
+    public void openExploreMapTab() {
         informationTabPane.getSelectionModel().select(exploreMapTab);
     }
-
 
     public void generateResourcesAction() {
         if (!model.accessTime().isSimulationRunning()) {
             if (model.accessTime().isManualSimulation()) {
                 Time.incrementByClick();
                 Clicker.getInstance().generateResources();
-                topSectionController.updateWallet();
-                topSectionController.update();
-                workWalletController.update();
+                if (topSectionController != null) {
+                    topSectionController.updateWallet();
+                    topSectionController.update();
+                }
+                if (workWalletController != null) {
+                    workWalletController.update();
+                }
             } else {
                 model.getPlayerCharacter().getMessageTracker().addMessage(MessageTracker.Message("Error", "Simulation is paused. Cannot generate resources."));
-                workWalletController.update();
+                if (workWalletController != null) {
+                    workWalletController.update();
+                }
             }
         } else {
             Clicker.getInstance().generateResources();
-            topSectionController.updateWallet();
-            workWalletController.update();
+            if (topSectionController != null) {
+                topSectionController.updateWallet();
+            }
+            if (workWalletController != null) {
+                workWalletController.update();
+            }
         }
         update();
     }
@@ -324,39 +348,35 @@ public class MainController extends BaseController {
         generateResourcesAction();
     }
 
-   void generateStartingMessage(){
+    void generateStartingMessage() {
         triggerStartingMessage();
         MessageTracker tracker = model.getPlayerCharacter().getMessageTracker();
-        tracker.addMessage(MessageTracker.Message("Major","New Game Started"));
+        tracker.addMessage(MessageTracker.Message("Major", "New Game Started"));
 
         Quarter spawn = model.accessWorld().getSpawnQuarter();
-        tracker.addMessage(MessageTracker.Message("Major","Starting District is: "+cleanName(spawn.toString())));
-        tracker.addMessage(MessageTracker.Message("Major","Starting City is: "+cleanName(spawn.getHigher().toString())));
-        tracker.addMessage(MessageTracker.Message("Major","Starting Province is: "+cleanName(spawn.getHigher().getHigher().toString())));
-        tracker.addMessage(MessageTracker.Message("Major","Starting Nation is: "+cleanName(spawn.getNation().toString())));
-        tracker.addMessage(MessageTracker.Message("Major","Starting Continent is: "+cleanName(spawn.getNation().getHigher().toString())));
-
+        tracker.addMessage(MessageTracker.Message("Major", "Starting District is: " + cleanName(spawn.toString())));
+        tracker.addMessage(MessageTracker.Message("Major", "Starting City is: " + cleanName(spawn.getHigher().toString())));
+        tracker.addMessage(MessageTracker.Message("Major", "Starting Province is: " + cleanName(spawn.getHigher().getHigher().toString())));
+        tracker.addMessage(MessageTracker.Message("Major", "Starting Nation is: " + cleanName(spawn.getNation().toString())));
+        tracker.addMessage(MessageTracker.Message("Major", "Starting Continent is: " + cleanName(spawn.getNation().getHigher().toString())));
     }
+
     private String cleanName(String name) {
-        String pattern = " \\(.*?\\)"; //regular expressions that should remove (Home) or (King) or both to display just the name
+        String pattern = " \\(.*?\\)";
         return name.replaceAll(pattern, "");
     }
 
     @Override
     public void update() {
-
         updatePauseBtnText();
         Platform.runLater(() -> {
             List<String> newEvents = model.getPlayerCharacter().getMessageTracker().getCombinedEvents();
             ObservableList<String> currentEvents = eventList.getItems();
 
-
             if (!currentEvents.equals(newEvents)) {
-
                 ObservableList<String> updatedEvents = FXCollections.observableArrayList(newEvents);
                 eventList.setItems(updatedEvents);
 
-                // Scroll to the last item if the list is not empty
                 if (!updatedEvents.isEmpty()) {
                     eventList.scrollTo(updatedEvents.size() - 1);
                 }
@@ -364,31 +384,38 @@ public class MainController extends BaseController {
         });
     }
 
-
-
-
     @FXML
-    void updateExchange(){
-        exchangeController.update();
+    void updateExchange() {
+        if (exchangeController != null) {
+            exchangeController.update();
+        }
     }
 
     @FXML
     void setUpRelationsTab() {
         Model.getPlayerAsPerson().getRelationsManager().updateSets();
-        relationsController.setCurrentCharacter(characterController.getCurrentCharacter());
+        if (relationsController != null) {
+            relationsController.setCurrentCharacter(characterController.getCurrentCharacter());
+        }
     }
+
     @FXML
     void setUpArmyTab() {
-        armyController.differentiatePlayer();
+        if (armyController != null) {
+            armyController.differentiatePlayer();
+        }
     }
 
     @FXML
     void exploreMapOpen() {
         SpecialEventsManager.triggerExploreMapInfo();
     }
+
     @FXML
     void setUpPropertyTab() {
-        propertyController.updatePropertyTab();
+        if (propertyController != null) {
+            propertyController.updatePropertyTab();
+        }
     }
 
     @FXML
@@ -397,21 +424,27 @@ public class MainController extends BaseController {
         Time.setManualSimulation(isChecked);
         Time.stopSimulation();
 
-        topSectionController.stopTimeBtn.setDisable(true); // Disable the stop button
-        topSectionController.startTimeBtn.setDisable(false); // Enable the start button
-
-    }
-    public void toggleSimulation() {
-        if(getModel().accessTime().isSimulationRunning()) {
-            Time.stopSimulation();
-            topSectionController.startTimeBtn.setDisable(false);
+        if (topSectionController != null) {
             topSectionController.stopTimeBtn.setDisable(true);
+            topSectionController.startTimeBtn.setDisable(false);
+        }
+    }
+
+    public void toggleSimulation() {
+        if (getModel().accessTime().isSimulationRunning()) {
+            Time.stopSimulation();
+            if (topSectionController != null) {
+                topSectionController.startTimeBtn.setDisable(false);
+                topSectionController.stopTimeBtn.setDisable(true);
+            }
             incrementClicker.setDisable(false);
             incrementClicker.setSelected(false);
         } else {
             Time.startSimulation();
-            topSectionController.startTimeBtn.setDisable(true);
-            topSectionController.stopTimeBtn.setDisable(false);
+            if (topSectionController != null) {
+                topSectionController.startTimeBtn.setDisable(true);
+                topSectionController.stopTimeBtn.setDisable(false);
+            }
             incrementClicker.setDisable(true);
             incrementClicker.setSelected(false);
         }
@@ -433,11 +466,11 @@ public class MainController extends BaseController {
         mainLayout.setBlendMode(BlendMode.SRC_OVER);
         topSection.setDisable(false);
         clickMeButton.requestFocus();
-        if(Time.isFirstDay){
+        if (Time.isFirstDay) {
             clickMeButton.requestFocus();
             return;
         }
-        if(!pausePopBtn.isSelected()) {
+        if (!pausePopBtn.isSelected()) {
             topSectionController.startTimeFunction();
         }
         clickMeButton.requestFocus();
@@ -445,7 +478,9 @@ public class MainController extends BaseController {
 
     private void openPopUp() {
         mainLayout.setDisable(true);
-        topSectionController.stopTimeFunction();
+        if (topSectionController != null) {
+            topSectionController.stopTimeFunction();
+        }
         PopUpMessageTracker.PopUpMessage message = PopUpMessageTracker.getMessage();
 
         if (message != null) {
@@ -469,29 +504,32 @@ public class MainController extends BaseController {
         }
     }
 
-
-    void updatePauseBtnText(){
-        if(Time.isIsSimulationRunning()){
+    void updatePauseBtnText() {
+        if (Time.isIsSimulationRunning()) {
             pauseBtn.setText(" ▶ " + Time.getSpeed().toString() + " Speed");
         } else if (!getModel().accessTime().isSimulationRunning()) {
             pauseBtn.setText(" ⏸ Paused");
         }
     }
+
     @FXML
     void hideGenerateMessages(ActionEvent event) {
         boolean isChecked = generateMessages.isSelected();
         model.getPlayerCharacter().getMessageTracker().getPreferences().setShowClickerEvents(!isChecked);
     }
+
     @FXML
     void hideMinorMessages(ActionEvent event) {
         boolean isChecked = minorMessages.isSelected();
         model.getPlayerCharacter().getMessageTracker().getPreferences().setShowMinorEvents(!isChecked);
     }
+
     @FXML
     void hideErrorMessages(ActionEvent event) {
         boolean isChecked = errorMessages.isSelected();
         model.getPlayerCharacter().getMessageTracker().getPreferences().setShowErrorEvents(!isChecked);
     }
+
     @FXML
     void hideShopMessages(ActionEvent event) {
         boolean isChecked = shopMessages.isSelected();
@@ -516,20 +554,20 @@ public class MainController extends BaseController {
 
     @FXML
     void cheat(ActionEvent event) {
-        TransferPackage transferPackage = new TransferPackage(10000,10000, 100000);
+        TransferPackage transferPackage = new TransferPackage(10000, 10000, 100000);
         model.getPlayerPerson().getWallet().addResources(transferPackage);
     }
 
     @FXML
     void setFastSpeed(ActionEvent event) {
         Time.fastSpeed = 50;
-        topSectionController.startTimeFunction();
+        if (topSectionController != null) {
+            topSectionController.startTimeFunction();
+        }
     }
 
-
-
     public void updateCurrentlyViewing() {
-        Character currentCharacter = characterController.getCurrentCharacter();
+        Character currentCharacter = characterController != null ? characterController.getCurrentCharacter() : null;
         Character playerCharacter = Model.getPlayerAsCharacter();
 
         if (currentCharacter != null && currentCharacter.equals(playerCharacter)) {
@@ -541,14 +579,8 @@ public class MainController extends BaseController {
         }
     }
 
-
-
     public Button getClickMeButton() {
         return clickMeButton;
     }
-
-
-
-
-
 }
+

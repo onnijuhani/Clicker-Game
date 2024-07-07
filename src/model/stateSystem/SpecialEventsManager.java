@@ -333,18 +333,17 @@ public class SpecialEventsManager {
 
     public static void triggerWarRulesInfo(War.Phase currentPhase) {
         String preparing = """
-        War proceeds in 4 phases:
-
-        1. **Preparing Stage (1 year)**
-           - Citizens who will join the war are selected.
-    """;
+        Preparing Stage (1 year)
+        Citizens who will join the war are selected.
+        
+        """;
 
         String phase1 = """
         **Phase 1: Civilian Sieges**
 
         - All Civilian militaries start military sieges.
         - After one nation has defeated more than 60% of the opponent's civilian militaries, phase 2 starts.
-    """;
+        """;
 
         String phase2 = """
         **Phase 2: Commander Battles**
@@ -353,21 +352,21 @@ public class SpecialEventsManager {
         - All war commanders join the battles and some civilian armies retreat.
         - Commanders include authorities and mercenaries.
         - If one nation defeats 80% of the opponent's commanders, phase 3 starts.
-    """;
+        """;
 
         String phase3 = """
         **Phase 3: Royal Clashes**
 
         - Royal armies join the battle and clash against each other.
         - If any nation manages to defeat all royal armies and at least 95% of the remaining commander armies, they win the war.
-    """;
+        """;
 
         String ending = """
         **End of War**
 
         - The losing nation is obliged to pay tax to the winning nation.
         - The winning nation starts to send this tax money to the authorities.
-    """;
+        """;
 
         String waiting = """
                 War proceeds in 4 phases:

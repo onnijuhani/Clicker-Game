@@ -12,14 +12,19 @@ import static model.Settings.formatNumber;
 
 
 public class TopSectionController extends BaseController {
+
     @FXML
     private Label alloysLabel;
+
     @FXML
     private Label foodLabel;
+
     @FXML
     private Label goldLabel;
+
     @FXML
     protected Button startTimeBtn;
+
     @FXML
     protected Button stopTimeBtn;
 
@@ -28,10 +33,13 @@ public class TopSectionController extends BaseController {
 
     @FXML
     private Label speedLabel;
+
     @FXML
     private Button fasterBtn;
+
     @FXML
     private Button slowerBtn;
+
     private MainController main;
 
     @Override
@@ -40,20 +48,35 @@ public class TopSectionController extends BaseController {
             super.initialize();
             stopTimeBtn.setDisable(true);
 
+            // Additional null check
+            if (stopTimeBtn == null) {
+                throw new RuntimeException("stopTimeBtn is null");
+            }
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     public void updateSpeed() {
-        speedLabel.setText(Time.getSpeed().toString());
-        fasterBtn.setDisable(Time.getSpeed().equals(Speed.Fast));
-        slowerBtn.setDisable(Time.getSpeed().equals(Speed.Slow));
+        // Ensure Time and Speed objects are not null
+        if (Time.getSpeed() != null) {
+            speedLabel.setText(Time.getSpeed().toString());
+            fasterBtn.setDisable(Time.getSpeed().equals(Speed.Fast));
+            slowerBtn.setDisable(Time.getSpeed().equals(Speed.Slow));
+        } else {
+            throw new RuntimeException("Time or Speed is null");
+        }
     }
+
     @Override
     public void update() {
         updateWallet();
-        timeView.setText(Time.getClock());
+        if (Time.getClock() != null) {
+            timeView.setText(Time.getClock());
+        } else {
+            throw new RuntimeException("Time.getClock() returned null");
+        }
         updateSpeed();
     }
 
@@ -64,23 +87,24 @@ public class TopSectionController extends BaseController {
         goldLabel.setText(formatNumber(values[2]));
     }
 
-
-
     @FXML
     void startTime(MouseEvent event) {
         startTimeFunction();
-
     }
 
     public void startTimeFunction() {
-        main.incrementClicker.setDisable(true);
-        main.incrementClicker.setSelected(false);
-        Time.setManualSimulation(false);
+        if (main != null && main.incrementClicker != null) {
+            main.incrementClicker.setDisable(true);
+            main.incrementClicker.setSelected(false);
+        } else {
+            throw new RuntimeException("MainController or incrementClicker is null");
+        }
 
+        Time.setManualSimulation(false);
         Time.startSimulation();
 
-        startTimeBtn.setDisable(true); // Disable the start button
-        stopTimeBtn.setDisable(false); // Enable the stop button
+        startTimeBtn.setDisable(true);
+        stopTimeBtn.setDisable(false);
     }
 
     @FXML
@@ -89,17 +113,18 @@ public class TopSectionController extends BaseController {
     }
 
     public void stopTimeFunction() {
-        main.incrementClicker.setDisable(false);
-        main.incrementClicker.setSelected(false);
+        if (main != null && main.incrementClicker != null) {
+            main.incrementClicker.setDisable(false);
+            main.incrementClicker.setSelected(false);
+        } else {
+            throw new RuntimeException("MainController or incrementClicker is null");
+        }
+
         Time.setManualSimulation(false);
-
-
         Time.stopSimulation();
 
-        stopTimeBtn.setDisable(true); // Disable the stop button
-        startTimeBtn.setDisable(false); // Enable the start button
-
-
+        stopTimeBtn.setDisable(true);
+        startTimeBtn.setDisable(false);
     }
 
     @FXML
@@ -107,10 +132,14 @@ public class TopSectionController extends BaseController {
         model.accessTime().updateSpeed(Speed.Fast);
         fasterBtn.setDisable(Time.getSpeed().equals(Speed.Fast));
         slowerBtn.setDisable(false);
-        main.clickMeButton.setDisable(false);
-        main.updatePauseBtnText();
-    }
 
+        if (main != null && main.clickMeButton != null) {
+            main.clickMeButton.setDisable(false);
+            main.updatePauseBtnText();
+        } else {
+            throw new RuntimeException("MainController or clickMeButton is null");
+        }
+    }
 
     @FXML
     void slower(MouseEvent event) {
@@ -118,13 +147,19 @@ public class TopSectionController extends BaseController {
         slowerBtn.setDisable(Time.getSpeed().equals(Speed.Slow));
         fasterBtn.setDisable(false);
 
-        main.clickMeButton.setDisable(Time.getSpeed().equals(Speed.Slow));
-        if (Time.getSpeed().equals(Speed.Slow)){
-            model.getPlayerCharacter().getMessageTracker().addMessage(MessageTracker.Message("Major","Clicker is disabled"));
+        if (main != null && main.clickMeButton != null) {
+            main.clickMeButton.setDisable(Time.getSpeed().equals(Speed.Slow));
+            if (Time.getSpeed().equals(Speed.Slow)) {
+                model.getPlayerCharacter().getMessageTracker().addMessage(MessageTracker.Message("Major", "Clicker is disabled"));
+            }
+            main.updatePauseBtnText();
+        } else {
+            throw new RuntimeException("MainController or clickMeButton is null");
         }
-        main.updatePauseBtnText();
     }
+
     public void setMain(MainController main) {
         this.main = main;
     }
 }
+

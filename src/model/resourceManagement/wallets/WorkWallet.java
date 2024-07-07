@@ -17,7 +17,7 @@ public class WorkWallet extends Wallet implements PaymentTracker {
 
 
     private Boolean warTax = false;
-    private Nation conqueror;
+    private Nation overlord;
     private Nation nation;
 
 
@@ -32,16 +32,16 @@ public class WorkWallet extends Wallet implements PaymentTracker {
         if (isTaxed()) {
             TransferPackage amount = new TransferPackage(getFood(), getAlloy(), getGold());
 
-            if(conqueror != null){
+            if(overlord != null){
                 TransferPackage forcedTax = amount.multiply(0.25);
                 if(getOwner() instanceof Person p){
                     if(p.isPlayer()){
-                        p.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Forced tax paid to: " + conqueror + "\n" + "Amount: " + forcedTax));
+                        p.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Forced tax paid to: " + overlord + "\n" + "Amount: " + forcedTax));
                     }
                 }
                 amount = amount.subtract(forcedTax);
 
-                conqueror.getWallet().addResources(forcedTax);
+                overlord.getWallet().addResources(forcedTax);
             }
 
             if(warTax){
@@ -84,8 +84,8 @@ public class WorkWallet extends Wallet implements PaymentTracker {
     public TransferPackage getLastSalaryAmount() {
         return lastSalaryAmount;
     }
-    public void setConqueror(Nation conqueror) {
-        this.conqueror = conqueror;
+    public void setOverlord(Nation overlord) {
+        this.overlord = overlord;
     }
 
     public void setWarTax(boolean warTax, Nation nation){

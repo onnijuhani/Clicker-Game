@@ -1,5 +1,6 @@
 package model.worldCreation;
 
+import model.Model;
 import model.NameCreation;
 import model.Settings;
 
@@ -8,7 +9,10 @@ import java.util.*;
 public class World extends Area implements Details {
 
 
-    private static HashSet<Quarter> allQuarters;
+    private static final HashSet<Quarter> allQuarters = new HashSet<>();
+
+    private static final HashSet<Nation> allNations = new HashSet<>();
+    private static final HashSet<Nation> allNonPlayerNations = new HashSet<>();
     private final String name;
     @Override
     public String getName() {
@@ -31,8 +35,9 @@ public class World extends Area implements Details {
         this.name = name;
         this.size = size;
         this.createContinents();
-        allQuarters = new HashSet<>();
+
         calculateAllQuarters();
+        calculateAllNations();
     }
 
     private void calculateAllQuarters(){
@@ -42,6 +47,31 @@ public class World extends Area implements Details {
             }
         }
     }
+
+    private void calculateAllNations(){
+        for(Continent continent : continents){
+            allNations.addAll(continent.getContents());
+        }
+    }
+
+    public void calculateAllNonPlayerNations(){
+        for(Continent continent : continents){
+            for(Nation nation : continent.getContents()){
+                if(nation == Model.getPlayerRole().getNation()){
+                    continue;
+                }
+                allNonPlayerNations.add(nation);
+            }
+        }
+    }
+    public static HashSet<Nation> getAllNations() {
+        return allNations;
+    }
+
+    public static HashSet<Nation> getAllNonPlayerNations() {
+        return allNonPlayerNations;
+    }
+
 
 
 

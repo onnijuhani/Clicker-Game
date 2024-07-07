@@ -293,5 +293,7 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
       </VBox>
+      <Button fx:id="searchBtn" layoutX="564.0" layoutY="5.0" mnemonicParsing="false" onAction="#searchPerson" text="Search" />
+      <AnchorPane fx:id="searchPane" layoutX="437.0" layoutY="35.0" maxHeight="500.0" maxWidth="500.0" visible="false" AnchorPane.rightAnchor="15.0" />
    </children>
 </AnchorPane>

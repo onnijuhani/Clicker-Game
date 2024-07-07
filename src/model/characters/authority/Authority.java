@@ -73,7 +73,7 @@ public class Authority implements TaxObserver, Ownable {
         }
     }
 
-    private WorkWallet getWorkWallet() {
+    protected WorkWallet getWorkWallet() {
         return characterPositionedHere.getPerson().getWorkWallet();
     }
     public void setWorkWallet(WorkWallet workWallet) {

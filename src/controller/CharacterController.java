@@ -1,13 +1,14 @@
 package controller;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.Model;
@@ -22,6 +23,8 @@ import model.stateSystem.Event;
 import model.stateSystem.GameEvent;
 import model.stateSystem.SpecialEventsManager;
 import model.stateSystem.State;
+import model.worldCreation.Nation;
+import model.worldCreation.World;
 
 import java.util.*;
 
@@ -31,8 +34,6 @@ public class CharacterController extends BaseController  {
 
     @FXML
     private Label characterName;
-    @FXML
-    private ImageView characterPicture;
     @FXML
     private Label characterStatus;
     @FXML
@@ -309,11 +310,16 @@ public class CharacterController extends BaseController  {
         main.updateCurrentlyViewing();
     }
 
+
     void updateAuthority(){
-        if (currentCharacter.getRole().getAuthority().getCharacterInThisPosition().equals(currentCharacter)){
+        if (currentCharacter.getRole().getAuthority().getSupervisor().equals(currentCharacter.getRole().getPosition())){
             authority.setText("No one but himself");
         }else {
-            authority.setText(currentCharacter.getRole().getAuthority().toString());
+            if(currentCharacter.getRole().getPosition() == null){
+                authority.setText(currentCharacter.getRole().getAuthority().toString());
+            }else {
+                authority.setText(currentCharacter.getRole().getPosition().getSupervisor().toString());
+            }
         }
     }
 
@@ -377,5 +383,108 @@ public class CharacterController extends BaseController  {
     }
 
 
+
+    public AnchorPane getSearchPane() {
+        return searchPane;
+    }
+
+    @FXML
+    private AnchorPane searchPane;
+    private VBox resultsBox;
+
+    @FXML
+    void searchPerson(ActionEvent event) {
+        if (searchPane.getChildren().isEmpty()) {
+            resultsBox = new VBox();
+            createSearchPanel(resultsBox);
+        }
+        searchPane.setVisible(true);
+
+    }
+
+    private void createSearchPanel(VBox resultsBox) {
+        Button closeButton = new Button("Close");
+
+        TextField searchField = new TextField();
+
+
+        searchField.setPromptText("Type to search...");
+
+        BorderPane searchPanel = new BorderPane();
+        searchPanel.setCenter(searchField);
+        searchPanel.setRight(closeButton);
+
+        closeButton.setOnAction(e -> {
+            searchPane.setVisible(false);
+        });
+
+        ScrollPane scrollPane = new ScrollPane(resultsBox);
+        scrollPane.setMaxHeight(450);
+        scrollPane.setMinWidth(250);
+        scrollPane.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
+
+        searchPanel.setBottom(scrollPane);
+
+        searchPane.getChildren().add(searchPanel);
+
+        // Add listener to searchField to trigger search on Enter key or text change
+        searchField.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                performSearch(searchField.getText());
+            }
+        });
+
+        // Or trigger search on each text change (comment out if using Enter key only)
+
+    searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+        performSearch(newValue);
+    });
+
+    }
+
+    private void performSearch(String query) {
+        new Thread(() -> {
+            List<Person> results = new ArrayList<>();
+
+            // Search in the current player's nation
+            Nation playerNation = Model.getPlayerRole().getNation();
+            List<Person> playerNationResults = playerNation.searchCharactersByName(query);
+            results.addAll(playerNationResults);
+
+            // Extend search to other nations if player's nation finds less than 10-20 persons
+            if (playerNationResults.size() < 10) {
+                List<Nation> nationsToSearch = new ArrayList<>();
+                nationsToSearch.addAll(World.getAllNonPlayerNations());
+
+                for (Nation nation : nationsToSearch) {
+                    List<Person> nationResults = nation.searchCharactersByName(query);
+                    results.addAll(nationResults);
+
+                    // Stop extending search if we find enough results
+                    if (results.size() >= 20) {
+                        break;
+                    }
+                }
+            }
+
+            Platform.runLater(() -> displayResults(results));
+        }).start();
+    }
+
+    private void displayResults(List<Person> results) {
+        resultsBox.getChildren().clear();
+        for (Person person : results) {
+            Hyperlink link = new Hyperlink(person + "  -  "+ person.getRole());
+            link.setStyle("-fx-text-fill: white;");
+
+            link.setOnAction(e -> setSearchedCharacter(person));
+            resultsBox.getChildren().add(link);
+        }
+    }
+
+    private void setSearchedCharacter(Person person) {
+        setCurrentCharacter(person.getCharacter());
+        searchPane.setVisible(false);
+    }
 
 }
