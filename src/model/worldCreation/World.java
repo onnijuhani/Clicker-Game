@@ -3,12 +3,12 @@ package model.worldCreation;
 import model.NameCreation;
 import model.Settings;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class World extends Area implements Details {
+
+
+    private static HashSet<Quarter> allQuarters;
     private final String name;
     @Override
     public String getName() {
@@ -31,6 +31,16 @@ public class World extends Area implements Details {
         this.name = name;
         this.size = size;
         this.createContinents();
+        allQuarters = new HashSet<>();
+        calculateAllQuarters();
+    }
+
+    private void calculateAllQuarters(){
+        for(Continent continent : continents){
+            for(Nation nation : continent.getContents()){
+                allQuarters.addAll(nation.getAllQuarters());
+            }
+        }
     }
 
 
@@ -54,6 +64,9 @@ public class World extends Area implements Details {
 
     public String getDetails() {
         return("World Name: " + this.getName());
+    }
+    public static HashSet<Quarter> getAllQuarters() {
+        return allQuarters;
     }
 
 

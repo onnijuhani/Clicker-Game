@@ -1,12 +1,17 @@
 package model;
 
 import model.characters.Character;
+import model.characters.Peasant;
 import model.characters.Person;
 import model.characters.Role;
+import model.characters.npc.Captain;
+import model.characters.npc.Governor;
+import model.characters.npc.King;
+import model.characters.npc.Mayor;
 import model.characters.player.clicker.Clicker;
 import model.map.CurrentView;
 import model.time.Time;
-import model.worldCreation.CreateWorld;
+import model.worldCreation.*;
 
 public class Model {
 
@@ -17,6 +22,8 @@ public class Model {
     private static Person playerPerson;
     private static Role playerRole;
     private static Character playerCharacter;
+    private static double playerTerritory = 0;
+
 
     public Model(){
         currentView.setCurrentView(world.getSpawnQuarter().getHigher());
@@ -33,6 +40,7 @@ public class Model {
     public static void updatePlayer(){
         setPlayerCharacter(playerPerson.getCharacter());
         setPlayerRole(playerPerson.getRole());
+        calculatePlayerTerritory();
     }
 
     public static Role getPlayerRole() {
@@ -68,6 +76,50 @@ public class Model {
     }
     public CurrentView accessCurrentView() {
         return currentView;
+    }
+
+    public static double getPlayerTerritory() {
+        return playerTerritory;
+    }
+
+    public static void calculatePlayerTerritory(){
+        if(playerCharacter instanceof Peasant){
+            return;
+        }
+        double all = World.getAllQuarters().size();
+
+        if(playerCharacter instanceof Captain){
+            playerTerritory = 1 / all;
+        }
+
+        if(playerCharacter instanceof Mayor mayor){
+            Area city = mayor.getAuthorityPosition().getAreaUnderAuthority();
+            playerTerritory = city.getContents().size() / all;
+        }
+
+        if(playerCharacter instanceof Governor governor){
+            Area province = governor.getAuthorityPosition().getAreaUnderAuthority();
+            int amountQuartersUnderProvince = 0;
+            for(Object area : province.getContents()){
+                City city = (City) area;
+                amountQuartersUnderProvince += city.getContents().size();
+            }
+            playerTerritory = amountQuartersUnderProvince / all;
+        }
+
+        if(playerCharacter instanceof King king){
+            Nation nation = (Nation) king.getAuthorityPosition().getAreaUnderAuthority();
+            int amountQuartersUnderAuthority = nation.getQuarterAmount();
+
+            if(!nation.getNationsUnderControl().isEmpty()){
+                for(Nation n : nation.getNationsUnderControl()){
+                    amountQuartersUnderAuthority += n.getQuarterAmount();
+                }
+            }
+
+            playerTerritory = amountQuartersUnderAuthority / all;
+        }
+
     }
 
 

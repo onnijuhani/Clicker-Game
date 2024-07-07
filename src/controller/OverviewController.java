@@ -19,6 +19,7 @@ import model.war.WarPlanningManager;
 import model.war.WarService;
 import model.worldCreation.Nation;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -34,6 +35,7 @@ public class OverviewController extends BaseController{
         updateGuildBox();
         updateTaxBox();
         updateRivalingNationsBox();
+        updateCurrentTerritoryOwned();
     }
 
     @FXML
@@ -44,6 +46,82 @@ public class OverviewController extends BaseController{
     private ScrollPane rivalingNationsScrollPane;
     private static final int UPDATE_THRESHOLD = 50;
     private static int updateRivalsCounter = UPDATE_THRESHOLD; // makes sure rivals aren't updated too often
+
+
+
+    @FXML
+    private VBox taxBox;
+
+    @FXML
+    private Button increaseTaxBtn;
+
+    @FXML
+    private Button lowerTaxBtn;
+    public void setPlayer(Person player) {
+        this.player = player;
+    }
+    @FXML
+    private Button joinGuildBtn;
+    private Person player;
+
+    private String guildInfo;
+
+    void updateGuildBox(){
+        if(player.getProperty().getUtilitySlot().isUtilityBuildingOwned(SlaveFacility)){
+            guildBox.setVisible(true);
+            guildName.setText("Slaver Guild");
+            guildInfo = "Slaver";
+        } else if (player.getProperty().getUtilitySlot().isUtilityBuildingOwned(WorkerCenter)) {
+            guildBox.setVisible(true);
+            guildName.setText("Freedom Guild");
+            guildInfo = "Liberal";
+        } else{
+            guildBox.setVisible(false);
+        }
+    }
+
+    @FXML
+    void joinGuild(ActionEvent event) {
+        if(guildInfo == null){
+            return;
+        }
+        if(Objects.equals(guildInfo, "Slaver")){
+            player.getRole().getNation().joinSlaverGuild(player);
+        }else{
+            player.getRole().getNation().joinLiberalGuild(player);
+        }
+        joinGuildBtn.setText("Member");
+        joinGuildBtn.setDisable(true);
+
+    }
+
+
+    @FXML
+    private Label currentPosition;
+
+    @FXML
+    private Label currentTaxPercent;
+
+    @FXML
+    private Label currentTerritoryOwned;
+
+    private void updateCurrentTerritoryOwned(){
+        double t = Model.getPlayerTerritory();
+        String formattedTerritory;
+
+        if (t < 1) {
+            formattedTerritory = new DecimalFormat("#.####").format(t);
+        } else if (t < 10) {
+            formattedTerritory = new DecimalFormat("#.##").format(t);
+        } else {
+            formattedTerritory = new DecimalFormat("#.#").format(t);
+        }
+
+        currentTerritoryOwned.setText(formattedTerritory + "%");
+    }
+
+    @FXML
+    private Label guildName;
 
 
     private void updateRivalingNationsBox() {
@@ -148,68 +226,6 @@ public class OverviewController extends BaseController{
         WarService.startWar(Model.getPlayerRole().getNation(), nation);
     }
 
-
-
-
-
-    @FXML
-    private VBox taxBox;
-
-    @FXML
-    private Button increaseTaxBtn;
-
-    @FXML
-    private Button lowerTaxBtn;
-    public void setPlayer(Person player) {
-        this.player = player;
-    }
-    @FXML
-    private Button joinGuildBtn;
-    private Person player;
-
-    private String guildInfo;
-
-    void updateGuildBox(){
-        if(player.getProperty().getUtilitySlot().isUtilityBuildingOwned(SlaveFacility)){
-            guildBox.setVisible(true);
-            guildName.setText("Slaver Guild");
-            guildInfo = "Slaver";
-        } else if (player.getProperty().getUtilitySlot().isUtilityBuildingOwned(WorkerCenter)) {
-            guildBox.setVisible(true);
-            guildName.setText("Freedom Guild");
-            guildInfo = "Liberal";
-        } else{
-            guildBox.setVisible(false);
-        }
-    }
-
-    @FXML
-    void joinGuild(ActionEvent event) {
-        if(guildInfo == null){
-            return;
-        }
-        if(Objects.equals(guildInfo, "Slaver")){
-            player.getRole().getNation().joinSlaverGuild(player);
-        }else{
-            player.getRole().getNation().joinLiberalGuild(player);
-        }
-        joinGuildBtn.setText("Member");
-        joinGuildBtn.setDisable(true);
-
-    }
-
-
-    @FXML
-    private Label currentPosition;
-
-    @FXML
-    private Label currentTaxPercent;
-
-    @FXML
-    private Label currentTerritoryOwned;
-
-    @FXML
-    private Label guildName;
 
 
     void updateTaxBox(){
