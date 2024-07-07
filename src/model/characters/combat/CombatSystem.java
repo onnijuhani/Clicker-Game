@@ -248,19 +248,18 @@ public class CombatSystem {
                 "Major", "Successfully defended against\nthe Authority challenge by " + attacker.getCharacter()));
 
 
-        String compensationFromWallet = TransferPackage.fromArray(attacker.getWallet().getWalletValues()).toString();
+        String compensationFromWallet = TransferPackage.fromArray(attacker.getWallet().getWalletValues()).toShortString();
 
         defender.getWallet().depositAll(attacker.getWallet());
-
 
         attacker.getMessageTracker().addMessage(MessageTracker.Message("Major", "Paid entire wallet (" +
                 compensationFromWallet +
                 "\nas compensation for disloyalty."
         ));
 
+        // personal offence is reduced by 3 levels
         attacker.decreasePersonalOffence(3);
         attacker.addAspiration(Aspiration.INCREASE_PERSONAL_OFFENCE);
-
         attacker.getMessageTracker().addMessage(MessageTracker.Message("Major", "Offense decreased by 3 levels"));
 
         defender.getRelationsManager().processResults(attacker);
@@ -296,6 +295,7 @@ public class CombatSystem {
         attacker.addAspiration(Aspiration.INCREASE_PERSONAL_DEFENCE);
     }
 
+    // normal truce for authority Battles, different from duel truce
     private static void handleTruce(Person winner) {
         try {
             GameEvent truceEvent;
@@ -304,9 +304,7 @@ public class CombatSystem {
             truceEvent = new GameEvent(Event.TRUCE, winner);
             winner.addState(State.TRUCE);
 
-
             int baseTruce = winner.getProperty().getPower() + 60;
-
 
             int daysUntilEvent = Math.min(365, baseTruce + winner.getProperty().getDefenceStats().getUpgradeLevel());
 
@@ -473,6 +471,7 @@ public class CombatSystem {
 
             attacker.getRole().setPerson(attacker);
             defender.getRole().setPerson(defender);
+
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);
         }

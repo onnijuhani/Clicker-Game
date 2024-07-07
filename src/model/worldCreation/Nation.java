@@ -45,9 +45,7 @@ public class Nation extends ControlledArea implements Details {
     }
 
     private int warsFoughtAmount = 0;
-
     private Nation overlord;
-    private boolean isVassal = false;
 
     private final HashSet<Nation> vassals = new HashSet<>();
     private ArrayList<War.WarNotes> warHistory = new ArrayList<>();
@@ -599,7 +597,6 @@ public class Nation extends ControlledArea implements Details {
 
     public void setOverlord(Nation overlord) {
         this.overlord = overlord;
-        this.isVassal = true;
         setConquerorToWorkWallets(overlord);
     }
 
@@ -613,7 +610,10 @@ public class Nation extends ControlledArea implements Details {
     }
 
     public boolean isVassal() {
-        return isVassal;
+        return overlord != null;
+    }
+    public boolean isOverlord() {
+        return !vassals.isEmpty();
     }
 
 

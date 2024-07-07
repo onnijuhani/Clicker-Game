@@ -247,6 +247,8 @@ public class War implements WarObserver, Details {
         this.defender.endWar(this.attacker, defender, warNotes);
 
         WarManager.unsubscribe(this);
+
+        WarPlanningManager.filterNations(); // War Planning manager should be updated here
     }
 
     private void updateOnGoingBattles(){

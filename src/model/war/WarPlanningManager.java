@@ -7,11 +7,30 @@ import java.util.*;
 
 public class WarPlanningManager {
 
-    public static void addNation(Nation nation) {
-        nations.add(nation);
-    }
+
 
     private final static Set<Nation> nations = new HashSet<>();
+    private final static Set<Nation> impartialNations = new HashSet<>();
+    private final static Set<Nation> overLordNations = new HashSet<>();
+    private final static Set<Nation> vassalNations = new HashSet<>();
+
+
+    public static void filterNations(){
+        for(Nation nation : nations){
+            // add to vassals
+            if(nation.isVassal()){
+                vassalNations.add(nation);
+                continue;
+            }
+            // add to Overlords
+            if(nation.isOverlord()){
+                overLordNations.add(nation);
+                continue;
+            }
+            // if nation is neither, add to impartial
+            impartialNations.add(nation);
+        }
+    }
 
     public static HashMap<Nation, Integer> getOtherNationsAndMilitaryPowers(Nation nation){
         HashMap<Nation, Integer> otherNations = new HashMap<>();
@@ -72,6 +91,11 @@ public class WarPlanningManager {
                     ", military=" + military +
                     '}';
         }
+    }
+
+    public static void addNation(Nation nation) {
+        nations.add(nation);
+        filterNations();
     }
 
 }
