@@ -227,28 +227,36 @@ public class Wallet {
      * In case wallet is completely emptied, this method attempts to make a withdrawal from vault to prevent loss of strikes.
      */
     private void generateRescuePackage() {
-        if (!this.isEmpty()) {
-            return;
-        }
-        if(this instanceof Vault){
-            return;
-        }
-
-        if (getOwner() instanceof Person person) {
-            TransferPackage expenses = person.getPaymentManager().getFullExpense();
-            Vault vault = person.getProperty().getVault();
-
-            if (vault.isEmpty()) {
-                person.getMessageTracker().addMessage(MessageTracker.Message("Error", "Vault is empty. No resources available for rescue package."));
+        try {
+            if (!this.isEmpty()) {
+                return;
+            }
+            if(this instanceof Vault){
+                return;
+            }
+            if(this instanceof WorkWallet){
                 return;
             }
 
-            if (this.deposit(vault, expenses)) {
-                person.getMessageTracker().addMessage(MessageTracker.Message("Major", String.format("Deposited %s from Vault to cover expenses.", expenses)));
-            } else {
-                this.depositAll(vault);
-                person.getMessageTracker().addMessage(MessageTracker.Message("Major", "Vault resources deposited, but it was insufficient to cover all expenses."));
+            if (getOwner() instanceof Person person) {
+                TransferPackage expenses = person.getPaymentManager().getFullExpense();
+                Vault vault = person.getProperty().getVault();
+
+                if (vault.isEmpty()) {
+                    if(person.isPlayer()) {
+                        person.getMessageTracker().addMessage(MessageTracker.Message("Error", "Vault is empty. No resources available for rescue package."));
+                    }
+                    return;
+                }
+                if (this.deposit(vault, expenses)) {
+                    person.getMessageTracker().addMessage(MessageTracker.Message("Major", String.format("Deposited %s from Vault to cover expenses.", expenses)));
+                } else {
+                    this.depositAll(vault);
+                    person.getMessageTracker().addMessage(MessageTracker.Message("Major", "Vault resources deposited, but it was insufficient to cover all expenses."));
+                }
             }
+        } catch (RuntimeException e) {
+            e.printStackTrace();throw new RuntimeException(e);
         }
     }
 
