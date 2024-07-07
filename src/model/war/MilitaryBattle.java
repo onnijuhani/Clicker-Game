@@ -71,11 +71,11 @@ public class MilitaryBattle implements WarObserver {
     private boolean isOnGoing = true;
 
     public MilitaryBattle(Military attacker, Military defender) {
-        testMilitaries();
         this.attackingArmyStats = new ArmyStats(attacker.getArmy());
         this.defendingArmyStats = new ArmyStats(defender.getArmy());
         this.attackingMilitary = attacker;
         this.defendingMilitary = defender;
+        testMilitaries();
 
         this.propertyPower = defender.getPower();
 
