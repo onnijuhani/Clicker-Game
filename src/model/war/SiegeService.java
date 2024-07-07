@@ -41,6 +41,7 @@ public class SiegeService {
         }
     }
 
+
     private static boolean checkIfArmyIsNull(Person attacker, Person defender) {
         if(attacker.getProperty() instanceof Military military){
             if(military.getArmy() == null){
