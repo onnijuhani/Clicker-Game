@@ -1,5 +1,6 @@
 package model.worldCreation;
 
+import model.Model;
 import model.NameCreation;
 import model.Settings;
 import model.buildings.Property;
@@ -37,27 +38,14 @@ public class Nation extends ControlledArea implements Details {
     private final Set<Area> claimedAreas = new HashSet<>();
     private final Wallet wallet = new Wallet(authorityHere);
     private boolean isAtWar = false;
-    private Nation enemy = null;
+    private Nation enemy = null; // Enemy is only set when in war, enemy is the opponent.
     private final HashSet<Person> warCommanders = new HashSet<>();
+    private Nation overlord; // Overlord is set if nation loses a war
+    private final HashSet<Nation> vassals = new HashSet<>(); // Vassals are added if war is won
+    private final ArrayList<War.WarNotes> warHistory = new ArrayList<>(); // War history collects final war report from all the wars
 
-    public int getWarsFoughtAmount() {
-        return warsFoughtAmount;
-    }
-
-    private int warsFoughtAmount = 0;
-    private Nation overlord;
-
-    private final HashSet<Nation> vassals = new HashSet<>();
-    private ArrayList<War.WarNotes> warHistory = new ArrayList<>();
-
-    private boolean nobleWarBonus = false;
-    private boolean warTax = false;
-
-    public War getWar() {
-        return war;
-    }
-
-
+    private boolean nobleWarBonus = false; // noble war bonus gives momentarily boost for all nations militaries
+    private boolean warTax = false; // war tax can be set at phase2 of the war to automatically tax all work wallets
 
     private War war;
 
@@ -249,13 +237,17 @@ public class Nation extends ControlledArea implements Details {
 
 
 
-    public void setConquerorToWorkWallets(Nation nation){
+
+    public War getWar() {
+        return war;
+    }
+
+    public void setOverlordToWorkWallets(Nation nation){
         for(Character c :citizenCache){
             c.getPerson().getWorkWallet().setOverlord(nation);
         }
     }
-
-    public void removeConquerorFromWorkWallets(){
+    public void removeOverlordFromWorkWallets(){
         for(Character c :citizenCache){
             c.getPerson().getWorkWallet().setOverlord(null);
         }
@@ -343,7 +335,7 @@ public class Nation extends ControlledArea implements Details {
             // set states
             nation1.addWarState();
 
-            // add commanders who own militaries to war commanders
+            // add authorities and mercenaries to war commanders
             for(Area claimedArea : nation1.claimedAreas){
                 Person commander = claimedArea.getHighestAuthority();
 
@@ -351,9 +343,7 @@ public class Nation extends ControlledArea implements Details {
                     continue; // kings should be excluded
                 }
 
-
                 nation1.getWarCommanders().add(commander);
-
 
                 if(commander.getCharacter() instanceof Governor governor){ // add mercenaries here
                     for(Support support : governor.getAuthorityPosition().getSupporters()){
@@ -367,29 +357,38 @@ public class Nation extends ControlledArea implements Details {
         }
     }
 
-    public static void handleEndingWar(Nation nation1, Nation opponent, String winnerOrLoser) {
+    public void handleEndingWar(Nation opponent, String winnerOrLoser) {
         try {
 
             // remove enemy
-            nation1.enemy = null;
+            enemy = null;
 
             // remove war flag
-            nation1.setNotAtWar();
+            setNotAtWar();
 
             // reset states
-            nation1.removeWarState();
+            removeWarState();
 
             // remove commanders
-            nation1.resetWarCommanders();
+            resetWarCommanders();
 
             // remove warTax
-            nation1.removeWarTaxFromWorkWallets();
+            if(warTax) {
+                removeWarTaxFromWorkWallets();
+            }
 
             if(Objects.equals(winnerOrLoser, "Winner")){
-                nation1.vassals.add(opponent);
+                if(isVassal()){
+                    removeOverlord();
+                }else {
+                    vassals.add(opponent); // They gained new vassal
+                }
             }else{
-                nation1.setOverlord(opponent);
-                nation1.getAuthorityHere().setSupervisor(opponent.getAuthorityHere());
+                if(isOverlord()){
+                    vassals.remove(opponent); // Since being the overlord and losing the war, they lose their vassal
+                } else {
+                    setOverlord(opponent); // Losing the war now makes them a Vassal
+                }
             }
 
         } catch (RuntimeException e) {
@@ -397,10 +396,6 @@ public class Nation extends ControlledArea implements Details {
         }
     }
 
-
-    public Set<Area> getClaimedAreas() {
-        return claimedAreas;
-    }
 
     public void addClaimedArea(Area claimedArea){
         try {
@@ -415,9 +410,6 @@ public class Nation extends ControlledArea implements Details {
     }
 
 
-    private static void triggerTheEndOfTheNation(Nation nation) {
-        System.out.println(nation + " has been destroyed by it's enemies");
-    }
     public HashSet<Person> getWarCommanders() {
         return warCommanders;
     }
@@ -571,20 +563,15 @@ public class Nation extends ControlledArea implements Details {
         return nobleWarBonus;
     }
 
-    public void setNobleWarBonus(boolean nobleWarBonus) {
-        this.nobleWarBonus = nobleWarBonus;
-    }
-
 
     public void startWar(Nation opponent, War war) {
         this.war = war;
         handleStartWar(this, opponent);
     }
     public void endWar(Nation opponent, String winnerOrLoser, War.WarNotes warNotes) {
-        this.warsFoughtAmount++;
         this.war = null;
         this.warHistory.add(warNotes);
-        handleEndingWar(this, opponent, winnerOrLoser);
+        handleEndingWar(opponent, winnerOrLoser);
     }
 
     private void resetWarCommanders(){
@@ -597,7 +584,47 @@ public class Nation extends ControlledArea implements Details {
 
     public void setOverlord(Nation overlord) {
         this.overlord = overlord;
-        setConquerorToWorkWallets(overlord);
+        setOverlordToWorkWallets(overlord);
+        getAuthorityHere().setSupervisor(overlord.getAuthorityHere());
+
+        addNameForUI(overlord);
+
+    }
+
+    private void addNameForUI(Nation overlord) {
+        if (isPlayerNation()) {
+            overlord.setName(overlord.getName() + " (Overlord)");
+        }
+        if (overlord.isPlayerNation()) {
+            setName(getName() + " (Vassal)");
+        }
+    }
+
+    private void removeOverlord() {
+        removeUIName();
+
+        overlord = null; // They won back their independence from the overlord
+        getAuthorityHere().setSupervisor(getAuthorityHere()); // King is again his own Supervisor
+        removeOverlordFromWorkWallets(); // No more overlord tax
+
+
+    }
+
+    private void removeUIName() {
+        if (overlord != null) {
+            if (isPlayerNation()) {
+                String overlordName = overlord.getName();
+                if (overlordName.endsWith(" (Overlord)")) {
+                    overlord.setName(overlordName.substring(0, overlordName.length() - 11)); // Remove " (Overlord)" from the name
+                }
+            }
+            if (overlord.isPlayerNation()) {
+                String name = getName();
+                if (name.endsWith(" (Vassal)")) {
+                    setName(name.substring(0, name.length() - 9)); // Remove " (Vassal)" from the name
+                }
+            }
+        }
     }
 
     public List<Person> searchCharactersByName(String query) {
@@ -612,9 +639,17 @@ public class Nation extends ControlledArea implements Details {
     public boolean isVassal() {
         return overlord != null;
     }
+
     public boolean isOverlord() {
         return !vassals.isEmpty();
     }
 
+    public boolean isPlayerNation(){
+        return Model.getPlayerRole().getNation() == this;
+    }
 
+
+    public int getWarsFoughtAmount() {
+        return warHistory.size();
+    }
 }

@@ -34,8 +34,11 @@ public class MessageTracker {
     private final int maxShopEvents;
     private final int maxUtilityEvents;
 
+    boolean isNpc;
+
     public MessageTracker(boolean isNpc) {
         preferences = new PlayerPreferences();
+        this.isNpc = isNpc;
 
         if (isNpc) {
             // NPC's have lower amounts stored
@@ -121,6 +124,7 @@ public class MessageTracker {
         return utilityEvents;
     }
     public void addMessage(String message) {
+        if(isNpc) return; // NPC 's now have NPCActionLogger
         String type = extractTypeFromMessage(message);
 
         switch (type) {

@@ -11,7 +11,7 @@ import java.util.Queue;
 import java.util.stream.Collectors;
 
 public class NPCActionLogger {
-    private static final int MAX_LOG_ENTRIES = 10000;
+    private static final int MAX_LOG_ENTRIES = 1000;
     private final Queue<String> logs = new LinkedList<>();
 
     /**
