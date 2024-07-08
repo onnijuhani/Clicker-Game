@@ -17,23 +17,36 @@ public class WarController extends BaseController {
         updateDetails();
     }
 
-    private boolean checkIfWarIsNull() {
-        return onGoingWar == null;
-    }
+
 
     private War onGoingWar;
+
+    @FXML
+    private Label details;
+
 
     private void checkForOngoingWar(){
         if(checkIfWarIsNull()){
             Nation nation =  Model.getPlayerRole().getNation();
             if(nation.isAtWar()){
                 onGoingWar = nation.getWar();
+                if(onGoingWar.getCurrentPhase() == War.Phase.ENDED){
+                    onGoingWar = null;
+                }
+            }else{
+                onGoingWar = null;
             }
         }
     }
 
+    private boolean checkIfWarIsNull() {
+        return onGoingWar == null;
+    }
+
     private void updateDetails() {
-        details.setText(onGoingWar.getDetails());
+        if(details != null) {
+            details.setText(onGoingWar.getDetails());
+        }
 
     }
 
@@ -45,9 +58,5 @@ public class WarController extends BaseController {
             SpecialEventsManager.triggerWarRulesInfo(onGoingWar.getCurrentPhase());
         }
     }
-
-
-    @FXML
-    private Label details;
 
 }

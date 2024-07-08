@@ -100,8 +100,12 @@ public class Property implements PropertyObserver, Details, Ownable {
         return owner;
     }
 
+
     public void setOwner(Person owner) {
         this.owner = owner;
+        if(this.owner == null){
+            return;
+        }
         owner.setProperty(this);
     }
 

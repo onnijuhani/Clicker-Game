@@ -12,7 +12,6 @@ import javafx.scene.effect.BlendMode;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import model.Model;
 import model.Settings;
@@ -33,6 +32,7 @@ import model.stateSystem.State;
 import model.time.Time;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static model.Settings.formatNumber;
@@ -54,36 +54,12 @@ public class PropertyController extends BaseController {
     @FXML
     private Label utilitySlots;
     private boolean isShowing = true; // to hide and show image
-
     @FXML
     private Label grandInfo;
     @FXML
     private Label grandProduction;
     @FXML
     private VBox grandFoundryBox;
-
-    void updateGrandFoundry(){
-        GrandFoundry foundry = character.getPerson().getGrandFoundry();
-        if(foundry != null){
-
-            grandFoundryBox.setVisible(true);
-
-            grandProduction.setText(foundry.getFullProduction().toShortString());
-
-            grandInfo.setText(foundry.getDetails());
-
-        }else{
-            grandFoundryBox.setVisible(false);
-        }
-
-    }
-
-    @FXML
-    void grandTest(MouseEvent event) {
-        SpecialEventsManager.triggerGrandFoundryInfo();
-
-    }
-
 
     private Property property;
     private Character character;
@@ -198,8 +174,6 @@ public class PropertyController extends BaseController {
 
     // VAULT DEPOSIT WITHDRAWAL SLIDER
     @FXML
-    private StackPane VaultStackPane;
-    @FXML
     private Button vaultWithdrawBtn;
     @FXML
     private Button vaultDepositBtn;
@@ -244,6 +218,21 @@ public class PropertyController extends BaseController {
         initializeUIMappings();
         Platform.runLater(this::setUpSlider);
         super.initialize();
+    }
+
+    void updateGrandFoundry(){
+        GrandFoundry foundry = character.getPerson().getGrandFoundry();
+        if(foundry != null){
+            grandFoundryBox.setVisible(true);
+            grandProduction.setText(foundry.getFullProduction().toShortString());
+            grandInfo.setText(foundry.getDetails());
+        }else{
+            grandFoundryBox.setVisible(false);
+        }
+    }
+    @FXML
+    void grandTest(MouseEvent event) {
+        SpecialEventsManager.triggerGrandFoundryInfo();
     }
 
     private void updateVaultButtons(){
@@ -355,12 +344,16 @@ public class PropertyController extends BaseController {
     private final Map<UtilityBuildings, UtilityBuildingUI> buildingUIs = new HashMap<>();
 
     private void initializeUIMappings() {
-        buildingUIs.put(MeadowLands, new UtilityBuildingUI(MeadowLands, utilityInfo, utilityPrice, utilityUpgrade, utilityInfoView, utilityBuyView, utilityPlayerView, sabotageButton));
-        buildingUIs.put(AlloyMine, new UtilityBuildingUI(AlloyMine, utilityInfo1, utilityPrice1, utilityUpgrade1, utilityInfoView1, utilityBuyView1, utilityPlayerView1, sabotageButton1));
-        buildingUIs.put(GoldMine, new UtilityBuildingUI(GoldMine, utilityInfo2, utilityPrice2, utilityUpgrade2, utilityInfoView2, utilityBuyView2, utilityPlayerView2, sabotageButton2));
-        buildingUIs.put(SlaveFacility, new UtilityBuildingUI(SlaveFacility, utilityInfo3, utilityPrice3, utilityUpgrade3, utilityInfoView3, utilityBuyView3, utilityPlayerView3, sabotageButton3));
-        buildingUIs.put(MysticMine, new UtilityBuildingUI(MysticMine, utilityInfo4, utilityPrice4, utilityUpgrade4, utilityInfoView4, utilityBuyView4, utilityPlayerView4, sabotageButton4));
-        buildingUIs.put(WorkerCenter, new UtilityBuildingUI(WorkerCenter, utilityInfo5, utilityPrice5, utilityUpgrade5, utilityInfoView5, utilityBuyView5, utilityPlayerView5, sabotageButton5));
+        try {
+            buildingUIs.put(MeadowLands, new UtilityBuildingUI(MeadowLands, utilityInfo, utilityPrice, utilityUpgrade, utilityInfoView, utilityBuyView, utilityPlayerView, sabotageButton));
+            buildingUIs.put(AlloyMine, new UtilityBuildingUI(AlloyMine, utilityInfo1, utilityPrice1, utilityUpgrade1, utilityInfoView1, utilityBuyView1, utilityPlayerView1, sabotageButton1));
+            buildingUIs.put(GoldMine, new UtilityBuildingUI(GoldMine, utilityInfo2, utilityPrice2, utilityUpgrade2, utilityInfoView2, utilityBuyView2, utilityPlayerView2, sabotageButton2));
+            buildingUIs.put(SlaveFacility, new UtilityBuildingUI(SlaveFacility, utilityInfo3, utilityPrice3, utilityUpgrade3, utilityInfoView3, utilityBuyView3, utilityPlayerView3, sabotageButton3));
+            buildingUIs.put(MysticMine, new UtilityBuildingUI(MysticMine, utilityInfo4, utilityPrice4, utilityUpgrade4, utilityInfoView4, utilityBuyView4, utilityPlayerView4, sabotageButton4));
+            buildingUIs.put(WorkerCenter, new UtilityBuildingUI(WorkerCenter, utilityInfo5, utilityPrice5, utilityUpgrade5, utilityInfoView5, utilityBuyView5, utilityPlayerView5, sabotageButton5));
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
     }
 
     void updatePrices() {
@@ -374,10 +367,16 @@ public class PropertyController extends BaseController {
     }
 
     @FXML
-    void upgradeProperty(){
+    void upgradeProperty() {
+        if (character == null || character.getPerson() == null) {
+            return;
+        }
+
         try {
             Construct.constructProperty(character.getPerson());
-        } catch (InsufficientResourcesException ignored){}
+        } catch (InsufficientResourcesException ignored) {
+
+        }
     }
 
 
@@ -439,47 +438,53 @@ public class PropertyController extends BaseController {
         playerVersionState();
     }
 
-
-
-
     void updateConstructionTimeLeft() {
-        GameEvent constructionEvent = character.getPerson().getOngoingEvents().stream()
-                .filter(event -> event.getEvent() == Event.CONSTRUCTION)
-                .findFirst()
-                .orElse(null);
+        if (character == null || character.getPerson() == null) {
+            return;
+        }
+
+        List<GameEvent> ongoingEvents = character.getPerson().getOngoingEvents();
+        GameEvent constructionEvent = ongoingEvents != null ?
+                ongoingEvents.stream()
+                        .filter(event -> event.getEvent() == Event.CONSTRUCTION)
+                        .findFirst()
+                        .orElse(null)
+                : null;
 
         if (constructionEvent != null) {
-            // Ongoing construction
             int[] timeLeft = constructionEvent.getTimeLeftUntilExecution();
             constructDaysLeft.setText(String.format("%d days, %d months, %d years left", timeLeft[2], timeLeft[1], timeLeft[0]));
             constructBtn.setDisable(true);
             constructBtn.setText("Under Construction");
             constructDaysLeft.setVisible(true);
         } else {
-            // No ongoing construction event
             constructDaysLeft.setText("No construction in progress");
             constructBtn.setDisable(false);
             constructDaysLeft.setVisible(false);
         }
     }
 
-    void updateConstructInfo(){
+    void updateConstructInfo() {
+        if (character == null || character.getPerson() == null) {
+            return;
+        }
+
         upgradeBox.setVisible(character.getPerson().isPlayer());
+
         TransferPackage cost = Construct.getCost(character.getPerson());
-        constructBtn.setText("Construct "+ Construct.getNextProperty(character.getPerson()));
+        constructBtn.setText("Construct " + Construct.getNextProperty(character.getPerson()));
+
         if (cost != null) {
             upgradeCost.setText(cost.toShortString());
         } else {
             upgradeCost.setText("Max");
-            if(character.getPerson().isPlayer()) {
+            if (character.getPerson().isPlayer()) {
                 constructBtn.setVisible(false);
             }
         }
+
         updateConstructionTimeLeft();
     }
-
-
-
 
     @FXML
     void showHideContent(ActionEvent event) {
@@ -546,7 +551,6 @@ public class PropertyController extends BaseController {
     public void setMain(MainController main) {
         this.main = main;
     }
-
 
 
     public void setCharacterController(controller.CharacterController characterController) {
@@ -667,15 +671,19 @@ public class PropertyController extends BaseController {
         private final VBox utilityPlayerView;
         public Button sabotageButton;
         public UtilityBuildingUI(UtilityBuildings type, Label infoLabel, Button priceButton, Button upgradeButton, VBox infoView, VBox buyView, VBox utilityPlayerView, Button sabotageButton) {
-            this.infoLabel = infoLabel;
-            this.priceButton = priceButton;
-            this.upgradeButton = upgradeButton;
-            this.infoView = infoView;
-            this.buyView = buyView;
-            this.utilityPlayerView = utilityPlayerView;
-            this.sabotageButton = sabotageButton;
+            try {
+                this.infoLabel = infoLabel;
+                this.priceButton = priceButton;
+                this.upgradeButton = upgradeButton;
+                this.infoView = infoView;
+                this.buyView = buyView;
+                this.utilityPlayerView = utilityPlayerView;
+                this.sabotageButton = sabotageButton;
 
-            sabotageButton.setOnAction(event -> handleSabotageAction(type));
+                sabotageButton.setOnAction(event -> handleSabotageAction(type));
+            } catch (Exception e) {
+                e.printStackTrace();throw new RuntimeException(e);
+            }
         }
 
         private void handleSabotageAction(UtilityBuildings type) {

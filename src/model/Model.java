@@ -10,6 +10,7 @@ import model.characters.npc.King;
 import model.characters.npc.Mayor;
 import model.characters.player.clicker.Clicker;
 import model.map.CurrentView;
+import model.stateSystem.SpecialEventsManager;
 import model.time.Time;
 import model.worldCreation.*;
 
@@ -91,11 +92,13 @@ public class Model {
 
         if(playerCharacter instanceof Captain){
             playerTerritory = 1 / all;
+            return;
         }
 
         if(playerCharacter instanceof Mayor mayor){
             Area city = mayor.getAuthorityPosition().getAreaUnderAuthority();
             playerTerritory = city.getContents().size() / all;
+            return;
         }
 
         if(playerCharacter instanceof Governor governor){
@@ -106,6 +109,7 @@ public class Model {
                 amountQuartersUnderProvince += city.getContents().size();
             }
             playerTerritory = amountQuartersUnderProvince / all;
+            return;
         }
 
         if(playerCharacter instanceof King king){
@@ -119,8 +123,17 @@ public class Model {
             }
 
             playerTerritory = amountQuartersUnderAuthority / all;
+            return;
         }
 
+        triggerPlayerVictory();
+
+    }
+
+    private static void triggerPlayerVictory(){
+        if(playerTerritory > 0.5){
+            SpecialEventsManager.triggerGameWin();
+        }
     }
 
 

@@ -1,6 +1,5 @@
 package model.characters;
 
-import model.Model;
 import model.NameCreation;
 import model.Settings;
 import model.buildings.GrandFoundry;
@@ -78,19 +77,6 @@ public class Person implements Ownable {
     public void generatePicture() {
         if(isPlayer){
             this.characterPic = 15;
-            return;
-        }
-
-        if(Model.getPlayerAsPerson().getRole().getAuthority().getCharacterInThisPosition().getPerson() == this){
-            this.characterPic = 1;
-            return;
-        }
-        if(Model.getPlayerAsPerson().getRole().getAuthority().getSupervisor().getCharacterInThisPosition().getPerson() == this){
-            this.characterPic = 6;
-            return;
-        }
-        if(Model.getPlayerAsPerson().getRole().getAuthority().getSupervisor().getSupervisor().getCharacterInThisPosition().getPerson() == this){
-            this.characterPic = 7;
             return;
         }
 

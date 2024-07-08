@@ -18,20 +18,14 @@ import model.time.MonthlyTradeExecutor;
 import model.time.Time;
 
 public class ExchangeController extends BaseController implements MonthlyTradeExecutor {
-
     @FXML
     private Label alloyToGoldPrice;
-
     @FXML
     private Label foodToGoldPrice;
-
     @FXML
     private Label goldToAlloysPrice;
-
     @FXML
     private Label goldToFoodPrice;
-
-
     @FXML
     private Button foodGoldBtn;
     @FXML
@@ -40,27 +34,18 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
     private Button goldAlloyBtn;
     @FXML
     private Button goldFoodBtn;
-
     @FXML
     private Label marketFee;
     @FXML
     private Label shopWalletBalance;
-
     @FXML
     private CheckBox monthlyAlloys;
-
     @FXML
     private CheckBox monthlyFood;
-
     @FXML
     private CheckBox monthlyGoldAlloys;
-
     @FXML
     private CheckBox monthlyGoldFood;
-
-
-
-
 
     @FXML
     public void initialize() {
@@ -99,8 +84,16 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
     }
 
     private static Exchange getExchange(){
-        return Model.getPlayerAsCharacter().getRole().getNation().getShop().getExchange();
+
+        Exchange exchange = exchange = Model.getPlayerAsCharacter().getRole().getNation().getShop().getExchange();
+
+        if(exchange == null){
+            exchange = Model.getPlayerAsCharacter().getRole().getNation().getShop().getExchange();
+        }
+
+        return exchange;
     }
+
     void updateExchangePrices(){
         int defaultGold = getExchange().getDefaultGold();
 
@@ -138,9 +131,6 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
 
         Wallet wallet = person.getWallet();
 
-
-
-
         if(monthlyFood.isSelected()){
             if(!(netCash.food() < 0) && !(expenses.food() * 2 > wallet.getFood())){
                 int amountSell = netCash.food() - minimum;
@@ -150,7 +140,6 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
             }
 
         }
-
         if(monthlyAlloys.isSelected()){
             if(!(netCash.alloy() < 0) && !(expenses.alloy() * 2 > wallet.getAlloy())){
                 int amountSell = netCash.alloy() - minimum;
@@ -181,7 +170,6 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
 
         amountSpendGold = amountSpendGold / 4;
 
-
         if(monthlyGoldFood.isSelected()){
             int amountSpend = amountSpendGold / (monthlyGoldAlloys.isSelected() ? 2 : 1);
             int amountBuy = amountSpend * 10;
@@ -193,10 +181,7 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
             int amountBuy = amountSpend * 5;
             getExchange().exchangeResources(amountBuy, Resource.Alloy, Resource.Gold, person.getCharacter());
         }
-
-
     }
-
     @FXML
     void buyGoldFoodBtn(MouseEvent event) {
         int amountToBuy = getExchange().getDefaultGold();
@@ -230,11 +215,7 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
     public void updateShopWallet(){
         shopWalletBalance.setText(getExchange().getWallet().getRatioString());
     }
-
     public void setMain(MainController main) {
         this.main = main;
     }
-
-
-
 }

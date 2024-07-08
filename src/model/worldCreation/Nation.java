@@ -11,9 +11,7 @@ import model.characters.Character;
 import model.characters.*;
 import model.characters.authority.Authority;
 import model.characters.authority.ProvinceAuthority;
-import model.characters.npc.Governor;
-import model.characters.npc.King;
-import model.characters.npc.Mercenary;
+import model.characters.npc.*;
 import model.characters.payments.Payment;
 import model.characters.payments.PaymentManager;
 import model.resourceManagement.TransferPackage;
@@ -27,6 +25,8 @@ import model.war.War;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static model.worldCreation.Nation.TaxCalculator.getNationalTaxAmount;
 
 @SuppressWarnings("CallToPrintStackTrace")
 public class Nation extends ControlledArea implements Details {
@@ -238,6 +238,9 @@ public class Nation extends ControlledArea implements Details {
 
 
     public void nationalTax(int day){
+        if(isPlayerNation() && day == 30){
+            System.out.println("Before: " + wallet);
+        }
 
         if(day == 1) {
 
@@ -257,20 +260,14 @@ public class Nation extends ControlledArea implements Details {
                 }
                 c.getPerson().getPaymentManager().removePayment(PaymentManager.PaymentType.EXPENSE, Payment.NATIONAL_TAX);
             }
+        }
 
+        if(isPlayerNation() && day == 30){
+            System.out.println("after: " + wallet);
         }
     }
 
-    private static TransferPackage getNationalTaxAmount(Character c) {
-        TransferPackage amount;
 
-        if(c instanceof Peasant){
-            amount = new TransferPackage(10, 10, 10);
-        }else{
-            amount = new TransferPackage(25, 25, 25);
-        }
-        return amount;
-    }
 
 
     public War getWar() {
@@ -288,7 +285,7 @@ public class Nation extends ControlledArea implements Details {
         }
     }
 
-    private HashSet<Character> allCitizens = new HashSet<>();
+    private final HashSet<Character> allCitizens = new HashSet<>();
 
     private HashSet<Character> getAllCitizens(){
         if(allCitizens.isEmpty()) { // Calculate this only once, since characters should never change.
@@ -363,9 +360,6 @@ public class Nation extends ControlledArea implements Details {
         return vassals;
     }
 
-    public Nation getEnemy() {
-        return enemy;
-    }
 
     public static void handleStartWar(Nation nation1, Nation nation2) {
         try {
@@ -484,12 +478,13 @@ public class Nation extends ControlledArea implements Details {
 
         if(wallet.isEmpty()) return;
         if(wallet.isLowBalance()) return;
+        if(vassals.isEmpty()) return; // paying starts only after winning a war
         if(wallet.getCombinedAmount() < 10_000) return;
 
         // Retrieve important characters
         Set<Character> importantCharacters = getAllImportantCharacters();
 
-        int size = importantCharacters.size();
+        int size = importantCharacters.size() * 2;
 
         TransferPackage amount = wallet.getBalance().divide(size);
 
@@ -501,14 +496,10 @@ public class Nation extends ControlledArea implements Details {
             if(character.getPerson().isPlayer()){
                 character.getPerson().getMessageTracker().addMessage(MessageTracker.Message("Major", "National resource distribution added "+amount));
             }
-
             // Deduct from nation's wallet
             wallet.subtractResources(amount);
         }
-
-
     }
-
 
     private void addWarState(){
         for(Person person : getAllCitizensOfTheNation()){
@@ -518,6 +509,7 @@ public class Nation extends ControlledArea implements Details {
     private void removeWarState(){
         for(Person person : getAllCitizensOfTheNation()){
             person.removeState(State.AT_WAR);
+            person.removeState(State.ACTIVE_COMBAT);
         }
     }
 
@@ -547,6 +539,7 @@ public class Nation extends ControlledArea implements Details {
             }
             if(person.getProperty() instanceof Military m){
                 militariesOwnedByCommanders.add(m);
+                person.addState(State.ACTIVE_COMBAT);
             }
         }
         return militariesOwnedByCommanders;
@@ -557,11 +550,13 @@ public class Nation extends ControlledArea implements Details {
         ArrayList<Military> allMilitaries = getAllMilitaries();
         for (Military military : allMilitaries) {
             if (!warCommanders.contains(military.getOwner())) {
-                if(     !(military.getOwner().getRole().getStatus() == Status.Vanguard) || // king and his sentinels are excluded here
-                        !(military.getOwner().getRole().getStatus() == Status.King) ||
-                        !(military.getOwner().getRole().getStatus() == Status.Noble) ||
-                        !(military.getOwner().getRole().getStatus() == Status.Mercenary)) {
+                if (military.getOwner().getRole().getStatus() != Status.Vanguard &&
+                        military.getOwner().getRole().getStatus() != Status.King &&
+                        military.getOwner().getRole().getStatus() != Status.Noble &&
+                        military.getOwner().getRole().getStatus() != Status.Mercenary &&
+                        military.getOwner().getRole().getStatus() != Status.Governor)  {
                     militariesOwnedByCivilians.add(military);
+                    military.getOwner().addState(State.ACTIVE_COMBAT);
                 }
             }
         }
@@ -579,6 +574,10 @@ public class Nation extends ControlledArea implements Details {
             if(support.getPerson().getProperty() instanceof Military m){
                 militariesOwnedKingAndSentinels.add(m);
             }
+        }
+
+        for(Military m : militariesOwnedKingAndSentinels){
+            m.getOwner().addState(State.ACTIVE_COMBAT);
         }
 
         return militariesOwnedKingAndSentinels;
@@ -685,13 +684,7 @@ public class Nation extends ControlledArea implements Details {
         return warHistory.size();
     }
 
-    public int getMilitaryAmount() {
-        int amount = 0;
-        for(Quarter quarter : allQuarters){
-            amount += quarter.getMilitaryProperties().size();
-        }
-        return amount;
-    }
+
 
     public int getMilitaryPower() {
         int totalPower = 0;
@@ -720,8 +713,8 @@ public class Nation extends ControlledArea implements Details {
         double cost = Math.max(baseCostFactor * distance * adjustmentFactor, baseCostFactor / 2);
 
         // Cost is increased for every Vassal either nation might have. This also makes it more expensive for Vassal to Challenge their Overlord.
-        cost *= this.getVassals().size();
-        cost *= other.getVassals().size();
+        cost *= this.getVassals().size() + 1;
+        cost *= other.getVassals().size()  + 1;
 
         return new TransferPackage( (int) cost, (int) cost,(int)  cost);
     }
@@ -753,6 +746,32 @@ public class Nation extends ControlledArea implements Details {
         char firstLetter2 = java.lang.Character.toUpperCase(name2.charAt(0));
         return Math.abs(firstLetter1 - firstLetter2);
     }
+
+
+    public static class TaxCalculator {
+
+        private static final Map<Class<? extends Character>, TransferPackage> taxAmounts = new HashMap<>();
+
+        static {
+            // Initialize the tax amounts for each character type
+            taxAmounts.put(Farmer.class, new TransferPackage(100, 1, 1));
+            taxAmounts.put(Miner.class, new TransferPackage(1, 50, 1));
+            taxAmounts.put(Merchant.class, new TransferPackage(1, 1, 10));
+            taxAmounts.put(Captain.class, new TransferPackage(50, 50, 50));
+            taxAmounts.put(Support.class, new TransferPackage(15, 15, 15));
+            taxAmounts.put(Mayor.class, new TransferPackage(100, 100, 100));
+            taxAmounts.put(Governor.class, new TransferPackage(100, 100, 200));
+            taxAmounts.put(King.class, new TransferPackage(100, 100, 400));
+        }
+
+        public static TransferPackage getNationalTaxAmount(Character c) {
+            // Return the tax amount for the given character type, or a default value if not found
+            return taxAmounts.getOrDefault(c.getClass(), new TransferPackage(10, 10, 10));
+        }
+
+        // Add other methods and classes as needed
+    }
+
 }
 
 

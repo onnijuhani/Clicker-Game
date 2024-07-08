@@ -88,6 +88,7 @@ public class Construct {
     private static void finalizeConstruction(Person person, Properties newType, Quarter location, Property oldHouse, UtilitySlot oldUtilitySlot) {
         Property newHouse = initiateNewProperty(newType, oldHouse.getName(), person);
         newHouse.setFirstTimeReached(false);
+        destroyOldHouse(person, newType, oldHouse);
         switchPropertyAttributes(person, newHouse, location, oldHouse, oldUtilitySlot);
         person.getMessageTracker().addMessage(MessageTracker.Message("Major", "New property constructed"));
 
@@ -98,7 +99,28 @@ public class Construct {
             triggerConstructionPopUp(newType);
         }
 
+    }
 
+    private static void destroyOldHouse(Person person, Properties newType, Property oldHouse) {
+        oldHouse.location.getPropertyTracker().removeProperty(oldHouse);
+    }
+
+    private static void switchPropertyAttributes(Person person, Property newHouse, Quarter location, Property oldHouse, UtilitySlot oldUtilitySlot) {
+        newHouse.setLocation(location);
+        newHouse.getVault().setOwner(null);
+        newHouse.getVault().deleteFromGameManager();
+
+        newHouse.setVault(oldHouse.getVault());
+        newHouse.getVault().setOwner(newHouse);
+        newHouse.getUtilitySlot().setOwnedUtilityBuildings(oldUtilitySlot.getOwnedUtilityBuildings());
+        newHouse.setDefense(oldHouse.getDefenceStats());
+        PropertyManager.unsubscribe(oldHouse);
+        person.setProperty(newHouse);
+
+        if(oldHouse instanceof Military military){
+            Military newMilitary = (Military) newHouse;
+            newMilitary.setArmy(military.getArmy());
+        }
     }
 
     private static void triggerConstructionPopUp(Properties type) {
@@ -141,26 +163,7 @@ public class Construct {
 
 
 
-    private static void switchPropertyAttributes(Person person, Property newHouse, Quarter location, Property oldHouse, UtilitySlot oldUtilitySlot) {
-        newHouse.setLocation(location);
-        newHouse.getVault().setOwner(null);
-        newHouse.getVault().deleteFromGameManager();
 
-        newHouse.setVault(oldHouse.getVault());
-        newHouse.getVault().setOwner(newHouse);
-        newHouse.getUtilitySlot().setOwnedUtilityBuildings(oldUtilitySlot.getOwnedUtilityBuildings());
-        newHouse.setDefense(oldHouse.getDefenceStats());
-        PropertyManager.unsubscribe(oldHouse);
-        person.setProperty(newHouse);
-
-        if(oldHouse instanceof Military military){
-            Military newMilitary = (Military) newHouse;
-            newMilitary.setArmy(military.getArmy());
-        }
-
-
-
-    }
 
     public static Properties getNextProperty(Person person) {
         Property oldHouse = person.getProperty();

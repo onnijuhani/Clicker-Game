@@ -2,6 +2,7 @@ package model.war;
 
 import model.characters.Person;
 import model.resourceManagement.TransferPackage;
+import model.stateSystem.State;
 import model.time.Time;
 import model.time.WarManager;
 import model.time.WarObserver;
@@ -9,6 +10,7 @@ import model.worldCreation.Details;
 import model.worldCreation.Nation;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 import static model.war.War.Phase.*;
 
@@ -91,6 +93,146 @@ public class War implements WarObserver, Details {
     private boolean aWarTax = false; // attacker war tax set
     private boolean dWarTax = false; // defender war tax set
 
+    private enum SetName {
+        IN_PLAY, IN_BATTLE, DEFEATED, ROYALS
+    }
+
+    private void deleteFromCorrectList(Military military, SetName setName) {
+        Nation nation = military.getOwner().getRole().getNation();
+        switch (setName) {
+            case IN_PLAY:
+                if (nation == attacker) {
+                    attackerMilitariesInPlay.remove(military);
+                } else if (nation == defender) {
+                    defenderMilitariesInPlay.remove(military);
+                } else {
+                    throw new RuntimeException("Wrong Nationality part of the War");
+                }
+                break;
+            case IN_BATTLE:
+                if (nation == attacker) {
+                    attackerMilitariesInBattle.remove(military);
+                } else if (nation == defender) {
+                    defenderMilitariesInBattle.remove(military);
+                } else {
+                    throw new RuntimeException("Wrong Nationality part of the War");
+                }
+                break;
+            case DEFEATED:
+                if (nation == attacker) {
+                    attackerDefeatedMilitaries.remove(military);
+                } else if (nation == defender) {
+                    defenderDefeatedMilitaries.remove(military);
+                } else {
+                    throw new RuntimeException("Wrong Nationality part of the War");
+                }
+                break;
+            case ROYALS:
+                if (nation == attacker) {
+                    attackerRoyals.remove(military);
+                } else if (nation == defender) {
+                    defenderRoyals.remove(military);
+                } else {
+                    throw new RuntimeException("Wrong Nationality part of the War");
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected value: " + setName);
+        }
+    }
+    private void addIntoCorrectList(Military military, SetName setName) {
+        Nation nation = military.getOwner().getRole().getNation();
+        switch (setName) {
+            case IN_PLAY:
+                if (nation == attacker) {
+                    addIntoAttackerList(military, attackerMilitariesInPlay);
+                } else if (nation == defender) {
+                    addIntoDefenderList(military, defenderMilitariesInPlay);
+                } else {
+                    throw new RuntimeException("Wrong Nationality part of the War");
+                }
+                break;
+            case IN_BATTLE:
+                if (nation == attacker) {
+                    addIntoAttackerList(military, attackerMilitariesInBattle);
+                } else if (nation == defender) {
+                    addIntoDefenderList(military, defenderMilitariesInBattle);
+                } else {
+                    throw new RuntimeException("Wrong Nationality part of the War");
+                }
+                break;
+            case DEFEATED:
+                if (nation == attacker) {
+                    addIntoAttackerList(military, attackerDefeatedMilitaries);
+                } else if (nation == defender) {
+                    addIntoDefenderList(military, defenderDefeatedMilitaries);
+                } else {
+                    throw new RuntimeException("Wrong Nationality part of the War");
+                }
+                break;
+            case ROYALS:
+                if (nation == attacker) {
+                    addIntoAttackerList(military, attackerRoyals);
+                } else if (nation == defender) {
+                    addIntoDefenderList(military, defenderRoyals);
+                } else {
+                    throw new RuntimeException("Wrong Nationality part of the War");
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected value: " + setName);
+        }
+    }
+
+    private void addIntoAttackerList(Military military, Set<Military> attackerList) {
+        if (military.getOwner().getRole().getNation() != this.attacker) {
+            throw new RuntimeException("Tried to add into wrong list: Attacker list expected.");
+        }
+
+        if (!(attackerList instanceof HashSet<?> && (attackerList == attackerMilitariesInPlay
+                || attackerList == attackerMilitariesInBattle
+                || attackerList == attackerDefeatedMilitaries
+                || attackerList == attackerRoyals))) {
+            String listName = getDefenderListName(attackerList);
+            throw new RuntimeException("Invalid attacker list provided: " + listName);
+        }
+        attackerList.add(military);
+    }
+
+
+    private String getDefenderListName(Set<Military> list) {
+        if (list == defenderMilitariesInPlay) return "defenderMilitariesInPlay";
+        if (list == defenderMilitariesInBattle) return "defenderMilitariesInBattle";
+        if (list == defenderDefeatedMilitaries) return "defenderDefeatedMilitaries";
+        if (list == defenderRoyals) return "defenderRoyals";
+        return "unknown list";
+    }
+
+    private void addIntoDefenderList(Military military, Set<Military> defenderList) {
+        if (military.getOwner().getRole().getNation() != this.defender) {
+            throw new RuntimeException("Tried to add into wrong list: Defender list expected.");
+        }
+
+        if (!(defenderList instanceof HashSet<?> && (defenderList == defenderMilitariesInPlay
+                || defenderList == defenderMilitariesInBattle
+                || defenderList == defenderDefeatedMilitaries
+                || defenderList == defenderRoyals))) {
+            String listName = getAttackerListName(defenderList);
+            throw new RuntimeException("Invalid defender list provided: " + listName);
+        }
+        defenderList.add(military);
+    }
+
+
+    private String getAttackerListName(Set<Military> list) {
+        if (list == attackerMilitariesInPlay) return "attackerMilitariesInPlay";
+        if (list == attackerMilitariesInBattle) return "attackerMilitariesInBattle";
+        if (list == attackerDefeatedMilitaries) return "attackerDefeatedMilitaries";
+        if (list == attackerRoyals) return "attackerRoyals";
+        return "unknown list";
+    }
+
+
     private void finalPhaseActions(){
         if(currentPhase != PHASE3){
             return;
@@ -98,8 +240,6 @@ public class War implements WarObserver, Details {
 
         sendResourceAidToRoyals(attacker, attackerRoyals);
         sendResourceAidToRoyals(defender, defenderRoyals);
-
-
     }
 
     private void sendResourceAidToRoyals(Nation nation, HashSet<Military> royals) {
@@ -126,8 +266,10 @@ public class War implements WarObserver, Details {
     }
 
 
-    private void updatePhase(){
-        if (testForEmpty(attackerDefeatedMilitaries, defenderDefeatedMilitaries)) return;
+    private void updatePhase() {
+        if (currentPhase != PHASE1){
+            if (testForEmpty(attackerDefeatedMilitaries, defenderDefeatedMilitaries)) return;
+        }
 
         double adr = getDefeatRatio(attackerDefeatedMilitaries, attackerMilitariesInPlay, attackerMilitariesInBattle);
         double ddr = getDefeatRatio(defenderDefeatedMilitaries, defenderMilitariesInPlay, defenderMilitariesInBattle);
@@ -187,44 +329,44 @@ public class War implements WarObserver, Details {
     }
 
 
-    private void updateSets(){
+    private void updateSets() {
         // Attacker
-        filterArmies(attackerMilitariesInPlay, attackerDefeatedMilitaries, attackerMilitariesInBattle);
+        filterArmies(attackerMilitariesInPlay, attackerDefeatedMilitaries, attackerMilitariesInBattle, (military, list) -> addIntoAttackerList(military, list));
 
         // Defender
-        filterArmies(defenderMilitariesInPlay, defenderDefeatedMilitaries, defenderMilitariesInBattle);
+        filterArmies(defenderMilitariesInPlay, defenderDefeatedMilitaries, defenderMilitariesInBattle, this::addIntoDefenderList);
     }
 
-    private void filterArmies(Set<Military> militariesAvailable, Set<Military> defeatedMilitaries, Set<Military> militariesInBattle) {
-        HashSet<Military> all = new HashSet<>(militariesAvailable);
-        all.addAll(militariesInBattle);
-        for (Military military : all) {
 
+
+    private void filterArmies(Set<Military> militariesAvailable, Set<Military> defeatedMilitaries, Set<Military> militariesInBattle, BiConsumer<Military, Set<Military>> addMethod) {
+        Set<Military> all = new HashSet<>(militariesAvailable);
+        all.addAll(militariesInBattle);
+
+        for (Military military : all) {
             Army.ArmyState state = military.getState();
 
-            if(state == null){
+            if (state == null) {
                 militariesInBattle.remove(military);
-                militariesAvailable.add(military);
+                addMethod.accept(military, militariesAvailable);
                 continue;
             }
 
             // If military is defeated, move to defeatedMilitaries
             if (state == Army.ArmyState.DEFEATED) {
-                defeatedMilitaries.add(military);
+                addMethod.accept(military, defeatedMilitaries);
                 militariesAvailable.remove(military);
                 militariesInBattle.remove(military);
+                military.getOwner().removeState(State.ACTIVE_COMBAT);
                 continue;
             }
 
             // If military is in battle, move to militariesInBattle
             if (state == Army.ArmyState.ATTACKING || state == Army.ArmyState.DEFENDING) {
-                militariesInBattle.add(military);
+                addMethod.accept(military, militariesInBattle);
                 militariesAvailable.remove(military);
                 continue;
             }
-
-
-
         }
     }
 
@@ -275,13 +417,26 @@ public class War implements WarObserver, Details {
     public void startPreparing() {
         setCurrentPhase(PREPARING);
 
+        attacker.startWar(defender, this);
+        defender.startWar(attacker, this);
+
         // Add civilian militaries to in play set
         attackerMilitariesInPlay.addAll(attacker.getMilitariesOwnedByCivilians());
         defenderMilitariesInPlay.addAll(defender.getMilitariesOwnedByCivilians());
+
+
     }
     public void startPhase1() {
         if(currentPhase == PREPARING){
             setCurrentPhase(PHASE1);
+
+            if(attackerMilitariesInPlay.isEmpty()){
+                startPhase2(attacker + " has no civilian armies. Phase 2 started.");
+                return;
+            }
+            if(defenderMilitariesInPlay.isEmpty()){
+                startPhase2(defender + " has no civilian armies. Phase 2 started.");
+            }
         }
     }
 
@@ -335,8 +490,8 @@ public class War implements WarObserver, Details {
         if(currentPhase != PHASE3) return;
         if(days < phase3StartingDay + 180) return;
 
-        testRoyalMilitary(attackerRoyals, attackerDefeatedMilitaries);
-        testRoyalMilitary(defenderRoyals, defenderDefeatedMilitaries);
+        testRoyalMilitary(attackerRoyals, attackerDefeatedMilitaries, this::addIntoAttackerList);
+        testRoyalMilitary(defenderRoyals, defenderDefeatedMilitaries, this::addIntoDefenderList);
 
         if(day == 23) {
             matchMaking(attackerRoyals, defenderRoyals, day);
@@ -345,13 +500,13 @@ public class War implements WarObserver, Details {
         }
     }
 
-    private void testRoyalMilitary(HashSet<Military> set, HashSet<Military> defeated) {
+    private void testRoyalMilitary(HashSet<Military> set, HashSet<Military> defeated, BiConsumer<Military, Set<Military>> addMethod) {
         Iterator<Military> iterator = set.iterator();
         while (iterator.hasNext()) {
             Military m = iterator.next();
             if (m.getState() == Army.ArmyState.DEFEATED) {
                 iterator.remove();
-                defeated.add(m);
+                addMethod.accept(m, defeated);
             }
         }
     }
@@ -401,22 +556,15 @@ public class War implements WarObserver, Details {
     private void handleBattle(Military attacker, Military defender, boolean isOriginalOrder) {
         if (testMilitariesForUndefeated(attacker, defender)) {
             if (attacker == defender) {
-                System.out.println("WTF");
+                throw new RuntimeException("Tried to attack self in war");
             }
 
             MilitaryBattle battle = SiegeService.executeMilitaryBattle(attacker.getOwner(), defender.getOwner());
             if (addMilitaryBattle(battle)) {
-                if (isOriginalOrder) {
-                    attackerMilitariesInPlay.remove(attacker);
-                    defenderMilitariesInPlay.remove(defender);
-                    attackerMilitariesInBattle.add(attacker);
-                    defenderMilitariesInBattle.add(defender);
-                } else {
-                    defenderMilitariesInPlay.remove(attacker);
-                    attackerMilitariesInPlay.remove(defender);
-                    defenderMilitariesInBattle.add(attacker);
-                    attackerMilitariesInBattle.add(defender);
-                }
+                deleteFromCorrectList(attacker, SetName.IN_PLAY);
+                deleteFromCorrectList(defender, SetName.IN_PLAY);
+                addIntoCorrectList(attacker, SetName.IN_BATTLE);
+                addIntoCorrectList(defender, SetName.IN_BATTLE);
             }
         }
     }
@@ -448,7 +596,7 @@ public class War implements WarObserver, Details {
     private boolean testMilitariesForUndefeated(Military m, Military m2) {
         boolean isUndefeated = true;
         if(m.getState() == Army.ArmyState.DEFEATED){
-            attackerDefeatedMilitaries.add(m);
+            addIntoAttackerList(m, attackerDefeatedMilitaries);
             attackerMilitariesInPlay.remove(m);
             attackerMilitariesInBattle.remove(m);
             isUndefeated = false;

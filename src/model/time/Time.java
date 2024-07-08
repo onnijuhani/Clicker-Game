@@ -115,7 +115,7 @@ public class Time {
     private static void nationalTax(){
         if(year == 0) return;
 
-        if(month == 12){
+        if(month == 12 && (day == 1 || day == 30)){
             World.getAllNations().forEach(nation -> nation.nationalTax(day));
         }
     }

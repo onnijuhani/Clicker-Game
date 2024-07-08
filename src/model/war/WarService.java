@@ -5,6 +5,9 @@ import model.worldCreation.Nation;
 public class WarService {
 
 
+    /**
+     * @return returns Null if there is an error starting the War. Otherwise, returns the War object.
+     */
     public static War startWar(Nation attacker, Nation defender) {
 
         if(attacker == defender){
@@ -21,6 +24,32 @@ public class WarService {
             return null;
         }
 
+        String warName = getWarName(attacker, defender);
+
+//        TransferPackage cost = attacker.calculateWarStartingCost(defender);
+//        Person king = Model.getPlayerAsPerson();
+//        if(attacker.getWallet().subtractResources(cost)){
+//            king.getMessageTracker().addMessage(MessageTracker.Message("Major", "War cost paid: " + cost));
+//            king.getMessageTracker().addMessage(MessageTracker.Message("Major", warName + " started."));
+//        }else{
+//            king.getMessageTracker().addMessage(MessageTracker.Message(
+//                    "Major",
+//                    "Not enough resources to start a war against " + defender + "\n" +
+//                     "Required: " + cost.toShortString() + "\nAvailable in National Wallet: " + attacker.getWallet().getBalance().toShortString()
+//            ));
+//            return null;
+//        }
+
+
+
+
+        War war = new War(attacker, defender, warName);
+
+        return war;
+
+    }
+
+    private static String getWarName(Nation attacker, Nation defender) {
         String warName;
 
         if(attacker.isVassal()){
@@ -35,18 +64,7 @@ public class WarService {
         }else{
             warName = attacker + "'s War for Conquest";
         }
-
-
-
-
-
-        War war = new War(attacker, defender, warName);
-
-        attacker.startWar(defender, war);
-        defender.startWar(attacker, war);
-
-        return war;
-
+        return warName;
     }
 
 

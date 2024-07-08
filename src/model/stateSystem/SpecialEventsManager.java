@@ -400,7 +400,18 @@ public class SpecialEventsManager {
         PopUpMessageTracker.sendMessage(message);
     }
 
-
+    public static void triggerGameWin() {
+        PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(
+                "Victory!",
+                "Congratulations! You have emerged victorious, demonstrating unparalleled strategic prowess and leadership. " +
+                        "Your nation stands supreme, and your name will be remembered in the annals of history. " +
+                        "Well done, mighty ruler!" +
+                        "\nYou can continue playing to conquer rest of the nations.",
+                "Properties/victory.png",
+                "Celebrate"
+        );
+        PopUpMessageTracker.sendMessage(message);
+    }
 
 
 }
