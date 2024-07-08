@@ -14,6 +14,8 @@ import model.characters.authority.ProvinceAuthority;
 import model.characters.npc.Governor;
 import model.characters.npc.King;
 import model.characters.npc.Mercenary;
+import model.characters.payments.Payment;
+import model.characters.payments.PaymentManager;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.shop.Shop;
@@ -235,7 +237,40 @@ public class Nation extends ControlledArea implements Details {
 
 
 
+    public void nationalTax(int day){
 
+        if(day == 1) {
+
+            for (Character c : getAllCitizens()) {
+
+                TransferPackage amount = getNationalTaxAmount(c);
+                c.getPerson().getPaymentManager().addPayment(PaymentManager.PaymentType.EXPENSE, Payment.NATIONAL_TAX, amount ,30);
+            }
+
+        } else if (day == 30) {
+
+            for (Character c : getAllCitizens()) {
+                if(this.wallet.deposit(c.getPerson().getWallet(), getNationalTaxAmount(c))){
+                    c.getPerson().getMessageTracker().addMessage(MessageTracker.Message("Minor", "National tax paid: " + getNationalTaxAmount(c).toShortString()));
+                }else{
+                    c.getPerson().loseStrike("National tax not paid: " + getNationalTaxAmount(c).toShortString());
+                }
+                c.getPerson().getPaymentManager().removePayment(PaymentManager.PaymentType.EXPENSE, Payment.NATIONAL_TAX);
+            }
+
+        }
+    }
+
+    private static TransferPackage getNationalTaxAmount(Character c) {
+        TransferPackage amount;
+
+        if(c instanceof Peasant){
+            amount = new TransferPackage(10, 10, 10);
+        }else{
+            amount = new TransferPackage(25, 25, 25);
+        }
+        return amount;
+    }
 
 
     public War getWar() {
@@ -243,14 +278,25 @@ public class Nation extends ControlledArea implements Details {
     }
 
     public void setOverlordToWorkWallets(Nation nation){
-        for(Character c :citizenCache){
+        for(Character c : getAllCitizens()){
             c.getPerson().getWorkWallet().setOverlord(nation);
         }
     }
     public void removeOverlordFromWorkWallets(){
-        for(Character c :citizenCache){
+        for(Character c : getAllCitizens()){
             c.getPerson().getWorkWallet().setOverlord(null);
         }
+    }
+
+    private HashSet<Character> allCitizens = new HashSet<>();
+
+    private HashSet<Character> getAllCitizens(){
+        if(allCitizens.isEmpty()) { // Calculate this only once, since characters should never change.
+            for (Quarter quarter : allQuarters) {
+                allCitizens.addAll(quarter.getCharactersLivingHere());
+            }
+        }
+        return allCitizens;
     }
 
     public void setWarTaxToWorkWallets(){
@@ -425,27 +471,13 @@ public class Nation extends ControlledArea implements Details {
         return isAtWar;
     }
 
-    public int getMilitaryPower() {
-        int totalPower = 0;
-        for(Quarter quarter : allQuarters){
-            for(Military military : quarter.getMilitaryProperties()){
-                totalPower += military.getMilitaryStrength();
-            }
-        }
-        return totalPower;
-    }
+
 
     public int getQuarterAmount() {
         return allQuarters.size();
     }
 
-    public int getMilitaryAmount() {
-        int amount = 0;
-        for(Quarter quarter : allQuarters){
-            amount += quarter.getMilitaryProperties().size();
-        }
-        return amount;
-    }
+
 
 
     public void sendWalletBalanceToLeaders() {
@@ -652,4 +684,75 @@ public class Nation extends ControlledArea implements Details {
     public int getWarsFoughtAmount() {
         return warHistory.size();
     }
+
+    public int getMilitaryAmount() {
+        int amount = 0;
+        for(Quarter quarter : allQuarters){
+            amount += quarter.getMilitaryProperties().size();
+        }
+        return amount;
+    }
+
+    public int getMilitaryPower() {
+        int totalPower = 0;
+        for(Quarter quarter : allQuarters){
+            for(Military military : quarter.getMilitaryProperties()){
+                totalPower += military.getMilitaryStrength();
+            }
+        }
+        return totalPower;
+    }
+
+    public TransferPackage calculateWarStartingCost(Nation other) {
+        int distance = calculateDistance(other);
+
+        int quarters = getQuarterAmount();
+        int otherQuarters = other.getQuarterAmount();
+
+        // Base cost factors
+        double baseCostFactor = 100_000;
+
+        // Adjust costs based on the difference in quarters
+        int quarterDifference = quarters - otherQuarters;
+        double adjustmentFactor = 1 + (quarterDifference * 0.1);
+
+        // Calculate the base costs
+        double cost = Math.max(baseCostFactor * distance * adjustmentFactor, baseCostFactor / 2);
+
+        // Cost is increased for every Vassal either nation might have. This also makes it more expensive for Vassal to Challenge their Overlord.
+        cost *= this.getVassals().size();
+        cost *= other.getVassals().size();
+
+        return new TransferPackage( (int) cost, (int) cost,(int)  cost);
+    }
+
+    public int calculateDistance(Nation other) {
+        int totalDistance = 0;
+
+        Continent continent = this.continent;
+        Continent otherContinent = other.continent;
+
+        int continentDistanceShort = 20;
+        int continentDistanceLong = 60;
+
+        // Calculate distance based on continents
+        if (continent == otherContinent) {
+            totalDistance += continentDistanceShort;
+        } else {
+            totalDistance += continentDistanceLong;
+        }
+
+        // Calculate additional distance based on the first letters of nation names
+        totalDistance += getAlphabeticalDistance(this.name, other.name);
+
+        return totalDistance;
+    }
+
+    private int getAlphabeticalDistance(String name1, String name2) {
+        char firstLetter1 = java.lang.Character.toUpperCase(name1.charAt(0));
+        char firstLetter2 = java.lang.Character.toUpperCase(name2.charAt(0));
+        return Math.abs(firstLetter1 - firstLetter2);
+    }
 }
+
+

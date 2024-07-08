@@ -470,13 +470,22 @@ public class MainController extends BaseController {
             clickMeButton.requestFocus();
             return;
         }
-        if (!pausePopBtn.isSelected()) {
-            topSectionController.startTimeFunction();
+        if(timeRunning) { // If simulation is stopped, closing pop up should not start the time even if player has set the option.
+            if (!pausePopBtn.isSelected()) {
+                topSectionController.startTimeFunction();
+            }
         }
+
+
         clickMeButton.requestFocus();
     }
 
+    private boolean timeRunning = false; // If simulation is stopped, closing pop up should not start the time.
+
     private void openPopUp() {
+
+        timeRunning = Time.isIsSimulationRunning();
+
         mainLayout.setDisable(true);
         if (topSectionController != null) {
             topSectionController.stopTimeFunction();

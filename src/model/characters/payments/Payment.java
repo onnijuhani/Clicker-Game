@@ -16,7 +16,7 @@ public enum Payment {
     UTILITY_INCOME,
     EXPECTED_CLICKER_INCOME,
     MILITARY_BATTLE_EXPENSE,
-    GRAND_FOUNDRY_INCOME;
+    GRAND_FOUNDRY_INCOME, NATIONAL_TAX;
 
 
     @Override
@@ -36,6 +36,7 @@ public enum Payment {
             case EXPECTED_CLICKER_INCOME -> "Expected Clicker Income";
             case MILITARY_BATTLE_EXPENSE -> "War effort expense";
             case GRAND_FOUNDRY_INCOME -> "Grand Foundry Income";
+            case NATIONAL_TAX -> "National Tax";
         };
     }
 

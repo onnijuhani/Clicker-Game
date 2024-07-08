@@ -2,6 +2,7 @@ package model.war;
 
 import model.Model;
 import model.characters.Character;
+import model.resourceManagement.TransferPackage;
 import model.worldCreation.Nation;
 
 import java.util.*;
@@ -9,21 +10,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class WarPlanningManager {
-
-
-
     private final static Set<Nation> nations = new HashSet<>();
     private final static Set<Nation> impartialNations = new HashSet<>();
     private final static Set<Nation> overLordNations = new HashSet<>();
     private final static Set<Nation> vassalNations = new HashSet<>();
 
-
-
-    public static HashMap<Nation, Integer> getOtherNationsAndMilitaryPowers(Nation nation){
+    public static HashMap<Nation, Integer> getOtherNationsAndMilitaryPowers(Nation nation) {
         HashMap<Nation, Integer> otherNations = new HashMap<>();
 
-        for(Nation n : nations){
-            if(n != nation){
+        for (Nation n : nations) {
+            if (n != nation) {
                 int militaryPower = n.getMilitaryPower();
                 otherNations.put(n, militaryPower);
             }
@@ -31,13 +27,12 @@ public class WarPlanningManager {
         return otherNations;
     }
 
-
     public static ArrayList<NationDetails> getNationsInfo() {
         ArrayList<NationDetails> nationsInfo = new ArrayList<>();
 
         for (Nation n : WarPlanningManager.nations) {
             int militaryPower = n.getMilitaryPower();
-            int quarters = n.numberOfQuarters;
+            int quarters = n.getQuarterAmount();
             Character leader = n.getAuthorityHere().getCharacterInThisPosition();
             NationDetails nationDetails = new NationDetails(n, militaryPower, quarters, leader);
             nationsInfo.add(nationDetails);
@@ -54,29 +49,23 @@ public class WarPlanningManager {
 
         for (Nation nation : nations) {
             nation.getStrongestMilitary().ifPresent(military ->
-                    strongestMilitaries.add(new NationMilitary(nation, military)));
+                    strongestMilitaries.add(new NationMilitary(nation, military))
+            );
         }
         return strongestMilitaries;
     }
 
-
     public record NationDetails(Nation nation, int militaryPower, int numberOfQuarters, Character leader) {
         @Override
-            public String toString() {
-                return nation +
-                        " " + militaryPower +
-                        " " + numberOfQuarters +
-                        " '" + leader;
+        public String toString() {
+            return nation + " " + militaryPower + " " + numberOfQuarters + " '" + leader;
         }
     }
 
     public record NationMilitary(Nation nation, Military military) {
         @Override
         public String toString() {
-            return "Nation=" + nation +
-                    ", militaryPower=" + military.getMilitaryStrength() +
-                    ", military=" + military +
-                    '}';
+            return "Nation=" + nation + ", militaryPower=" + military.getMilitaryStrength() + ", military=" + military + '}';
         }
     }
 
@@ -84,7 +73,6 @@ public class WarPlanningManager {
         nations.add(nation);
         filterNations();
     }
-
 
     public enum NationType {
         VASSAL, OVERLORD, IMPARTIAL
@@ -96,8 +84,10 @@ public class WarPlanningManager {
             NationType.IMPARTIAL, new ImpartialWarStrategy()
     );
 
-
     public static void filterNations() {
+        vassalNations.clear();
+        overLordNations.clear();
+        impartialNations.clear();
         for (Nation nation : nations) {
             if (nation.isVassal()) {
                 vassalNations.add(nation);
@@ -108,7 +98,6 @@ public class WarPlanningManager {
             }
         }
     }
-
 
     public static void makeWarDecisions() {
         for (Nation nation : nations) {
@@ -122,12 +111,11 @@ public class WarPlanningManager {
     }
 
     private static void declareWar(Nation attacker, Nation defender) {
-        if(attacker.getAuthorityHere().getCharacterInThisPosition() == Model.getPlayerAsCharacter()){
+        if (attacker.getAuthorityHere().getCharacterInThisPosition() == Model.getPlayerAsCharacter()) {
             return; // Automatic war matchmaking is off if player is King!
         }
         WarService.startWar(attacker, defender);
     }
-
 
     private static WarStrategy getStrategyForNation(Nation nation) {
         if (nation.isVassal()) return strategyMap.get(NationType.VASSAL);
@@ -138,13 +126,10 @@ public class WarPlanningManager {
     private static Set<Nation> getPotentialTargets(Nation nation) {
         if (nation.isVassal()) {
             return Set.of(nation.getOverlord());
-        } else if (nation.isOverlord()) {
-            return impartialNations;
         } else {
             return Stream.concat(impartialNations.stream(), overLordNations.stream()).collect(Collectors.toSet());
         }
     }
-
 
     public interface WarStrategy {
         Optional<Nation> decideTarget(Nation nation, Set<Nation> potentialTargets);
@@ -164,21 +149,25 @@ public class WarPlanningManager {
     public static class OverlordWarStrategy implements WarStrategy {
         @Override
         public Optional<Nation> decideTarget(Nation nation, Set<Nation> potentialTargets) {
-            // Overlords can attack anyone in the impartial list
             return potentialTargets.stream()
-                    .min(Comparator.comparingInt(Nation::getMilitaryPower));
+                    .filter(target -> target.getMilitaryPower() <= nation.getMilitaryPower() * 1.3) // Targets with comparable or lower military power
+                    .min(Comparator.comparingDouble(target -> {
+                        TransferPackage cost = nation.calculateWarStartingCost(target);
+                        return cost.gold(); // Calculate based on the total cost
+                    }));
         }
     }
 
     public static class ImpartialWarStrategy implements WarStrategy {
         @Override
         public Optional<Nation> decideTarget(Nation nation, Set<Nation> potentialTargets) {
-            // Impartials can attack other impartials or overlords
             return potentialTargets.stream()
-                    .min(Comparator.comparingInt(Nation::getMilitaryPower));
+                    .filter(target -> target.getMilitaryPower() <= nation.getMilitaryPower() * 1.2) // Targets with comparable or lower military power
+                    .min(Comparator.comparingDouble(target -> {
+                        TransferPackage cost = nation.calculateWarStartingCost(target);
+                        double militaryDifference = Math.abs(nation.getMilitaryPower() - target.getMilitaryPower());
+                        return cost.gold() + militaryDifference; // Include military power difference in decision
+                    }));
         }
     }
-
-
-
 }

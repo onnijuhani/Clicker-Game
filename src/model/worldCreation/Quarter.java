@@ -50,6 +50,17 @@ public class Quarter extends ControlledArea implements Details {
         return allPersons;
     }
 
+    public Set<Character> getCharactersLivingHere(){
+        Set<Character> allCharacters = new HashSet<Character>();
+
+        for (LinkedList<Person> personsList : populationMap.values()) {
+            for(Person person : personsList){
+                allCharacters.add(person.getCharacter());
+            }
+        }
+        return allCharacters;
+    }
+
 
     public void calculateQuarterWealth() {
         quarterWealth = new int[3];

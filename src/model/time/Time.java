@@ -4,6 +4,7 @@ import model.GameManager;
 import model.Settings;
 import model.characters.player.clicker.Clicker;
 import model.stateSystem.SpecialEventsManager;
+import model.worldCreation.World;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -98,12 +99,25 @@ public class Time {
             executeMonthlyTrades(); // players monthly trades
 
 
-            handleSpecialEvents(); // early game resource bonus
+            handleSpecialEvents(); // special events that trigger at certain time
+
+            nationalTax(); // national tax is mandatory tax payment that occurs every 12th month
+
+
+
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);
         }
 
 
+    }
+
+    private static void nationalTax(){
+        if(year == 0) return;
+
+        if(month == 12){
+            World.getAllNations().forEach(nation -> nation.nationalTax(day));
+        }
     }
 
     private static void executeMonthlyTrades() {

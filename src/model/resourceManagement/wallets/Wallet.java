@@ -99,7 +99,10 @@ public class Wallet {
         if(!transfer.isPositive()) return false;
         if (limitReached()) return false;
         if(!depositFromWallet.hasEnoughResources(transfer)){
-            return false; // quick return if there isn't enough resources, should never happen tho.
+            depositFromWallet.generateRescuePackage();
+            if(!depositFromWallet.hasEnoughResources(transfer)) {
+                return false;
+            }
         }
         this.addResources(transfer);
         depositFromWallet.subtractResources(transfer);
