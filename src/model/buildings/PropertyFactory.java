@@ -128,7 +128,7 @@ public class PropertyFactory {
 
         String name = person.getName();
         name = name.split(" ")[1];
-        name = Settings.removeYouAndKing(name) +" "+ generateUniqueName();
+        name = Settings.removeUiNameAddition(name) +" "+ generateUniqueName();
 
         if (person.getCharacter() instanceof Merchant) {
             Random random = Settings.getRandom();

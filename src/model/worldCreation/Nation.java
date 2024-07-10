@@ -235,12 +235,7 @@ public class Nation extends ControlledArea implements Details {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-
-
     public void nationalTax(int day){
-        if(isPlayerNation() && day == 30){
-            System.out.println("Before: " + wallet);
-        }
 
         if(day == 1) {
 
@@ -262,9 +257,6 @@ public class Nation extends ControlledArea implements Details {
             }
         }
 
-        if(isPlayerNation() && day == 30){
-            System.out.println("after: " + wallet);
-        }
     }
 
 
@@ -375,25 +367,30 @@ public class Nation extends ControlledArea implements Details {
             // set states
             nation1.addWarState();
 
-            // add authorities and mercenaries to war commanders
-            for(Area claimedArea : nation1.claimedAreas){
-                Person commander = claimedArea.getHighestAuthority();
 
-                if(commander.getCharacter() instanceof King){
-                    continue; // kings should be excluded
-                }
-
-                nation1.getWarCommanders().add(commander);
-
-                if(commander.getCharacter() instanceof Governor governor){ // add mercenaries here
-                    for(Support support : governor.getAuthorityPosition().getSupporters()){
-                        nation1.getWarCommanders().add(support.getPerson());
-                    }
-                }
-            }
 
         } catch (RuntimeException e) {
             e.printStackTrace();throw new RuntimeException(e);
+        }
+    }
+
+    private void selectWarCommanders(Nation nation1) {
+        // add authorities and mercenaries to war commanders
+        for(Area claimedArea : nation1.claimedAreas){
+            Person commander = claimedArea.getHighestAuthority();
+
+            if(commander.getCharacter() instanceof King king){
+                System.out.println(king);
+                continue; // kings should be excluded
+            }
+
+            nation1.getWarCommanders().add(commander);
+
+            if(commander.getCharacter() instanceof Governor governor){ // add mercenaries here
+                for(Support support : governor.getAuthorityPosition().getSupporters()){
+                    nation1.getWarCommanders().add(support.getPerson());
+                }
+            }
         }
     }
 
@@ -530,57 +527,53 @@ public class Nation extends ControlledArea implements Details {
         return militaries;
     }
 
-    public ArrayList<Military> getMilitariesOwnedByCommanders() {
-        ArrayList<Military> militariesOwnedByCommanders = new ArrayList<>();
+    public List<Military> getMilitariesOwnedByCommanders() {
+        selectWarCommanders(this);
 
-        for(Person person : getWarCommanders()){
-            if(person.getCharacter() instanceof King){
-                continue;
-            }
-            if(person.getProperty() instanceof Military m){
-                militariesOwnedByCommanders.add(m);
-                person.addState(State.ACTIVE_COMBAT);
+        List<Military> militariesOwnedByCommanders = new ArrayList<>();
+
+        for (Person person : getWarCommanders()) {
+            if (person.getRole().getStatus().isCommander()) {
+                if (person.getCharacter() instanceof King) {
+                    continue;
+                }
+                if (person.getProperty() instanceof Military military) {
+                    militariesOwnedByCommanders.add(military);
+                    person.addState(State.ACTIVE_COMBAT);
+                }
             }
         }
         return militariesOwnedByCommanders;
     }
 
-    public ArrayList<Military> getMilitariesOwnedByCivilians() {
-        ArrayList<Military> militariesOwnedByCivilians = new ArrayList<>();
-        ArrayList<Military> allMilitaries = getAllMilitaries();
+    public List<Military> getMilitariesOwnedByCivilians() {
+        List<Military> militariesOwnedByCivilians = new ArrayList<>();
+        List<Military> allMilitaries = getAllMilitaries();
+
         for (Military military : allMilitaries) {
-            if (!warCommanders.contains(military.getOwner())) {
-                if (military.getOwner().getRole().getStatus() != Status.Vanguard &&
-                        military.getOwner().getRole().getStatus() != Status.King &&
-                        military.getOwner().getRole().getStatus() != Status.Noble &&
-                        military.getOwner().getRole().getStatus() != Status.Mercenary &&
-                        military.getOwner().getRole().getStatus() != Status.Governor)  {
-                    militariesOwnedByCivilians.add(military);
-                    military.getOwner().addState(State.ACTIVE_COMBAT);
-                }
+            Status status = military.getOwner().getRole().getStatus();
+            if (status.isCivilian()) {
+                militariesOwnedByCivilians.add(military);
+                military.getOwner().addState(State.ACTIVE_COMBAT);
             }
         }
+
         return militariesOwnedByCivilians;
     }
 
-    public ArrayList<Military> getMilitariesOwnedByKingAndHisSentinels() {
-        ArrayList<Military> militariesOwnedKingAndSentinels= new ArrayList<>();
+    public List<Military> getRoyalMilitaries() {
+        List<Military> royals = new ArrayList<>();
+        List<Military> allMilitaries = getAllMilitaries();
 
-        Military military = (Military) getAuthorityHere().getCharacterInThisPosition().getPerson().getProperty();
-
-        militariesOwnedKingAndSentinels.add(military);
-
-        for(Support support : getAuthorityHere().getSupporters()){
-            if(support.getPerson().getProperty() instanceof Military m){
-                militariesOwnedKingAndSentinels.add(m);
+        for (Military military : allMilitaries) {
+            Status status = military.getOwner().getRole().getStatus();
+            if (status.isRoyal()) {
+                royals.add(military);
+                military.getOwner().addState(State.ACTIVE_COMBAT);
             }
         }
 
-        for(Military m : militariesOwnedKingAndSentinels){
-            m.getOwner().addState(State.ACTIVE_COMBAT);
-        }
-
-        return militariesOwnedKingAndSentinels;
+        return royals;
     }
 
 
@@ -623,10 +616,10 @@ public class Nation extends ControlledArea implements Details {
     }
 
     private void addNameForUI(Nation overlord) {
-        if (isPlayerNation()) {
+        if (isPlayerNation() && !overlord.getName().contains(" (Overlord)")) {
             overlord.setName(overlord.getName() + " (Overlord)");
         }
-        if (overlord.isPlayerNation()) {
+        if (overlord.isPlayerNation() && !getName().contains(" (Vassal)")) {
             setName(getName() + " (Vassal)");
         }
     }
@@ -748,6 +741,22 @@ public class Nation extends ControlledArea implements Details {
     }
 
 
+    public static int countTotalMilitaryStrength(Set<Military> militaryset){
+        int total = 0;
+        for(Military military : militaryset){
+            total += military.getMilitaryStrength();
+        }
+        return total;
+    }
+    public static int countTotalMilitaryStrength(List<Military> militaryList){
+        int total = 0;
+        for(Military military : militaryList){
+            total += military.getMilitaryStrength();
+        }
+        return total;
+    }
+
+
     public static class TaxCalculator {
 
         private static final Map<Class<? extends Character>, TransferPackage> taxAmounts = new HashMap<>();
@@ -769,7 +778,6 @@ public class Nation extends ControlledArea implements Details {
             return taxAmounts.getOrDefault(c.getClass(), new TransferPackage(10, 10, 10));
         }
 
-        // Add other methods and classes as needed
     }
 
 }

@@ -84,7 +84,7 @@ public class Settings {
         return (String.format("%d days, %d months, %d years left", timeLeft[2], timeLeft[1], timeLeft[0]));
     }
 
-    public static String removeYouAndKing(String i){
+    public static String removeUiNameAddition(String i){
         String name = i;
         if (i.contains("(you)")) {
             name = i.replace("(you)", "").trim();
@@ -97,6 +97,7 @@ public class Settings {
         }
         return name;
     }
+
 
 
     public static int getInt(String key) {

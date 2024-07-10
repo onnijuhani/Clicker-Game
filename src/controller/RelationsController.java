@@ -5,13 +5,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.Model;
 import model.characters.Character;
@@ -30,9 +28,7 @@ public class RelationsController extends BaseController {
         setUpCurrentCharacter();
     }
     private CharacterController characterController;
-
-
-    private Character currentCharacter; // Character whose relations we are looking at. CURRENT CHARACTER ALWAYS REFERS TO THE ONE IN CHARACTER CONTROLLER
+    private Character currentCharacter; // Character whose relations we are looking at. CURRENT CHARACTER always refers to character in CharacterController.
     protected Character current;  //Character that might be or is selected for inspection.
     private Person currentPerson;
     private RelationsManager relations;
@@ -41,11 +37,6 @@ public class RelationsController extends BaseController {
         this.current = character;
         this.currentPerson = character.getPerson();
     }
-
-
-    @FXML
-    private HBox CombatBox;
-
     @FXML
     private Label attackLevelLabel;
 
@@ -110,8 +101,6 @@ public class RelationsController extends BaseController {
     @FXML
     private Label compareToPlayer;
 
-
-
     @FXML
     private Label currentCharacterName;
 
@@ -130,8 +119,6 @@ public class RelationsController extends BaseController {
     @FXML
     private Label propertyDefenceLevel;
 
-    @FXML
-    private Button robVaultBtn;
 
     @FXML
     private Label vaultValue;

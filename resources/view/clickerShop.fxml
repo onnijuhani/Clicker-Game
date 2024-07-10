@@ -52,7 +52,7 @@
                                     </Tooltip>
                                  </tooltip>
                               </Button>
-                              <VBox fx:id="foodBox" alignment="CENTER">
+                              <VBox alignment="CENTER">
                                  <children>
                                     <Label fx:id="foodLevel" alignment="CENTER" text="Label" textAlignment="CENTER" textOverrun="CLIP" wrapText="true">
                                        <font>

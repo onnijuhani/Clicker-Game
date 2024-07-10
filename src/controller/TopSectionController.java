@@ -59,7 +59,6 @@ public class TopSectionController extends BaseController {
     }
 
     public void updateSpeed() {
-        // Ensure Time and Speed objects are not null
         if (Time.getSpeed() != null) {
             speedLabel.setText(Time.getSpeed().toString());
             fasterBtn.setDisable(Time.getSpeed().equals(Speed.Fast));

@@ -12,5 +12,27 @@ public enum Status {
     Governor,
     Mayor,
     Captain,
-    Peasant,
+    Peasant;
+
+    public boolean isAuthority() {
+        return this == King || this == Governor || this == Mayor || this == Captain;
+    }
+
+    public boolean isSentinel() {
+        return this == Vanguard || this == Noble || this == Mercenary;
+    }
+
+    public boolean isCivilian() {
+        return !(isAuthority() || isSentinel());
+    }
+
+    public boolean isCommander() {
+        return (isAuthority() && this != King) || this == Mercenary;
+    }
+
+    public boolean isRoyal() {
+        return  this == King || this == Vanguard || this == Noble;
+    }
+
+
 }

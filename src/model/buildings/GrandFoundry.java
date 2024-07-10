@@ -34,6 +34,9 @@ public class GrandFoundry implements ArmyObserver, PaymentTracker, Details {
     public void armyUpdate(int day) {
         try {
             if(day == expenseDay){
+                if(owner.isPlayer()){
+                    System.out.println();
+                }
                 generatePayment();
                 updatePaymentManager(controller.getPaymentManager());
             }
@@ -64,20 +67,6 @@ public class GrandFoundry implements ArmyObserver, PaymentTracker, Details {
             counter = 0;
         }
         counter++;
-
-    }
-
-    @Override
-    public void updatePaymentManager(PaymentManager calendar) {
-
-
-        TransferPackage amount = getFullProduction();
-
-        if(amount.isEmpty()){
-            calendar.removePayment(PaymentManager.PaymentType.INCOME, Payment.GRAND_FOUNDRY_INCOME);
-        }else {
-            calendar.addPayment(PaymentManager.PaymentType.INCOME, Payment.GRAND_FOUNDRY_INCOME, amount, expenseDay);
-        }
     }
 
     public TransferPackage getFullProduction() {
@@ -92,11 +81,21 @@ public class GrandFoundry implements ArmyObserver, PaymentTracker, Details {
         }
         return amount;
     }
-
+    @Override
+    public void updatePaymentManager(PaymentManager calendar) {
+        TransferPackage amount = getFullProduction();
+        if(amount.isEmpty()){
+            calendar.removePayment(PaymentManager.PaymentType.INCOME, Payment.GRAND_FOUNDRY_INCOME);
+        }else {
+            calendar.addPayment(PaymentManager.PaymentType.INCOME, Payment.GRAND_FOUNDRY_INCOME, amount, expenseDay);
+        }
+    }
     private void generatePayment(){
 
         TransferPackage amount = getFullProduction();
+        if(amount.isEmpty()) return;
 
+        owner.getWallet().addResources(amount);
         String message = String.format("Grand Foundry generated %s", amount.toShortString());
         owner.getMessageTracker().addMessage(MessageTracker.Message("Utility", message));
     }

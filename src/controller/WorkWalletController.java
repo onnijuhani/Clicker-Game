@@ -2,8 +2,9 @@ package controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
+import model.characters.authority.Authority;
+import model.resourceManagement.payments.Tax;
+import model.resourceManagement.wallets.WorkWallet;
 
 public class WorkWalletController extends BaseController {
 
@@ -12,21 +13,29 @@ public class WorkWalletController extends BaseController {
     @FXML
     private Label taxRates;
 
-    @FXML
-    private AnchorPane workWalletWindow;
-
-    @FXML
-    void hideWorkWalletPermanently(MouseEvent event) { // in case the box needs to be hidden or replaced eventually
-    }
-
+    private WorkWallet playerWorkWallet;
 
     @Override
     public void update(){
-        String values = model.getPlayerCharacter().getPerson().getWorkWallet().toStringValuesRows();
-        workWallet.setText(values);
+        if(playerWorkWallet == null){
+            playerWorkWallet = model.getPlayerCharacter().getPerson().getWorkWallet();
+        }
+        String values = playerWorkWallet.toStringValuesRows();
 
-        String rates = model.getPlayerCharacter().getRole().getAuthority().getTaxForm().toStringTaxRates();
-        taxRates.setText(rates);
+        if(workWallet != null) {
+            workWallet.setText(values);
+        }
+
+
+        Authority authority = model.getPlayerCharacter().getRole().getAuthority();
+        if(authority == null) return;
+        Tax taxForm = authority.getTaxForm();
+        if(taxForm == null) return;
+
+        String rates = taxForm.toStringTaxRates();
+        if(taxRates != null) {
+            taxRates.setText(rates);
+        }
     }
 
 }

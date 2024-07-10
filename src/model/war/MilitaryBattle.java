@@ -35,7 +35,7 @@ public class MilitaryBattle implements WarObserver {
             performAttack(defendingArmyStats, attackingArmyStats, "Defender");
             setCurrentTurn("Attacker");
         }
-        if(day >= 1440){
+        if(day >= 1000){
             triggerForceEnd();
         }
     }
@@ -132,15 +132,7 @@ public class MilitaryBattle implements WarObserver {
             int attackStrength = (attackPower * currentAttackTurn.getNumOfSoldiers() + 5000) * nobleBonus.attackerNobleBonus();
             int defenceStrength = (defencePower * currentDefenceTurn.getNumOfSoldiers() + 5000) * nobleBonus.defenderNobleBonus();
 
-
-            boolean attackSucceeds = random.nextDouble() < 0.6; // 60% chance of attack success
-
-            if (attackPower > (defencePower * 100)) { // If attackPower is significantly higher, attack always succeeds.
-                attackSucceeds = true;
-            }
-            if (defencePower > (attackPower * 120)) { // If defencePower is significantly higher, attack always fails.
-                attackSucceeds = false;
-            }
+            boolean attackSucceeds = random.nextDouble() < 0.8; // 80% chance of attack success
 
             // effective power is another way to determine if attack succeeds, it's determined by the share of the strength
             double effectivePower = Math.max((double) attackStrength / (attackStrength + defenceStrength), 0.1); // 10% is the minimum
@@ -150,13 +142,9 @@ public class MilitaryBattle implements WarObserver {
                 if (effectivePower > rand) {
                     if (random.nextDouble() < Math.min(effectivePower, 0.9)) { // effective power also determines if soldier will die, but 90% chance is the best this can go.
 
-                        int lostSoldiers = 1;
+                        int lostSoldiers = getLostSoldiers(effectivePower, days);
 
-                        if(currentDefenceTurn.getDefencePower() < 10_000 && currentDefenceTurn.getNumOfSoldiers() > 5 && currentAttackTurn.getAttackPower() > 50_000){
-                            lostSoldiers = 3;
-                        }
-
-                        currentDefenceTurn.loseSoldiers(3);
+                        currentDefenceTurn.loseSoldiers(lostSoldiers);
                         if(currentAttackTurn == attackingArmyStats){
                             logEvent(String.format("Defender lost %d soldier%s.", lostSoldiers, lostSoldiers>1 ? " " : "s"));
                         }else {
@@ -175,8 +163,8 @@ public class MilitaryBattle implements WarObserver {
             attackerLossRatio = (attackerLossRatio + 0.5 ) / 2.0;
             defenderLossRatio = (defenderLossRatio + 0.5 ) / 2.0;
 
-            int attackerLoss = Math.min((int) (defenderLossRatio * (days+400)), 25_000);
-            int defenderLoss = Math.min((int) (attackerLossRatio * (days+400)), 25_000);
+            int attackerLoss = Math.min((int) (defenderLossRatio * (days+600)), 55_000);
+            int defenderLoss = Math.min((int) (attackerLossRatio * (days+600)), 55_000);
 
 
             // Debug prints
@@ -199,6 +187,12 @@ public class MilitaryBattle implements WarObserver {
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);
         }
+    }
+
+    private static int getLostSoldiers(double effectivePower, int days) {
+        int base = 1;
+        base += days / 180;
+        return base  + (int) Math.min(5, Math.floor((effectivePower - 0.5) * 10));
     }
 
     private NobleBonus getNobleBonus(ArmyStats currentAttackTurn) {

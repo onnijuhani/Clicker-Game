@@ -23,14 +23,10 @@ public class ClickerShopController extends BaseController {
     private Button foodUpgradeBtn;
     @FXML
     private Button goldUpgradeBtn;
-
-    @FXML
-    private VBox foodBox;
     @FXML
     private VBox alloyBox;
     @FXML
     private VBox goldBox;
-
     @FXML
     private Label foodInfo;
     @FXML
@@ -56,8 +52,6 @@ public class ClickerShopController extends BaseController {
 
     @FXML
     private Label autoClickerPrice;
-
-
 
     public ClickerShopController() {
     }

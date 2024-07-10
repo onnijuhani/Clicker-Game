@@ -6,7 +6,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -14,8 +14,11 @@ import model.Model;
 import model.characters.AuthorityCharacter;
 import model.characters.Character;
 import model.characters.Person;
+import model.characters.npc.King;
 import model.resourceManagement.payments.Tax;
+import model.resourceManagement.wallets.Wallet;
 import model.stateSystem.MessageTracker;
+import model.stateSystem.SpecialEventsManager;
 import model.war.WarPlanningManager;
 import model.war.WarService;
 import model.worldCreation.Nation;
@@ -37,35 +40,46 @@ public class OverviewController extends BaseController{
         updateTaxBox();
         updateRivalingNationsBox();
         updateCurrentTerritoryOwned();
+        updateNationWallet();
     }
 
     @FXML
     private VBox guildBox;
     @FXML
     private VBox rivalingNationsBox;
-    @FXML
-    private ScrollPane rivalingNationsScrollPane;
     private static final int UPDATE_THRESHOLD = 50;
     private static int updateRivalsCounter = UPDATE_THRESHOLD; // makes sure rivals aren't updated too often
 
-
-
     @FXML
     private VBox taxBox;
-
     @FXML
     private Button increaseTaxBtn;
-
     @FXML
     private Button lowerTaxBtn;
-    public void setPlayer(Person player) {
-        this.player = player;
-    }
     @FXML
     private Button joinGuildBtn;
     private Person player;
-
     private String guildInfo;
+    @FXML
+    private VBox nationWalletBox;
+    @FXML
+    private Label nationWallet;
+    @FXML
+    private Label guildName;
+    @FXML
+    private Label currentTaxPercent;
+    @FXML
+    private Label currentTerritoryOwned;
+
+
+    private void updateNationWallet(){
+        nationWalletBox.setVisible(false);
+        if(player.getCharacter() instanceof King){
+            Wallet wallet = player.getRole().getNation().getWallet();
+            nationWallet.setText("Nation Wallet:\n" + wallet.toStringValuesRows());
+            nationWalletBox.setVisible(true);
+        }
+    }
 
     void updateGuildBox(){
         if(player.getProperty().getUtilitySlot().isUtilityBuildingOwned(SlaveFacility)){
@@ -97,33 +111,28 @@ public class OverviewController extends BaseController{
     }
 
 
-    @FXML
-    private Label currentPosition;
-
-    @FXML
-    private Label currentTaxPercent;
-
-    @FXML
-    private Label currentTerritoryOwned;
-
     private void updateCurrentTerritoryOwned(){
         double t = Model.getPlayerTerritory();
+        t *= 100;
         String formattedTerritory;
 
         if (t < 1) {
-            formattedTerritory = new DecimalFormat("#.####").format(t);
-        } else if (t < 10) {
             formattedTerritory = new DecimalFormat("#.##").format(t);
-        } else {
+        } else if (t < 10) {
             formattedTerritory = new DecimalFormat("#.#").format(t);
+        } else {
+            formattedTerritory = new DecimalFormat("#").format(t);
         }
 
         currentTerritoryOwned.setText(formattedTerritory + "%");
     }
 
-    @FXML
-    private Label guildName;
 
+    @FXML
+    void triggerTerritoryInfo(MouseEvent event) {
+
+        SpecialEventsManager.triggerTerritoryInfo((int) Model.getPlayerTerritory()*100);
+    }
 
     private void updateRivalingNationsBox() {
 
@@ -208,17 +217,7 @@ public class OverviewController extends BaseController{
         Label powerLabel = new Label(String.valueOf(nationDetails.militaryPower()));
         powerLabel.setStyle("-fx-text-fill: white;");
 
-        Hyperlink hyperlink;
-
-        if(nationDetails.nation().isVassal()){
-            // Hyperlink for vassals ( Cannot enter war with nations that are vassals of another nation)
-            hyperlink = new Hyperlink("Vassal");
-            hyperlink .setOnAction(event -> vassalInfo(nationDetails.nation()));
-        }else {
-            // Create hyperlink for starting a war
-            hyperlink  = new Hyperlink("Start War");
-            hyperlink .setOnAction(event -> startWar(nationDetails.nation()));
-        }
+        Hyperlink hyperlink = getHyperlink(nationDetails);
 
         // Add labels and hyperlink to the GridPane
         nationGrid.add(nameLabel, 0, 0);
@@ -231,6 +230,21 @@ public class OverviewController extends BaseController{
         return nationGrid;
     }
 
+    private Hyperlink getHyperlink(WarPlanningManager.NationDetails nationDetails) {
+        Hyperlink hyperlink;
+
+        if(nationDetails.nation().isVassal()){
+            // Hyperlink for vassals ( Cannot enter war with nations that are vassals of another nation)
+            hyperlink = new Hyperlink("Vassal");
+            hyperlink .setOnAction(event -> vassalInfo(nationDetails.nation()));
+        }else {
+            // Create hyperlink for starting a war
+            hyperlink  = new Hyperlink("Start War");
+            hyperlink .setOnAction(event -> startWar(nationDetails.nation()));
+        }
+        return hyperlink;
+    }
+
     private void startWar(Nation nation) {
         WarService.startWar(Model.getPlayerRole().getNation(), nation);
     }
@@ -238,8 +252,6 @@ public class OverviewController extends BaseController{
     private void vassalInfo(Nation nation) {
         Model.getPlayerAsPerson().getMessageTracker().addMessage(MessageTracker.Message("Major", nation + " is vassal under: " + nation.getOverlord()));
     }
-
-
 
     void updateTaxBox(){
         if(player.getCharacter() instanceof AuthorityCharacter authorityCharacter){
@@ -261,8 +273,6 @@ public class OverviewController extends BaseController{
 
     }
 
-
-
     @FXML
     void lowerTax(ActionEvent event) {
         if(player.getCharacter() instanceof AuthorityCharacter authorityCharacter){
@@ -277,6 +287,10 @@ public class OverviewController extends BaseController{
             increaseTaxBtn.setDisable(taxRate == EXTREME);
             lowerTaxBtn.setDisable(taxRate == LOW);
         }
+    }
+
+    public void setPlayer(Person player) {
+        this.player = player;
     }
 
 

@@ -304,7 +304,10 @@ public class CombatSystem {
             truceEvent = new GameEvent(Event.TRUCE, winner);
             winner.addState(State.TRUCE);
 
-            int baseTruce = winner.getProperty().getPower() + 60;
+            int baseTruce = 60;
+            if(winner.isPlayer()){
+                baseTruce += 180;
+            }
 
             int daysUntilEvent = Math.min(365, baseTruce + winner.getProperty().getDefenceStats().getUpgradeLevel());
 

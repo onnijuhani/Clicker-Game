@@ -13,7 +13,8 @@ public enum Event {
     CHALLENGE_WAITING("Challenge Waiting"),
     GRAND_FOUNDRY_UNDER_OCCUPATION("Grand foundry under occupation"),
     GRAND_FOUNDRY("Grand foundry being Constructed"),
-    DUEL_TRUCE("Has lost a duel lately");
+    DUEL_TRUCE("Has lost a duel lately"),
+    WAR_ENDING_SOON("War is ending soon");
 
 
     private final String displayName;

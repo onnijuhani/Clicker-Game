@@ -58,10 +58,13 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
     }
     @Override
     public void update(){
+
         updateShopWallet();
         updateMarketFee();
         updateExchangePrices();
     }
+
+
 
     @FXML
     void triggerInfo(ActionEvent event) {
@@ -85,7 +88,7 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
 
     private static Exchange getExchange(){
 
-        Exchange exchange = exchange = Model.getPlayerAsCharacter().getRole().getNation().getShop().getExchange();
+        Exchange exchange = Model.getPlayerAsCharacter().getRole().getNation().getShop().getExchange();
 
         if(exchange == null){
             exchange = Model.getPlayerAsCharacter().getRole().getNation().getShop().getExchange();

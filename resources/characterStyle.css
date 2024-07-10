@@ -159,4 +159,13 @@
     -fx-background-color: linear-gradient(from 15% 100% to 100% 15%, #0F1221, #202741, #2E3E51);
     -fx-border-color: white;
 }
+.militaryBox3 {
+    -fx-background-color: linear-gradient(from 15% 15% to 100% 100%, #4A7A4A, #2F2F2F);
+    -fx-background-radius: 2;
+    -fx-border-radius: 2;
+    -fx-border-color: #A0A0A0;
+    -fx-border-width: 2;
+    -fx-padding: 2;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 10, 0, 0, 5);
+}
 

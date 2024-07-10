@@ -72,6 +72,9 @@ public class Army implements ArmyObserver, PaymentTracker {
 
     private void payRunningCosts() {
         try {
+            if(owner.isPlayer()){
+                System.out.println();
+            }
             if(!wallet.subtractResources(getRunningCost())){
                 owner.loseStrike("Army costs not paid.");
             }

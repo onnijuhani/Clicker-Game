@@ -387,7 +387,7 @@ public class SpecialEventsManager {
             case PHASE1 -> phase1;
             case PHASE2 -> phase2;
             case PHASE3 -> phase3;
-            case ENDED -> ending;
+            case ENDED, ENDING_SOON -> ending;
         };
 
         PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(
@@ -414,4 +414,17 @@ public class SpecialEventsManager {
     }
 
 
+    public static void triggerTerritoryInfo(int currentTerritoryPercentage) {
+        PopUpMessageTracker.PopUpMessage message;
+        message = new PopUpMessageTracker.PopUpMessage(
+                "Territory",
+                "You currently control " + currentTerritoryPercentage + "% of the world's territory." +
+                        " Keep expanding your empire to achieve ultimate victory." +
+                        " Conquer additional territories to reach the 50% mark and win the game." +
+                        "\nStay focused and lead your nation to glory!",
+                "Properties/territory.png",
+                "Continue"
+        );
+        PopUpMessageTracker.sendMessage(message);
+    }
 }

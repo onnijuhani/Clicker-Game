@@ -10,7 +10,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import model.characters.payments.PaymentManager;
 import model.characters.player.clicker.Clicker;
 import model.resourceManagement.TransferPackage;
@@ -35,8 +34,6 @@ public class InformationController extends BaseController {
     @FXML
     private CheckBox combineUtility;
 
-    @FXML
-    private VBox heartsContainer;
     private final Image heartImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/heart.png")));
 
     @FXML

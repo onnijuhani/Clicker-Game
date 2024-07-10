@@ -64,36 +64,28 @@
                   <Insets />
                </VBox.margin>
             </VBox>
-         </children>
-      </VBox>
-      <VBox fillWidth="false" layoutX="17.0" layoutY="19.0" spacing="10.0">
-         <children>
-            <HBox styleClass="overviewBox">
-               <children>
-                  <Label text="Current Position: " textFill="WHITE">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                     <padding>
-                        <Insets left="5.0" />
-                     </padding>
-                  </Label>
-                  <Label fx:id="currentPosition" text="Peasant" textFill="WHITE">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                     <padding>
-                        <Insets right="5.0" />
-                     </padding>
-                  </Label>
-               </children>
+            <VBox fx:id="nationWalletBox" alignment="CENTER" styleClass="overviewBox">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
-            </HBox>
-            <HBox styleClass="overviewBox">
                <children>
-                  <Label text="Total Territory Controlled: " textFill="WHITE">
+                  <Label fx:id="nationWallet" text="Wallet Balance" textFill="WHITE" wrapText="true">
+                     <padding>
+                        <Insets bottom="7.0" left="8.0" right="8.0" top="7.0" />
+                     </padding>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+      <VBox fillWidth="false" layoutX="15.0" layoutY="10.0" spacing="10.0">
+         <children>
+            <HBox styleClass="marketBox2">
+               <children>
+                  <Label onMouseClicked="#triggerTerritoryInfo" text="Total Territory Controlled: " textFill="WHITE">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -101,7 +93,7 @@
                         <Insets left="5.0" />
                      </padding>
                   </Label>
-                  <Label fx:id="currentTerritoryOwned" text="0%" textFill="WHITE">
+                  <Label fx:id="currentTerritoryOwned" onMouseClicked="#triggerTerritoryInfo" text="0%" textFill="WHITE">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -124,9 +116,9 @@
                         <Insets bottom="3.0" />
                      </VBox.margin>
                   </Label>
-                  <ScrollPane fx:id="rivalingNationsScrollPane" hbarPolicy="NEVER">
+                  <ScrollPane hbarPolicy="NEVER">
                      <content>
-                        <VBox fx:id="rivalingNationsBox" prefHeight="166.0" prefWidth="485.0" />
+                        <VBox fx:id="rivalingNationsBox" prefHeight="201.0" prefWidth="485.0" />
                      </content>
                      <VBox.margin>
                         <Insets />

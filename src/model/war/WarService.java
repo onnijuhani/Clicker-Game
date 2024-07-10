@@ -1,5 +1,6 @@
 package model.war;
 
+import model.Settings;
 import model.worldCreation.Nation;
 
 public class WarService {
@@ -54,15 +55,15 @@ public class WarService {
 
         if(attacker.isVassal()){
             if(attacker.getOverlord() == defender){
-                warName = attacker + "'s War for Independence";
+                warName = Settings.removeUiNameAddition(attacker.getName()) + "'s War for Independence";
             }else{
                 throw new RuntimeException("Vassal attempted to enter a war against someone else than their overlord." +
                         " Overlord: " + attacker.getOverlord() + ". Target: " + defender);
             }
         }else if(attacker.getVassals().size() >= 2){
-            warName = attacker + "'s War for Supremacy";
+            warName = Settings.removeUiNameAddition(attacker.getName()) + "'s War for Supremacy";
         }else{
-            warName = attacker + "'s War for Conquest";
+            warName = Settings.removeUiNameAddition(attacker.getName()) + "'s War for Conquest";
         }
         return warName;
     }

@@ -32,9 +32,6 @@ public class ExploreMapController extends BaseController {
     @FXML
     private ListView<Character> livesHereListView;
     @FXML
-    private Label authorityLabel;
-
-    @FXML
     private Hyperlink authorityLink;
 
     private CharacterController characterController;

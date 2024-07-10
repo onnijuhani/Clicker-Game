@@ -50,39 +50,29 @@ public class CharacterController extends BaseController  {
     private Button attackTrainBtn;
     @FXML
     private Button defenseTrainBtn;
-
     @FXML
     private ImageView characterImage;
-
-
     @FXML
     private HBox attackBox;
     @FXML
     private HBox defenseBox;
-
-
     private MainController main;
     private PropertyController propertyController;
-
     public static Character currentCharacter;
-
     private final Deque<Character> characterHistory = new ArrayDeque<>();
     private boolean isNavigatingBack = false;
     @FXML
     private Button previousBtn;
     @FXML
     private HBox CombatBox;
-
     @FXML
     private Label currentState;
     @FXML
     private Label stateTimeLeft;
     @FXML
     private VBox stateBox;
-
     @FXML
     private VBox opponentsBox;
-
     @FXML
     private Tooltip duelToolTip;
     @FXML
@@ -90,25 +80,29 @@ public class CharacterController extends BaseController  {
 
     @Override
     public void update(){
-        if(currentCharacter == null){
-            return;
+        try {
+            if(currentCharacter == null) return;
+            differentiatePlayer();
+            propertyController.setCurrentProperty(currentCharacter.getPerson().getProperty());
+            updateCharacterName();
+            updateCharacterStatus();
+            propertyController.updatePropertyTab();
+            updateWalletInfo();
+            updateAuthority();
+            updateHomeQuarter();
+            updateCombatStats();
+            main.resetBtn.setDisable(currentCharacter.getPerson() == Model.getPlayerAsPerson());
+            disableArmyTab();
+            getCurrentStates();
+            main.updateCurrentlyViewing();
+            updateCharacterImage();
+            setCharacterPicture();
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
         }
-        differentiatePlayer();
-        propertyController.setCurrentProperty(currentCharacter.getPerson().getProperty());
-        updateCharacterName();
-        updateCharacterStatus();
-        propertyController.updatePropertyTab();
-        updateWalletInfo();
-        updateAuthority();
-        updateHomeQuarter();
-        updateCombatStats();
-        main.resetBtn.setDisable(currentCharacter.getPerson() == Model.getPlayerAsPerson());
-        disableArmyTab();
-        getCurrentStates();
-        main.updateCurrentlyViewing();
-        updateCharacterImage();
-        setCharacterPicture();
     }
+
+
 
     void setUpToolTips(){
         Person player = Model.getPlayerAsPerson();
@@ -119,12 +113,10 @@ public class CharacterController extends BaseController  {
     void getCurrentStates(){
 
         Person currentPerson = currentCharacter.getPerson();
-        EnumSet states = currentPerson.getStates();
-
+        EnumSet<State> states = currentPerson.getStates();
 
         if(states.contains(State.IN_BATTLE) || states.contains(State.IN_DEFENCE)){
             stateBox.setVisible(true);
-
 
             GameEvent authorityEvent = currentPerson.getAnyOnGoingEvent(Event.AuthorityBattle);
             GameEvent duelEvent = currentPerson.getAnyOnGoingEvent(Event.DUEL);
@@ -232,10 +224,6 @@ public class CharacterController extends BaseController  {
     public void setMain(MainController main) {
         this.main = main;
     }
-
-
-
-
 
     @FXML
     void getPrevious(ActionEvent event) {
