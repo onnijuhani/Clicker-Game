@@ -476,7 +476,7 @@ public class Nation extends ControlledArea implements Details {
         if(wallet.isEmpty()) return;
         if(wallet.isLowBalance()) return;
         if(vassals.isEmpty()) return; // paying starts only after winning a war
-        if(wallet.getCombinedAmount() < 10_000) return;
+        if(wallet.getCombinedAmount() < 100_000) return;
 
         // Retrieve important characters
         Set<Character> importantCharacters = getAllImportantCharacters();

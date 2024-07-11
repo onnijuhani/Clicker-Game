@@ -35,7 +35,7 @@ public class MilitaryBattle implements WarObserver {
             performAttack(defendingArmyStats, attackingArmyStats, "Defender");
             setCurrentTurn("Attacker");
         }
-        if(day >= 1000){
+        if(days >= 1000){
             triggerForceEnd();
         }
     }
@@ -140,18 +140,9 @@ public class MilitaryBattle implements WarObserver {
 
             if (attackSucceeds) {
                 if (effectivePower > rand) {
-                    if (random.nextDouble() < Math.min(effectivePower, 0.9)) { // effective power also determines if soldier will die, but 90% chance is the best this can go.
-
-                        int lostSoldiers = getLostSoldiers(effectivePower, days);
-
-                        currentDefenceTurn.loseSoldiers(lostSoldiers);
-                        if(currentAttackTurn == attackingArmyStats){
-                            logEvent(String.format("Defender lost %d soldier%s.", lostSoldiers, lostSoldiers>1 ? " " : "s"));
-                        }else {
-                            logEvent(String.format("Attacker lost %d soldier%s.", lostSoldiers, lostSoldiers>1 ? " " : "s"));
-                        }
-                    }
+                    standardSoldierLoss(currentAttackTurn, currentDefenceTurn, effectivePower);
                 }
+                longBattleSoldierLoss(currentAttackTurn);
             }
 
             // every attack consumes resources (alloys) based on the strength ratio
@@ -163,8 +154,8 @@ public class MilitaryBattle implements WarObserver {
             attackerLossRatio = (attackerLossRatio + 0.5 ) / 2.0;
             defenderLossRatio = (defenderLossRatio + 0.5 ) / 2.0;
 
-            int attackerLoss = Math.min((int) (defenderLossRatio * (days+600)), 55_000);
-            int defenderLoss = Math.min((int) (attackerLossRatio * (days+600)), 55_000);
+            int attackerLoss = Math.min((int) (defenderLossRatio * (days+800)), 55_000);
+            int defenderLoss = Math.min((int) (attackerLossRatio * (days+800)), 55_000);
 
 
             // Debug prints
@@ -189,10 +180,34 @@ public class MilitaryBattle implements WarObserver {
         }
     }
 
+    private void standardSoldierLoss(ArmyStats currentAttackTurn, ArmyStats currentDefenceTurn, double effectivePower) {
+        if (random.nextDouble() < Math.min(effectivePower, 0.9)) { // effective power also determines if soldier will die, but 90% chance is the best this can go.
+
+            int lostSoldiers = getLostSoldiers(effectivePower, days);
+
+            currentDefenceTurn.loseSoldiers(lostSoldiers);
+            if(currentAttackTurn == attackingArmyStats){
+                logEvent(String.format("Defender lost %d soldier%s.", lostSoldiers, lostSoldiers>1 ? " " : "s"));
+            }else {
+                logEvent(String.format("Attacker lost %d soldier%s.", lostSoldiers, lostSoldiers>1 ? " " : "s"));
+            }
+        }
+    }
+
+    private void longBattleSoldierLoss(ArmyStats currentAttackTurn) {
+        if(days > 50){
+            int lostSoldiers = Math.max(days / 100, 1);
+            if(currentAttackTurn == attackingArmyStats){
+                logEvent(String.format("Defender lost %d soldier%s.", lostSoldiers, lostSoldiers>1 ? " " : "s"));
+            }else {
+                logEvent(String.format("Attacker lost %d soldier%s.", lostSoldiers, lostSoldiers>1 ? " " : "s"));
+            }
+        }
+    }
+
     private static int getLostSoldiers(double effectivePower, int days) {
-        int base = 1;
-        base += days / 180;
-        return base  + (int) Math.min(5, Math.floor((effectivePower - 0.5) * 10));
+        int base = Math.max(days / 50, 1);
+        return base  +  (int) Math.min(6, Math.floor((effectivePower - 0.5) * 10));
     }
 
     private NobleBonus getNobleBonus(ArmyStats currentAttackTurn) {
@@ -232,8 +247,8 @@ public class MilitaryBattle implements WarObserver {
                 logEvent("Battle ended.\nAttacker is victorious.");
 
 
-                int x = attackingCommander.getRole().getNation().isAtWar() ? 4 : 2;
-                int days = Math.min(Math.min(this.days, 360) * x, 1800);
+                int atWarIncrease = attackingCommander.getRole().getNation().isAtWar() ? 2 : 1;
+                int days = Math.min(Math.max(this.days, 90) * atWarIncrease, 720);
                 defendingCommander.getGrandFoundry().setUnderOccupation(attackingCommander, days);
             }
 

@@ -1,6 +1,8 @@
 package model.war;
 
+import model.Settings;
 import model.characters.Person;
+import model.characters.npc.King;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.stateSystem.Event;
@@ -29,15 +31,38 @@ public class War implements WarObserver, Details {
             }
             startPhase1();
             if(day == 23 || day == 8){
-                finalPhaseActions();
+                royalResourceAid();
                 royalsMatchMaking(day);
                 updateSets();
                 updateOnGoingBattles();
                 matchAndPlay(day);
                 updatePhase();
+                forceContinuation();
+                updateTotalPower();
             }
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);
+        }
+    }
+
+    private void forceContinuation(){
+        if(days == 500){
+            startPhase2("Phase 2 started for war reaching 400 days.");
+            return;
+        }
+        if(days == 900){
+            startPhase3("Phase 3 started for reaching 900 days.", null);
+            return;
+        }
+        if(days == 1500){
+            double adr = getDefeatRatio(attackerDefeatedMilitaries, attackerMilitariesInPlay, attackerMilitariesInBattle);
+            double ddr = getDefeatRatio(defenderDefeatedMilitaries, defenderMilitariesInPlay, defenderMilitariesInBattle);
+
+            if(adr >= ddr){
+                selectWinner("Loser", "Winner",defender + " has won the war against " + attacker); // Defender has won
+            }else{
+                selectWinner("Winner", "Loser", attacker + " has won the war against " + defender); // Attacker has won
+            }
         }
     }
 
@@ -71,13 +96,12 @@ public class War implements WarObserver, Details {
         PREPARING, PHASE1, PHASE2, PHASE3, ENDED, WAITING, ENDING_SOON
     }
 
-
-
     private final WarNotes warNotes = new WarNotes();
     private static final int prepareTime = 30;
 
-
-
+    private int attackerTotalPower;
+    private int defenderTotalPower;
+    private Nation winner;
     private int days = 0;
     private int royalMatchmakingStartingDay;
 
@@ -105,6 +129,66 @@ public class War implements WarObserver, Details {
 
     public enum SetName {
         IN_PLAY, IN_BATTLE, DEFEATED, ROYALS, ALL_IN_PLAY
+    }
+
+    private void updatePhase() {
+        if (currentPhase != PHASE1){
+            if (testForEmpty(attackerDefeatedMilitaries, defenderDefeatedMilitaries)) return;
+        }
+
+        double adr = getDefeatRatio(attackerDefeatedMilitaries, attackerMilitariesInPlay, attackerMilitariesInBattle);
+        double ddr = getDefeatRatio(defenderDefeatedMilitaries, defenderMilitariesInPlay, defenderMilitariesInBattle);
+
+        if(currentPhase == PHASE1) {
+            if(adr > 0.5){
+                startPhase2(defender + " has defeated 50% of the opponents civilian armies.");
+                return;
+            }
+            if(ddr > 0.5){
+                startPhase2(attacker + " has defeated 50% of the opponents civilian armies.");
+                return;
+            }
+            return;
+        }
+
+        checkAndAddWarTax(adr, ddr); // war tax is only set after certain amount of opponents armies have been defeated
+
+
+        if(currentPhase == PHASE2) {
+            if(adr >= 0.9){
+                startPhase3(defender + " has defeated 90% of the opponents commander armies.", attacker);
+                return;
+            }
+            if(ddr >= 0.9){
+                startPhase3(attacker + " has defeated 90% of the opponents commander armies.", defender);
+                return;
+            }
+            return;
+        }
+
+        if(currentPhase == PHASE3) {
+            if(adr >= 1 && attackerRoyals.isEmpty()){
+                selectWinner("Loser", "Winner",defender + " has won the war against " + attacker); // Attacker has lost the offensive war
+                winner = defender;
+                return;
+            }
+            if(ddr >= 1 && defenderRoyals.isEmpty()){
+                selectWinner("Winner", "Loser", attacker + " has won the war against " + defender); // Attacker has won the offensive war
+                winner = attacker;
+                return;
+            }
+        }
+
+        if(currentPhase == ENDING_SOON){
+            if(onGoingBattles.isEmpty()) {
+                endWar();
+            }
+        }
+    }
+
+    private void endWar() {
+        GameEvent gameEvent = new GameEvent(Event.WAR_ENDING_SOON);
+        EventManager.scheduleEvent(() -> endMethod(winner), 10, gameEvent);
     }
 
     private void deleteFromCorrectList(Military military, SetName setName) {
@@ -256,6 +340,11 @@ public class War implements WarObserver, Details {
         attackerList.add(military);
     }
 
+    private void updateTotalPower(){
+        attackerTotalPower = Nation.countTotalMilitaryStrength(getCorrectSet(attacker, War.SetName.ALL_IN_PLAY));
+        defenderTotalPower = Nation.countTotalMilitaryStrength(getCorrectSet(defender, War.SetName.ALL_IN_PLAY));
+    }
+
 
     private String getDefenderListName(Set<Military> list) {
         if (list == defenderMilitariesInPlay) return "defenderMilitariesInPlay";
@@ -290,7 +379,7 @@ public class War implements WarObserver, Details {
     }
 
 
-    private void finalPhaseActions(){
+    private void royalResourceAid(){
         if(currentPhase != PHASE3){
             return;
         }
@@ -312,66 +401,29 @@ public class War implements WarObserver, Details {
                 military.getOwner().getMessageTracker().addMessage(MessageTracker.Message("Minor", "War-aid received: " + amountPerRoyal.toShortString()));
             }
         }
+
+        if(nation == attacker) {
+            getWarNotes().attackerAidSent = getWarNotes().attackerAidSent.add(amountPerRoyal);
+        } else {
+            getWarNotes().defenderAidSent = getWarNotes().attackerAidSent.add(amountPerRoyal);
+        }
     }
 
     private void checkAndAddWarTax(double adr, double ddr) {
-        if(adr > 0.6 && !aWarTax){
+        if(ddr > 0.5 && !aWarTax){
             attacker.setWarTaxToWorkWallets();
             aWarTax = true;
+            addWarNote(attacker + " war taxation started.");
         }
-        if(ddr > 0.6 && !dWarTax){
+        if(adr > 0.5 && !dWarTax){
             defender.setWarTaxToWorkWallets();
             dWarTax = true;
+            addWarNote(defender + " war taxation started.");
         }
     }
 
 
-    private void updatePhase() {
-        if (currentPhase != PHASE1){
-            if (testForEmpty(attackerDefeatedMilitaries, defenderDefeatedMilitaries)) return;
-        }
 
-        double adr = getDefeatRatio(attackerDefeatedMilitaries, attackerMilitariesInPlay, attackerMilitariesInBattle);
-        double ddr = getDefeatRatio(defenderDefeatedMilitaries, defenderMilitariesInPlay, defenderMilitariesInBattle);
-
-        if(currentPhase == PHASE1) {
-            if(adr > 0.6){
-                startPhase2(defender + " has defeated 60% of the opponents civilian armies.");
-                return;
-            }
-            if(ddr > 0.6){
-                startPhase2(attacker + " has defeated 60% of the opponents civilian armies.");
-                return;
-            }
-            return;
-        }
-
-        checkAndAddWarTax(adr, ddr); // war tax is only set after certain amount of opponents armies have been defeated
-
-
-        if(currentPhase == PHASE2) {
-            if(adr >= 0.9){
-                startPhase3(defender + " has defeated 90% of the opponents commander armies.");
-                return;
-            }
-            if(ddr >= 0.9){
-                startPhase3(attacker + " has defeated 90% of the opponents commander armies.");
-                return;
-            }
-            return;
-        }
-
-        if(currentPhase == PHASE3) {
-            if(adr >= 1 && attackerRoyals.isEmpty()){
-                endWar("Loser", "Winner",defender + " has won the war against " + attacker); // Attacker has lost the offensive war
-                return;
-            }
-            if(ddr >= 1 && defenderRoyals.isEmpty()){
-                endWar("Winner", "Loser", attacker + " has won the war against " + defender); // Attacker has won the offensive war
-                return;
-            }
-        }
-    }
 
     private static double getDefeatRatio(HashSet<Military> defeatedMilitaries, HashSet<Military> militariesInPlay, HashSet<Military> militariesInBattle) {
         return (double) defeatedMilitaries.size() / (defeatedMilitaries.size() + militariesInPlay.size() + militariesInBattle.size());
@@ -433,23 +485,24 @@ public class War implements WarObserver, Details {
      * @param attacker whether attacker of the war is "Winner" or "Loser"
      * @param defender "Winner" or "Loser"
      */
-    public void endWar(String attacker, String defender, String message){
-
+    public void selectWinner(String attacker, String defender, String message){
         addWarNote(message);
-
         currentPhase = ENDING_SOON;
-
-        GameEvent gameEvent = new GameEvent(Event.WAR_ENDING_SOON);
-        EventManager.scheduleEvent(() -> endMethod(attacker, defender), 10, gameEvent);
-
-
     }
 
-    private void endMethod(String attacker, String defender) {
-        if(Objects.equals(attacker, "Winner")) {
+    private void endMethod(Nation winner) {
+
+        String attacker;
+        String defender;
+
+        if(Objects.equals(this.attacker, winner)) {
             generateWarReport(this.attacker);
+            attacker = "Winner";
+            defender = "Loser";
         }else{
             generateWarReport(this.defender);
+            attacker = "Loser";
+            defender = "Winner";
         }
 
         currentPhase = ENDED;
@@ -510,7 +563,6 @@ public class War implements WarObserver, Details {
     public void startPhase1() {
         if (currentPhase == PREPARING) {
             setCurrentPhase(PHASE1);
-            addWarNote("Phase 1: Battles are now started.");
 
             boolean attackerEmpty = attackerMilitariesInPlay.isEmpty();
             boolean defenderEmpty = defenderMilitariesInPlay.isEmpty();
@@ -528,6 +580,8 @@ public class War implements WarObserver, Details {
             if (defenderEmpty) {
                 startPhase2(defender + " has no civilian armies. Phase 2 started.");
             }
+
+            addWarNote("Phase 1: Battles are now starting.");
         }
     }
 
@@ -594,6 +648,14 @@ public class War implements WarObserver, Details {
         if (set.size() > 25) {
             Iterator<Military> iterator = set.iterator();
             while (iterator.hasNext() && set.size() > 20) {
+
+                if(iterator instanceof Military m){ // don't retreat player.
+                    if(m.getOwner().isPlayer()){
+                        continue;
+                    }
+                    m.getOwner().removeState(State.ACTIVE_COMBAT);
+                }
+
                 iterator.next();
                 iterator.remove();
                 amount++;
@@ -602,9 +664,23 @@ public class War implements WarObserver, Details {
         return amount;
     }
 
-    public void startPhase3(String message) {
+    public void startPhase3(String message, Nation loser) {
         if(currentPhase == PHASE2) {
             addWarNote(message);
+
+            TransferPackage amount = null;
+            if(loser == defender){
+                amount = defender.getWallet().getBalance().divide(2);
+                attacker.getWallet().deposit(defender.getWallet(), amount);
+            }else if (loser == attacker){
+                amount = attacker.getWallet().getBalance().divide(2);
+                defender.getWallet().deposit(attacker.getWallet(), amount);
+            }
+
+            if (loser != null) {
+                addWarNote(loser + " paid: " + amount.toShortString() + " for losing phase 2.");
+            }
+
 
             royalMatchmakingStartingDay = days + 30;
 
@@ -612,7 +688,7 @@ public class War implements WarObserver, Details {
             List<Military> d = defender.getRoyalMilitaries();
 
             attackerRoyals.addAll(a);
-            attackerRoyals.addAll(d);
+            defenderRoyals.addAll(d);
 
             addWarNote(String.format("%s sent %d Royals to war. Royals power: %d.",
                     attacker,
@@ -638,25 +714,37 @@ public class War implements WarObserver, Details {
             addWarNote("Royal battles have started.");
         }
 
-        testRoyalMilitary(attackerRoyals, attackerDefeatedMilitaries, this::addIntoAttackerList);
-        testRoyalMilitary(defenderRoyals, defenderDefeatedMilitaries, this::addIntoDefenderList);
+        HashSet<Military> aar = testRoyalMilitary(attackerRoyals, attackerDefeatedMilitaries, this::addIntoAttackerList);
+        HashSet<Military> adr = testRoyalMilitary(defenderRoyals, defenderDefeatedMilitaries, this::addIntoDefenderList);
+
 
         if(day == 23) {
-            matchMaking(attackerRoyals, defenderRoyals, day);
+            matchMaking(aar, adr, day);
         }else{
-            matchMaking(defenderRoyals, attackerRoyals, day);
+            matchMaking(adr, aar, day);
         }
     }
 
-    private void testRoyalMilitary(HashSet<Military> set, HashSet<Military> defeated, BiConsumer<Military, Set<Military>> addMethod) {
+    private HashSet<Military> testRoyalMilitary(HashSet<Military> set, HashSet<Military> defeated, BiConsumer<Military, Set<Military>> addMethod) {
         Iterator<Military> iterator = set.iterator();
+        HashSet<Military> availableRoyals = new HashSet<>();
         while (iterator.hasNext()) {
             Military m = iterator.next();
             if (m.getState() == Army.ArmyState.DEFEATED) {
                 iterator.remove();
                 addMethod.accept(m, defeated);
+                if(m.getOwner().getCharacter() instanceof King king){
+                    addWarNote("King of " + Settings.removeUiNameAddition(king.getRole().getNation().toString()) + " has fallen.");
+                    addWarNote(king.getRole().getNation().toString() + " has " + set.size() + " Royal Armies left.");
+                }
+                continue;
             }
+            if (m.getState() == Army.ArmyState.ATTACKING || m.getState() == Army.ArmyState.DEFENDING ) {
+                continue;
+            }
+            availableRoyals.add(m);
         }
+        return availableRoyals;
     }
 
     private void matchAndPlay(int day) {
@@ -765,7 +853,10 @@ public class War implements WarObserver, Details {
         return isUndefeated;
     }
 
-    private void addWarNote(String note){
+    private void addWarNote(String note) {
+        if (!note.endsWith(".")) {
+            note += ".";
+        }
         warNotes.warLog.add("Day: " + days + ": " + note);
     }
 
@@ -781,9 +872,19 @@ public class War implements WarObserver, Details {
         warNotes.defender = defender;
         warNotes.lastedForDays = days;
         warNotes.winner = winner;
+        warNotes.winner = winner;
         warNotes.totalBattles = attackerDefeatedMilitaries.size() + defenderDefeatedMilitaries.size();
 
     }
+
+    public int getTotalPower(Nation n) {
+        if(n == attacker){
+            return attackerTotalPower;
+        }else {
+            return defenderTotalPower;
+        }
+    }
+
 
     public static class WarNotes {
 
@@ -802,6 +903,9 @@ public class War implements WarObserver, Details {
         Person deadliestDefender;
 
         String warName;
+
+        TransferPackage attackerAidSent = new TransferPackage(0,0,0);
+        TransferPackage defenderAidSent = new TransferPackage(0,0,0);
 
 
         public ArrayList<String> getWarLog() {

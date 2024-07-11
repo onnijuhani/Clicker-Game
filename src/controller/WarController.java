@@ -48,7 +48,7 @@ public class WarController extends BaseController {
         nationNameLeft.setText(n.toString());
         mInPlayLeft.setText("Militaries in play: " + onGoingWar.getCorrectSet(n, War.SetName.ALL_IN_PLAY).size());
         mDefeatedLeft.setText("Armies Defeated: " + onGoingWar.getCorrectSet(n, War.SetName.DEFEATED).size());
-        mPowerLeft.setText("Military Power: " + Nation.countTotalMilitaryStrength(onGoingWar.getCorrectSet(n, War.SetName.ALL_IN_PLAY)));
+        mPowerLeft.setText("Military Power: " +  onGoingWar.getTotalPower(n));
 
     }
 
@@ -65,6 +65,7 @@ public class WarController extends BaseController {
         nationNameRight.setText(n.toString());
         mInPlayRight.setText("Militaries in play: " + onGoingWar.getCorrectSet(n, War.SetName.ALL_IN_PLAY).size());
         mDefeatedRight.setText("Armies Defeated: " + onGoingWar.getCorrectSet(n, War.SetName.DEFEATED).size());
+        mPowerRight.setText("Military Power: " +  onGoingWar.getTotalPower(n));
 
 
         mPowerRight.setText("Military Power: " + Nation.countTotalMilitaryStrength(onGoingWar.getCorrectSet(n, War.SetName.ALL_IN_PLAY)));
@@ -162,7 +163,7 @@ public class WarController extends BaseController {
                 Label label = new Label(s);
                 label.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
                 label.setWrapText(true);
-                label.setMaxWidth(570);
+                label.setMaxWidth(600);
                 warNotesContainer.getChildren().add(label);
             }
             // Ensure the layout is updated before setting the scroll position
