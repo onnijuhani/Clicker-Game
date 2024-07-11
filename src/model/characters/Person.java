@@ -318,7 +318,7 @@ public class Person implements Ownable {
             if(property instanceof Military){
                 if(!grandFoundryOpened) {
                     GameEvent gameEvent = new GameEvent(Event.GRAND_FOUNDRY, this);
-                    EventManager.scheduleEvent(this::setGrandFoundry, 360, gameEvent);
+                    EventManager.scheduleEvent(this::setGrandFoundry, 90, gameEvent);
                     grandFoundryOpened = true;
                 }
             }

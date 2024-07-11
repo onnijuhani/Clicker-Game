@@ -141,6 +141,8 @@ public class MilitaryBattle implements WarObserver {
             if (attackSucceeds) {
                 if (effectivePower > rand) {
                     standardSoldierLoss(currentAttackTurn, currentDefenceTurn, effectivePower);
+                } else {
+                    attackerSoldierLoss(currentAttackTurn, effectivePower);
                 }
                 longBattleSoldierLoss(currentAttackTurn);
             }
@@ -177,6 +179,16 @@ public class MilitaryBattle implements WarObserver {
 
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);
+        }
+    }
+
+    private void attackerSoldierLoss(ArmyStats currentAttackTurn, double effectivePower) {
+        if(effectivePower < 20 && days > 100){
+            if(currentAttackTurn == attackingArmyStats){
+                logEvent(String.format("Defender lost %d soldier.", 1));
+            }else {
+                logEvent(String.format("Attacker lost %d soldier.", 1));
+            }
         }
     }
 
@@ -272,17 +284,19 @@ public class MilitaryBattle implements WarObserver {
             String resultA = Objects.equals(winner, "Attacker") ? "Won" : "Lost";
             String resultD = Objects.equals(winner, "Defender") ? "Won" : "Lost";
 
-            attackerMsg = String.format("%s offensive battle against %s.\nBattle lasted for %d days. Returned with %d soldiers, %d offence weapons and %d defence Weapons",
+            attackerMsg = String.format("%s offensive battle against %s.\nBattle lasted for %d days. Lost %s Soldiers. Returned with %d soldiers, %d offence weapons and %d defence Weapons",
                     resultA,
                     defendingCommander,
                     days,
+                    attackingArmyStats.getLostSoldiers(),
                     attackingArmyStats.numOfSoldiers,
                     attackingArmyStats.attackPower / ArmyCost.increaseArmyAttack,
                     attackingArmyStats.defencePower / ArmyCost.increaseArmyDefence);
-            defenderMsg = String.format("%s defensive battle against %s.\nBattle lasted for %d days. Returned with %d soldiers, %d offence weapons and %d defence Weapons",
+            defenderMsg = String.format("%s defensive battle against %s.\nBattle lasted for %d days. Lost %s Soldiers. Returned with %d soldiers, %d offence weapons and %d defence Weapons",
                     resultD,
                     attackingCommander,
                     days,
+                    defendingArmyStats.getLostSoldiers(),
                     defendingArmyStats.numOfSoldiers,
                     defendingArmyStats.attackPower / ArmyCost.increaseArmyAttack,
                     defendingArmyStats.defencePower / ArmyCost.increaseArmyDefence);
@@ -362,6 +376,7 @@ public class MilitaryBattle implements WarObserver {
         private int numOfSoldiers;
         private int attackPower;
         private int defencePower;
+        private int lostSoldiers = 0;
 
         public ArmyStats(Army army) {
             this.numOfSoldiers = army.getNumOfSoldiers();
@@ -370,8 +385,17 @@ public class MilitaryBattle implements WarObserver {
 
         }
 
+        public int getLostSoldiers() {
+            return lostSoldiers;
+        }
+
+        private void addLostSoldiers(int lostSoldiers) {
+            this.lostSoldiers += lostSoldiers;
+        }
+
         public void loseSoldiers(int amount){
             this.numOfSoldiers -= amount;
+            addLostSoldiers(amount);
             if (this.numOfSoldiers < 0) {
                 this.numOfSoldiers = 1;
             }
