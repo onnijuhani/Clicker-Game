@@ -19,6 +19,7 @@ import model.resourceManagement.wallets.Wallet;
 import model.shop.Shop;
 import model.stateSystem.MessageTracker;
 import model.stateSystem.State;
+import model.war.Army;
 import model.war.Military;
 import model.war.War;
 
@@ -40,6 +41,7 @@ public class Nation extends ControlledArea implements Details {
     private final Set<Area> claimedAreas = new HashSet<>();
     private final Wallet wallet = new Wallet(authorityHere);
     private boolean isAtWar = false;
+
     private Nation enemy = null; // Enemy is only set when in war, enemy is the opponent.
     private final HashSet<Person> warCommanders = new HashSet<>();
     private Nation overlord; // Overlord is set if nation loses a war
@@ -403,6 +405,9 @@ public class Nation extends ControlledArea implements Details {
             // remove war flag
             setNotAtWar();
 
+            // remove defeated state from all armies
+            removeDefeated();
+
             // reset states
             removeWarState();
 
@@ -421,7 +426,7 @@ public class Nation extends ControlledArea implements Details {
                     vassals.add(opponent); // They gained new vassal
                 }
             }else{
-                if(isOverlord()){
+                if(isOverlord() && !vassals.contains(opponent)){
                     vassals.remove(opponent); // Since being the overlord and losing the war, they lose their vassal
                 } else {
                     setOverlord(opponent); // Losing the war now makes them a Vassal
@@ -526,6 +531,11 @@ public class Nation extends ControlledArea implements Details {
         }
         return militaries;
     }
+    private void removeDefeated(){
+        for(Military m : getAllMilitaries()){
+            m.getArmy().setState(Army.ArmyState.AVAILABLE);
+        }
+    }
 
     public List<Military> getMilitariesOwnedByCommanders() {
         selectWarCommanders(this);
@@ -551,13 +561,14 @@ public class Nation extends ControlledArea implements Details {
         List<Military> allMilitaries = getAllMilitaries();
 
         for (Military military : allMilitaries) {
+            if(military.getMilitaryStrength() < 100) continue;
+            if(military.getArmy().getNumOfSoldiers() < 5) continue;
             Status status = military.getOwner().getRole().getStatus();
             if (status.isCivilian()) {
                 militariesOwnedByCivilians.add(military);
                 military.getOwner().addState(State.ACTIVE_COMBAT);
             }
         }
-
         return militariesOwnedByCivilians;
     }
 
@@ -677,7 +688,9 @@ public class Nation extends ControlledArea implements Details {
         return warHistory.size();
     }
 
-
+    public Nation getEnemy() {
+        return enemy;
+    }
 
     public int getMilitaryPower() {
         int totalPower = 0;

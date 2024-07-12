@@ -20,11 +20,11 @@ public class SiegeService {
 
         if (attacker.getProperty() instanceof Military military && defender.getProperty() instanceof Military military2) {
 
-            if(military.getArmy().getState() != null){
+            if(!military.getArmy().isAvailable()){
                 attacker.getMessageTracker().addMessage(MessageTracker.Message("Error", "Cannot enter military battle, your military is not in Neutral state"));
                 return null;
             }
-            if(military2.getArmy().getState() != null){
+            if(!military2.getArmy().isAvailable()){
                 attacker.getMessageTracker().addMessage(MessageTracker.Message("Error", "Cannot enter military battle, opponent's military is not in Neutral state"));
                 return null;
             }

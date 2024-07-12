@@ -20,7 +20,7 @@ public class WarService {
                 return null;
             }
         }
-        if(defender.isVassal()){
+        if(defender.isVassal() && defender != attacker.getOverlord()){
             System.out.println(defender + " is a Vassal. Attempted attack done by: " + attacker);
             return null;
         }

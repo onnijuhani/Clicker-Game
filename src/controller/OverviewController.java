@@ -233,16 +233,28 @@ public class OverviewController extends BaseController{
     private Hyperlink getHyperlink(WarPlanningManager.NationDetails nationDetails) {
         Hyperlink hyperlink;
 
-        if(nationDetails.nation().isVassal()){
+        if(nationDetails.nation() == Model.getPlayerRole().getNation() && !nationDetails.nation().isVassal()){
+            hyperlink = new Hyperlink();
+        }
+        else if (nationDetails.nation().isAtWar()){
+            hyperlink = new Hyperlink("At War");
+            hyperlink .setOnAction(event -> warInfo(nationDetails.nation()));
+        }
+
+        else if(nationDetails.nation().isVassal()){
             // Hyperlink for vassals ( Cannot enter war with nations that are vassals of another nation)
             hyperlink = new Hyperlink("Vassal");
             hyperlink .setOnAction(event -> vassalInfo(nationDetails.nation()));
-        }else {
+        } else {
             // Create hyperlink for starting a war
             hyperlink  = new Hyperlink("Start War");
             hyperlink .setOnAction(event -> startWar(nationDetails.nation()));
         }
         return hyperlink;
+    }
+
+    private void warInfo(Nation nation) {
+        Model.getPlayerAsPerson().getMessageTracker().addMessage(MessageTracker.Message("Major", nation + " is at war against: " + nation.getEnemy()));
     }
 
     private void startWar(Nation nation) {

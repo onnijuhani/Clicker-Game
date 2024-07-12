@@ -40,6 +40,16 @@ public class MilitaryBattle implements WarObserver {
         }
     }
 
+    @Override
+    public String toString(){
+        return String.format("Day %d: %s Soldiers: %d vs %s Soldiers: %d ",
+                days,
+                attackingCommander.getRole().getNation(),
+                attackingArmyStats.getNumOfSoldiers(),
+                defendingCommander.getRole().getNation(),
+                defendingArmyStats.getNumOfSoldiers());
+    }
+
     private void triggerForceEnd() {
         if (attackingArmyStats.getNumOfSoldiers() <= 1) {
             settleBattle("Defender");
@@ -390,6 +400,7 @@ public class MilitaryBattle implements WarObserver {
         }
 
         private void addLostSoldiers(int lostSoldiers) {
+            if(lostSoldiers < 1) return;
             this.lostSoldiers += lostSoldiers;
         }
 

@@ -178,7 +178,7 @@ public class Exchange extends ShopComponents {
             // to prevent wallet growing too big it is cut in half
             OptionalInt max = Arrays.stream(getWallet().getWalletValues()).max();
 
-            if (max.getAsInt() > 100_000_000) {
+            if (max.isPresent() && max.getAsInt() > 100_000_000) {
                 wallet.cutBalanceInHalf();
             }
 

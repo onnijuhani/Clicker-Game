@@ -717,6 +717,15 @@ public class War implements WarObserver, Details {
         HashSet<Military> aar = testRoyalMilitary(attackerRoyals, attackerDefeatedMilitaries, this::addIntoAttackerList);
         HashSet<Military> adr = testRoyalMilitary(defenderRoyals, defenderDefeatedMilitaries, this::addIntoDefenderList);
 
+        // if either army is empty, add into full in play list
+        if(aar.isEmpty() || adr.isEmpty()){
+            for(Military m : aar) {
+                addIntoCorrectList(m, SetName.IN_PLAY);
+            }
+            for(Military m : adr) {
+                addIntoCorrectList(m, SetName.IN_PLAY);
+            }
+        }
 
         if(day == 23) {
             matchMaking(aar, adr, day);
@@ -871,7 +880,6 @@ public class War implements WarObserver, Details {
         warNotes.attacker = attacker;
         warNotes.defender = defender;
         warNotes.lastedForDays = days;
-        warNotes.winner = winner;
         warNotes.winner = winner;
         warNotes.totalBattles = attackerDefeatedMilitaries.size() + defenderDefeatedMilitaries.size();
 

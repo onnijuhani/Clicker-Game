@@ -149,7 +149,7 @@ public class GrandFoundry implements ArmyObserver, PaymentTracker, Details {
         StringBuilder details = new StringBuilder();
         if(owner != controller){
             int[] i = owner.getAnyOnGoingEvent(Event.GRAND_FOUNDRY_UNDER_OCCUPATION).getTimeLeftUntilExecution();
-            details.append("Controlled by ").append(controller).append(" until\n").append(timeLeftFormat(i));
+            details.append("Controlled by ").append(controller).append(" until\n").append(timeLeftFormat(i)).append("\n");
         }
 
         if(!foundriesUnderControl.isEmpty()){

@@ -1,18 +1,23 @@
 package controller;
 
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import model.Model;
 import model.stateSystem.SpecialEventsManager;
 import model.war.War;
 import model.worldCreation.Nation;
 
+import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("CallToPrintStackTrace")
@@ -67,8 +72,7 @@ public class WarController extends BaseController {
         mDefeatedRight.setText("Armies Defeated: " + onGoingWar.getCorrectSet(n, War.SetName.DEFEATED).size());
         mPowerRight.setText("Military Power: " +  onGoingWar.getTotalPower(n));
 
-
-        mPowerRight.setText("Military Power: " + Nation.countTotalMilitaryStrength(onGoingWar.getCorrectSet(n, War.SetName.ALL_IN_PLAY)));
+        mPowerRight.setText("Military Power: " +  onGoingWar.getTotalPower(n));
 
     }
 
@@ -90,6 +94,30 @@ public class WarController extends BaseController {
 
     @FXML
     private Label inspectorListName;
+
+    private void updateInspector(String inspectorListName, Collection<?> collection){
+        inspector.setVisible(true);
+        this.inspectorListName.setText(inspectorListName);
+
+        inspectList.getChildren().clear();
+
+        for(Object o : collection){
+            Label label = new Label(o.toString());
+            label.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+            inspectList.getChildren().add(label);
+        }
+    }
+
+    @FXML
+    void openOnGoingBattles(MouseEvent event) {
+        if(onGoingWar == null) return;
+        updateInspector("On Going Battles", onGoingWar.getOnGoingBattles());
+    }
+
+    @FXML
+    void closeInspector(ActionEvent event) {
+        inspector.setVisible(false);
+    }
 
     @FXML
     private Label mDefeatedLeft;
@@ -152,11 +180,7 @@ public class WarController extends BaseController {
 
         List<String> logs = currentNotes.getWarLog();
 
-        // Get the current scroll position
-        double scrollPosition = warNotes.getVvalue();
-
         Platform.runLater(() -> {
-            // Clear and update warNotesContainer
             warNotesContainer.getChildren().clear();
 
             for (String s : logs) {
@@ -166,11 +190,15 @@ public class WarController extends BaseController {
                 label.setMaxWidth(600);
                 warNotesContainer.getChildren().add(label);
             }
-            // Ensure the layout is updated before setting the scroll position
-            warNotes.layout();
 
-            // Set scroll position to the previous value or 1.0 if scrolled to bottom
-            warNotes.setVvalue(scrollPosition >= 1.0 ? 1.0 : scrollPosition);
+            // Use Timeline to set the scroll position with a slight delay
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(20), event -> {
+                // Ensure the layout is updated
+                warNotes.layout();
+                // Scroll to bottom
+                warNotes.setVvalue(1.0);
+            }));
+            timeline.play();
         });
     }
 
@@ -210,9 +238,6 @@ public class WarController extends BaseController {
 
     }
 
-    @FXML
-    void closeInspector(ActionEvent event) {
 
-    }
 
 }

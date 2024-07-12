@@ -30,6 +30,15 @@ public class Army implements ArmyObserver, PaymentTracker {
         }
 
     }
+
+    public boolean isAvailable(){
+        if(state == null){
+            return true;
+        }else{
+            return state == ArmyState.AVAILABLE;
+        }
+    }
+
     private MilitaryBattle militaryBattle;
     private int numOfSoldiers = 1;
     private int attackPower = 1;
@@ -113,7 +122,7 @@ public class Army implements ArmyObserver, PaymentTracker {
 
             int daysUntilEvent = 15;
 
-            if(state == ArmyState.DEFENDING || state == ArmyState.ATTACKING){
+            if(!isAvailable()){
                 daysUntilEvent /= 3;
             }
 
@@ -152,7 +161,7 @@ public class Army implements ArmyObserver, PaymentTracker {
 
             int daysUntilEvent = 15;
 
-            if(state == ArmyState.DEFENDING || state == ArmyState.ATTACKING){
+            if(!isAvailable()){
                 daysUntilEvent /= 3;
             }
 
@@ -192,10 +201,10 @@ public class Army implements ArmyObserver, PaymentTracker {
 
             GameEvent gameEvent = new GameEvent(Event.RecruitSoldier, owner);
 
-            int daysUntilEvent = 30 + amount*3;
+            int daysUntilEvent = 30 + amount*5;
 
-            if(state == ArmyState.DEFENDING || state == ArmyState.ATTACKING){
-                daysUntilEvent /= 3;
+            if(!isAvailable()){
+                daysUntilEvent /= 2;
             }
 
             EventManager.scheduleEvent(() -> finishSoldierRecruit(amount), daysUntilEvent, gameEvent);
