@@ -26,6 +26,10 @@ public class MilitaryBattle implements WarObserver {
             updatePaymentCalendars();
         }
 
+        if(days >= 500){
+            triggerForceEnd();
+        }
+
         if(Objects.equals(currentTurn, "Attacker")){
             performAttack(attackingArmyStats, defendingArmyStats, "Attacker");
             setCurrentTurn("Defender");
@@ -34,9 +38,7 @@ public class MilitaryBattle implements WarObserver {
         if(Objects.equals(currentTurn, "Defender")){
             performAttack(defendingArmyStats, attackingArmyStats, "Defender");
             setCurrentTurn("Attacker");
-        }
-        if(days >= 1000){
-            triggerForceEnd();
+            return;
         }
     }
 

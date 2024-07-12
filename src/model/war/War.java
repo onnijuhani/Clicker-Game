@@ -1,5 +1,6 @@
 package model.war;
 
+import model.Model;
 import model.Settings;
 import model.characters.Person;
 import model.characters.npc.King;
@@ -25,6 +26,7 @@ public class War implements WarObserver, Details {
     @Override
     public void warUpdate(int day) {
         try {
+            forceContinuation();
             this.days ++;
             if(days < prepareTime){
                 return;
@@ -37,7 +39,6 @@ public class War implements WarObserver, Details {
                 updateOnGoingBattles();
                 matchAndPlay(day);
                 updatePhase();
-                forceContinuation();
                 updateTotalPower();
             }
         } catch (Exception e) {
@@ -513,6 +514,9 @@ public class War implements WarObserver, Details {
         WarManager.unsubscribe(this);
 
         WarPlanningManager.filterNations(); // War Planning manager should be updated here
+
+        Model.calculatePlayerTerritory(); // Calculate Player Territory
+
     }
 
     private void updateOnGoingBattles(){

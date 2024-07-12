@@ -33,9 +33,8 @@ public class Character implements NpcObserver, Details, Ownable {
                 return;
             }
 
-            if(person.isPlayer()){
-            return;
-        }
+//            if(person.isPlayer())return;
+
 
 
             getPerson().getAiEngine().executeAiEngine(); // AI engine is executed rest of the time

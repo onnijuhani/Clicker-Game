@@ -478,15 +478,15 @@ public class ManagementActions extends BaseActions {
             //evaluate need for new property
             if(property.getUtilitySlot().getSlotAmount() == 5){
                 // make sure they have net cash high enough to sustain the default army before attempting to update into military buildings
-                TransferPackage netCash = person.getPaymentManager().getNetBalance();
-                if(netCash.food() > 1100 && netCash.alloy() > 300 && netCash.gold() > 100){
+                TransferPackage netBalance = person.getPaymentManager().getNetBalance();
+                if(netBalance.food() > 1100 && netBalance.alloy() > 300 && netBalance.gold() > 100){
                     person.addAspiration(Aspiration.UPGRADE_PROPERTY);
                     person.addAspiration(Aspiration.SAVE_RESOURCES);
                     logAction(String.format("Evaluated a need to upgrade current home %s and a need to save resources for that", person.getProperty().getClass().getSimpleName()));
                 }
 
             }else if(usedSlotAmount == property.getUtilitySlot().getSlotAmount()) {
-                if (property.getUtilitySlot().getTotalUpgradeLevels() > 3 * usedSlotAmount){ // idea here is to upgrade some of the utility buildings first before the property
+                if (property.getUtilitySlot().getTotalUpgradeLevels() > 2 * usedSlotAmount){ // idea here is to upgrade some of the utility buildings first before the property
                     person.addAspiration(Aspiration.UPGRADE_PROPERTY); // remember to remove this need after new property is created.
                     person.addAspiration(Aspiration.SAVE_RESOURCES); // remove this one too
                     logAction(String.format("Evaluated a need to upgrade current home %s and a need to save resources for that", person.getProperty().getClass().getSimpleName()));
