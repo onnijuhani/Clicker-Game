@@ -231,21 +231,20 @@ public class OverviewController extends BaseController{
     }
 
     private Hyperlink getHyperlink(WarPlanningManager.NationDetails nationDetails) {
-        Hyperlink hyperlink;
-
+        Hyperlink hyperlink = new Hyperlink();
+            // hyperlink for home
         if(nationDetails.nation() == Model.getPlayerRole().getNation() && !nationDetails.nation().isVassal()){
             hyperlink = new Hyperlink();
-        }
+        }   // hyperlink for nations already at war
         else if (nationDetails.nation().isAtWar()){
             hyperlink = new Hyperlink("At War");
             hyperlink .setOnAction(event -> warInfo(nationDetails.nation()));
         }
-
         else if(nationDetails.nation().isVassal()){
             // Hyperlink for vassals ( Cannot enter war with nations that are vassals of another nation)
             hyperlink = new Hyperlink("Vassal");
             hyperlink .setOnAction(event -> vassalInfo(nationDetails.nation()));
-        } else {
+        } else if(!Model.getPlayerRole().getNation().isVassal() || Model.getPlayerRole().getNation().getOverlord() == nationDetails.nation()) {
             // Create hyperlink for starting a war
             hyperlink  = new Hyperlink("Start War");
             hyperlink .setOnAction(event -> startWar(nationDetails.nation()));

@@ -41,6 +41,7 @@ public class WarController extends BaseController {
     }
 
     private void updateCommon() {
+        if(onGoingWar == null) return;
         currentDay.setText("Day: " + onGoingWar.getDays());
         currentPhase.setText(onGoingWar.getCurrentPhase().toString());
         onGoingBattles.setText("On Going Battles: " + onGoingWar.getOnGoingBattles().size());

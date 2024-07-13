@@ -6,7 +6,6 @@ import model.buildings.GrandFoundry;
 import model.buildings.Property;
 import model.characters.ai.AiEngine;
 import model.characters.ai.Aspiration;
-import model.characters.ai.actions.NPCAction;
 import model.characters.ai.actions.NPCActionLogger;
 import model.characters.combat.CombatStats;
 import model.characters.npc.*;
@@ -133,6 +132,7 @@ public class Person implements Ownable {
      * Only method that should ever be called to lose strikes
      */
     public void loseStrike(String message){
+        logAction(this, "Lose Strike",message);
         getStrikesTracker().loseStrike();
         int strikesLeft = getStrikesTracker().getStrikes();
         if (strikesLeft == 9 && isPlayer){
@@ -298,11 +298,10 @@ public class Person implements Ownable {
     /**
      * @param npc NPC Person that executed the method
      * @param action Class that the method belongs to. Should always be "this"
-     * @param trait Type of the method, slaver ambitious etc
      * @param details The actual action and relevant information
      */
-    public void logAction(Person npc, NPCAction action, Trait trait, String details){
-        getAiEngine().getNpcActionLogger().logAction(npc, action, trait, details);
+    public void logAction(Person npc, String action, String details){
+        getAiEngine().getNpcActionLogger().logAction(npc, action, details);
     }
 
     public NPCActionLogger getNpcLogger() {

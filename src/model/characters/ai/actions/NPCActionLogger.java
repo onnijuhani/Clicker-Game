@@ -38,6 +38,15 @@ public class NPCActionLogger {
         logs.add(logEntry);
     }
 
+    public synchronized void logAction(Person npc, String action, String details) {
+        if (logs.size() >= MAX_LOG_ENTRIES) {
+            logs.poll();
+        }
+        String logEntry = String.format("%s: [%s] [%s] [%s] [%s] | %s | [%s]",
+                Time.getClock(), npc.getName(), npc.getRole(), " - " , action, details, npc.getWallet().toShortString());
+        logs.add(logEntry);
+    }
+
     public synchronized List<String> getLogs() {
         return new ArrayList<>(logs);
     }

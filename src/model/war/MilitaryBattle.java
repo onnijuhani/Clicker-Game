@@ -28,6 +28,7 @@ public class MilitaryBattle implements WarObserver {
 
         if(days >= 500){
             triggerForceEnd();
+            return;
         }
 
         if(Objects.equals(currentTurn, "Attacker")){
@@ -261,7 +262,6 @@ public class MilitaryBattle implements WarObserver {
 
     private void settleBattle(String winner) {
         try {
-            testMilitaries();
             if (Objects.equals(winner, "Attacker")) {
                 defendingMilitary.getArmy().setState(Army.ArmyState.DEFEATED);
                 attackingMilitary.getArmy().setState(null);

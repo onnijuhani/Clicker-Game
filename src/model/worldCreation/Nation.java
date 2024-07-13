@@ -421,14 +421,16 @@ public class Nation extends ControlledArea implements Details {
 
             if(Objects.equals(winnerOrLoser, "Winner")){
                 if(isVassal()){
-                    removeOverlord();
+                    removeOverlord(); // They are now longer Vassals
                 }else {
-                    vassals.add(opponent); // They gained new vassal
+                    if(vassals.contains(opponent)) return;
+                    vassals.add(opponent); // They gained new Vassal
                 }
             }else{
-                if(isOverlord() && !vassals.contains(opponent)){
-                    vassals.remove(opponent); // Since being the overlord and losing the war, they lose their vassal
+                if(isOverlord() && vassals.contains(opponent)){
+                    removeVassal(opponent); // Since being the overlord and losing the war, they lose their vassal
                 } else {
+                    if(overlord == opponent) return;
                     setOverlord(opponent); // Losing the war now makes them a Vassal
                 }
             }
@@ -436,6 +438,13 @@ public class Nation extends ControlledArea implements Details {
         } catch (RuntimeException e) {
             e.printStackTrace();throw new RuntimeException(e);
         }
+    }
+
+    private void removeVassal(Nation opponent) {
+        if(!vassals.contains(opponent)){
+            throw new RuntimeException("Attempted to remove: " + opponent + " from list of vassals that didn't contain it.");
+        }
+        vassals.remove(opponent);
     }
 
 

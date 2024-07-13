@@ -353,6 +353,7 @@ public class Army implements ArmyObserver, PaymentTracker {
 
     public void returnFromBattle(int numOfSoldiers, int attackPower, int defencePower, String battleInfo){
         this.numOfSoldiers += numOfSoldiers;
+        if(this.numOfSoldiers <= 0) addOneSoldier();
         this.attackPower += attackPower;
         this.defencePower += defencePower;
         addBattle(battleInfo);

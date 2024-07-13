@@ -569,7 +569,7 @@ public class MainController extends BaseController {
 
     @FXML
     void setFastSpeed(ActionEvent event) {
-        Time.fastSpeed = 50;
+        Time.fastSpeed = 100;
         if (topSectionController != null) {
             topSectionController.startTimeFunction();
         }

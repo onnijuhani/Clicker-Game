@@ -26,7 +26,7 @@ public class War implements WarObserver, Details {
     @Override
     public void warUpdate(int day) {
         try {
-            forceContinuation();
+            if(forceContinuation()) return;
             this.days ++;
             if(days < prepareTime){
                 return;
@@ -45,17 +45,17 @@ public class War implements WarObserver, Details {
             e.printStackTrace();throw new RuntimeException(e);
         }
     }
-
-    private void forceContinuation(){
+    // returns true if war is over
+    private boolean forceContinuation(){
         if(days == 500){
             startPhase2("Phase 2 started for war reaching 400 days.");
-            return;
+            return false;
         }
         if(days == 900){
             startPhase3("Phase 3 started for reaching 900 days.", null);
-            return;
+            return false;
         }
-        if(days == 1500){
+        if(days >= 2000){
             double adr = getDefeatRatio(attackerDefeatedMilitaries, attackerMilitariesInPlay, attackerMilitariesInBattle);
             double ddr = getDefeatRatio(defenderDefeatedMilitaries, defenderMilitariesInPlay, defenderMilitariesInBattle);
 
@@ -64,7 +64,9 @@ public class War implements WarObserver, Details {
             }else{
                 selectWinner("Winner", "Loser", attacker + " has won the war against " + defender); // Attacker has won
             }
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -496,7 +498,7 @@ public class War implements WarObserver, Details {
         String attacker;
         String defender;
 
-        if(Objects.equals(this.attacker, winner)) {
+        if((this.attacker == winner)) {
             generateWarReport(this.attacker);
             attacker = "Winner";
             defender = "Loser";
