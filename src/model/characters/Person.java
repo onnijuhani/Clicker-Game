@@ -109,6 +109,7 @@ public class Person implements Ownable {
     private void startingMsgAndAiEngine() {
         this.aiEngine = new AiEngine(this);
         if(isPlayer){
+            this.aiEngine.setRunning(false);
             return;
         }
         messageTracker.addMessage(MessageTracker.Message("Major",

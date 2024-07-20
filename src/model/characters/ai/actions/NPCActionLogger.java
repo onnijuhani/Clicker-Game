@@ -21,6 +21,7 @@ public class NPCActionLogger {
      * @param details The actual action and relevant information
      */
     public synchronized void logAction(Person npc, NPCAction action, Trait trait, String details) {
+        if (ignoreNPC(npc)) return;
         if (logs.size() >= MAX_LOG_ENTRIES) {
             logs.poll();
         }
@@ -30,6 +31,7 @@ public class NPCActionLogger {
     }
 
     public synchronized void logAction(Person npc, NPCAction action, String trait, String details) {
+        if (ignoreNPC(npc)) return;
         if (logs.size() >= MAX_LOG_ENTRIES) {
             logs.poll();
         }
@@ -39,12 +41,18 @@ public class NPCActionLogger {
     }
 
     public synchronized void logAction(Person npc, String action, String details) {
+        if (ignoreNPC(npc)) return;
         if (logs.size() >= MAX_LOG_ENTRIES) {
             logs.poll();
         }
         String logEntry = String.format("%s: [%s] [%s] [%s] [%s] | %s | [%s]",
                 Time.getClock(), npc.getName(), npc.getRole(), " - " , action, details, npc.getWallet().toShortString());
         logs.add(logEntry);
+    }
+
+    // Ignore npc's who don't live in the same nation with player
+    private boolean ignoreNPC(Person person){
+        return !person.getRole().getNation().isPlayerNation();
     }
 
     public synchronized List<String> getLogs() {

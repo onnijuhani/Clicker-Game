@@ -131,6 +131,8 @@ public class MainController extends BaseController {
     private CheckBox pausePopBtn;
     @FXML
     private Label currentlyViewing;
+    @FXML CheckBox autoPlay;
+
 
     boolean autoContinue = false;
 
@@ -555,6 +557,11 @@ public class MainController extends BaseController {
         boolean isChecked = hideUtility.isSelected();
         model.getPlayerCharacter().getMessageTracker().getPreferences().setShowUtilityEvents(!isChecked);
     }
+    @FXML
+    void triggerAutoPlay(ActionEvent event) {
+        boolean isChecked = autoPlay.isSelected();
+        Model.getPlayerAsPerson().getAiEngine().setRunning(isChecked);
+    }
 
     @FXML
     void openSettings(ActionEvent event) {
@@ -574,6 +581,7 @@ public class MainController extends BaseController {
             topSectionController.startTimeFunction();
         }
     }
+
 
     public void updateCurrentlyViewing() {
         Character currentCharacter = characterController != null ? characterController.getCurrentCharacter() : null;

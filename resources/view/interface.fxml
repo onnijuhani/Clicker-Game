@@ -212,11 +212,11 @@
                         <Insets bottom="5.0" left="2.0" />
                      </padding>
                   </TabPane>
-                  <HBox fx:id="settingsBox" alignment="CENTER" layoutX="136.0" layoutY="356.0" visible="false">
+                  <HBox fx:id="settingsBox" alignment="CENTER" layoutX="136.0" layoutY="356.0" styleClass="militaryBox3" visible="false">
                      <children>
                         <VBox styleClass="militaryBox">
                            <children>
-                              <CheckBox fx:id="generateMessages" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#hideGenerateMessages" prefHeight="63.0" prefWidth="120.0" selected="true" styleClass="settingsBox" text="Hide Clicker Messages" textAlignment="CENTER" wrapText="true">
+                              <CheckBox fx:id="generateMessages" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#hideGenerateMessages" prefHeight="63.0" prefWidth="120.0" styleClass="settingsBox" text="Hide Clicker Messages" textAlignment="CENTER" wrapText="true">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -227,7 +227,7 @@
                                     <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                                  </VBox.margin>
                               </CheckBox>
-                              <CheckBox fx:id="minorMessages" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#hideMinorMessages" prefHeight="63.0" prefWidth="120.0" selected="true" styleClass="settingsBox" text="Hide Minor Messages" textAlignment="CENTER" wrapText="true">
+                              <CheckBox fx:id="minorMessages" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#hideMinorMessages" prefHeight="63.0" prefWidth="120.0" styleClass="settingsBox" text="Hide Minor Messages" textAlignment="CENTER" wrapText="true">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -238,7 +238,7 @@
                                     <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                  </padding>
                               </CheckBox>
-                              <CheckBox fx:id="hideUtility" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#hideUtilityMessages" prefHeight="63.0" prefWidth="120.0" selected="true" styleClass="settingsBox" text="Hide Utility Messages" textAlignment="CENTER" wrapText="true">
+                              <CheckBox fx:id="hideUtility" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#hideUtilityMessages" prefHeight="63.0" prefWidth="120.0" styleClass="settingsBox" text="Hide Utility Messages" textAlignment="CENTER" wrapText="true">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -270,7 +270,7 @@
                                     <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                                  </VBox.margin>
                               </CheckBox>
-                              <CheckBox fx:id="errorMessages" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#hideErrorMessages" prefHeight="63.0" prefWidth="120.0" selected="true" styleClass="settingsBox" text="Hide Error Messages" textAlignment="CENTER" wrapText="true">
+                              <CheckBox fx:id="errorMessages" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#hideErrorMessages" prefHeight="63.0" prefWidth="120.0" styleClass="settingsBox" text="Hide Error Messages" textAlignment="CENTER" wrapText="true">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -281,7 +281,7 @@
                                     <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                  </padding>
                               </CheckBox>
-                              <CheckBox fx:id="shopMessages" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#hideShopMessages" prefHeight="63.0" prefWidth="120.0" selected="true" styleClass="settingsBox" text="Hide Shop Messages" textAlignment="CENTER" wrapText="true">
+                              <CheckBox fx:id="shopMessages" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#hideShopMessages" prefHeight="63.0" prefWidth="120.0" styleClass="settingsBox" text="Hide Shop Messages" textAlignment="CENTER" wrapText="true">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -291,6 +291,27 @@
                                  <padding>
                                     <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                  </padding>
+                              </CheckBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <VBox styleClass="militaryBox">
+                           <children>
+                              <CheckBox fx:id="autoPlay" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#triggerAutoPlay" prefHeight="63.0" prefWidth="120.0" styleClass="settingsBox" text="Auto Play" textAlignment="CENTER" wrapText="true">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                 </padding>
+                                 <VBox.margin>
+                                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                 </VBox.margin>
                               </CheckBox>
                            </children>
                            <padding>

@@ -4,6 +4,7 @@ import model.GameManager;
 import model.Settings;
 import model.characters.player.clicker.Clicker;
 import model.stateSystem.SpecialEventsManager;
+import model.war.WarPlanningManager;
 import model.worldCreation.World;
 
 import java.util.concurrent.Executors;
@@ -103,13 +104,19 @@ public class Time {
 
             nationalTax(); // national tax is mandatory tax payment that occurs every 12th month
 
-
+            makeWarDecisions();
 
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);
         }
 
 
+    }
+
+    private static void makeWarDecisions() {
+        if(year > 5 && month == 3 && day == 9){
+            WarPlanningManager.makeWarDecisions();
+        }
     }
 
     private static void nationalTax(){

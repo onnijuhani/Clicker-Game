@@ -17,6 +17,7 @@ public class AiEngine {
     private Map<Trait, Integer> profile;
     private final WeightedCircle actionCircle = new WeightedCircle(25,1);
     private final NPCActionLogger npcActionLogger = new NPCActionLogger();
+    private boolean isRunning = true; // whether AI engine is executed or not, used for player's autoplay functionality
 
     public AiEngine(Person person) {
         this.person = person;
@@ -31,8 +32,14 @@ public class AiEngine {
     }
 
 
+    public void setRunning(boolean running) {
+        isRunning = running;
+    }
+
     public void executeAiEngine() {
-        actionCircle.executeLoop();
+        if(isRunning) {
+            actionCircle.executeLoop();
+        }
     }
 
     private void setUpActionLoop() {
