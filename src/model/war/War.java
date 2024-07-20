@@ -20,6 +20,7 @@ import model.worldCreation.Nation;
 import java.util.*;
 import java.util.function.BiConsumer;
 
+import static model.stateSystem.SpecialEventsManager.triggerWarEnding;
 import static model.war.War.Phase.*;
 
 public class War implements WarObserver, Details {
@@ -495,6 +496,8 @@ public class War implements WarObserver, Details {
 
     private void endMethod(Nation winner) {
 
+        triggerPopUp(winner);
+
         String attacker;
         String defender;
 
@@ -519,6 +522,20 @@ public class War implements WarObserver, Details {
 
         Model.calculatePlayerTerritory(); // Calculate Player Territory
 
+
+
+
+    }
+
+    private void triggerPopUp(Nation winner) {
+        if(this.attacker.isPlayerNation() || this.defender.isPlayerNation()) {
+
+            boolean playerWon;
+            playerWon = winner.isPlayerNation();
+
+
+            triggerWarEnding(this.attacker, this.defender, warNotes.warName, playerWon); // send popup
+        }
     }
 
     private void updateOnGoingBattles(){

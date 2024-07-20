@@ -401,7 +401,7 @@
                                           <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                        </VBox.margin>
                                        <children>
-                                          <ImageView fx:id="popUpImage" fitHeight="270.0" fitWidth="540.0" pickOnBounds="true">
+                                          <ImageView fx:id="popUpImage" fitHeight="270.0" fitWidth="540.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../Properties/StartingShack.jpg" />
                                              </image>

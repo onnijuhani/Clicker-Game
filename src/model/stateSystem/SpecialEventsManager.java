@@ -7,6 +7,7 @@ import model.characters.authority.*;
 import model.resourceManagement.TransferPackage;
 import model.time.Time;
 import model.war.War;
+import model.worldCreation.Nation;
 
 import java.util.Arrays;
 import java.util.List;
@@ -331,55 +332,85 @@ public class SpecialEventsManager {
         PopUpMessageTracker.sendMessage(message);
     }
 
+    public static void triggerWarStart(Nation attacker, Nation defender, String warName, boolean side) {
+        String aMain = "Your Nation is entering into war against " + defender + "\n";
+        String dMain = attacker + " has started a war against your nation.\n";
+
+
+        PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(
+                warName,
+                side ? aMain : dMain,
+                "Properties/war.jpg",
+                "Start Preparing"
+        );
+        PopUpMessageTracker.sendMessage(message);
+    }
+    public static void triggerWarEnding(Nation winner, Nation loser, String warName, boolean playerWon) {
+        String winMessage;
+        String loseMessage;
+
+        if (loser.isVassal()) {
+            winMessage = "Your nation has successfully defended against " + loser + "'s independence attempt. " +
+                    "They remain your vassal.\n";
+            loseMessage = "Your nation has failed to claim independence from " + winner + ". You remain their vassal.\n";
+        } else if (winner.isVassal()) {
+            winMessage = "Your nation has successfully claimed independence from " + loser + ".\n";
+            loseMessage = "Your nation has failed to keep " + winner + " as your vassal. They have gained independence.\n";
+        } else {
+            winMessage = "Your nation has won the war against " + loser + ". They are now your vassal.\n";
+            loseMessage = "Your nation has lost the war to " + winner + ". You are now their vassal.\n";
+        }
+
+        PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(
+                warName,
+                playerWon ? winMessage : loseMessage,
+                playerWon ? "Properties/win.jpg" : "Properties/lost.jpg",
+                playerWon ? "Celebrate" : "Retreat"
+        );
+        PopUpMessageTracker.sendMessage(message);
+    }
+
     public static void triggerWarRulesInfo(War.Phase currentPhase) {
-        String preparing = """
-        Preparing Stage (1 year)
-        Citizens who will join the war are selected.
-        
-        """;
+        String preparing = String.format("%s\n%s",
+                "Preparing Stage (1 year)",
+                "Citizens who will join the war are selected."
+        );
 
-        String phase1 = """
-        **Phase 1: Civilian Sieges**
+        String phase1 = String.format("%s\n%s\n%s",
+                "Phase 1: Civilian Sieges",
+                "All Civilian militaries start military sieges.",
+                "After one nation has defeated more than 50% of the opponent's civilian militaries, phase 2 starts."
+        );
 
-        - All Civilian militaries start military sieges.
-        - After one nation has defeated more than 60% of the opponent's civilian militaries, phase 2 starts.
-        """;
+        String phase2 = String.format("%s\n%s\n%s\n%s\n%s",
+                "Phase 2: Commander Battles",
+                "Nations can launch War Tax to their citizens, which is paid to the Royal Armies (king and his vanguards).",
+                "All war commanders join the battles and some civilian armies retreat.",
+                "Commanders include authorities and mercenaries.",
+                "If one nation defeats 90% of the opponent's commanders, phase 3 starts."
+        );
 
-        String phase2 = """
-        **Phase 2: Commander Battles**
+        String phase3 = String.format("%s\n%s\n%s",
+                "Phase 3: Royal Clashes",
+                "Royal armies join the battle and clash against each other.",
+                "If any nation manages to defeat all of the opponents remaining armies, they win the war."
+        );
 
-        - Nations can launch War Tax to their citizens, which is paid to the Royal Armies (king and his vanguards).
-        - All war commanders join the battles and some civilian armies retreat.
-        - Commanders include authorities and mercenaries.
-        - If one nation defeats 80% of the opponent's commanders, phase 3 starts.
-        """;
+        String ending = String.format("%s\n\n%s",
+                "End of War",
+                "The losing nation is obliged to pay tax to the winning nation."
+        );
 
-        String phase3 = """
-        **Phase 3: Royal Clashes**
-
-        - Royal armies join the battle and clash against each other.
-        - If any nation manages to defeat all royal armies and at least 95% of the remaining commander armies, they win the war.
-        """;
-
-        String ending = """
-        **End of War**
-
-        - The losing nation is obliged to pay tax to the winning nation.
-        - The winning nation starts to send this tax money to the authorities.
-        """;
-
-        String waiting = """
-                War proceeds in 4 phases:
-                
-                Preparing Stage (1 year)
-                Phase 1: Civilian Sieges
-                Phase 2: Commander Battles
-                Phase 3: Royal Clashes
-                End of War
-                
-                Matchmaking happens automatically. Build your army to be the strongest possible.
-                Other than that, you can use each of your Noble's abilities to boost the strength of your armies.
-                """;
+        String waiting = String.format("%s\n%s\n%s\n%s\n%s\n%s\n\n%s\n%s",
+                "War proceeds in 4 phases:",
+                "Preparing Stage",
+                "Phase 1: Civilian Sieges",
+                "Phase 2: Commander Battles",
+                "Phase 3: Royal Clashes",
+                "End of War",
+                "Matchmaking happens automatically. Build your army to be the strongest possible.",
+                "If you are the King, you can use Noble bonus to boost the strength of all armies."
+        );
 
         String messageBody = switch (currentPhase) {
             case WAITING -> waiting;
@@ -399,6 +430,7 @@ public class SpecialEventsManager {
 
         PopUpMessageTracker.sendMessage(message);
     }
+
 
     public static void triggerGameWin() {
         PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(

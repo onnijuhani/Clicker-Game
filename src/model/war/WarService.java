@@ -3,6 +3,8 @@ package model.war;
 import model.Settings;
 import model.worldCreation.Nation;
 
+import static model.stateSystem.SpecialEventsManager.triggerWarStart;
+
 public class WarService {
 
 
@@ -45,6 +47,12 @@ public class WarService {
 
 
         War war = new War(attacker, defender, warName);
+
+        if(attacker.isPlayerNation()){
+            triggerWarStart(attacker, defender, warName, true);
+        }else if(defender.isPlayerNation()){
+            triggerWarStart(attacker, defender, warName, false);
+        }
 
         return war;
 
