@@ -114,7 +114,7 @@ public class UtilityShop extends ShopComponents {
         property.getUtilitySlot().addUtilityBuilding(type, newBuilding);
         person.getWallet().subtractGold(price);
         if(person.isPlayer()) {
-            person.getMessageTracker().addMessage(MessageTracker.Message("Major", "Successfully purchased " + type + "!")); //This goes to major instead to see wtf npc is doing
+            person.getMessageTracker().addMessage(MessageTracker.Message("Shop", "Successfully purchased " + type + "!"));
         }
         property.getUtilitySlot().increaseTotalLevels();
         newBuilding.updatePaymentManager(person.getPaymentManager());

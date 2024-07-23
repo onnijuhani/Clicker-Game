@@ -34,9 +34,6 @@ public class GrandFoundry implements ArmyObserver, PaymentTracker, Details {
     public void armyUpdate(int day) {
         try {
             if(day == expenseDay){
-                if(owner.isPlayer()){
-                    System.out.println();
-                }
                 generatePayment();
                 updatePaymentManager(controller.getPaymentManager());
             }

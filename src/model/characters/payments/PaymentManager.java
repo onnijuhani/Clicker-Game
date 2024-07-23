@@ -197,8 +197,12 @@ public class PaymentManager {
         return nextExpense;
     }
 
-    public boolean canMakeNextPayment(){
-        return wallet.getBalance().isGreaterThanOrEqualTo(getNextExpense().getAmount());
+    public boolean canMakeNextPayment() {
+        PaymentInfo nextExpense = getNextExpense();
+        if (nextExpense == null || nextExpense.getAmount() == null) {
+            return true;
+        }
+        return wallet.getBalance().isGreaterThanOrEqualTo(nextExpense.getAmount());
     }
 
     public boolean allowNPCToSpendMoney(){

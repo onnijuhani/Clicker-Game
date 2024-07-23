@@ -1,5 +1,6 @@
 package model.characters.combat;
 
+import controller.MainController;
 import model.Model;
 import model.Settings;
 import model.buildings.Property;
@@ -234,6 +235,10 @@ public class CombatSystem {
 
             // Reset states
             resetBattleStatesAuthorityBattle();
+
+            if(attacker.isPlayer() || defender.isPlayer()){
+                MainController.getInstance().Reset();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);

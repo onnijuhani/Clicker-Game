@@ -43,7 +43,7 @@ public class MainController extends BaseController {
     private WorkWalletController workWalletController;
     @FXML
     protected ExploreMapController exploreMapController;
-
+    private static MainController instance;
     public CharacterController getCharacterController() {
         return characterController;
     }
@@ -131,7 +131,7 @@ public class MainController extends BaseController {
     private CheckBox pausePopBtn;
     @FXML
     private Label currentlyViewing;
-    @FXML CheckBox autoPlay;
+    @FXML public CheckBox autoPlay;
     @FXML CheckBox popUps;
 
 
@@ -139,6 +139,7 @@ public class MainController extends BaseController {
 
     public MainController() {
         super();
+        instance = this;
     }
 
     @Override
@@ -291,27 +292,34 @@ public class MainController extends BaseController {
         Reset();
     }
 
+
+    public static MainController getInstance() {
+        return instance;
+    }
+
     public void Reset() {
-        Tab selectedTab = mainTabPane.getSelectionModel().getSelectedItem();
+        Platform.runLater(() -> {
+            Tab selectedTab = mainTabPane.getSelectionModel().getSelectedItem();
 
-        if (characterController != null) {
-            characterController.setCurrentCharacter(model.getPlayerCharacter());
-            characterController.update();
-        }
-        model.accessCurrentView().setCurrentView(model.accessWorld().getSpawnQuarter());
-        if (relationsController != null) {
-            relationsController.resetEverything();
-        }
-        clickMeButton.requestFocus();
-        if (relationsController != null) {
-            relationsController.setCurrentCharacter(Model.getPlayerAsCharacter());
-        }
+            if (characterController != null) {
+                characterController.setCurrentCharacter(model.getPlayerCharacter());
+                characterController.update();
+            }
+            model.accessCurrentView().setCurrentView(model.accessWorld().getSpawnQuarter());
+            if (relationsController != null) {
+                relationsController.resetEverything();
+            }
+            clickMeButton.requestFocus();
+            if (relationsController != null) {
+                relationsController.setCurrentCharacter(model.getPlayerAsCharacter());
+            }
 
-        setUpArmyTab();
+            setUpArmyTab();
 
-        if (selectedTab == relationsTab) {
-            mainTabPane.getSelectionModel().select(characterTab);
-        }
+            if (selectedTab == relationsTab) {
+                mainTabPane.getSelectionModel().select(characterTab);
+            }
+        });
     }
 
     public void openExploreMapTab() {

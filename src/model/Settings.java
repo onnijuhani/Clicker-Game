@@ -95,6 +95,12 @@ public class Settings {
         if (i.contains("(Home)")) {
             name = i.replace("(Home)", "").trim();
         }
+        if (i.contains("(Vassal)")) {
+            name = i.replace("(Vassal)", "").trim();
+        }
+        if (i.contains("(Overlord)")) {
+            name = i.replace("(Overlord)", "").trim();
+        }
         return name;
     }
 

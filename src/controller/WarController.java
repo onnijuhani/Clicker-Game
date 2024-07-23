@@ -81,9 +81,6 @@ public class WarController extends BaseController {
     }
 
 
-
-
-
     @FXML
     private Label currentDay;
 
@@ -102,15 +99,24 @@ public class WarController extends BaseController {
     @FXML
     private AnchorPane activeWar;
 
-    private void updateInspector(String inspectorListName, Collection<?> collection){
+    private void updateInspector(String inspectorListName, Collection<?> collection) {
         inspector.setVisible(true);
+
+        Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(1),e -> fillInspector(inspectorListName, collection)));
+        updateTimeline.play();
+    }
+
+    private void fillInspector(String inspectorListName, Collection<?> collection) {
         this.inspectorListName.setText(inspectorListName);
 
         inspectList.getChildren().clear();
 
-        for(Object o : collection){
+        for (Object o : collection) {
             Label label = new Label(o.toString());
             label.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+
+            label.setMaxWidth(689);
+
             inspectList.getChildren().add(label);
         }
     }

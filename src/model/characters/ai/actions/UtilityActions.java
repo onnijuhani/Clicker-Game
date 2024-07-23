@@ -76,7 +76,6 @@ public class UtilityActions extends BaseActions{
                     if(counter > counterTarget) {
                         if (checkLevel(UtilityBuildings.GoldMine)) return;
                         counter = 0;
-                        counterTarget = 15;
                         upgradeBuilding(UtilityBuildings.GoldMine, this);
                         person.removeAspiration(INVEST_IN_GOLD_PRODUCTION);
 
@@ -132,7 +131,6 @@ public class UtilityActions extends BaseActions{
                     if(counter > counterTarget) {
                         if (checkLevel(UtilityBuildings.MeadowLands)) return;
                         counter = 0;
-                        counterTarget = 15;
                         upgradeBuilding(UtilityBuildings.MeadowLands, this);
                         person.removeAspiration(INVEST_IN_FOOD_PRODUCTION);
                     }
@@ -185,7 +183,6 @@ public class UtilityActions extends BaseActions{
                     if(counter > counterTarget) {
                         if (checkLevel(UtilityBuildings.AlloyMine)) return;
                         counter = 0;
-                        counterTarget = 15;
                         upgradeBuilding(UtilityBuildings.AlloyMine, this);
                         person.removeAspiration(INVEST_IN_ALLOY_PRODUCTION);
                     }
@@ -219,7 +216,6 @@ public class UtilityActions extends BaseActions{
                     if(counter > counterTarget) {
                         if (checkLevel(UtilityBuildings.MysticMine)) return;
                         counter = 0;
-                        counterTarget = 15;
                         upgradeBuilding(UtilityBuildings.MysticMine, this);
                         person.removeAspiration(INVEST_IN_GOLD_PRODUCTION);
                         person.removeAspiration(INVEST_IN_ALLOY_PRODUCTION);
@@ -259,7 +255,6 @@ public class UtilityActions extends BaseActions{
                     if(counter > counterTarget) {
                         if (checkLevel(UtilityBuildings.SlaveFacility)) return;
                         counter = 0;
-                        counterTarget = 15;
                         upgradeBuilding(UtilityBuildings.SlaveFacility, this);
 
                         person.removeAspiration(INVEST_IN_GOLD_PRODUCTION);
@@ -333,7 +328,6 @@ public class UtilityActions extends BaseActions{
                     if(counter > counterTarget) {
                         if (checkLevel(UtilityBuildings.WorkerCenter)) return;
                         counter = 0;
-                        counterTarget = 15;
                         upgradeBuilding(UtilityBuildings.WorkerCenter, this);
 
                         person.removeAspiration(INVEST_IN_GOLD_PRODUCTION);

@@ -277,7 +277,7 @@ public class ManagementActions extends BaseActions {
     /**
      * This class takes action on different management Aspirations, should not do any combat management here AT ALL. Only add combat aspirations if needed
      */
-    class TakeActionOnNeeds extends WeightedObject{
+    class TakeActionOnNeeds extends WeightedObject {
         int counter = 0;
 
         public TakeActionOnNeeds(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
@@ -286,7 +286,7 @@ public class ManagementActions extends BaseActions {
 
 
         @Override
-        public void execute(){
+        public void execute() {
             defaultAction();
             balanceSkewedResources();
         }
@@ -301,16 +301,16 @@ public class ManagementActions extends BaseActions {
             double aRatio = wallet.getBalanceRatio()[1];
             double gRatio = wallet.getBalanceRatio()[2];
 
-            if (fRatio > 0.50){
+            if (fRatio > 0.50) {
                 int amountToSell = wallet.getFood() / 2;
-                if(exchange.sellResource(amountToSell, Resource.Food, person.getCharacter())){
-                logAction(String.format("Sold %d food to balance out skewed wallet. Ratio was %f", amountToSell, fRatio));
+                if (exchange.sellResource(amountToSell, Resource.Food, person.getCharacter())) {
+                    logAction(String.format("Sold %d food to balance out skewed wallet. Ratio was %f", amountToSell, fRatio));
                 }
-            }else if (aRatio > 0.60){
+            } else if (aRatio > 0.60) {
                 int amountToSell = wallet.getAlloy() / 2;
                 exchange.sellResource(amountToSell, Resource.Alloy, person.getCharacter());
                 logAction(String.format("Sold %d alloys to balance out skewed wallet. Ratio was %f", amountToSell, aRatio));
-            }else if (gRatio > 0.70){
+            } else if (gRatio > 0.70) {
                 int amountBefore = person.getWallet().getGold();
                 exchange.exchangeResources(wallet.getGold() / 4 * 10, Resource.Food, Resource.Gold, person.getCharacter());
                 exchange.exchangeResources(wallet.getGold() / 4 * 5, Resource.Alloy, Resource.Gold, person.getCharacter());
@@ -322,36 +322,33 @@ public class ManagementActions extends BaseActions {
         }
 
         @Override
-        public void defaultAction(){
-
+        public void defaultAction() {
             try {
-                if(Time.getYear() == 0 && Time.getMonth() < 2){
+                if (Time.getYear() == 0 && Time.getMonth() < 2) {
                     return; // quick return in early game to allow some generate ramp up
                 }
 
-
-                if  (wallet.isLowBalance()){
+                if (wallet.isLowBalance()) {
                     return; // if wallet is empty or very low, return immediately.
                 }
 
-                if (immediateNeedForEverything()) return; // quick return if there is need for everything,  let production ramp up
+                if (immediateNeedForEverything())
+                    return; // quick return if there is need for everything, let production ramp up
 
                 Property property = person.getProperty();
                 UtilitySlot utilitySlot = property.getUtilitySlot();
 
                 for (Aspiration aspiration : person.getAspirations()) {
-    
-    
-                    if(person.getAspirations().contains(Aspiration.SAVE_RESOURCES) && person.getAspirations().contains(Aspiration.UPGRADE_PROPERTY)){
-                        if(!aspiration.equals(Aspiration.UPGRADE_PROPERTY)){
+
+                    if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES) && person.getAspirations().contains(Aspiration.UPGRADE_PROPERTY)) {
+                        if (!aspiration.equals(Aspiration.UPGRADE_PROPERTY)) {
                             continue; // make sure upgrade is prioritized so resources can be saved.
                         }
                     }
-    
+
                     switch (aspiration) {
-    
+
                         case UPGRADE_PROPERTY:
-    
                             try {
                                 Construct.constructProperty(person);
                                 person.removeAspiration(Aspiration.UPGRADE_PROPERTY);
@@ -359,72 +356,73 @@ public class ManagementActions extends BaseActions {
                                 logAction(String.format("New Property Construction started, current one is %s", person.getProperty().getClass().getSimpleName()));
                             } catch (InsufficientResourcesException e) {
                                 person.getProperty().getVault().withdrawal(wallet, e.getCost());
-    
                             }
                             break;
-    
+
                         case GET_GOLD_INSTANTLY:
                             if (exchange.forceBuy(gold_need_threshold * 2, Resource.Gold, person)) {
                                 person.removeAspiration(Aspiration.GET_GOLD_INSTANTLY);
                                 logAction(String.format("GET_GOLD_INSTANTLY removed and bought %d gold", gold_need_threshold * 2));
                             }
                             break;
-    
+
                         case GET_FOOD_INSTANTLY:
                             if (exchange.forceBuy(food_need_threshold * 2, Resource.Food, person)) {
                                 person.removeAspiration(Aspiration.GET_FOOD_INSTANTLY);
                                 logAction(String.format("GET_FOOD_INSTANTLY removed and bought %d food", food_need_threshold * 2));
                             }
                             break;
-    
+
                         case GET_ALLOYS_INSTANTLY:
                             if (exchange.forceBuy(alloy_need_threshold * 2, Resource.Alloy, person)) {
                                 person.removeAspiration(Aspiration.GET_ALLOYS_INSTANTLY);
                                 logAction(String.format("GET_ALLOYS_INSTANTLY removed and bought %d alloys", alloy_need_threshold * 2));
                             }
-    
-                        case INVEST_IN_GOLD_PRODUCTION:
-
-                            if(hasInvestInGuilds.test(person)){
-                                if(UtilityShop.upgradeBuilding(UtilityBuildings.SlaveFacility, person)){
-                                logAction("Because of need to invest in food, gold and alloys, SlaveFacility has been upgraded to level " + utilitySlot.getAnyLevel(UtilityBuildings.SlaveFacility));
-                                };
-                                if(UtilityShop.upgradeBuilding(UtilityBuildings.WorkerCenter, person)){
-                                    logAction("Because of need to invest in food, gold and alloys, SlaveFacility has been upgraded to level " + utilitySlot.getAnyLevel(UtilityBuildings.WorkerCenter));
-                                };
-                            }
-                            else if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
-                            if(UtilityShop.upgradeBuilding(UtilityBuildings.GoldMine, person)){
-                                logAction("Because of need to invest in gold, Gold Mine has been upgraded to level " + utilitySlot.getAnyLevel(UtilityBuildings.GoldMine));
-                            };
-    
                             break;
-    
+
+                        case INVEST_IN_GOLD_PRODUCTION:
+                            if (hasInvestInGuilds.test(person)) {
+                                if (UtilityShop.upgradeBuilding(UtilityBuildings.SlaveFacility, person)) {
+                                    logAction("Because of need to invest in food, gold and alloys, SlaveFacility has been upgraded to level " + utilitySlot.getAnyLevel(UtilityBuildings.SlaveFacility));
+                                }
+                                if (UtilityShop.upgradeBuilding(UtilityBuildings.WorkerCenter, person)) {
+                                    logAction("Because of need to invest in food, gold and alloys, SlaveFacility has been upgraded to level " + utilitySlot.getAnyLevel(UtilityBuildings.WorkerCenter));
+                                }
+                            } else if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) {
+                                continue;
+                            }
+                            if (UtilityShop.upgradeBuilding(UtilityBuildings.GoldMine, person)) {
+                                logAction("Because of need to invest in gold, Gold Mine has been upgraded to level " + utilitySlot.getAnyLevel(UtilityBuildings.GoldMine));
+                            }
+                            break;
+
                         case INVEST_IN_ALLOY_PRODUCTION:
-                            if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
-                            if(UtilityShop.upgradeBuilding(UtilityBuildings.AlloyMine, person)){
+                            if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) continue;
+                            if (UtilityShop.upgradeBuilding(UtilityBuildings.AlloyMine, person)) {
                                 logAction("Because of need to invest in alloys, Alloy Mine has been upgraded to level " + utilitySlot.getAnyLevel(UtilityBuildings.AlloyMine));
                             }
                             break;
-    
+
                         case INVEST_IN_FOOD_PRODUCTION:
-                            if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
-                            if(UtilityShop.upgradeBuilding(UtilityBuildings.MeadowLands, person)){
+                            if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) continue;
+                            if (UtilityShop.upgradeBuilding(UtilityBuildings.MeadowLands, person)) {
                                 logAction("Because of need to invest in food, Meadowlands has been upgraded to level " + utilitySlot.getAnyLevel(UtilityBuildings.MeadowLands));
-                            };
+                            }
                             break;
-    
-                        default:// if there are no aspirations, make a deposit to vault and upgrade defence if they are passive or unambitious. Others do nothing
-    
+
+                        default: // if there are no aspirations, make a deposit to vault and upgrade defense if they are passive or unambitious. Others do nothing
                             if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) break;
-    
-                            if (counter < 5) {counter++;break;}
-    
-                            if(profile.containsKey(Trait.Passive) || profile.containsKey(Trait.Unambitious)) {
+
+                            if (counter < 5) {
+                                counter++;
+                                break;
+                            }
+
+                            if (profile.containsKey(Trait.Passive) || profile.containsKey(Trait.Unambitious)) {
                                 TransferPackage netCash = person.getPaymentManager().getNetCash();
                                 TransferPackage vaultDeposit = new TransferPackage(netCash.food(), netCash.alloy(), netCash.gold());
 
-                                if(vaultDeposit.isPositive()) {
+                                if (vaultDeposit.isPositive()) {
                                     if (property.getVault().deposit(wallet, vaultDeposit)) {
                                         logAction("passive and or unambitious", String.format("%s deposited to the Vault", vaultDeposit));
                                         person.addAspiration(Aspiration.INCREASE_PROPERTY_DEFENCE);
@@ -435,7 +433,8 @@ public class ManagementActions extends BaseActions {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();throw new RuntimeException(e);
+                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
     }
@@ -461,9 +460,6 @@ public class ManagementActions extends BaseActions {
             }
 
             if(!(person.getProperty() instanceof Fortress)) {  // fortress cannot be upgraded
-                if(person.isPlayer()){
-                    System.out.println("lol");
-                }
                 evaluatePropertyNeed();
             }
 

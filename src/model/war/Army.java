@@ -1,5 +1,6 @@
 package model.war;
 
+import controller.MainController;
 import model.Settings;
 import model.characters.Person;
 import model.characters.payments.Payment;
@@ -81,9 +82,6 @@ public class Army implements ArmyObserver, PaymentTracker {
 
     private void payRunningCosts() {
         try {
-            if(owner.isPlayer()){
-                System.out.println();
-            }
             if(!wallet.subtractResources(getRunningCost())){
                 owner.loseStrike("Army costs not paid.");
             }
@@ -259,21 +257,21 @@ public class Army implements ArmyObserver, PaymentTracker {
 
     private void addOffenceAutomatically(){
         if(militaryBattle == null) return;
-        if(owner.isPlayer()) return;
+        if(owner.isPlayer() && !MainController.getInstance().autoPlay.isSelected()) return;
 
         MilitaryBattle.ArmyStats armyStats = getCorrectArmyStats();
         armyStats.addAttackPower(this);
     }
     private void addDefenceAutomatically(){
         if(militaryBattle == null) return;
-        if(owner.isPlayer()) return;
+        if(owner.isPlayer() && !MainController.getInstance().autoPlay.isSelected()) return;
 
         MilitaryBattle.ArmyStats armyStats = getCorrectArmyStats();
         armyStats.addDefencePower(this);
     }
     private void addSoldiersAutomatically(){
         if(militaryBattle == null) return;
-        if(owner.isPlayer()) return;
+        if(owner.isPlayer() && !MainController.getInstance().autoPlay.isSelected()) return;
 
         MilitaryBattle.ArmyStats armyStats = getCorrectArmyStats();
         armyStats.addSoldiers(this);

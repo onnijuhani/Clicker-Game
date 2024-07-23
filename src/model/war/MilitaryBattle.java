@@ -21,12 +21,16 @@ public class MilitaryBattle implements WarObserver {
     public void warUpdate(int day) {
         days++;
 
+        if(attackingCommander.isPlayer() || defendingCommander.isPlayer()){
+            System.out.println();
+        }
+
         if(day == 6) {
             payRunningCosts();
             updatePaymentCalendars();
         }
 
-        if(days >= 500){
+        if(days >= 300){
             triggerForceEnd();
             return;
         }
@@ -45,12 +49,17 @@ public class MilitaryBattle implements WarObserver {
 
     @Override
     public String toString(){
-        return String.format("Day %d: %s Soldiers: %d vs %s Soldiers: %d ",
+        return String.format("Day %d: %s S:%d, Off:%d, Def:%d - %s S:%d, Off%d, Def:%d ",
                 days,
-                attackingCommander.getRole().getNation(),
+                attackingCommander.getRole(),
                 attackingArmyStats.getNumOfSoldiers(),
-                defendingCommander.getRole().getNation(),
-                defendingArmyStats.getNumOfSoldiers());
+                attackingArmyStats.getAttackPower()/5000,
+                attackingArmyStats.getDefencePower()/5000,
+
+                defendingCommander.getRole(),
+                defendingArmyStats.getNumOfSoldiers(),
+                defendingArmyStats.getAttackPower()/5000,
+                defendingArmyStats.getDefencePower()/5000);
     }
 
     private void triggerForceEnd() {
@@ -231,8 +240,8 @@ public class MilitaryBattle implements WarObserver {
     }
 
     private static int getLostSoldiers(double effectivePower, int days) {
-        int base = Math.max(days / 50, 1);
-        return base  +  (int) Math.min(6, Math.floor((effectivePower - 0.5) * 10));
+        int base = Math.max(days / 25, 1);
+        return base  +  (int) Math.min(10, Math.floor((effectivePower - 0.5) * 10));
     }
 
     private NobleBonus getNobleBonus(ArmyStats currentAttackTurn) {

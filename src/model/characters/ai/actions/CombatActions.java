@@ -79,6 +79,7 @@ public class CombatActions extends BaseActions {
         }
         @Override
         public void defaultAction(){
+            if(!person.getPaymentManager().allowNPCToSpendMoney()) return;
             try {
                 for (Aspiration aspiration : person.getAspirations()) {
                     switch (aspiration) {
@@ -86,19 +87,16 @@ public class CombatActions extends BaseActions {
                             if (combatStats.upgradeOffenseWithGold()) {
                                 person.removeAspiration(Aspiration.INCREASE_PERSONAL_OFFENCE);
                                 logAction("Increased personal offence to level " + attackPowerLevel);
-                                break;
                             }
                         case INCREASE_PERSONAL_DEFENCE:
                             if(combatStats.upgradeDefenceWithGold()){
                                 person.removeAspiration(Aspiration.INCREASE_PERSONAL_DEFENCE);
                                 logAction("Increased personal defence to level " + defencePowerLevel);
-                                break;
                             }
                         case INCREASE_PROPERTY_DEFENCE:
                             if (property.upgradeDefenceWithAlloys()) {
                                 person.removeAspiration(Aspiration.INCREASE_PROPERTY_DEFENCE);
                                 logAction("Increased personal defence to level " + propertyDefence.getUpgradeLevel());
-                                break;
                             }
                     }
                 }
@@ -113,7 +111,9 @@ public class CombatActions extends BaseActions {
          */
         private void defaultPowerUpgrade() {
 
-            if (defaultCounter > 10) {
+            if(!person.getPaymentManager().allowNPCToSpendMoney()) return;
+
+            if (defaultCounter > 5) {
                 int randomNumber = random.nextInt(3);
 
                 switch (randomNumber) {
@@ -236,7 +236,7 @@ public class CombatActions extends BaseActions {
     }
 
     private boolean saveResourceAbort() {
-        return person.getAspirations().contains(Aspiration.SAVE_RESOURCES) || person.getWallet().isLowBalance();
+        return person.getAspirations().contains(Aspiration.SAVE_RESOURCES);
     }
 
 
