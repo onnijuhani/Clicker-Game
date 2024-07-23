@@ -108,7 +108,7 @@ public class InformationController extends BaseController {
     }
 
     void updateFullExpense(){
-        TransferPackage amount = model.getPlayerPerson().getPaymentManager().getFullExpense();
+        TransferPackage amount = model.getPlayerPerson().getPaymentManager().getFullExpenses();
         fullExpense.setText(amount.toShortString());
     }
 

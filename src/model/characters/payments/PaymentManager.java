@@ -77,7 +77,7 @@ public class PaymentManager {
      * @return Returns the wallet balance minus expenses
      */
     public TransferPackage getNetCash() {
-        return wallet.getBalance().subtract(getFullExpense());
+        return wallet.getBalance().subtract(getFullExpenses());
     }
 
 
@@ -113,7 +113,7 @@ public class PaymentManager {
 
     private TransferPackage calculateNetBalance() {
         TransferPackage totalIncome = getFullIncome();
-        TransferPackage totalExpense = getFullExpense();
+        TransferPackage totalExpense = getFullExpenses();
 
         int netFood = totalIncome.food() - totalExpense.food();
         int netAlloy = totalIncome.alloy() - totalExpense.alloy();
@@ -138,7 +138,7 @@ public class PaymentManager {
         return getTransferPackage(incomes);
     }
 
-    public TransferPackage getFullExpense(){
+    public TransferPackage getFullExpenses(){
         return getTransferPackage(expenses);
     }
 
@@ -196,6 +196,22 @@ public class PaymentManager {
 
         return nextExpense;
     }
+
+    public boolean canMakeNextPayment(){
+        return wallet.getBalance().isGreaterThanOrEqualTo(getNextExpense().getAmount());
+    }
+
+    public boolean allowNPCToSpendMoney(){
+        return canMakeNextPayment() || !wallet.isLowBalance() || getNetCash().isPositive();
+    }
+    public boolean allowNPCToIncreaseExpenses(){
+        return allowNPCToSpendMoney() || getNetBalance().isPositive() || netBalanceIsHigh();
+    }
+
+    private boolean netBalanceIsHigh(){
+        return getFullIncome().isGreaterThanOrEqualTo(getFullExpenses().multiply(1.5));
+    }
+
 
 
 

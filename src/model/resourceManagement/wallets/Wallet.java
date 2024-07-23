@@ -242,7 +242,7 @@ public class Wallet {
             }
 
             if (getOwner() instanceof Person person) {
-                TransferPackage expenses = person.getPaymentManager().getFullExpense();
+                TransferPackage expenses = person.getPaymentManager().getFullExpenses();
                 Vault vault = person.getProperty().getVault();
 
                 if (vault.isEmpty()) {

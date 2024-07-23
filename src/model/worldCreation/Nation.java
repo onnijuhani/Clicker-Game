@@ -17,8 +17,11 @@ import model.characters.payments.PaymentManager;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.shop.Shop;
+import model.stateSystem.Event;
+import model.stateSystem.GameEvent;
 import model.stateSystem.MessageTracker;
 import model.stateSystem.State;
+import model.time.EventManager;
 import model.war.Army;
 import model.war.Military;
 import model.war.War;
@@ -606,7 +609,38 @@ public class Nation extends ControlledArea implements Details {
     public boolean isNobleWarBonus() {
         return nobleWarBonus;
     }
+    private void removeNobleWarBonus() {
+        this.nobleWarBonus = false;
+    }
 
+    public int getNobleBonusAmountLeft(){
+        int amount = 0;
+        for(Support s : authorityHere.getSupporters()) {
+            if(s instanceof Noble noble){
+                if(!noble.isNobleBonusUsed()){
+                    amount++;
+                }
+            }
+        }
+        return amount;
+    }
+    public void startNobleWarBonus() {
+
+        int days = 0;
+        for(Support s : authorityHere.getSupporters()) {
+            if(s instanceof Noble noble){
+                if(!noble.isNobleBonusUsed()){
+                    days = noble.getNobleBonusDays();
+                    break;
+                }
+            }
+        }
+
+        this.nobleWarBonus = true;
+        Person king = authorityHere.getCharacterInThisPosition().getPerson();
+        GameEvent gameEvent = new GameEvent(Event.NOBLE_BONUS, king);
+        EventManager.scheduleEvent(this::removeNobleWarBonus, days, gameEvent);
+    }
 
     public void startWar(Nation opponent, War war) {
         this.war = war;

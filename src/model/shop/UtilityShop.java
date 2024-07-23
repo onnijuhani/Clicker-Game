@@ -5,6 +5,7 @@ import model.buildings.Property;
 import model.buildings.utilityBuilding.*;
 import model.characters.Character;
 import model.characters.Person;
+import model.characters.ai.Aspiration;
 import model.resourceManagement.Resource;
 import model.resourceManagement.wallets.Wallet;
 import model.stateSystem.Event;
@@ -37,6 +38,7 @@ public class UtilityShop extends ShopComponents {
                 }
                 property.getUtilitySlot().increaseTotalLevels();
                 building.updatePaymentManager(person.getPaymentManager());
+                removeAspirations(type, person);
                 return true; // Upgrade was successful
             } else {
                 if(person.isPlayer()) {
@@ -49,6 +51,26 @@ public class UtilityShop extends ShopComponents {
         } else {
             person.getMessageTracker().addMessage(MessageTracker.Message("Error", type + " not owned."));
             return false; // Building not owned
+        }
+    }
+
+    private static void removeAspirations(UtilityBuildings type, Person person) {
+        switch (type){
+            case AlloyMine -> { person.removeAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION);
+            }
+            case GoldMine -> { person.removeAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION);
+            }
+            case MeadowLands -> { person.removeAspiration(Aspiration.INVEST_IN_FOOD_PRODUCTION);
+            }
+            case MysticMine -> {
+                person.removeAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION);
+                person.removeAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION);
+            }
+            case SlaveFacility, WorkerCenter -> {
+                person.removeAspiration(Aspiration.INVEST_IN_FOOD_PRODUCTION);
+                person.removeAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION);
+                person.removeAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION);
+            }
         }
     }
 

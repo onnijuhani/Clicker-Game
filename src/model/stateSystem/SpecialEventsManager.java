@@ -348,17 +348,22 @@ public class SpecialEventsManager {
     public static void triggerWarEnding(Nation winner, Nation loser, String warName, boolean playerWon) {
         String winMessage;
         String loseMessage;
+        String lineSeparator = System.lineSeparator();
 
         if (loser.isVassal()) {
-            winMessage = "Your nation has successfully defended against " + loser + "'s independence attempt. " +
-                    "They remain your vassal.\n";
-            loseMessage = "Your nation has failed to claim independence from " + winner + ". You remain their vassal.\n";
+            winMessage = "Your nation has successfully defended against " + loser + "'s independence attempt." + lineSeparator +
+                    "They remain your vassal." + lineSeparator;
+            loseMessage = "Your nation has failed to claim independence from " + winner + "." + lineSeparator +
+                    "You remain their vassal." + lineSeparator;
         } else if (winner.isVassal()) {
-            winMessage = "Your nation has successfully claimed independence from " + loser + ".\n";
-            loseMessage = "Your nation has failed to keep " + winner + " as your vassal. They have gained independence.\n";
+            winMessage = "Your nation has successfully claimed independence from " + loser + "." + lineSeparator;
+            loseMessage = "Your nation has failed to keep " + winner + " as your vassal." + lineSeparator +
+                    "They have gained independence." + lineSeparator;
         } else {
-            winMessage = "Your nation has won the war against " + loser + ". They are now your vassal.\n";
-            loseMessage = "Your nation has lost the war to " + winner + ". You are now their vassal.\n";
+            winMessage = "Your nation has won the war against " + loser + "." + lineSeparator +
+                    "They are now your vassal." + lineSeparator;
+            loseMessage = "Your nation has lost the war to " + winner + "." + lineSeparator +
+                    "You are now their vassal." + lineSeparator;
         }
 
         PopUpMessageTracker.PopUpMessage message = new PopUpMessageTracker.PopUpMessage(

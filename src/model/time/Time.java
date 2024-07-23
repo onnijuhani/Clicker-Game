@@ -114,7 +114,7 @@ public class Time {
     }
 
     private static void makeWarDecisions() {
-        if(year > 5 && month == 3 && day == 9){
+        if(year > 0 && month == 3 && day == 9){
             WarPlanningManager.makeWarDecisions();
         }
     }

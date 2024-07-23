@@ -3,6 +3,8 @@ package model.characters.ai.actions;
 import customExceptions.InsufficientResourcesException;
 import model.buildings.Construct;
 import model.buildings.Property;
+import model.buildings.properties.Castle;
+import model.buildings.properties.Citadel;
 import model.buildings.properties.Fortress;
 import model.buildings.utilityBuilding.UtilityBuildings;
 import model.buildings.utilityBuilding.UtilitySlot;
@@ -38,6 +40,12 @@ public class ManagementActions extends BaseActions {
     private static final Predicate<Person> hasGetFoodInstantly = person -> person.hasAspiration(Aspiration.GET_FOOD_INSTANTLY);
     private static final Predicate<Person> hasGetAlloysInstantly = person -> person.hasAspiration(Aspiration.GET_ALLOYS_INSTANTLY);
     private static final Predicate<Person> hasGetGoldInstantly = person -> person.hasAspiration(Aspiration.GET_GOLD_INSTANTLY);
+    private static final Predicate<Person> hasInvestInGuilds = person ->   person.hasAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION)
+                                                                        || person.hasAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION)
+                                                                        && person.hasAspiration(Aspiration.INVEST_IN_FOOD_PRODUCTION);
+
+    private static final Predicate<Person> hasInvestInMines = person ->   person.hasAspiration(Aspiration.INVEST_IN_ALLOY_PRODUCTION)
+                                                                          && person.hasAspiration(Aspiration.INVEST_IN_GOLD_PRODUCTION);
 
     private static final Predicate<Person> hasSetExtremeTax = person -> person.hasAspiration(Aspiration.SET_EXTREME_TAXES);
     private static final Predicate<Person> hasSetLowTax = person -> person.hasAspiration(Aspiration.SET_LOW_TAXES);
@@ -376,7 +384,16 @@ public class ManagementActions extends BaseActions {
                             }
     
                         case INVEST_IN_GOLD_PRODUCTION:
-                            if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
+
+                            if(hasInvestInGuilds.test(person)){
+                                if(UtilityShop.upgradeBuilding(UtilityBuildings.SlaveFacility, person)){
+                                logAction("Because of need to invest in food, gold and alloys, SlaveFacility has been upgraded to level " + utilitySlot.getAnyLevel(UtilityBuildings.SlaveFacility));
+                                };
+                                if(UtilityShop.upgradeBuilding(UtilityBuildings.WorkerCenter, person)){
+                                    logAction("Because of need to invest in food, gold and alloys, SlaveFacility has been upgraded to level " + utilitySlot.getAnyLevel(UtilityBuildings.WorkerCenter));
+                                };
+                            }
+                            else if (person.getAspirations().contains(Aspiration.SAVE_RESOURCES)) return;
                             if(UtilityShop.upgradeBuilding(UtilityBuildings.GoldMine, person)){
                                 logAction("Because of need to invest in gold, Gold Mine has been upgraded to level " + utilitySlot.getAnyLevel(UtilityBuildings.GoldMine));
                             };
@@ -429,44 +446,30 @@ public class ManagementActions extends BaseActions {
      *  THIS CLASS SHOULD ONLY EVALUATE CURRENT MANAGEMENT NEEDS BUT NOT DO ANYTHING ABOUT THEM. JUST ADD IT INTO ASPIRATIONS
      */
     class EvaluateNeeds extends WeightedObject {
-        int counter = 0;
-
         public EvaluateNeeds(Person person, NPCActionLogger npcActionLogger, int weight, Map<Trait, Integer> profile) {
             super(person, npcActionLogger, weight, profile);
         }
-
-
         @Override
         public void execute(){
             defaultAction();
         }
-
-        /**
-         * default is the only method here
-         */
         @Override
         public void defaultAction() {
 
-            if(Time.getYear() == 0 && Time.getMonth() < 3){
+            if(Time.getYear() == 0 && Time.getMonth() < 1){
                 return; // quick return in early game to allow some generate ramp up
             }
 
-            if(!(person.getProperty() instanceof Fortress) && counter < 1) {  // fortress cannot be upgraded
+            if(!(person.getProperty() instanceof Fortress)) {  // fortress cannot be upgraded
+                if(person.isPlayer()){
+                    System.out.println("lol");
+                }
                 evaluatePropertyNeed();
             }
 
             evaluateMinimumResourceNeeds();
-
-            counter++; // property shouldn't be checked every time, every 10th time is just fine to prevent AI advancing too greedily
-            if(counter > 10){
-                counter = 0;
-            }
-
             evaluateOptimalResourceNeeds();
-
         }
-
-
 
         /**
          * property need isn't important enough to get own Actions
@@ -479,10 +482,24 @@ public class ManagementActions extends BaseActions {
             if(property.getUtilitySlot().getSlotAmount() == 5){
                 // make sure they have net cash high enough to sustain the default army before attempting to update into military buildings
                 TransferPackage netBalance = person.getPaymentManager().getNetBalance();
-                if(netBalance.food() > 1100 && netBalance.alloy() > 300 && netBalance.gold() > 100){
+                if(netBalance.food() > 2000 && netBalance.alloy() > 1000 && netBalance.gold() > 100){
                     person.addAspiration(Aspiration.UPGRADE_PROPERTY);
                     person.addAspiration(Aspiration.SAVE_RESOURCES);
                     logAction(String.format("Evaluated a need to upgrade current home %s and a need to save resources for that", person.getProperty().getClass().getSimpleName()));
+                }
+                if(property instanceof Castle){
+                    if(person.getRole().getStatus().isCitadelWorthy()){
+                        person.addAspiration(Aspiration.UPGRADE_PROPERTY);
+                        person.addAspiration(Aspiration.SAVE_RESOURCES);
+                        logAction(String.format("Evaluated a need to upgrade current home %s and a need to save resources for that", person.getProperty().getClass().getSimpleName()));
+                    }
+                }
+                if(property instanceof Citadel){
+                    if(person.getRole().getStatus().isFortressWorthy()){
+                        person.addAspiration(Aspiration.UPGRADE_PROPERTY);
+                        person.addAspiration(Aspiration.SAVE_RESOURCES);
+                        logAction(String.format("Evaluated a need to upgrade current home %s and a need to save resources for that", person.getProperty().getClass().getSimpleName()));
+                    }
                 }
 
             }else if(usedSlotAmount == property.getUtilitySlot().getSlotAmount()) {
@@ -497,7 +514,7 @@ public class ManagementActions extends BaseActions {
         private void evaluateMinimumResourceNeeds() {
             try {
                 int food = wallet.getFood();
-                TransferPackage expenses = person.getPaymentManager().getFullExpense();
+                TransferPackage expenses = person.getPaymentManager().getFullExpenses();
 
                 food_need_threshold = expenses.food();
                 alloy_need_threshold = expenses.alloy();
@@ -542,7 +559,6 @@ public class ManagementActions extends BaseActions {
         }
 
         private void evaluateOptimalResourceNeeds() {
-
             try {
                 TransferPackage netBalance = person.getPaymentManager().getNetBalance();
 
@@ -587,8 +603,6 @@ public class ManagementActions extends BaseActions {
                     person.addAspiration(Aspiration.TRADE_MARKET);
                     logAction("OptimalResourceNeeds", "Good resource balance achieved. Ready to trade the market");
                 }
-
-
 
             } catch (Exception e) {
                 e.printStackTrace();throw new RuntimeException(e);

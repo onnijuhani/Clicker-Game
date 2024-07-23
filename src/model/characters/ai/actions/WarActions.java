@@ -24,7 +24,7 @@ public class WarActions extends BaseActions {
     protected void createAllActions() {
         HireSoldiers hireSoldiers = new HireSoldiers(person, npcActionLogger,1,profile);
         TrainAttack trainAttack = new TrainAttack(person, npcActionLogger,10,profile);
-        TrainDefence trainDefence = new TrainDefence(person, npcActionLogger,10,profile);
+        TrainDefence trainDefence = new TrainDefence(person, npcActionLogger,7,profile);
 
         allActions.add(hireSoldiers);
         allActions.add(trainAttack);
@@ -114,7 +114,6 @@ public class WarActions extends BaseActions {
         if (army == null) return;
 
         if(army.increaseAttackPower()){
-
             action.logAction(String.format("Increased army attack power, total power now %d", army.getTotalAttackPower()));
         }
     }
@@ -132,7 +131,9 @@ public class WarActions extends BaseActions {
         if (notMilitaryProperty()) {
             return null;
         }
-        TransferPackage currentExpenses = person.getPaymentManager().getFullExpense();
+        if(!person.getPaymentManager().allowNPCToIncreaseExpenses()) return null;
+
+        TransferPackage currentExpenses = person.getPaymentManager().getFullExpenses();
         TransferPackage currentBalance = person.getWallet().getBalance();
         if (!currentBalance.isGreaterThanOrEqualTo(currentExpenses)) {
             return null;
@@ -150,12 +151,14 @@ public class WarActions extends BaseActions {
     private void hireSoldiers(WeightedObject action) {
         if (notMilitaryProperty()) return;
 
+        if(!person.getPaymentManager().allowNPCToIncreaseExpenses()) return;
+
         MilitaryProperty property = (MilitaryProperty) person.getProperty();
         Army army = property.getArmy();
 
         TransferPackage netBalance = person.getPaymentManager().getNetBalance();
 
-        TransferPackage currentExpenses = person.getPaymentManager().getFullExpense();
+        TransferPackage currentExpenses = person.getPaymentManager().getFullExpenses();
         TransferPackage currentBalance = person.getWallet().getBalance();
         if (!currentBalance.isGreaterThanOrEqualTo(currentExpenses)) {
             return;
@@ -176,12 +179,12 @@ public class WarActions extends BaseActions {
         amount =  Math.min(netBalance.gold() / ArmyCost.runningGold - 1, amount) ;
 
         if(army.recruitSoldier(amount)){
-            person.getMessageTracker().addMessage(MessageTracker.Message("Major", "Recruited " + amount + " new Soldier(s)"));
+            person.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Recruited " + amount + " new Soldier(s)"));
 
             action.logAction(String.format("Recruited %d new soldiers. Now total of %d soldiers", amount, army.getNumOfSoldiers()));
 
         }else{
-            person.getMessageTracker().addMessage(MessageTracker.Message("Major", "Recruiting new Soldiers went wrong"));
+            person.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Recruiting new Soldiers went wrong"));
         }
     }
 

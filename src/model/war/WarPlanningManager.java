@@ -1,6 +1,7 @@
 package model.war;
 
 import model.Model;
+import model.Settings;
 import model.characters.Character;
 import model.resourceManagement.TransferPackage;
 import model.worldCreation.Nation;
@@ -14,6 +15,7 @@ public class WarPlanningManager {
     private final static Set<Nation> impartialNations = new HashSet<>();
     private final static Set<Nation> overLordNations = new HashSet<>();
     private final static Set<Nation> vassalNations = new HashSet<>();
+    private static final double WAR_PROBABILITY = 0.3;
 
     public static HashMap<Nation, Integer> getOtherNationsAndMilitaryPowers(Nation nation) {
         HashMap<Nation, Integer> otherNations = new HashMap<>();
@@ -104,9 +106,12 @@ public class WarPlanningManager {
             WarStrategy strategy = getStrategyForNation(nation);
             Set<Nation> potentialTargets = getPotentialTargets(nation);
 
-            strategy.decideTarget(nation, potentialTargets).ifPresent(target -> {
-                declareWar(nation, target);
-            });
+            // Only proceed if a random value is below the WAR_PROBABILITY threshold
+            if (Settings.getRandom().nextDouble() < WAR_PROBABILITY) {
+                strategy.decideTarget(nation, potentialTargets).ifPresent(target -> {
+                    declareWar(nation, target);
+                });
+            }
         }
     }
 
@@ -127,7 +132,9 @@ public class WarPlanningManager {
         if (nation.isVassal()) {
             return Set.of(nation.getOverlord());
         } else {
-            return Stream.concat(impartialNations.stream(), overLordNations.stream()).collect(Collectors.toSet());
+            return Stream.concat(impartialNations.stream(), overLordNations.stream())
+                    .filter(targetNation -> !targetNation.equals(nation))
+                    .collect(Collectors.toSet());
         }
     }
 
@@ -149,8 +156,12 @@ public class WarPlanningManager {
     public static class OverlordWarStrategy implements WarStrategy {
         @Override
         public Optional<Nation> decideTarget(Nation nation, Set<Nation> potentialTargets) {
-            return potentialTargets.stream()
-                    .filter(target -> target.getMilitaryPower() <= nation.getMilitaryPower() * 1.3) // Targets with comparable or lower military power
+            List<Nation> shuffledTargets = potentialTargets.stream()
+                    .filter(target -> target.getMilitaryPower() <= nation.getMilitaryPower() * 1.3)
+                    .collect(Collectors.toList());
+            Collections.shuffle(shuffledTargets);
+
+            return shuffledTargets.stream()
                     .min(Comparator.comparingDouble(target -> {
                         TransferPackage cost = nation.calculateWarStartingCost(target);
                         return cost.gold(); // Calculate based on the total cost
@@ -161,8 +172,12 @@ public class WarPlanningManager {
     public static class ImpartialWarStrategy implements WarStrategy {
         @Override
         public Optional<Nation> decideTarget(Nation nation, Set<Nation> potentialTargets) {
-            return potentialTargets.stream()
-                    .filter(target -> target.getMilitaryPower() <= nation.getMilitaryPower() * 1.2) // Targets with comparable or lower military power
+            List<Nation> shuffledTargets = potentialTargets.stream()
+                    .filter(target -> target.getMilitaryPower() <= nation.getMilitaryPower() * 1.2)
+                    .collect(Collectors.toList());
+            Collections.shuffle(shuffledTargets);
+
+            return shuffledTargets.stream()
                     .min(Comparator.comparingDouble(target -> {
                         TransferPackage cost = nation.calculateWarStartingCost(target);
                         double militaryDifference = Math.abs(nation.getMilitaryPower() - target.getMilitaryPower());
@@ -171,3 +186,4 @@ public class WarPlanningManager {
         }
     }
 }
+

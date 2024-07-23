@@ -10,9 +10,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import model.Model;
+import model.Settings;
+import model.stateSystem.Event;
+import model.stateSystem.GameEvent;
 import model.stateSystem.SpecialEventsManager;
 import model.war.War;
 import model.worldCreation.Nation;
@@ -27,6 +31,7 @@ public class WarController extends BaseController {
         if(!onGoingWar()) return;
         updateWarNotes();
         updateWarInformation();
+        updateNobleBonus();
     }
 
 
@@ -35,8 +40,6 @@ public class WarController extends BaseController {
         updateCommon();
         updateLeft();
         updateRight();
-
-
 
     }
 
@@ -51,7 +54,7 @@ public class WarController extends BaseController {
     private void updateLeft(){
         Nation n = Model.getPlayerRole().getNation();
 
-        nationNameLeft.setText(n.toString());
+        nationNameLeft.setText(Settings.removeUiNameAddition(n.toString()));
         mInPlayLeft.setText("Militaries in play: " + onGoingWar.getCorrectSet(n, War.SetName.ALL_IN_PLAY).size());
         mDefeatedLeft.setText("Armies Defeated: " + onGoingWar.getCorrectSet(n, War.SetName.DEFEATED).size());
         mPowerLeft.setText("Military Power: " +  onGoingWar.getTotalPower(n));
@@ -68,7 +71,7 @@ public class WarController extends BaseController {
             n = onGoingWar.getAttacker();
         }
 
-        nationNameRight.setText(n.toString());
+        nationNameRight.setText(Settings.removeUiNameAddition(n.toString()));
         mInPlayRight.setText("Militaries in play: " + onGoingWar.getCorrectSet(n, War.SetName.ALL_IN_PLAY).size());
         mDefeatedRight.setText("Armies Defeated: " + onGoingWar.getCorrectSet(n, War.SetName.DEFEATED).size());
         mPowerRight.setText("Military Power: " +  onGoingWar.getTotalPower(n));
@@ -95,6 +98,9 @@ public class WarController extends BaseController {
 
     @FXML
     private Label inspectorListName;
+
+    @FXML
+    private AnchorPane activeWar;
 
     private void updateInspector(String inspectorListName, Collection<?> collection){
         inspector.setVisible(true);
@@ -214,8 +220,10 @@ public class WarController extends BaseController {
         }
         if(nation.isAtWar()){
             onGoingWar = nation.getWar();
+            activeWar.setVisible(true);
             return true;
         }
+        activeWar.setVisible(false);
         return false;
     }
 
@@ -236,7 +244,26 @@ public class WarController extends BaseController {
 
     @FXML
     void useNobleBonus(ActionEvent event) {
-
+         if(nation.isNobleWarBonus()) return;
+         nation.startNobleWarBonus();
+    }
+    private void updateNobleBonus(){
+        if (onGoingWar == null) return;
+        if(!nation.isNobleWarBonus()){
+            int bonusLeft = nation.getNobleBonusAmountLeft();
+            if(bonusLeft == 0){
+                nobleBtn.setDisable(true);
+                nobleBtn.setText("No more Noble Bonuses left");
+            } else {
+                nobleBtn.setDisable(false);
+                nobleBtn.setText("Use Noble Bonus : " + bonusLeft + " Left");
+            }
+        } else {
+            nobleBtn.setDisable(true);
+            GameEvent event = nation.getAuthorityHere().getCharacterInThisPosition().getPerson().getAnyOnGoingEvent(Event.NOBLE_BONUS);
+            int daysLeft = event.getDaysLeftUntilExecution();
+            nobleBtn.setText("Noble bonus active: " + daysLeft);
+        }
     }
 
 

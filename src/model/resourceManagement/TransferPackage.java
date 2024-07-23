@@ -60,6 +60,9 @@ public record TransferPackage(int food, int alloy, int gold) implements Comparab
         return new TransferPackage((int) (food / divisor), (int) (alloy / divisor), (int) (gold / divisor));
     }
 
+    /**
+     * @return returns true if all balances are above 0
+     */
     public boolean isPositive(){
         return food >= 0 && alloy >= 0 && gold >= 0;
     }

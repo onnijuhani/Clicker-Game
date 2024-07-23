@@ -14,8 +14,6 @@ public class GameEvent {
     private int executionDay;
     private int executionMonth;
     private int executionYear;
-
-
     private final List<Person> participants;
 
     private boolean isAborted;

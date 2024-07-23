@@ -233,7 +233,7 @@ public class OverviewController extends BaseController{
     private Hyperlink getHyperlink(WarPlanningManager.NationDetails nationDetails) {
         Hyperlink hyperlink = new Hyperlink();
             // hyperlink for home
-        if(nationDetails.nation() == Model.getPlayerRole().getNation() && !nationDetails.nation().isVassal()){
+        if(nationDetails.nation() == Model.getPlayerRole().getNation() && !nationDetails.nation().isVassal() && !nationDetails.nation().isAtWar()){
             hyperlink = new Hyperlink();
         }   // hyperlink for nations already at war
         else if (nationDetails.nation().isAtWar()){

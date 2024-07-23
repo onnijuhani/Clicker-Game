@@ -127,7 +127,7 @@ public class ExchangeController extends BaseController implements MonthlyTradeEx
 
         TransferPackage netBalance = person.getPaymentManager().getNetBalance();
         TransferPackage netCash = person.getPaymentManager().getNetCash();
-        TransferPackage expenses = person.getPaymentManager().getFullExpense();
+        TransferPackage expenses = person.getPaymentManager().getFullExpenses();
         TransferPackage nextExpense = person.getPaymentManager().getNextExpense().getAmount();
 
         int minimum = Time.getYear() * 10;

@@ -27,6 +27,16 @@ public class WarService {
             return null;
         }
 
+        if(attacker.isAtWar()){
+            System.out.println(attacker + " is at war already.");
+            return null;
+        }
+
+        if(defender.isAtWar()){
+            System.out.println(defender + " is at war already.");
+            return null;
+        }
+
         String warName = getWarName(attacker, defender);
 
 //        TransferPackage cost = attacker.calculateWarStartingCost(defender);

@@ -27,8 +27,15 @@ public class War implements WarObserver, Details {
     @Override
     public void warUpdate(int day) {
         try {
-            if(forceContinuation()) return;
             this.days ++;
+            if(forceContinuation()){
+                if(currentPhase == ENDING_SOON){
+                    if(onGoingBattles.isEmpty()) {
+                        endWar();
+                    }
+                }
+                return;
+            }
             if(days < prepareTime){
                 return;
             }
@@ -56,7 +63,7 @@ public class War implements WarObserver, Details {
             startPhase3("Phase 3 started for reaching 900 days.", null);
             return false;
         }
-        if(days >= 2000){
+        if(days == 2000){
             double adr = getDefeatRatio(attackerDefeatedMilitaries, attackerMilitariesInPlay, attackerMilitariesInBattle);
             double ddr = getDefeatRatio(defenderDefeatedMilitaries, defenderMilitariesInPlay, defenderMilitariesInBattle);
 
@@ -67,7 +74,7 @@ public class War implements WarObserver, Details {
             }
             return true;
         }
-        return false;
+        return days > 2000;
     }
 
     @Override
@@ -533,8 +540,10 @@ public class War implements WarObserver, Details {
             boolean playerWon;
             playerWon = winner.isPlayerNation();
 
+            Nation w = attacker == winner ? attacker : defender;
+            Nation l = attacker == winner ? defender : attacker;
 
-            triggerWarEnding(this.attacker, this.defender, warNotes.warName, playerWon); // send popup
+            triggerWarEnding(w, l, warNotes.warName, playerWon); // send popup
         }
     }
 

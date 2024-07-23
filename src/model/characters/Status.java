@@ -34,5 +34,7 @@ public enum Status {
         return  this == King || this == Vanguard || this == Noble;
     }
 
+    public boolean isCitadelWorthy() { return this.isRoyal() || isSentinel() || this == Mayor || this == Governor;}
+    public boolean isFortressWorthy() { return this.isRoyal() || this == Governor;}
 
 }

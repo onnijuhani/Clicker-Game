@@ -14,7 +14,8 @@ public enum Event {
     GRAND_FOUNDRY_UNDER_OCCUPATION("Grand foundry under occupation"),
     GRAND_FOUNDRY("Grand foundry being Constructed"),
     DUEL_TRUCE("Has lost a duel lately"),
-    WAR_ENDING_SOON("War is ending soon");
+    WAR_ENDING_SOON("War is ending soon"),
+    NOBLE_BONUS("Noble bonus active");
 
 
     private final String displayName;
