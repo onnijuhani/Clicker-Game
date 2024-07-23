@@ -132,6 +132,7 @@ public class MainController extends BaseController {
     @FXML
     private Label currentlyViewing;
     @FXML CheckBox autoPlay;
+    @FXML CheckBox popUps;
 
 
     boolean autoContinue = false;
@@ -263,6 +264,7 @@ public class MainController extends BaseController {
 
             PopUpMessageTracker.messageProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue != null) {
+                    if(popUps.isSelected()) return;
                     openPopUp();
                 }
             });
@@ -270,6 +272,7 @@ public class MainController extends BaseController {
             PopUpMessageTracker.gameOverProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue != null) {
                     openPopUp();
+                    if(popUps.isSelected()) return;
                     closePopUpBtn.setDisable(true);
                 }
             });
@@ -546,6 +549,7 @@ public class MainController extends BaseController {
         boolean isChecked = shopMessages.isSelected();
         model.getPlayerCharacter().getMessageTracker().getPreferences().setShowShopEvents(!isChecked);
     }
+
 
     @FXML
     void pauseAfterPop(ActionEvent event) {
