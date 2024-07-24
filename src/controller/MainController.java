@@ -273,7 +273,6 @@ public class MainController extends BaseController {
             PopUpMessageTracker.gameOverProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue != null) {
                     openPopUp();
-                    if(popUps.isSelected()) return;
                     closePopUpBtn.setDisable(true);
                 }
             });
@@ -585,13 +584,17 @@ public class MainController extends BaseController {
         TransferPackage transferPackage = new TransferPackage(10000, 10000, 100000);
         model.getPlayerPerson().getWallet().addResources(transferPackage);
     }
-
+    @FXML
+    CheckBox extraSpeed;
     @FXML
     void setFastSpeed(ActionEvent event) {
-        Time.fastSpeed = 100;
-        if (topSectionController != null) {
-            topSectionController.startTimeFunction();
+        if(extraSpeed.isSelected()){
+            Time.fastSpeed = 125;
+        }else{
+            Time.fastSpeed = 200;
         }
+        topSectionController.slowerMethod();
+        topSectionController.fasterMethod();
     }
 
 

@@ -156,7 +156,7 @@ public class CharacterController extends BaseController  {
                 opponentsBox.getChildren().add(link);
             }
 
-            assert onGoingEvent != null;
+            if(onGoingEvent == null) return;
             stateTimeLeft.setText(""+ Arrays.toString(onGoingEvent.getTimeLeftUntilExecution()));
 
             int[] timeLeft = onGoingEvent.getTimeLeftUntilExecution();
@@ -238,15 +238,13 @@ public class CharacterController extends BaseController  {
 
     @FXML
     void printEvents(ActionEvent event) {
-        System.out.println("Ongoing Events : "+currentCharacter.getPerson().getOngoingEvents());
-        System.out.println("Current States : "+currentCharacter.getPerson().getStates());
-        System.out.println("Traits: "+ currentCharacter.getPerson().getAiEngine().getProfile());
-
         for(String string : currentCharacter.getPerson().getLoggerMessages()){
             System.out.println(string);
         }
-
+        System.out.println("Ongoing Events : "+currentCharacter.getPerson().getOngoingEvents());
+        System.out.println("Current States : "+currentCharacter.getPerson().getStates());
         System.out.println("Current Aspirations: "+currentCharacter.getPerson().getAspirations());
+        System.out.println("Traits: "+ currentCharacter.getPerson().getAiEngine().getProfile());
     }
 
     @FXML

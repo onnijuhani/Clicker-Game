@@ -69,8 +69,10 @@ public class War implements WarObserver, Details {
 
             if(adr >= ddr){
                 selectWinner("Loser", "Winner",defender + " has won the war against " + attacker); // Defender has won
+                winner = defender;
             }else{
                 selectWinner("Winner", "Loser", attacker + " has won the war against " + defender); // Attacker has won
+                winner = attacker;
             }
             return true;
         }

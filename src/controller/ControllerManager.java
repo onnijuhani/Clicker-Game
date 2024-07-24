@@ -16,7 +16,7 @@ public class ControllerManager {
 
     public static void startUpdateLoop() {
         try {
-            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.seconds(0.10),e -> updateControllers()));
+            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.millis(150),e -> updateControllers()));
             updateTimeline.setCycleCount(Timeline.INDEFINITE);
             updateTimeline.play();
         } catch (Exception e) {

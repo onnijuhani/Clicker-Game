@@ -338,7 +338,7 @@
                   </HBox>
                   <VBox alignment="CENTER" layoutY="470.0" prefWidth="120.0" AnchorPane.bottomAnchor="2.0">
                      <children>
-                        <CheckBox mnemonicParsing="false" onAction="#setFastSpeed" text="ExtraSpeed">
+                        <CheckBox fx:id="extraSpeed" mnemonicParsing="false" onAction="#setFastSpeed" text="ExtraSpeed">
                            <VBox.margin>
                               <Insets bottom="2.0" />
                            </VBox.margin>

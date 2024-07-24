@@ -21,6 +21,11 @@ public class MilitaryBattle implements WarObserver {
     public void warUpdate(int day) {
         days++;
 
+        if(days >= 300){
+            triggerForceEnd();
+            return;
+        }
+
         if(attackingCommander.isPlayer() || defendingCommander.isPlayer()){
             System.out.println();
         }
@@ -30,10 +35,6 @@ public class MilitaryBattle implements WarObserver {
             updatePaymentCalendars();
         }
 
-        if(days >= 300){
-            triggerForceEnd();
-            return;
-        }
 
         if(Objects.equals(currentTurn, "Attacker")){
             performAttack(attackingArmyStats, defendingArmyStats, "Attacker");
@@ -63,14 +64,16 @@ public class MilitaryBattle implements WarObserver {
     }
 
     private void triggerForceEnd() {
-        if (attackingArmyStats.getNumOfSoldiers() <= 1) {
+
+        int attackStrength = ((attackingArmyStats.getAttackPower() + attackingArmyStats.getDefencePower()) * attackingArmyStats.getNumOfSoldiers());
+        int defenceStrength = ((defendingArmyStats.getAttackPower() + defendingArmyStats.getDefencePower()) * defendingArmyStats.getNumOfSoldiers());
+
+        if (attackStrength <= defenceStrength ) {
             settleBattle("Defender");
-            return;
-        }
-        if (defendingArmyStats.getNumOfSoldiers() <= 1) {
+        }else{
             settleBattle("Attacker");
-            return;
         }
+
     }
 
     private void updatePaymentCalendars() {

@@ -4,12 +4,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import model.Model;
 import model.Settings;
 import model.characters.player.clicker.*;
 import model.resourceManagement.Resource;
 import model.shop.ClickerShop;
-import model.shop.Shop;
 
 import static model.Settings.formatNumber;
 
@@ -39,26 +37,24 @@ public class ClickerShopController extends BaseController {
     private Label goldInfo;
     @FXML
     private Label goldLevel;
-    private Shop shop; //shop in the player's nation
-
     @FXML
     private Button autoClickerBtn;
-
     @FXML
     private Label alloyOwned;
-
     @FXML
     private Label goldOwned;
-
     @FXML
     private Label autoClickerPrice;
 
-    public ClickerShopController() {
+
+    @Override
+    public void update() {
+        updateClickerShopPrices();
+        autoUpdateButtons();
     }
 
     @FXML
     public void initialize() {
-        setShop(Model.getPlayerRole().getNation().getShop());
         super.initialize();
     }
 
@@ -80,10 +76,7 @@ public class ClickerShopController extends BaseController {
         }
 
     }
-
-
     protected void updateClickerShopPrices() {
-        setShop(Model.getPlayerRole().getNation().getShop());
         updateClickerPrice(Resource.Alloy, buyAlloyClickerButton, alloyUpgradeBtn);
         updateClickerPrice(Resource.Gold, buyGoldClickerButton, goldUpgradeBtn);
         updateClickerPrice(Resource.Food, buyFoodClickerButton, foodUpgradeBtn);
@@ -92,7 +85,6 @@ public class ClickerShopController extends BaseController {
     }
 
     private void updateClickerPrice(Resource resource, Button buyButton, Button upgradeButton) {
-        setShop(Model.getPlayerRole().getNation().getShop());
         int basePrice = Settings.getInt(resource.name().toLowerCase() + "Clicker");
         buyButton.setText(formatNumber(basePrice) + " Gold");
 
@@ -102,11 +94,9 @@ public class ClickerShopController extends BaseController {
             upgradeButton.setText(formatNumber(upgradePrice) + " Gold");
         }
     }
-
     @FXML
     void buyAlloyClicker() {
-        setShop(Model.getPlayerRole().getNation().getShop());
-        boolean purchaseSuccessful = shop.getClickerShop().buyClicker(Resource.Alloy, model.getPlayerPerson());
+        boolean purchaseSuccessful = ClickerShop.buyClicker(Resource.Alloy, model.getPlayerPerson());
         buyAlloyClickerButton.setVisible(!purchaseSuccessful);
         alloyUpgradeBtn.setVisible(purchaseSuccessful);
         if (Clicker.getInstance().isAlloyClickerOwned()) {
@@ -116,10 +106,24 @@ public class ClickerShopController extends BaseController {
         updateClickerShopPrices();
     }
 
+    private void autoUpdateButtons(){
+        if(Clicker.getInstance().isAlloyClickerOwned()) {
+            buyAlloyClickerButton.setVisible(false);
+            alloyUpgradeBtn.setVisible(true);
+            alloyOwned.setText("Upgrade For:");
+            alloyBox.setVisible(true);
+        }
+
+        if(Clicker.getInstance().isGoldClickerOwned()) {
+            buyGoldClickerButton.setVisible(false);
+            goldUpgradeBtn.setVisible(true);
+            goldOwned.setText("Upgrade For:");
+            goldBox.setVisible(true);
+        }
+    }
     @FXML
     void buyGoldClicker() {
-        setShop(Model.getPlayerRole().getNation().getShop());
-        boolean purchaseSuccessful = shop.getClickerShop().buyClicker(Resource.Gold, model.getPlayerPerson());
+        boolean purchaseSuccessful = ClickerShop.buyClicker(Resource.Gold, model.getPlayerPerson());
         buyGoldClickerButton.setVisible(!purchaseSuccessful);
         goldUpgradeBtn.setVisible(purchaseSuccessful);
         if (Clicker.getInstance().isGoldClickerOwned()) {
@@ -128,11 +132,9 @@ public class ClickerShopController extends BaseController {
         goldBox.setVisible(purchaseSuccessful);
         updateClickerShopPrices();
     }
-
     @FXML
     void buyAutoClicker() {
-        setShop(Model.getPlayerRole().getNation().getShop());
-        boolean purchaseSuccessful = shop.getClickerShop().buyAutoClicker(model.getPlayerPerson());
+        boolean purchaseSuccessful = ClickerShop.buyAutoClicker(model.getPlayerPerson());
         if(purchaseSuccessful) {
             autoClickerBtn.setText("Upgrade");
         };
@@ -145,8 +147,6 @@ public class ClickerShopController extends BaseController {
         updateClickerShopPrices();
     }
 
-
-
     @FXML
     void upgradeAlloyClicker() {
         handleUpgradeClicker(Resource.Alloy, alloyUpgradeBtn);
@@ -154,7 +154,6 @@ public class ClickerShopController extends BaseController {
 
     @FXML
     void upgradeFoodClicker() {
-        setShop(Model.getPlayerRole().getNation().getShop());
         handleUpgradeClicker(Resource.Food, foodUpgradeBtn);
     }
 
@@ -167,7 +166,7 @@ public class ClickerShopController extends BaseController {
         Clicker clicker = Clicker.getInstance();
         ClickerTools tool = clicker.getClickerTool(resource);
         if (tool != null) {
-            boolean upgradeSuccessful = shop.getClickerShop().buyUpgrade(resource, model.getPlayerPerson());
+            boolean upgradeSuccessful = ClickerShop.buyUpgrade(resource, model.getPlayerPerson());
             if (upgradeSuccessful) {
                 upgradeButton.setText("Upgrade to Level " + (tool.getUpgradeLevel() + 1) + " (" + tool.getUpgradePrice() + " Gold)");
             }
@@ -175,7 +174,4 @@ public class ClickerShopController extends BaseController {
         updateClickerShopPrices();
     }
 
-    public void setShop(Shop shop) {
-        this.shop = shop;
-    }
 }

@@ -103,7 +103,7 @@ public class UtilityActions extends BaseActions{
 
             try {
                 if(amountsReached < 5){ // make sure farmer doesn't build Meadowlands as his first building
-                    if(person.getRole().getStatus() == Status.Farmer){
+                    if(person.getRole().getStatus() == Status.Farmer || person.getRole().getStatus() == Status.Peasant){
                         amountsReached++;
                         return;
                     }

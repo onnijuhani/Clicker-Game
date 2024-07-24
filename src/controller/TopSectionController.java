@@ -128,6 +128,10 @@ public class TopSectionController extends BaseController {
 
     @FXML
     void faster(MouseEvent event) {
+        fasterMethod();
+    }
+
+    protected void fasterMethod() {
         model.accessTime().updateSpeed(Speed.Fast);
         fasterBtn.setDisable(Time.getSpeed().equals(Speed.Fast));
         slowerBtn.setDisable(false);
@@ -142,6 +146,10 @@ public class TopSectionController extends BaseController {
 
     @FXML
     void slower(MouseEvent event) {
+        slowerMethod();
+    }
+
+    protected void slowerMethod() {
         model.accessTime().updateSpeed(Speed.Slow);
         slowerBtn.setDisable(Time.getSpeed().equals(Speed.Slow));
         fasterBtn.setDisable(false);

@@ -2,6 +2,7 @@ package model.characters.authority;
 
 import model.characters.AuthorityCharacter;
 import model.characters.Character;
+import model.characters.Person;
 import model.characters.Support;
 import model.characters.payments.PaymentManager;
 import model.resourceManagement.TransferPackage;
@@ -39,6 +40,8 @@ public class Authority implements TaxObserver, Ownable {
     protected WorkWallet workWallet;
     protected int taxDay;
     protected Area areaUnderAuthority;
+
+
 
     public void subscribeToTimeEvents() {
         TaxEventManager.subscribe(this);
@@ -114,6 +117,9 @@ public class Authority implements TaxObserver, Ownable {
 
     public Character getCharacterInThisPosition() {
         return characterPositionedHere;
+    }
+    public Person getPersonInThisPosition() {
+        return characterPositionedHere.getPerson();
     }
 
     public void setCharacterToThisPosition(Character character) {

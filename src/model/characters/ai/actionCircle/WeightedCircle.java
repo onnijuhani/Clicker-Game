@@ -55,26 +55,26 @@ public class WeightedCircle implements Circle<WeightedObject> {
             return null;
         }
         WeightedObject maxWeightObject = null;
-        // Etsi ensin suurimman painon objekti
+
         for (WeightedObject obj : circle) {
             if (maxWeightObject == null || obj.getWeight() > maxWeightObject.getWeight()) {
                 maxWeightObject = obj;
             }
         }
 
-        // Kasvata sitten jokaisen objektin painoa
+
         for (WeightedObject obj : circle) {
             obj.incrementWeight(weightIncrement);
         }
 
-        // Tarkista, täyttääkö löydetty objekti kriteerit valinnan jälkeen
+
         if (maxWeightObject.getWeight() >= weightThreshold) {
             circle.remove(maxWeightObject);
-            maxWeightObject.resetWeight(); // Aseta valitun objektin paino nollaksi
-            circle.add(maxWeightObject); // Lisää objekti takaisin listan loppuun
-            return maxWeightObject; // Palauta valittu objekti
+            maxWeightObject.resetWeight();
+            circle.add(maxWeightObject);
+            return maxWeightObject;
         }
-        return null; // Palauta null, jos yksikään objekti ei täytä kriteerejä
+        return null;
     }
 
 

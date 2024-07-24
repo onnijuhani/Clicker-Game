@@ -105,18 +105,12 @@ public class Clicker implements PaymentTracker {
         return totalClicks;
     }
 
-    public boolean isFoodClickerOwned() {
-        System.out.println(ownedClickerTools.containsKey(Resource.Food));
-        return ownedClickerTools.containsKey(Resource.Food);
-    }
 
     public boolean isAlloyClickerOwned() {
-        System.out.println(ownedClickerTools.containsKey(Resource.Alloy));
         return ownedClickerTools.containsKey(Resource.Alloy);
     }
 
     public boolean isGoldClickerOwned() {
-        System.out.println(ownedClickerTools.containsKey(Resource.Gold));
         return ownedClickerTools.containsKey(Resource.Gold);
     }
 

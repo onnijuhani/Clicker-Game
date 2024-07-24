@@ -93,7 +93,8 @@ public class CreateWorld implements Serializable {
 //        initialPlayer.getPerson().getProperty().getVault().addResources(cheatPackage);
 //        initialPlayer.getPerson().getWorkWallet().addResources(cheatPackage);
 
-        initialPlayer.getPerson().getCombatStats().increaseOffence(150);
+        initialPlayer.getPerson().getCombatStats().increaseOffence(6);
+        initialPlayer.getPerson().getCombatStats().increaseDefence(6);
 
     }
 

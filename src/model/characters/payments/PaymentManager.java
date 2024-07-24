@@ -1,5 +1,7 @@
 package model.characters.payments;
 
+import model.characters.Person;
+import model.characters.ai.Aspiration;
 import model.resourceManagement.TransferPackage;
 import model.resourceManagement.wallets.Wallet;
 import model.time.Time;
@@ -13,6 +15,9 @@ public class PaymentManager {
         public Payment name;
 
         public TransferPackage getAmount() {
+            if(amount == null){
+                return new TransferPackage(0,0,0);
+            }
             return amount;
         }
 
@@ -206,7 +211,14 @@ public class PaymentManager {
     }
 
     public boolean allowNPCToSpendMoney(){
-        return canMakeNextPayment() || !wallet.isLowBalance() || getNetCash().isPositive();
+
+        boolean canSpend = true;
+
+        if(wallet.getOwner() instanceof Person person){
+            canSpend = person.hasAspiration(Aspiration.SAVE_RESOURCES);
+        }
+
+        return canMakeNextPayment() || !wallet.isLowBalance() || getNetCash().isPositive() || canSpend;
     }
     public boolean allowNPCToIncreaseExpenses(){
         return allowNPCToSpendMoney() || getNetBalance().isPositive() || netBalanceIsHigh();

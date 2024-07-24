@@ -17,13 +17,13 @@ public class ClickerShop extends ShopComponents {
     public ClickerShop(Wallet wallet) {
         super(wallet);
     }
-    public boolean buyClicker(Resource type, Person person) {
+    public static boolean buyClicker(Resource type, Person person) {
         ClickerTools newTool = createClickerTool(type);
-        int price = newTool.getUpgradePrice();  // Get the base price from the newTool
+        int price = newTool.getUpgradePrice();
         TransferPackage transfer = new TransferPackage(0 ,0, price);
 
         if (person.getWallet().hasEnoughResource(Resource.Gold, price)) {
-            this.wallet.deposit(person.getWallet(), transfer);
+            person.getWallet().deposit(person.getWallet(), transfer);
             Clicker.getInstance().addClickerTool(type, newTool);
             person.getMessageTracker().addMessage(MessageTracker.Message("Shop", "Successfully purchased " + type + " Clicker!"));
             return true; // Purchase was successful
@@ -33,7 +33,7 @@ public class ClickerShop extends ShopComponents {
         }
     }
 
-    public boolean buyAutoClicker(Person person){
+    public static boolean buyAutoClicker(Person person){
         TransferPackage amount = getAutoClickerPrice();
 
         if(person.getWallet().subtractResources(amount)){
@@ -62,7 +62,7 @@ public class ClickerShop extends ShopComponents {
     }
 
 
-    public ClickerTools createClickerTool(Resource type) {
+    public static ClickerTools createClickerTool(Resource type) {
         return switch (type) {
             case Alloy -> new AlloyClicker(Settings.getInt("alloyClicker"));
             case Gold -> new GoldClicker(Settings.getInt("goldClicker"));
@@ -71,14 +71,15 @@ public class ClickerShop extends ShopComponents {
         };
     }
 
-    public boolean buyUpgrade(Resource type, Person player) {
+    public static boolean buyUpgrade(Resource type, Person player) {
         Clicker clicker = Clicker.getInstance();
         UpgradeSystem item = clicker.getClickerTool(type);
+        if(item == null) return false;
         int upgradePrice = item.getUpgradePrice();
         TransferPackage transfer = new TransferPackage(0 ,0, upgradePrice);
 
         if (player.getWallet().hasEnoughResource(Resource.Gold, upgradePrice)) {
-            this.wallet.deposit(player.getWallet(), transfer);
+            player.getWallet().deposit(player.getWallet(), transfer);
             item.increaseLevel(); // Upgrade the item
 
             player.getMessageTracker().addMessage(MessageTracker.Message("Shop", "Successfully upgraded " + type + " Clicker to level " + item.getUpgradeLevel() + "!"));

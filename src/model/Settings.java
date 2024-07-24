@@ -12,7 +12,7 @@ public class Settings {
     public static final boolean DB = false;
 
 
-    private static final Random random = new Random(5);
+    private static final Random random = new Random();
 
     public static Random getRandom(){
         return random;

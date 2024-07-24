@@ -304,6 +304,12 @@ public class Person implements Ownable {
     public void logAction(Person npc, String action, String details){
         getAiEngine().getNpcActionLogger().logAction(npc, action, details);
     }
+    public void logAction(Aspiration asp, String details){
+        getAiEngine().getNpcActionLogger().logAction(this, asp, details);
+    }
+    public void logAction(String method, String details){
+        getAiEngine().getNpcActionLogger().logAction(this, method, details);
+    }
 
     public NPCActionLogger getNpcLogger() {
         return getAiEngine().getNpcActionLogger();

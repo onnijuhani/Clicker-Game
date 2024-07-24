@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 public class RelationsManager {
+
     private final CopyOnWriteArraySet<Person> allies = new CopyOnWriteArraySet<>();
     private final CopyOnWriteArraySet<Person> enemies = new CopyOnWriteArraySet<>();
     private final Set<Person> listOfDefeatedPersons = new HashSet<>();
@@ -20,6 +21,7 @@ public class RelationsManager {
     private final HashMap<Status, Person> authorities = new HashMap<>(); // Unique authorities
 
     private final HashSet<Person> duelTruceList = new HashSet<>();
+    private Person latestTarget;
 
     public RelationsManager(Person owner) {
         this.owner = owner;
@@ -243,6 +245,14 @@ public class RelationsManager {
      */
     public boolean checkForTruce(Person opponent) {
         return duelTruceList.contains(opponent);
+    }
+
+    public Person getLatestTarget() {
+        return latestTarget;
+    }
+
+    public void setLatestTarget(Person latestTarget) {
+        this.latestTarget = latestTarget;
     }
 
 }

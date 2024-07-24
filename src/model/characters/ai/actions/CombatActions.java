@@ -127,7 +127,7 @@ public class CombatActions extends BaseActions {
                         break;
                     case 2:
                         property.upgradeDefenceWithAlloys();
-                        logAction("Default increase property defence to level " + propertyDefence);
+                        logAction("Default increase property defence to level " + propertyDefence.getUpgradeLevel());
                         break;
                     default:
                         break;
@@ -656,6 +656,11 @@ public class CombatActions extends BaseActions {
             if (testAuthority())
                 return; // quick return if there is a problem with the targets role
 
+            if(person.getCombatStats().getDefenseLevel()*2 < person.getCombatStats().getOffenseLevel()){
+                person.addAspiration(Aspiration.INCREASE_PERSONAL_DEFENCE);
+                return; // return if defenseLevel is low
+            }
+
             assert mainTarget != null;
             Status mainTargetStatus = mainTarget.getRole().getStatus();
 
@@ -693,6 +698,11 @@ public class CombatActions extends BaseActions {
     }
 
     private boolean abortForLowWinningChance(Person mainTarget, double winningChanceRequirement, Event type) {
+        double winningChance = calculateWinningChance(type, person, mainTarget);
+        return winningChance <= winningChanceRequirement;
+    }
+
+    public static boolean abortForLowWinningChance(Person person, Person mainTarget, double winningChanceRequirement, Event type) {
         double winningChance = calculateWinningChance(type, person, mainTarget);
         return winningChance <= winningChanceRequirement;
     }
@@ -792,6 +802,125 @@ public class CombatActions extends BaseActions {
         }
 
     }
+
+
+    public static void executeDuel(Person person, Set<Person> listOfPossibleTargets) {
+        try {
+            if (listOfPossibleTargets.isEmpty()) {
+                return;
+            }
+
+            // Find the minimum sum of defense and offense levels among undefeated enemies
+            int minCombatSum = listOfPossibleTargets.stream()
+                    .mapToInt(enemy -> enemy.getCombatStats().getDefenseLevel() + enemy.getCombatStats().getOffenseLevel())
+                    .min()
+                    .orElse(Integer.MAX_VALUE);
+
+
+            // Filter undefeated enemies to those with the minimum sum of defense and offense levels
+            List<Person> weakestTargets = listOfPossibleTargets.stream()
+                    .filter(enemy -> (enemy.getCombatStats().getDefenseLevel() + enemy.getCombatStats().getOffenseLevel()) == minCombatSum)
+                    .collect(Collectors.toList());
+
+            if (weakestTargets.isEmpty()) {
+                return;
+            }
+
+            // Shuffle the list of weakest undefeated enemies and pick the first one
+            Collections.shuffle(weakestTargets);
+            Person randomlySelectedEnemy = weakestTargets.get(0);
+
+
+            Person latestTarget = person.getRelationsManager().getLatestTarget();
+
+            if (randomlySelectedEnemy == latestTarget && !latestTarget.getRole().getStatus().isSentinel()) {
+                return; // don't duel the same person all the time unless they are Sentinels
+            }
+
+            if (abortForLowWinningChance(person, randomlySelectedEnemy, Trait.getWeightedWinReq(person), Event.DUEL))
+                return; // abort since winning chance is too low
+
+            // Execute duel against the selected weakest undefeated enemy
+            CombatService.executeDuel(person.getCharacter(), randomlySelectedEnemy.getCharacter());
+
+            if (person.getAnyOnGoingEvent(Event.DUEL) != null) {
+                person.logAction("Duel", String.format("Started duel against %s", randomlySelectedEnemy.getCharacter()));
+                person.getRelationsManager().setLatestTarget(randomlySelectedEnemy);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
+
+    }
+
+    public static boolean defeatAllSentinels(Person person, Person target) {
+        try {
+
+            // Get all sentinels of the main target
+            Set<Person> sentinels = target.getPerson().getRelationsManager().getListOfSentinels();
+
+            Set<Person> sentinelsCopy = new HashSet<>(sentinels); // prevent ConcurrentModificationException
+
+            Set<Person> undefeatedSentinels = new HashSet<>(); // sentinels that still need to be defeated
+
+            for (Person sentinel : sentinelsCopy) { // add undefeated sentinels into the list
+                if(!person.getRelationsManager().getListOfDefeatedPersons().contains(sentinel)){
+                    undefeatedSentinels.add(sentinel);
+                }
+            }
+            if(!undefeatedSentinels.isEmpty()) { // start dueling against those that need to be beaten
+                CombatActions.executeDuel(person, undefeatedSentinels);
+            }
+
+            return undefeatedSentinels.isEmpty(); // return true if all sentinels have been defeated already
+        } catch (Exception e) {
+            e.printStackTrace();throw new RuntimeException(e);
+        }
+    }
+
+    public static void achieveHigherPosition(Person person) {
+        Person target = person.getRole().getAuthority().getPersonInThisPosition();
+
+        if(person.getCombatStats().getDefenseLevel()*2 < person.getCombatStats().getOffenseLevel()){
+            person.addAspiration(Aspiration.INCREASE_PERSONAL_DEFENCE);
+            return;
+        }
+
+        double wcr = Trait.getWeightedWinReq(person); // winning chance requirement
+
+        Status targetStatus = target.getRole().getStatus(); // get targets status
+
+        switch (targetStatus) {
+            case Captain, Mayor:
+
+                if (abortForLowWinningChance(person, target.getPerson(), wcr, Event.AuthorityBattle))
+                    return;
+
+                CombatService.executeAuthorityBattle(person.getCharacter(),target.getCharacter());
+                if (person.getAnyOnGoingEvent(Event.AuthorityBattle) != null) {
+                    person.logAction("Achieve Higher Position", String.format("Started authority battle against %s with winning chance %f", target, wcr));
+                }
+                break;
+
+            case Governor, King:
+                // Defeat all sentinels if target is Governor or King before attempting the Authority battle
+                if (defeatAllSentinels(person, target)) {
+                    if (abortForLowWinningChance(person, target.getPerson(), wcr, Event.AuthorityBattle))
+                        return;
+                    CombatService.executeAuthorityBattle(person.getCharacter(),target.getCharacter());
+                    if (person.getAnyOnGoingEvent(Event.AuthorityBattle) != null) {
+                        person.logAction("Achieve Higher Position", String.format("Started authority battle against %s with winning chance at least %2f", target, wcr));
+                    }
+                }
+                break;
+
+            default:
+                System.out.println("No specific action for " + targetStatus);
+                break;
+        }
+    }
+
 
 
 

@@ -1,6 +1,10 @@
 package model.war;
 
+import model.Model;
 import model.Settings;
+import model.characters.Person;
+import model.resourceManagement.TransferPackage;
+import model.stateSystem.MessageTracker;
 import model.worldCreation.Nation;
 
 import static model.stateSystem.SpecialEventsManager.triggerWarStart;
@@ -39,21 +43,19 @@ public class WarService {
 
         String warName = getWarName(attacker, defender);
 
-//        TransferPackage cost = attacker.calculateWarStartingCost(defender);
-//        Person king = Model.getPlayerAsPerson();
-//        if(attacker.getWallet().subtractResources(cost)){
-//            king.getMessageTracker().addMessage(MessageTracker.Message("Major", "War cost paid: " + cost));
-//            king.getMessageTracker().addMessage(MessageTracker.Message("Major", warName + " started."));
-//        }else{
-//            king.getMessageTracker().addMessage(MessageTracker.Message(
-//                    "Major",
-//                    "Not enough resources to start a war against " + defender + "\n" +
-//                     "Required: " + cost.toShortString() + "\nAvailable in National Wallet: " + attacker.getWallet().getBalance().toShortString()
-//            ));
-//            return null;
-//        }
-
-
+        TransferPackage cost = attacker.calculateWarStartingCost(defender);
+        Person king = Model.getPlayerAsPerson(); //todo fix this
+        if(attacker.getWallet().subtractResources(cost)){
+            king.getMessageTracker().addMessage(MessageTracker.Message("Major", "War cost paid: " + cost));
+            king.getMessageTracker().addMessage(MessageTracker.Message("Major", warName + " started."));
+        }else{
+            king.getMessageTracker().addMessage(MessageTracker.Message(
+                    "Major",
+                    "Not enough resources to start a war against " + defender + "\n" +
+                     "Required: " + cost.toShortString() + "\nAvailable in National Wallet: " + attacker.getWallet().getBalance().toShortString()
+            ));
+            return null;
+        }
 
 
         War war = new War(attacker, defender, warName);

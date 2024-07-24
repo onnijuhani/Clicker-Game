@@ -2,6 +2,7 @@ package model.characters.ai.actions;
 
 import model.characters.Person;
 import model.characters.Trait;
+import model.characters.ai.Aspiration;
 import model.time.Time;
 
 import java.util.ArrayList;
@@ -47,6 +48,16 @@ public class NPCActionLogger {
         }
         String logEntry = String.format("%s: [%s] [%s] [%s] [%s] | %s | [%s]",
                 Time.getClock(), npc.getName(), npc.getRole(), " - " , action, details, npc.getWallet().toShortString());
+        logs.add(logEntry);
+    }
+
+    public synchronized void logAction(Person npc, Aspiration asp, String details) {
+        if (ignoreNPC(npc)) return;
+        if (logs.size() >= MAX_LOG_ENTRIES) {
+            logs.poll();
+        }
+        String logEntry = String.format("%s: [%s] [%s] [%s] [%s] | %s | [%s]",
+                Time.getClock(), npc.getName(), npc.getRole(), " - " , asp, details, npc.getWallet().toShortString());
         logs.add(logEntry);
     }
 

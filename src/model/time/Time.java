@@ -1,8 +1,13 @@
 package model.time;
 
+import controller.MainController;
 import model.GameManager;
+import model.Model;
 import model.Settings;
+import model.characters.Person;
 import model.characters.player.clicker.Clicker;
+import model.resourceManagement.Resource;
+import model.shop.ClickerShop;
 import model.stateSystem.SpecialEventsManager;
 import model.war.WarPlanningManager;
 import model.worldCreation.World;
@@ -40,10 +45,11 @@ public class Time {
     public Time() {
         executorService = Executors.newSingleThreadScheduledExecutor();
     }
-
     public static int fastSpeed = 200;
 
+
     public static void incrementDay() {
+        if(gameOver) return;
 
         try {
             day++;
@@ -90,11 +96,7 @@ public class Time {
 
 
             //AUTO CLICKER FUNCTIONALITY
-            if(Clicker.getInstance().isAutoClickerOwned()){
-                if(day % Clicker.getInstance().getAutoClickerLevel() == 0) {
-                    Clicker.getInstance().generateResources();
-                }
-            }
+            autoClickerFunctionality();
 
 
             executeMonthlyTrades(); // players monthly trades
@@ -110,6 +112,34 @@ public class Time {
             e.printStackTrace();throw new RuntimeException(e);
         }
 
+
+    }
+
+    private static void autoClickerFunctionality() {
+        if(Clicker.getInstance().isAutoClickerOwned()){
+            if(day % Clicker.getInstance().getAutoClickerLevel() == 0) {
+                Clicker.getInstance().generateResources();
+            }
+        }
+
+        Person player = Model.getPlayerAsPerson();
+        if(MainController.getInstance().autoPlay.isSelected()){
+            Clicker.getInstance().generateResources(); // if autoplay is on, clicker will make 1 per day
+        }else{
+            return;
+        }
+
+        if(day == 5 && month == 10){
+            ClickerShop.buyClicker(Resource.Alloy, player); // buy alloy clicker
+        }
+        if(year >= 1 && day == 5 && month == 5){
+            ClickerShop.buyClicker(Resource.Gold, player); // buy gold clicker
+        }
+        if(day == 5 && month % 2 == 0){
+            ClickerShop.buyUpgrade(Resource.Food, player);
+            ClickerShop.buyUpgrade(Resource.Alloy, player);
+            ClickerShop.buyUpgrade(Resource.Gold, player);
+        }
 
     }
 

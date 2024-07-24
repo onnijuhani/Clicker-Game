@@ -19,7 +19,7 @@ import model.worldCreation.Quarter;
 
 public class Construct {
 
-    public static void constructProperty(Person person) throws InsufficientResourcesException {
+    public static boolean constructProperty(Person person) throws InsufficientResourcesException {
 
         Property oldHouse = person.getProperty();
         Quarter location = oldHouse.getLocation();
@@ -30,7 +30,7 @@ public class Construct {
         Properties currentType = Properties.valueOf(oldHouse.getClass().getSimpleName());
 
         if (currentType == Properties.Fortress) {
-            return;
+            return false;
         }
 
 
@@ -39,7 +39,7 @@ public class Construct {
         if(newType == Properties.Castle){
             if(person.getRole().getNation().isAtWar()){
                 // cannot upgrade into military property if nation is at war
-                return;
+                return false;
             }
         }
 
@@ -71,11 +71,13 @@ public class Construct {
             EventManager.scheduleEvent(() -> {
                 Construct.finalizeConstruction(person, newType, location, oldHouse, oldUtilitySlot);
             }, daysUntilEvent, gameEvent);
+
+            return true;
         } else {
             if (person.isPlayer()){
             person.getMessageTracker().addMessage(MessageTracker.Message("Error", "Not enough resources for construction"));
             }
-            throw new InsufficientResourcesException("Not enough resources for construction of " + newType, cost);
+            return false;
         }
     }
 
@@ -179,7 +181,7 @@ public class Construct {
     private static Property initiateNewProperty(Properties type, String oldName, Person person) {
         return switch (type) {
             case Shack -> new Shack(oldName, person);
-            case Cottage -> new Castle(oldName, person); //TODO CORRECT THIS!!!!!!!!!!!!!!!!
+            case Cottage -> new Cottage(oldName, person);
             case Villa -> new Villa(oldName, person);
             case Mansion -> new Mansion(oldName, person);
             case Manor -> new Manor(oldName, person);
