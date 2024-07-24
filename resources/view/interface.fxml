@@ -451,6 +451,19 @@
                </children>
             </VBox>
             <Label fx:id="currentlyViewing" layoutX="1100.0" layoutY="596.0" text="Currently Viewing:" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="1100.0" AnchorPane.topAnchor="598.0" />
+            <VBox fx:id="traitBox" alignment="TOP_CENTER" prefHeight="622.0" prefWidth="1415.0" spacing="5.0" styleClass="mainColorLeft">
+               <children>
+                  <Label alignment="CENTER" text="Select Your 3 Traits" textFill="WHITE">
+                     <font>
+                        <Font size="36.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="100.0" />
+                     </VBox.margin>
+                  </Label>
+                  <HBox fx:id="traitButtonsBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0" />
+               </children>
+            </VBox>
          </children>
       </AnchorPane>
   </children>

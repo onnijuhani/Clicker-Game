@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
@@ -19,6 +20,8 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import model.Model;
 import model.characters.Character;
+import model.characters.Trait;
+import model.characters.player.TraitSelection;
 import model.characters.player.clicker.Clicker;
 import model.resourceManagement.TransferPackage;
 import model.stateSystem.MessageTracker;
@@ -62,6 +65,66 @@ public class MainController extends BaseController {
     private SiegeController siegeController;
     @FXML
     private WarController warController;
+    @FXML
+    private VBox traitBox;
+    @FXML
+    private HBox traitButtonsBox;
+
+    private void createTraitButtons(){
+        int i = 0;
+        VBox vBox = new VBox();
+        for (Trait trait : Trait.values()) {
+            if(i == 0){
+                vBox = new VBox();
+                traitButtonsBox.getChildren().add(vBox);
+            }
+            i++;if(i == 2){i=0;}
+
+            Button button = new Button(trait.toString());
+            vBox.getChildren().add(button);
+            VBox finalVBox = vBox;
+            finalVBox.setSpacing(3);
+            finalVBox.setAlignment(Pos.TOP_CENTER);
+            button.setOnAction(e -> handleTraitSelection(trait, finalVBox));
+
+        }
+    }
+
+    private void handleTraitSelection(Trait trait, VBox vbox) {
+        updateProfile(trait);
+        vbox.setDisable(true);
+        handleTraitSelectionEnding();
+    }
+
+    private void handleTraitSelectionEnding() {
+        if(TraitSelection.selectedTraitsCount > 2){
+            traitButtonsBox.setDisable(true);
+            Label label = new Label(TraitSelection.getString());
+            label.setStyle("-fx-text-fill: white; -fx-font-size: 30px;");
+            Button button = new Button("Start Game");
+            button.setOnAction(e -> traitBox.setVisible(false));
+            traitBox.getChildren().add(label);
+            traitBox.getChildren().add(button);
+            TraitSelection.setProfile();
+        }
+    }
+
+    private void updateProfile(Trait trait) {
+        int[] probabilities = new int[]{50, 30, 20};
+        TraitSelection.profile.put(trait, probabilities[TraitSelection.selectedTraitsCount]);
+        TraitSelection.selectedTraitsCount++;
+    }
+
+
+    private boolean isIncompatible(Trait trait1, Trait trait2) {
+
+        return (trait1 == Trait.Slaver && trait2 == Trait.Liberal) ||
+                (trait1 == Trait.Liberal && trait2 == Trait.Slaver) ||
+                (trait1 == Trait.Aggressive && trait2 == Trait.Passive) ||
+                (trait1 == Trait.Loyal && trait2 == Trait.Disloyal) ||
+                (trait1 == Trait.Attacker && trait2 == Trait.Defender);
+    }
+
 
     @FXML
     private AnchorPane mainLayout;
@@ -254,6 +317,12 @@ public class MainController extends BaseController {
             Platform.runLater(() -> {
                 if (characterController != null) {
                     characterController.setCurrentCharacter(model.getPlayerCharacter());
+                }
+            });
+
+            Platform.runLater(() -> {
+                if (characterController != null) {
+                    createTraitButtons();
                 }
             });
 

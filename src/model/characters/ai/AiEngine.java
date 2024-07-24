@@ -14,6 +14,9 @@ public class AiEngine {
     private final WarActions warActions;
     private final ManagementActions managementActions;
     private final Person person;
+
+
+
     private Map<Trait, Integer> profile;
     private final WeightedCircle actionCircle = new WeightedCircle(25,1);
     private final NPCActionLogger npcActionLogger = new NPCActionLogger();
@@ -29,6 +32,10 @@ public class AiEngine {
         this.managementActions = new ManagementActions(person, npcActionLogger, profile);
 
         setUpActionLoop();
+    }
+
+    public void setProfile(Map<Trait, Integer> profile) {
+        this.profile = profile;
     }
 
 
