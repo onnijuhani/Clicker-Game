@@ -1,6 +1,8 @@
 package model.time;
 
+import controller.ControllerManager;
 import controller.MainController;
+import javafx.application.Platform;
 import model.GameManager;
 import model.Model;
 import model.Settings;
@@ -108,6 +110,7 @@ public class Time {
 
             makeWarDecisions();
 
+            Platform.runLater(ControllerManager::updateControllers);
         } catch (Exception e) {
             e.printStackTrace();throw new RuntimeException(e);
         }

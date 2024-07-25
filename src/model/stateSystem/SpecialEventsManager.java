@@ -210,6 +210,23 @@ public class SpecialEventsManager {
 
     }
 
+    public static boolean autoplayWarningSent = false;
+    public static void triggerAutoplayWarning() {
+        if (autoplayWarningSent) {
+            return;
+        }
+        autoplayWarningSent = true;
+        PopUpMessageTracker.PopUpMessage autoplayWarningMessage = new PopUpMessageTracker.PopUpMessage(
+                "Autoplay Warning",
+                "Autoplay is designed primarily for NPCs and may not be optimal for player use. " +
+                        "Using autoplay might result in losing strikes and losing the game quicker.\n" +
+                        "Proceed with caution and be aware of the risks.",
+                "Properties/autoplay.jpg",
+                "Understood"
+        );
+        PopUpMessageTracker.sendMessage(autoplayWarningMessage);
+    }
+
     public static void triggerEarlyGameInfo() {
         PopUpMessageTracker.PopUpMessage gameOverMessage = new PopUpMessageTracker.PopUpMessage(
                 "Getting Started",

@@ -32,6 +32,7 @@ import model.worldCreation.Quarter;
 
 import java.util.List;
 
+import static model.stateSystem.SpecialEventsManager.triggerAutoplayWarning;
 import static model.stateSystem.SpecialEventsManager.triggerStartingMessage;
 
 public class MainController extends BaseController {
@@ -91,6 +92,7 @@ public class MainController extends BaseController {
     }
 
     private void handleTraitSelection(Trait trait, VBox vbox) {
+        clickMeButton.setBlendMode(BlendMode.DIFFERENCE);
         updateProfile(trait);
         vbox.setDisable(true);
         handleTraitSelectionEnding();
@@ -640,6 +642,7 @@ public class MainController extends BaseController {
     @FXML
     void triggerAutoPlay(ActionEvent event) {
         boolean isChecked = autoPlay.isSelected();
+        triggerAutoplayWarning();
         Model.getPlayerAsPerson().getAiEngine().setRunning(isChecked);
     }
 
@@ -658,7 +661,7 @@ public class MainController extends BaseController {
     @FXML
     void setFastSpeed(ActionEvent event) {
         if(extraSpeed.isSelected()){
-            Time.fastSpeed = 125;
+            Time.fastSpeed = 5;
         }else{
             Time.fastSpeed = 200;
         }

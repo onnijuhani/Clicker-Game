@@ -17,15 +17,17 @@ public class UtilitySlot implements PaymentTracker {
     private final int slotAmount;
     private HashMap<UtilityBuildings,UtilityBuilding> ownedUtilityBuildings;
 
-    public void increaseTotalLevels() {
-       totalUpgradeLevels++;
-    }
+
 
     public int getTotalUpgradeLevels() {
+        int totalUpgradeLevels = 0;
+        for(UtilityBuilding ub : ownedUtilityBuildings.values()){
+            totalUpgradeLevels += ub.getUpgradeLevel();
+        }
         return totalUpgradeLevels;
     }
 
-    private int totalUpgradeLevels = 0;
+
 
     public UtilitySlot(int slotAmount) {
         this.slotAmount = slotAmount;

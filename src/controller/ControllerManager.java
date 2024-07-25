@@ -1,7 +1,9 @@
 package controller;
 
+import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
@@ -14,9 +16,16 @@ public class ControllerManager {
         controllers.add(controller);
     }
 
+    private static final AnimationTimer animationTimer = new AnimationTimer() {
+        @Override
+        public void handle(long now) {
+            updateControllers();
+        }
+    };
+
     public static void startUpdateLoop() {
         try {
-            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.millis(150),e -> updateControllers()));
+            Timeline updateTimeline = new Timeline(new KeyFrame(Duration.millis(250),e -> updateControllers()));
             updateTimeline.setCycleCount(Timeline.INDEFINITE);
             updateTimeline.play();
         } catch (Exception e) {
@@ -24,9 +33,20 @@ public class ControllerManager {
         }
     }
 
+    public static void start() {
+        animationTimer.start();
+    }
+
+    public void stop() {
+        animationTimer.stop();
+    }
+
+
+
     public static void updateControllers() {
+
         for (Updatable controller : controllers) {
-            controller.update();
+            Platform.runLater(controller::update);
         }
     }
 }

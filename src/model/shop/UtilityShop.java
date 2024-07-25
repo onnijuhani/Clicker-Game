@@ -36,7 +36,6 @@ public class UtilityShop extends ShopComponents {
                             "Successfully upgraded " + type + " to level " +
                                     building.getUpgradeLevel() + "!"));
                 }
-                property.getUtilitySlot().increaseTotalLevels();
                 building.updatePaymentManager(person.getPaymentManager());
                 removeAspirations(type, person);
                 return true; // Upgrade was successful
@@ -116,7 +115,6 @@ public class UtilityShop extends ShopComponents {
         if(person.isPlayer()) {
             person.getMessageTracker().addMessage(MessageTracker.Message("Shop", "Successfully purchased " + type + "!"));
         }
-        property.getUtilitySlot().increaseTotalLevels();
         newBuilding.updatePaymentManager(person.getPaymentManager());
 
         if(person.isPlayer()){
