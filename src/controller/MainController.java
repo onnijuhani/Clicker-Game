@@ -661,7 +661,7 @@ public class MainController extends BaseController {
     @FXML
     void setFastSpeed(ActionEvent event) {
         if(extraSpeed.isSelected()){
-            Time.fastSpeed = 5;
+            Time.fastSpeed = 1;
         }else{
             Time.fastSpeed = 200;
         }
