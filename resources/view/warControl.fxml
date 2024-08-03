@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="700.0" style="-fx-border-color: black;" styleClass="militaryTab" stylesheets="@../characterStyle.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ArmyController">
+   <children>
+      <ImageView fitHeight="600.0" fitWidth="700.0">
+         <image>
+            <Image url="@../Properties/citadelWar.jpg" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="347.0" fitWidth="200.0" layoutY="253.0" pickOnBounds="true">
+         <image>
+            <Image url="@../characterImages/15.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="347.0" fitWidth="200.0" layoutX="505.0" layoutY="253.0" pickOnBounds="true">
+         <image>
+            <Image url="@../characterImages/6.png" />
+         </image>
+      </ImageView>
+      <VBox alignment="TOP_CENTER" fillWidth="false">
+         <children>
+            <HBox alignment="CENTER" spacing="4.0" styleClass="walletBox">
+               <children>
+                  <Label fx:id="soldiersLeft" alignment="CENTER" styleClass="militaryBox" text="Soldiers 12" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <VBox alignment="CENTER" spacing="1.0" styleClass="militaryBox2">
+                     <children>
+                        <Button fx:id="sendSoldiers" mnemonicParsing="false" text="Send More">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </Button>
+                        <Label fx:id="availableSoldiers" text="Available 5" textFill="WHITE">
+                           <VBox.margin>
+                              <Insets top="3.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER" spacing="4.0" styleClass="walletBox">
+               <children>
+                  <Label fx:id="offenceLeft" alignment="CENTER" styleClass="militaryBox" text="Offense Alloys 5000" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <VBox alignment="CENTER" spacing="1.0" styleClass="militaryBox2">
+                     <children>
+                        <Button fx:id="sendOffence" mnemonicParsing="false" text="Send More">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </Button>
+                        <Label fx:id="AvailableOffence" text="Available 56500" textFill="WHITE">
+                           <VBox.margin>
+                              <Insets top="3.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </VBox>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="CENTER" spacing="4.0" styleClass="walletBox">
+               <children>
+                  <Label fx:id="defenceLeft" alignment="CENTER" styleClass="militaryBox" text="Defence Alloys 500" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <VBox alignment="CENTER" spacing="1.0" styleClass="militaryBox2">
+                     <children>
+                        <Button fx:id="sendDefence" mnemonicParsing="false" text="Send More">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </Button>
+                        <Label fx:id="availableDefence" text="Available 56500" textFill="WHITE">
+                           <VBox.margin>
+                              <Insets top="3.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </VBox>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox alignment="TOP_CENTER" fillWidth="false" layoutX="525.0" layoutY="4.0">
+         <children>
+            <HBox alignment="CENTER" spacing="4.0" styleClass="walletBox">
+               <children>
+                  <Label fx:id="soldiersRight" alignment="CENTER" styleClass="militaryBox" text="Soldiers 12" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER" spacing="4.0" styleClass="walletBox">
+               <children>
+                  <Label fx:id="offenceRight" alignment="CENTER" styleClass="militaryBox" text="Offense Alloys 5000" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="CENTER" spacing="4.0" styleClass="walletBox">
+               <children>
+                  <Label fx:id="defenceRight" alignment="CENTER" styleClass="militaryBox" text="Defence Alloys 500" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox alignment="CENTER" layoutX="238.0" layoutY="336.0" styleClass="darkBox">
+         <children>
+            <Label fx:id="winningChance" text="25% - 75%" textAlignment="CENTER" textFill="#ebebeb" />
+            <Label text="Battle Log" textFill="WHITE">
+               <padding>
+                  <Insets bottom="2.0" left="3.0" right="3.0" />
+               </padding>
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <ListView fx:id="battleLog" prefHeight="200.0" prefWidth="200.0" />
+         </children>
+      </VBox>
+      <Label fx:id="stateLeft" layoutX="67.0" layoutY="561.0" text="Attacking" textFill="WHITE" />
+      <Label fx:id="stateRight" layoutX="583.0" layoutY="561.0" text="Defending" textFill="WHITE" />
+   </children>
+</AnchorPane>
