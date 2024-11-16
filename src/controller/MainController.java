@@ -1,7 +1,6 @@
 package controller;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -71,6 +70,101 @@ public class MainController extends BaseController {
     @FXML
     private HBox traitButtonsBox;
 
+    @FXML
+    private ImageView menuImage;
+    @FXML
+    private VBox mainGame;
+    @FXML
+    private AnchorPane menu;
+    @FXML
+    private VBox menuBox;
+    @FXML
+    private Button newGameBtn;
+    @FXML
+    private Label mainTitle;
+
+    private boolean newGameStartingAnimation = false;
+
+    @FXML
+    void startNewGame() {
+        // Scale effect on the new game button (visual feedback)
+        ScaleTransition scaleDown = new ScaleTransition(Duration.millis(45), newGameBtn);
+        scaleDown.setToX(0.9);
+        scaleDown.setToY(0.9);
+
+        ScaleTransition scaleUp = new ScaleTransition(Duration.millis(45), newGameBtn);
+        scaleUp.setToX(1.0);
+        scaleUp.setToY(1.0);
+
+        scaleDown.setOnFinished(event -> scaleUp.play());
+        scaleDown.play();
+
+        // Ensure the mainTitle opacity starts at 0.56, if it's not already set elsewhere
+        mainTitle.setOpacity(0.56);
+
+        // Fade out menuImage
+        FadeTransition fadeOutImage = new FadeTransition(Duration.seconds(4), menuImage);
+        fadeOutImage.setFromValue(1.0);
+        fadeOutImage.setToValue(0.0);
+
+        // Fade out only menuBox (not affecting mainTitle)
+        FadeTransition fadeOutMenuBox = new FadeTransition(Duration.seconds(4), menuBox);
+        fadeOutMenuBox.setFromValue(1.0);
+        fadeOutMenuBox.setToValue(0.0);
+
+        // Fade in the mainTitle
+        FadeTransition fadeInTitle = new FadeTransition(Duration.seconds(6), mainTitle);
+        fadeInTitle.setFromValue(0.56);  // Starting opacity (adjusted to match the starting state)
+        fadeInTitle.setToValue(1.0);
+
+        // Combine fade-out animations for menuImage, menuBox, and fade-in for mainTitle
+        ParallelTransition fadeOutBoth = new ParallelTransition(fadeOutImage, fadeOutMenuBox, fadeInTitle);
+
+        fadeOutBoth.setOnFinished(event -> {
+            // Create a PauseTransition to delay the fade-out of the title
+            PauseTransition pauseTransition = new PauseTransition(Duration.seconds(2)); // Pause for 2 seconds
+
+            pauseTransition.setOnFinished(pauseEvent -> {
+                // Fade out mainTitle after the pause
+                FadeTransition fadeOutTitle = new FadeTransition(Duration.seconds(2), mainTitle);
+                fadeOutTitle.setFromValue(1.0);  // From fully visible
+                fadeOutTitle.setToValue(0.0);   // Fade to invisible
+
+                // Ensure the background is black for the "only text moment"
+                menuImage.setStyle("-fx-background-color: black;");
+
+                // Fade in the traitBox after the title fade-out
+                traitBox.setOpacity(0.0); // Prepare for fade-in
+                traitBox.setVisible(true); // Make sure traitBox is visible
+
+                FadeTransition fadeInTraitBox = new FadeTransition(Duration.seconds(1), traitBox);
+                fadeInTraitBox.setFromValue(0.0);
+                fadeInTraitBox.setToValue(1.0);
+
+                // Play the fade-in for the traitBox after the title fades out
+                fadeOutTitle.setOnFinished(titleFadeOutEvent -> {
+                    fadeInTraitBox.play();
+                });
+
+                // Start the fade-out animation for the mainTitle
+                fadeOutTitle.play();
+            });
+
+            // Start the pause before fading out the title
+            pauseTransition.play();
+        });
+
+        menu.setDisable(true);
+        menuImage.setDisable(true);
+        // Start the fade-out animation for the menu and background
+        fadeOutBoth.play();
+        Time.incrementDay();
+    }
+    @FXML
+    void exitGame(){
+
+    }
+
     private void createTraitButtons(){
         int i = 0;
         VBox vBox = new VBox();
@@ -104,7 +198,7 @@ public class MainController extends BaseController {
             Label label = new Label(TraitSelection.getString());
             label.setStyle("-fx-text-fill: white; -fx-font-size: 30px;");
             Button button = new Button("Start Game");
-            button.setOnAction(e -> traitBox.setVisible(false));
+            button.setOnAction(e -> {traitBox.setVisible(false);mainGame.setVisible(true);});
             traitBox.getChildren().add(label);
             traitBox.getChildren().add(button);
             TraitSelection.setProfile();

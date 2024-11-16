@@ -92,7 +92,7 @@ public class SlaveFacility extends UtilityBuilding {
                     }
 
                     if(owner.isPlayer()) {
-                        owner.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Relationship with " + ally.getCharacter() + "\n\t\t\t\tcooled due to Slave Facility construction."));
+                        owner.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Relationship with " + ally.getCharacter() + " cooled due to Slave Facility construction."));
                     }
                 }
             }
@@ -104,7 +104,7 @@ public class SlaveFacility extends UtilityBuilding {
                 owner.getRelationsManager().removeEnemy(enemy);
                 enemy.getRelationsManager().removeEnemy(owner);
                 if(owner.isPlayer()) {
-                    owner.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Common interests in Slave Facilities\n\t\t\t\thave improved your standing with " + enemy.getCharacter() + "."));
+                    owner.getMessageTracker().addMessage(MessageTracker.Message("Minor", "Common interests in Slave Facilities have improved your standing with " + enemy.getCharacter() + "."));
                 }
             }
         }
